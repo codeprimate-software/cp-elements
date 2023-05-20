@@ -16,6 +16,7 @@
 package org.cp.elements.function;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doCallRealMethod;
@@ -28,6 +29,7 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 import java.util.function.BiFunction;
 
 import org.junit.jupiter.api.Test;
+
 import org.mockito.ArgumentMatchers;
 
 /**
@@ -67,27 +69,19 @@ public class BiFeederFunctionUnitTests {
     verifyNoMoreInteractions(functionOne, functionTwo);
   }
 
+  @Test
   @SuppressWarnings("unchecked")
-  @Test(expected = IllegalArgumentException.class)
   public void andThenWithNullBiFunction() {
 
     BiFeederFunction<Object, Object> mockFunction = mock(BiFeederFunction.class);
 
     doCallRealMethod().when(mockFunction).andThen(ArgumentMatchers.<BiFunction<Object, Object, Object>>any());
 
-    try {
-      mockFunction.andThen((BiFunction<Object, Object, Object>) null);
-    }
-    catch (IllegalArgumentException expected) {
-
-      assertThat(expected)
-        .hasMessage("The BiFunction to compose with and apply after this BiFeederFunction [%s] is required",
-          mockFunction.getClass().getName());
-
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
+    assertThatIllegalArgumentException()
+      .isThrownBy(() ->mockFunction.andThen((BiFunction<Object, Object, Object>) null))
+      .withMessage("The BiFunction to compose with and apply after this BiFeederFunction [%s] is required",
+        mockFunction.getClass().getName())
+      .withNoCause();
   }
 
   @Test

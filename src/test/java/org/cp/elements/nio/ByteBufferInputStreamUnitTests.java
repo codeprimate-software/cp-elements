@@ -18,7 +18,6 @@ package org.cp.elements.nio;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.assertj.core.api.Assertions.assertThatNullPointerException;
-import static org.cp.elements.lang.ThrowableAssertions.assertThatIndexOutOfBoundsException;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doReturn;
@@ -34,6 +33,7 @@ import java.nio.ByteBuffer;
 
 import org.junit.jupiter.api.Test;
 
+import org.cp.elements.lang.ThrowableAssertions;
 import org.cp.elements.lang.annotation.NotNull;
 
 import org.mockito.InOrder;
@@ -349,7 +349,7 @@ public class ByteBufferInputStreamUnitTests {
   @Test
   public void readIntoByteArrayWithInvalidOffset() {
 
-    assertThatIndexOutOfBoundsException()
+    ThrowableAssertions.assertThatIndexOutOfBoundsException()
       .isThrownBy(args -> ByteBufferInputStream.from(mockByteBuffer()).read(new byte[5], 7, 5))
       .havingMessage("Offset [7] must be greater than equal to 0 and less than [5]")
       .withNoCause();
@@ -358,7 +358,7 @@ public class ByteBufferInputStreamUnitTests {
   @Test
   public void readIntoByteArrayWithNegativeOffset() {
 
-    assertThatIndexOutOfBoundsException()
+    ThrowableAssertions.assertThatIndexOutOfBoundsException()
       .isThrownBy(args -> ByteBufferInputStream.from(mockByteBuffer()).read(new byte[10], -5, 5))
       .havingMessage("Offset [-5] must be greater than equal to 0 and less than [10]")
       .withNoCause();
@@ -367,7 +367,7 @@ public class ByteBufferInputStreamUnitTests {
   @Test
   public void readIntoByteArrayWithInvalidLength() {
 
-    assertThatIndexOutOfBoundsException()
+    ThrowableAssertions.assertThatIndexOutOfBoundsException()
       .isThrownBy(args -> ByteBufferInputStream.from(mockByteBuffer()).read(new byte[10], 6, 5))
       .havingMessage("Length [5] must be greater than equal to 0 and less than equal to [4]")
       .withNoCause();
@@ -376,7 +376,7 @@ public class ByteBufferInputStreamUnitTests {
   @Test
   public void readIntoByteArrayWithNegativeLength() {
 
-    assertThatIndexOutOfBoundsException()
+    ThrowableAssertions.assertThatIndexOutOfBoundsException()
       .isThrownBy(args -> ByteBufferInputStream.from(mockByteBuffer()).read(new byte[10], 5, -5))
       .havingMessage("Length [-5] must be greater than equal to 0 and less than equal to [5]")
       .withNoCause();

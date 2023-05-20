@@ -37,8 +37,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 
 import org.cp.elements.lang.Condition;
-import org.cp.elements.test.TestUtils;
-
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
@@ -771,27 +769,31 @@ public class ThreadUtilsUnitTests {
     TestFramework.runOnce(new WaitForInterruptedMultithreadedTestCase());
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void waitForWithInvalidDuration() {
 
-    TestUtils.doIllegalArgumentExceptionThrowingOperation(() -> ThreadUtils.waitFor(-500L),
-      () -> "Duration [-500] must be greater than 0");
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> ThreadUtils.waitFor(-500L))
+      .withMessage("Duration [-500] must be greater than 0")
+      .withNoCause();
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void waitForWithIntervalGreaterThanDuration() {
 
-    TestUtils.doIllegalArgumentExceptionThrowingOperation(
-      () -> ThreadUtils.waitFor(500L).checkEvery(2L, TimeUnit.SECONDS),
-        () -> "Interval [2 SECONDS] must be greater than 0 and less than equal to duration [500 MILLISECONDS]");
+    assertThatIllegalArgumentException()
+      .isThrownBy(() ->ThreadUtils.waitFor(500L).checkEvery(2L, TimeUnit.SECONDS))
+      .withMessage("Interval [2 SECONDS] must be greater than 0 and less than equal to duration [500 MILLISECONDS]")
+      .withNoCause();
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void waitForWithNegativeInterval() {
 
-    TestUtils.doIllegalArgumentExceptionThrowingOperation(
-      () -> ThreadUtils.waitFor(500L).checkEvery(-1L, TimeUnit.SECONDS),
-        () -> "Interval [-1 SECONDS] must be greater than 0 and less than equal to duration [500 MILLISECONDS]");
+    assertThatIllegalArgumentException()
+      .isThrownBy(() ->ThreadUtils.waitFor(500L).checkEvery(-1L, TimeUnit.SECONDS))
+      .withMessage("Interval [-1 SECONDS] must be greater than 0 and less than equal to duration [500 MILLISECONDS]")
+      .withNoCause();
   }
 
   @SuppressWarnings("unused")

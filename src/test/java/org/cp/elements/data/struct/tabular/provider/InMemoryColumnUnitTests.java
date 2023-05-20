@@ -17,7 +17,6 @@ package org.cp.elements.data.struct.tabular.provider;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
-import static org.cp.elements.lang.ThrowableAssertions.assertThatUnsupportedOperationException;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
@@ -34,6 +33,7 @@ import org.junit.jupiter.api.Test;
 import org.cp.elements.data.struct.tabular.Column;
 import org.cp.elements.data.struct.tabular.View;
 import org.cp.elements.data.struct.tabular.provider.InMemoryTable.InMemoryColumn;
+import org.cp.elements.lang.ThrowableAssertions;
 import org.cp.elements.lang.ThrowableOperation;
 
 /**
@@ -134,7 +134,7 @@ public class InMemoryColumnUnitTests {
     assertThat(column.getView()).isPresent();
     assertThat(column.getView().orElse(null)).isEqualTo(table);
 
-    assertThatUnsupportedOperationException()
+    ThrowableAssertions.assertThatUnsupportedOperationException()
       .isThrownBy(ThrowableOperation.fromRunnable(() -> column.setView(mockView)))
       .havingMessage("The View for this Column [MockColumn] cannot be changed")
       .withNoCause();

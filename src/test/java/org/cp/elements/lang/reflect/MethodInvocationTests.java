@@ -16,6 +16,7 @@
 package org.cp.elements.lang.reflect;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.cp.elements.lang.RuntimeExceptionsFactory.newIllegalStateException;
 import static org.cp.elements.lang.reflect.MethodInvocation.newMethodInvocation;
 import static org.cp.elements.util.ArrayUtils.asArray;
@@ -29,7 +30,7 @@ import java.time.Period;
 
 import org.junit.jupiter.api.Test;
 
-import org.cp.elements.test.TestUtils;
+import org.cp.elements.lang.ThrowableAssertions;
 
 /**
  * Unit Tests for {@link MethodInvocation}.
@@ -92,12 +93,13 @@ public class MethodInvocationTests {
     assertThat(methodInvocation.getTarget()).isNull();
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void newMethodInvocationWithNullClassTypeThrowsIllegalArgumentException() {
 
-    TestUtils.doIllegalArgumentExceptionThrowingOperation(
-      () -> newMethodInvocation((Class<?>) null, "testMethod", "argOne", "argTwo"),
-        () -> "Class type is required");
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> newMethodInvocation((Class<?>) null, "testMethod", "argOne", "argTwo"))
+      .withMessage("Class type is required")
+      .withNoCause();
   }
 
   @Test
@@ -115,46 +117,43 @@ public class MethodInvocationTests {
     assertThat(methodInvocation.getTarget()).isSameAs(johnBlum);
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void newMethodInvocationWithNullTargetObjectThrowsIllegalArgumentException() {
 
-    TestUtils.doIllegalArgumentExceptionThrowingOperation(
-      () -> newMethodInvocation((Object) null, "mockMethod", "argOne", "argTwo"),
-        () -> "Target object is required");
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> newMethodInvocation((Object) null, "mockMethod", "argOne", "argTwo"))
+      .withMessage("Target object is required")
+      .withNoCause();
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void constructMethodInvocationWithNullMethodThrowsIllegalArgumentException() {
 
-    TestUtils.doIllegalArgumentExceptionThrowingOperation(
-      () -> new MethodInvocation(target, null, "argOne", "argTwo"),
-        () -> "Method is required");
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> new MethodInvocation(target, null, "argOne", "argTwo"))
+      .withMessage("Method is required")
+      .withNoCause();
   }
 
-  @Test(expected = IllegalArgumentException.class)
-  public void constructMethodInvocationWithNullTargetObjectAndNonStaticMethodThrowsIllegalArgumentException()
-      throws NoSuchMethodException {
+  @Test
+  public void constructMethodInvocationWithNullTargetObjectAndNonStaticMethodThrowsIllegalArgumentException() {
 
-    try {
-      new MethodInvocation(null, Contact.class.getMethod("getName"));
-    }
-    catch (IllegalArgumentException expected) {
-
-      assertThat(expected).hasMessage("Method must be static if target is null");
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> new MethodInvocation(null, Contact.class.getMethod("getName")))
+      .withMessage("Method must be static if target is null")
+      .withNoCause();
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void constructMethodInvocationValidateArguments() throws NoSuchMethodException {
 
     Method getName = Contact.class.getMethod("getName");
 
-    TestUtils.doIllegalArgumentExceptionThrowingOperation(() -> new MethodInvocation(target, getName, "JonDoe"),
-      () -> String.format("The number of arguments [1] does not match the number of parameters [0] for method [getName] in class [%s]",
-        Contact.class.getName()));
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> new MethodInvocation(target, getName, "JonDoe"))
+      .withMessage("The number of arguments [1] does not match the number of parameters [0] for method [getName] in class [%s]",
+        Contact.class.getName())
+      .withNoCause();
   }
 
   @Test
@@ -167,7 +166,7 @@ public class MethodInvocationTests {
     assertThat(methodInvocation.validateArguments(findByLastName, "Hill")).isEqualTo(asArray("Hill"));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void validateArgumentsThrowsIllegalArgumentExceptionForNullMethod() throws NoSuchMethodException {
 
     Method getName = Contact.class.getMethod("getName");
@@ -176,25 +175,27 @@ public class MethodInvocationTests {
 
     assertThat(methodInvocation.getMethod()).isSameAs(getName);
 
-    TestUtils.doIllegalArgumentExceptionThrowingOperation(
-      () -> methodInvocation.validateArguments(null, "argOne", "argTwo"),
-        () -> "Method is required");
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> methodInvocation.validateArguments(null, "argOne", "argTwo"))
+      .withMessage("Method is required")
+      .withNoCause();
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void validateArgumentsThrowsIllegalArgumentExceptionForWrongNumberOfArguments() throws NoSuchMethodException {
 
     Method getName = Contact.class.getMethod("getName");
 
     MethodInvocation methodInvocation = newMethodInvocation(target, getName);
 
-    TestUtils.doIllegalArgumentExceptionThrowingOperation(
-      () -> methodInvocation.validateArguments(getName, "John", "Blum"),
-        () -> String.format("The number of arguments [2] does not match the number of parameters [0] for method [getName] in class [%s]",
-          Contact.class.getName()));
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> methodInvocation.validateArguments(getName, "John", "Blum"))
+      .withMessage("The number of arguments [2] does not match the number of parameters [0] for method [getName] in class [%s]",
+        Contact.class.getName())
+      .withNoCause();
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void validateArgumentsThrowsIllegalArgumentExceptionForArgumentTypeParameterTypeMismatch()
       throws NoSuchMethodException {
 
@@ -202,8 +203,10 @@ public class MethodInvocationTests {
 
     MethodInvocation methodInvocation = newMethodInvocation(target, findById, 1L);
 
-    TestUtils.doIllegalArgumentExceptionThrowingOperation(() -> methodInvocation.validateArguments(findById, 2),
-      () -> "Argument [2] is not assignable to parameter [0] of type [java.lang.Long]");
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> methodInvocation.validateArguments(findById, 2))
+      .withMessage("Argument [2] is not assignable to parameter [0] of type [java.lang.Long]")
+      .withNoCause();
   }
 
   @Test
@@ -254,7 +257,7 @@ public class MethodInvocationTests {
     assertThat(methodInvocation.invoke().orElse(null)).isEqualTo(42);
   }
 
-  @Test(expected = MethodInvocationException.class)
+  @Test
   public void invokeHandlesInvocationTargetException() throws NoSuchMethodException {
 
     Contact error = () -> { throw newIllegalStateException("test"); };
@@ -263,19 +266,13 @@ public class MethodInvocationTests {
 
     MethodInvocation methodInvocation = newMethodInvocation(error, getName);
 
-    try {
-      methodInvocation.invoke();
-    }
-    catch (MethodInvocationException expected) {
-
-      assertThat(expected).hasMessage("Failed to invoke method [getName] on target object [%s]", error);
-      assertThat(expected).hasCauseInstanceOf(InvocationTargetException.class);
-      assertThat(expected.getCause()).hasCauseInstanceOf(IllegalStateException.class);
-      assertThat(expected.getCause().getCause()).hasMessage("test");
-      assertThat(expected.getCause().getCause()).hasNoCause();
-
-      throw expected;
-    }
+    ThrowableAssertions.assertThatThrowableOfType(MethodInvocationException.class)
+      .isThrownBy(args -> methodInvocation.invoke())
+      .havingMessage("Failed to invoke method [getName] on target object [%s]", error)
+      .causedBy(InvocationTargetException.class)
+      .causedBy(IllegalStateException.class)
+      .havingMessage("test")
+      .withNoCause();
   }
 
   @Test
@@ -307,9 +304,9 @@ public class MethodInvocationTests {
 
     MethodInvocation methodInvocation = newMethodInvocation(target, getName);
 
-    assertThat(getName.isAccessible()).isFalse();
+    assertThat(getName.canAccess(getName)).isFalse();
     assertThat(methodInvocation.makeAccessible()).isSameAs(methodInvocation);
-    assertThat(getName.isAccessible()).isTrue();
+    assertThat(getName.canAccess(getName)).isTrue();
   }
 
   @Test
@@ -326,7 +323,7 @@ public class MethodInvocationTests {
     assertThat(methodInvocation.getTarget()).isSameAs(johnBlum);
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void onNullTargetForNonStaticMethodThrowsIllegalArgumentException() throws NoSuchMethodException {
 
     Contact johnBlum = () -> "John Blum";
@@ -337,8 +334,10 @@ public class MethodInvocationTests {
 
     assertThat(methodInvocation.getTarget()).isSameAs(johnBlum);
 
-    TestUtils.doIllegalArgumentExceptionThrowingOperation(() -> methodInvocation.on(null),
-      () -> "Method must be static if target is null");
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> methodInvocation.on(null))
+      .withMessage("Method must be static if target is null")
+      .withNoCause();
   }
 
   @Test
@@ -353,7 +352,7 @@ public class MethodInvocationTests {
     assertThat(methodInvocation.getArguments()).contains(2L);
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void passingArgumentsValidatesArguments() throws NoSuchMethodException {
 
     Method findByLastName = ContactRepository.class.getMethod("findBy", String.class);
@@ -362,8 +361,10 @@ public class MethodInvocationTests {
 
     assertThat(methodInvocation.getArguments()).contains("Blum");
 
-    TestUtils.doIllegalArgumentExceptionThrowingOperation(() -> methodInvocation.passing('x'),
-      () -> "Argument [x] is not assignable to parameter [0] of type [java.lang.String]");
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> methodInvocation.passing('x'))
+      .withMessage("Argument [x] is not assignable to parameter [0] of type [java.lang.String]")
+      .withNoCause();
   }
 
   @SuppressWarnings("all")

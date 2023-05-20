@@ -39,9 +39,12 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketAddress;
 
-import org.cp.elements.test.annotation.SubjectUnderTest;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
+
+import org.cp.elements.lang.ThrowableAssertions;
+import org.cp.elements.test.annotation.SubjectUnderTest;
+
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
@@ -66,7 +69,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 public class AbstractClientServerSupportTests {
 
   @SubjectUnderTest
-  private AbstractClientServerSupport clientServerSupport = spy(new TestClientServerSupport());
+  private final AbstractClientServerSupport clientServerSupport = spy(new TestClientServerSupport());
 
   @Mock
   private InputStream mockInputStream;
@@ -156,29 +159,28 @@ public class AbstractClientServerSupportTests {
     verify(mockServerSocket, times(1)).bind(isA(SocketAddress.class));
   }
 
-  @Test(expected = RuntimeException.class)
+  @Test
   public void newServerSocketHandlesIOException() throws IOException {
 
-    try {
-      doReturn(mockServerSocket).when(clientServerSupport).newServerSocket();
-      doThrow(newIOException("test")).when(mockServerSocket).bind(any(SocketAddress.class));
+    ThrowableAssertions.assertThatRuntimeException()
+      .isThrownBy(args -> {
 
-      clientServerSupport.newServerSocket(1234);
-    }
-    catch (RuntimeException expected) {
-      assertThat(expected).hasMessage("Failed to create a ServerSocket on port [1234]");
-      assertThat(expected).hasCauseInstanceOf(IOException.class);
-      assertThat(expected.getCause()).hasMessage("test");
-      assertThat(expected.getCause()).hasNoCause();
+        doReturn(mockServerSocket).when(clientServerSupport).newServerSocket();
+        doThrow(newIOException("test")).when(mockServerSocket).bind(any(SocketAddress.class));
 
-      throw expected;
-    }
-    finally {
-      verify(clientServerSupport, times(1)).newServerSocket();
-      verify(mockServerSocket, times(1))
-        .setReuseAddress(eq(AbstractClientServerSupport.DEFAULT_REUSE_ADDRESS));
-      verify(mockServerSocket, times(1)).bind(isA(SocketAddress.class));
-    }
+        clientServerSupport.newServerSocket(1234);
+
+        return null;
+      })
+      .havingMessage("Failed to create a ServerSocket on port [1234]")
+      .causedBy(IOException.class)
+      .havingMessage("test")
+      .withNoCause();
+
+    verify(clientServerSupport, times(1)).newServerSocket();
+    verify(mockServerSocket, times(1))
+      .setReuseAddress(eq(AbstractClientServerSupport.DEFAULT_REUSE_ADDRESS));
+    verify(mockServerSocket, times(1)).bind(isA(SocketAddress.class));
   }
 
   @Test
@@ -196,31 +198,30 @@ public class AbstractClientServerSupportTests {
     verify(mockSocket, times(1)).connect(isA(SocketAddress.class));
   }
 
-  @Test(expected = RuntimeException.class)
+  @Test
   public void newSocketHandlesIOException() throws IOException {
 
-    try {
-      doReturn(mockSocket).when(clientServerSupport).newSocket();
-      doThrow(newIOException("test")).when(mockSocket).connect(any(SocketAddress.class));
+    ThrowableAssertions.assertThatRuntimeException()
+      .isThrownBy(args -> {
 
-      clientServerSupport.newSocket("skullbox", 1234);
-    }
-    catch (RuntimeException expected) {
-      assertThat(expected).hasMessage("Failed to create a client Socket on host [skullbox] and port [1234]");
-      assertThat(expected).hasCauseInstanceOf(IOException.class);
-      assertThat(expected.getCause()).hasMessage("test");
-      assertThat(expected.getCause()).hasNoCause();
+        doReturn(mockSocket).when(clientServerSupport).newSocket();
+        doThrow(newIOException("test")).when(mockSocket).connect(any(SocketAddress.class));
 
-      throw expected;
-    }
-    finally {
-      verify(clientServerSupport, times(1)).newSocket();
-      verify(mockSocket, times(1))
-        .setReuseAddress(eq(AbstractClientServerSupport.DEFAULT_REUSE_ADDRESS));
-      verify(mockSocket, times(1))
-        .setSoTimeout(eq(intValue(AbstractClientServerSupport.DEFAULT_SO_TIMEOUT)));
-      verify(mockSocket, times(1)).connect(isA(SocketAddress.class));
-    }
+        clientServerSupport.newSocket("skullbox", 1234);
+
+        return null;
+      })
+      .havingMessage("Failed to create a client Socket on host [skullbox] and port [1234]")
+      .causedBy(IOException.class)
+      .havingMessage("test")
+      .withNoCause();
+
+    verify(clientServerSupport, times(1)).newSocket();
+    verify(mockSocket, times(1))
+      .setReuseAddress(eq(AbstractClientServerSupport.DEFAULT_REUSE_ADDRESS));
+    verify(mockSocket, times(1))
+      .setSoTimeout(eq(intValue(AbstractClientServerSupport.DEFAULT_SO_TIMEOUT)));
+    verify(mockSocket, times(1)).connect(isA(SocketAddress.class));
   }
 
   @Test

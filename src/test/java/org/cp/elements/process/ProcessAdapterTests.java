@@ -16,10 +16,11 @@
 package org.cp.elements.process;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
 import static org.cp.elements.lang.CheckedExceptionsFactory.newIOException;
 import static org.cp.elements.lang.RuntimeExceptionsFactory.newRuntimeException;
-import static org.cp.elements.lang.ThrowableAssertions.assertThatThrowableOfType;
 import static org.cp.elements.process.ProcessAdapter.newProcessAdapter;
 import static org.cp.elements.process.ProcessContext.newProcessContext;
 import static org.mockito.ArgumentMatchers.any;
@@ -68,6 +69,7 @@ import org.cp.elements.io.FileSystemUtils;
 import org.cp.elements.io.FileUtils;
 import org.cp.elements.lang.Constants;
 import org.cp.elements.lang.SystemUtils;
+import org.cp.elements.lang.ThrowableAssertions;
 import org.cp.elements.process.event.ProcessStreamListener;
 import org.cp.elements.process.support.RuntimeProcessExecutor;
 import org.cp.elements.util.ArrayUtils;
@@ -546,33 +548,28 @@ public class ProcessAdapterTests {
     assertThat(processAdapter.safeGetId()).isEqualTo(112358);
   }
 
+  @Test
   @SuppressWarnings("all")
-  @Test(expected = PidUnknownException.class)
   public void getIdThrowsPidUnkownExceptionForNonExistingDirectory() {
 
-    try {
+    ThrowableAssertions.assertThatThrowableOfType(PidUnknownException.class)
+      .isThrownBy(args -> {
 
-      doReturn(FileUtils.newFile("/absolute/path/to/non/existing/directory"))
-        .when(this.processContext).getDirectory();
+        doReturn(FileUtils.newFile("/absolute/path/to/non/existing/directory"))
+          .when(this.processContext).getDirectory();
 
-      newProcessAdapter(this.mockProcess, this.processContext).getId();
-    }
-    catch (PidUnknownException expected) {
-
-      assertThat(expected).hasMessage("Process ID (PID) cannot be determined");
-      assertThat(expected).hasCauseInstanceOf(IllegalArgumentException.class);
-      assertThat(expected.getCause())
-        .hasMessage("The path [/absolute/path/to/non/existing/directory] used to search for a .pid file must exist");
-      assertThat(expected.getCause()).hasNoCause();
-
-      throw expected;
-    }
+        return newProcessAdapter(this.mockProcess, this.processContext).getId();
+      })
+      .havingMessage("Process ID (PID) cannot be determined")
+      .causedBy(IllegalArgumentException.class)
+      .havingMessage("The path [/absolute/path/to/non/existing/directory] used to search for a .pid file must exist")
+      .withNoCause();
   }
 
   @Test
   public void getIdThrowsPidUnknownExceptionForNonExistingPidFile() {
 
-    assertThatThrowableOfType(PidUnknownException.class)
+    ThrowableAssertions.assertThatThrowableOfType(PidUnknownException.class)
       .isThrownBy(args -> {
         this.processContext.ranIn(FileSystemUtils.TEMPORARY_DIRECTORY);
         return newProcessAdapter(this.mockProcess, this.processContext).getId();
@@ -591,27 +588,22 @@ public class ProcessAdapterTests {
     assertThat(newProcessAdapter(this.mockProcess, this.processContext).safeGetId()).isEqualTo(-1);
   }
 
-  @Test(expected = UnsupportedOperationException.class)
+  @Test
   public void setIdThrowsUnsupportedOperationException() {
 
     ProcessAdapter processAdapter = newProcessAdapter(this.mockProcess, this.processContext);
 
     assertThat(processAdapter).isNotNull();
 
-    try {
-      this.processContext.ranIn(FileSystemUtils.TEMPORARY_DIRECTORY);
-      processAdapter.setId(123);
-    }
-    catch (UnsupportedOperationException expected) {
+    assertThatExceptionOfType(UnsupportedOperationException.class)
+      .isThrownBy(() -> {
+        this.processContext.ranIn(FileSystemUtils.TEMPORARY_DIRECTORY);
+        processAdapter.setId(123);
+      })
+      .withMessage(Constants.OPERATION_NOT_SUPPORTED)
+      .withNoCause();
 
-      assertThat(expected).hasMessage(Constants.OPERATION_NOT_SUPPORTED);
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
-    finally {
-      assertThat(processAdapter.safeGetId()).isEqualTo(-1);
-    }
+    assertThat(processAdapter.safeGetId()).isEqualTo(-1);
   }
 
   @Test
@@ -693,25 +685,17 @@ public class ProcessAdapterTests {
     assertThat(newProcessAdapter(this.mockProcess, this.processContext).getUsername()).isEqualTo("jblum");
   }
 
-  @Test(expected = IllegalThreadStateException.class)
+  @Test
   public void exitValueFoRunningProcessThrowsIllegalThreadStateException() {
 
-    when(this.mockProcess.exitValue()).thenThrow(new IllegalThreadStateException("running"));
+    doThrow(new IllegalThreadStateException("running")).when(this.mockProcess).exitValue();
 
-    try {
+    assertThatExceptionOfType(IllegalThreadStateException.class)
+      .isThrownBy(() -> newProcessAdapter(this.mockProcess, this.processContext).exitValue())
+      .withMessage("running")
+      .withNoCause();
 
-      newProcessAdapter(this.mockProcess, this.processContext).exitValue();
-    }
-    catch (IllegalThreadStateException expected) {
-
-      assertThat(expected).hasMessage("running");
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
-    finally {
-      verify(this.mockProcess, times(1)).exitValue();
-    }
+    verify(this.mockProcess, times(1)).exitValue();
   }
 
   @Test
@@ -879,7 +863,7 @@ public class ProcessAdapterTests {
     verifyNoInteractions(mockRestartedProcess);
   }
 
-  @Test(expected = IllegalStateException.class)
+  @Test
   @SuppressWarnings({ "rawtypes", "unchecked" })
   public void restartUnstoppableProcessThrowsIllegalStateException() throws InterruptedException {
 
@@ -910,25 +894,17 @@ public class ProcessAdapterTests {
       }
     });
 
-    try {
-      processAdapter.restart();
-    }
-    catch (IllegalStateException expected) {
+    assertThatIllegalStateException()
+      .isThrownBy(processAdapter::restart)
+      .withMessage("Process [123] failed to stop")
+      .withNoCause();
 
-      assertThat(expected).hasMessage("Process [123] failed to stop");
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
-    finally {
-
-      verify(this.mockProcess, times(2)).exitValue();
-      verify(this.mockProcess, times(1)).destroy();
-      verify(this.mockProcess, times(1)).waitFor();
-      verify(processAdapter, times(1))
-        .stop(eq(ProcessAdapter.DEFAULT_TIMEOUT_MILLISECONDS), eq(TimeUnit.MILLISECONDS));
-      verify(mockProcessExecutor, never()).execute(any(File.class), any(String[].class));
-    }
+    verify(this.mockProcess, times(2)).exitValue();
+    verify(this.mockProcess, times(1)).destroy();
+    verify(this.mockProcess, times(1)).waitFor();
+    verify(processAdapter, times(1))
+      .stop(eq(ProcessAdapter.DEFAULT_TIMEOUT_MILLISECONDS), eq(TimeUnit.MILLISECONDS));
+    verify(mockProcessExecutor, never()).execute(any(File.class), any(String[].class));
   }
 
   @Test

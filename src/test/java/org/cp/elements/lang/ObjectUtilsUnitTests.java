@@ -129,22 +129,16 @@ public class ObjectUtilsUnitTests {
     assertThat(jonDoeClone).isEqualTo(jonDoe);
   }
 
-  @Test(expected = CloneException.class)
+  @Test
   public void cloneWithExceptionThrowingCopyConstructor() {
 
-    try {
-      ObjectUtils.clone(new ExceptionThrowingCopyConstructorObject<>("test"));
-    }
-    catch (CloneException expected) {
-
-      assertThat(expected).hasMessage("[clone] using [copy constructor] was unsuccessful");
-      assertThat(expected).hasCauseInstanceOf(InvocationTargetException.class);
-      assertThat(expected.getCause()).hasCauseInstanceOf(IllegalArgumentException.class);
-      assertThat(expected.getCause().getCause()).hasMessage("test");
-      assertThat(expected.getCause().getCause().getCause()).isNull();
-
-      throw expected;
-    }
+    ThrowableAssertions.assertThatThrowableOfType(CloneException.class)
+      .isThrownBy(args -> ObjectUtils.clone(new ExceptionThrowingCopyConstructorObject<>("test")))
+      .havingMessage("[clone] using [copy constructor] was unsuccessful")
+      .causedBy(InvocationTargetException.class)
+      .causedBy(IllegalArgumentException.class)
+      .havingMessage("test")
+      .withNoCause();
   }
 
   @Test
@@ -158,38 +152,26 @@ public class ObjectUtilsUnitTests {
     assertThat(messageClone).isEqualTo(message);
   }
 
-  @Test(expected = UnsupportedOperationException.class)
+  @Test
   public void cloneWithNonCloneableNonCopyableNonSerializableObject() {
 
-    try {
-      ObjectUtils.clone(new Object());
-    }
-    catch (UnsupportedOperationException expected) {
-
-      assertThat(expected).hasMessageContaining("[clone] is not supported for object of type [Object]");
-      assertThat(expected).hasCauseInstanceOf(CloneNotSupportedException.class);
-      assertThat(expected.getCause()).hasMessage("[clone] is not supported for object of type [Object]");
-      assertThat(expected.getCause().getCause()).isNull();
-
-      throw expected;
-    }
+    ThrowableAssertions.assertThatUnsupportedOperationException()
+      .isThrownBy(args -> ObjectUtils.clone(new Object()))
+      .havingMessageContaining("[clone] is not supported for object of type [Object]")
+      .causedBy(CloneNotSupportedException.class)
+      .havingMessage("[clone] is not supported for object of type [Object]")
+      .withNoCause();
   }
 
-  @Test(expected = UnsupportedOperationException.class)
+  @Test
   public void cloneWithNullObject() {
 
-    try {
-      ObjectUtils.clone(null);
-    }
-    catch (UnsupportedOperationException expected) {
-
-      assertThat(expected).hasMessageContaining("[clone] is not supported for object of type [null]");
-      assertThat(expected).hasCauseInstanceOf(CloneNotSupportedException.class);
-      assertThat(expected.getCause()).hasMessage("[clone] is not supported for object of type [null]");
-      assertThat(expected.getCause().getCause()).isNull();
-
-      throw expected;
-    }
+    ThrowableAssertions.assertThatUnsupportedOperationException()
+      .isThrownBy(args -> ObjectUtils.clone(null))
+      .havingMessage("[clone] is not supported for object of type [null]")
+      .causedBy(CloneNotSupportedException.class)
+      .havingMessage("[clone] is not supported for object of type [null]")
+      .withNoCause();
   }
 
   @Test
@@ -197,21 +179,15 @@ public class ObjectUtilsUnitTests {
     assertThat(ObjectUtils.<String>doOperationSafely(arguments -> "test")).isEqualTo("test");
   }
 
-  @Test(expected = IllegalStateException.class)
+  @Test
   public void doOperationSafelyThrowsIllegalStateException() {
 
-    try {
-      ObjectUtils.doOperationSafely(arguments -> { throw new Exception("ERROR"); });
-    }
-    catch (IllegalStateException expected) {
-
-      assertThat(expected).hasMessageStartingWith("Failed to execute operation");
-      assertThat(expected).hasCauseInstanceOf(Exception.class);
-      assertThat(expected.getCause()).hasMessage("ERROR");
-      assertThat(expected.getCause()).hasNoCause();
-
-      throw expected;
-    }
+    ThrowableAssertions.assertThatIllegalStateException()
+      .isThrownBy(args -> ObjectUtils.doOperationSafely(arguments -> { throw new Exception("ERROR"); }))
+      .havingMessage("Failed to execute operation")
+      .causedBy(Exception.class)
+      .havingMessage("ERROR")
+      .withNoCause();
   }
 
   @Test
@@ -225,21 +201,15 @@ public class ObjectUtilsUnitTests {
       .isEqualTo("default");
   }
 
-  @Test(expected = IllegalStateException.class)
+  @Test
   public void doOperationSafelyWithDefaultValueThrowsIllegalStateException() {
 
-    try {
-      ObjectUtils.doOperationSafely(arguments -> { throw new Exception("ERROR"); }, (Object) null);
-    }
-    catch (IllegalStateException expected) {
-
-      assertThat(expected).hasMessageStartingWith("Failed to execute operation");
-      assertThat(expected).hasCauseInstanceOf(Exception.class);
-      assertThat(expected.getCause()).hasMessage("ERROR");
-      assertThat(expected.getCause()).hasNoCause();
-
-      throw expected;
-    }
+    ThrowableAssertions.assertThatIllegalStateException()
+      .isThrownBy(args -> ObjectUtils.doOperationSafely(arguments -> { throw new Exception("ERROR"); }, (Object) null))
+      .havingMessage("Failed to execute operation")
+      .causedBy(Exception.class)
+      .havingMessage("ERROR")
+      .withNoCause();
   }
 
   @Test
@@ -253,21 +223,16 @@ public class ObjectUtilsUnitTests {
       .isEqualTo("supplied");
   }
 
-  @Test(expected = IllegalStateException.class)
+  @Test
   public void doOperationSafelyWithSuppliedValueThrowsIllegalStateException() {
 
-    try {
-      ObjectUtils.<Object>doOperationSafely(arguments -> { throw new Exception("ERROR"); }, () -> null);
-    }
-    catch (IllegalStateException expected) {
-
-      assertThat(expected).hasMessageStartingWith("Failed to execute operation");
-      assertThat(expected).hasCauseInstanceOf(Exception.class);
-      assertThat(expected.getCause()).hasMessage("ERROR");
-      assertThat(expected.getCause()).hasNoCause();
-
-      throw expected;
-    }
+    ThrowableAssertions.assertThatIllegalStateException()
+      .isThrownBy(args -> ObjectUtils.<Object>doOperationSafely(arguments -> {
+        throw new Exception("ERROR"); }, () -> null))
+      .havingMessage("Failed to execute operation")
+      .causedBy(Exception.class)
+      .havingMessage("ERROR")
+      .withNoCause();
   }
 
   @Test
@@ -282,23 +247,16 @@ public class ObjectUtilsUnitTests {
       cause -> "functionResult" )).isEqualTo("functionResult");
   }
 
-  @Test(expected = TestException.class)
+  @Test
   public void doOperationSafelyWithFunctionThrowsFunctionException() {
 
-    try {
-      ObjectUtils.<Object>doOperationSafely(arguments -> { throw new Error("ERROR"); },
-        cause -> { throw new TestException("TEST EXCEPTION", cause); });
-    }
-    catch (RuntimeException expected) {
-
-      assertThat(expected).isInstanceOf(TestException.class);
-      assertThat(expected).hasMessage("TEST EXCEPTION");
-      assertThat(expected).hasCauseInstanceOf(Error.class);
-      assertThat(expected.getCause()).hasMessage("ERROR");
-      assertThat(expected.getCause()).hasNoCause();
-
-      throw expected;
-    }
+    ThrowableAssertions.assertThatThrowableOfType(TestException.class)
+      .isThrownBy(args -> ObjectUtils.<Object>doOperationSafely(arguments -> { throw new Error("ERROR"); },
+        cause -> { throw new TestException("TEST EXCEPTION", cause); }))
+      .havingMessage("TEST EXCEPTION")
+      .causedBy(Error.class)
+      .havingMessage("ERROR")
+      .withNoCause();
   }
 
   @Test
@@ -424,49 +382,31 @@ public class ObjectUtilsUnitTests {
     assertThat(ObjectUtils.returnValueOrThrowIfNull("null", new NullPointerException("test"))).isEqualTo("null");
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void returnValueOrThrowIfNullWithNullValue() {
 
-    try {
-      ObjectUtils.returnValueOrThrowIfNull(null);
-    }
-    catch (IllegalArgumentException expected) {
-
-      assertThat(expected).hasMessage("Value must not be null");
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> ObjectUtils.returnValueOrThrowIfNull(null))
+      .withMessage("Value must not be null")
+      .withNoCause();
   }
 
-  @Test(expected = NullPointerException.class)
+  @Test
   public void returnValueOrThrowIfNullWithNullValueUsingCustomRuntimeException() {
 
-    try {
-      ObjectUtils.returnValueOrThrowIfNull(null, new NullPointerException("Value is null"));
-    }
-    catch (NullPointerException expected) {
-
-      assertThat(expected).hasMessage("Value is null");
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
+    ThrowableAssertions.assertThatNullPointerException()
+      .isThrownBy(args -> ObjectUtils.returnValueOrThrowIfNull(null, new NullPointerException("Value is null")))
+      .havingMessage("Value is null")
+      .withNoCause();
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void returnValueOThrowIfNullWithNullValueAndNullRuntimeException() {
 
-    try {
-      ObjectUtils.returnValueOrThrowIfNull(null, null);
-    }
-    catch (IllegalArgumentException expected) {
-
-      assertThat(expected).hasMessage("RuntimeException must not be null");
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> ObjectUtils.returnValueOrThrowIfNull(null, null))
+      .withMessage("RuntimeException must not be null")
+      .withNoCause();
   }
 
   @Test
@@ -649,18 +589,15 @@ public class ObjectUtilsUnitTests {
     }
 
     @Override
-    @SuppressWarnings("rawtypes")
     public boolean equals(Object obj) {
 
       if (this == obj) {
         return true;
       }
 
-      if (!(obj instanceof CopyableObject)) {
+      if (!(obj instanceof CopyableObject that)) {
         return false;
       }
-
-      CopyableObject that = (CopyableObject) obj;
 
       return ObjectUtils.equals(this.getValue(), that.getValue());
     }
@@ -722,11 +659,9 @@ public class ObjectUtilsUnitTests {
         return true;
       }
 
-      if (!(obj instanceof Message)) {
+      if (!(obj instanceof Message that)) {
         return false;
       }
-
-      Message that = (Message) obj;
 
       return ObjectUtils.equals(getText(), that.getText());
     }
@@ -777,11 +712,9 @@ public class ObjectUtilsUnitTests {
         return true;
       }
 
-      if (!(obj instanceof Person)) {
+      if (!(obj instanceof Person that)) {
         return false;
       }
-
-      Person that = (Person) obj;
 
       return ObjectUtils.equals(this.getFirstName(), that.getFirstName())
         && ObjectUtils.equals(this.getLastName(), that.getLastName());

@@ -16,6 +16,7 @@
 package org.cp.elements.lang.concurrent;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.isNull;
@@ -32,6 +33,7 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.lang.Thread.UncaughtExceptionHandler;
+import java.util.Arrays;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -39,15 +41,15 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-import org.cp.elements.function.FunctionUtils;
-import org.cp.elements.lang.annotation.NotNull;
-import org.cp.elements.lang.annotation.Nullable;
-import org.cp.elements.test.TestUtils;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.jupiter.api.Test;
 import org.junit.rules.Timeout;
 import org.junit.runner.RunWith;
+
+import org.cp.elements.function.FunctionUtils;
+import org.cp.elements.lang.annotation.NotNull;
+import org.cp.elements.lang.annotation.Nullable;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
@@ -184,12 +186,13 @@ public class ThreadAdapterUnitTests {
     verifyNoInteractions(mockThread);
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void constructThreadAdapterWithNull() {
 
-    TestUtils.doIllegalArgumentExceptionThrowingOperation(
-      () -> new ThreadAdapter(null),
-      () -> "Delegate Thread is required");
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> new ThreadAdapter(null))
+      .withMessage("Delegate Thread is required")
+      .withNoCause();
   }
 
   @Test
@@ -213,12 +216,13 @@ public class ThreadAdapterUnitTests {
     verifyNoInteractions(mockThread);
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void fromNullThread() {
 
-    TestUtils.doIllegalArgumentExceptionThrowingOperation(
-      () -> ThreadAdapter.from(null),
-      () -> "Delegate Thread is required");
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> ThreadAdapter.from(null))
+      .withMessage("Delegate Thread is required")
+      .withNoCause();
   }
 
   @Test
@@ -602,19 +606,14 @@ public class ThreadAdapterUnitTests {
     }
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void setNameToBlank() {
-    testSetNameToIllegalValue("  ");
-  }
 
-  @Test(expected = IllegalArgumentException.class)
-  public void setNameToEmpty() {
-    testSetNameToIllegalValue("");
-  }
-
-  @Test(expected = IllegalArgumentException.class)
-  public void setNameToNull() {
-    testSetNameToIllegalValue(null);
+    Arrays.asList("", "  ", null).forEach(name ->
+      assertThatIllegalArgumentException()
+        .isThrownBy(() -> new ThreadAdapter(mockThread()).setName(name))
+        .withMessage("Name [%s] is required")
+        .withNoCause());
   }
 
   @Test

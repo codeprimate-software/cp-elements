@@ -16,6 +16,7 @@
 package org.cp.elements.text;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import java.util.MissingFormatArgumentException;
 
@@ -37,9 +38,12 @@ public class FormatUtilsTests {
       .isEqualTo("This a {0} with {1} text");
   }
 
-  @Test(expected = MissingFormatArgumentException.class)
+  @Test
   public void stringFormatGuardsAgainstNullArgumentArray() {
-    FormatUtils.format("This a %1$s with %2$s text", (Object[]) null);
+
+    assertThatExceptionOfType(MissingFormatArgumentException.class)
+      .isThrownBy(() -> FormatUtils.format("This a %1$s with %2$s text", (Object[]) null))
+      .withNoCause();
   }
 
   @Test

@@ -18,7 +18,6 @@ package org.cp.elements.beans.model;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
-import static org.cp.elements.lang.ThrowableAssertions.assertThatThrowableOfType;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doCallRealMethod;
@@ -51,6 +50,8 @@ import java.util.concurrent.ConcurrentMap;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
+import org.junit.jupiter.api.Test;
+
 import org.cp.elements.beans.PropertyReadException;
 import org.cp.elements.beans.PropertyWriteException;
 import org.cp.elements.beans.annotation.Required;
@@ -58,10 +59,9 @@ import org.cp.elements.data.struct.KeyValue;
 import org.cp.elements.function.FunctionUtils;
 import org.cp.elements.lang.IllegalTypeException;
 import org.cp.elements.lang.Nameable;
+import org.cp.elements.lang.ThrowableAssertions;
 import org.cp.elements.lang.annotation.NotNull;
 import org.cp.elements.lang.reflect.ModifierUtils;
-
-import org.junit.jupiter.api.Test;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -893,7 +893,7 @@ public class PropertyUnitTests {
     assertThat(property.getName()).isEqualTo("salt");
     assertThat(property.isReadable()).isFalse();
 
-    assertThatThrowableOfType(PropertyReadException.class)
+    ThrowableAssertions.assertThatThrowableOfType(PropertyReadException.class)
       .isThrownBy(args -> property.getValue())
       .havingMessage("Property [salt] of bean [%s] is not readable", bean)
       .withNoCause();
@@ -1010,7 +1010,7 @@ public class PropertyUnitTests {
     assertThat(property.getName()).isEqualTo("name");
     assertThat(property.isWritable()).isFalse();
 
-    assertThatThrowableOfType(PropertyWriteException.class)
+    ThrowableAssertions.assertThatThrowableOfType(PropertyWriteException.class)
       .isThrownBy(args -> { property.setValue("Roller In Dough"); return null; })
       .havingMessage("Property [name] of bean [%s] is not writable", bean)
       .withNoCause();

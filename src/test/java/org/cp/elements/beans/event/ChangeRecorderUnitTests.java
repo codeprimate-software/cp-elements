@@ -16,14 +16,16 @@
 package org.cp.elements.beans.event;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import java.beans.PropertyChangeEvent;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
-import org.cp.elements.lang.annotation.NotNull;
 import org.junit.jupiter.api.Test;
+
+import org.cp.elements.lang.annotation.NotNull;
 
 /**
  * Unit Tests for {@link ChangeRecorder}.
@@ -119,7 +121,7 @@ public class ChangeRecorderUnitTests {
     assertThat(actualProperties).doesNotContain("propertyTwo", "propertyFour");
   }
 
-  @Test(expected = UnsupportedOperationException.class)
+  @Test
   public void iteratorIsUnmodifiable() {
 
     ChangeRecorder changeRecorder = new ChangeRecorder();
@@ -139,13 +141,12 @@ public class ChangeRecorderUnitTests {
     assertThat(it).isNotNull();
     assertThat(it.hasNext()).isTrue();
 
-    try {
-      it.remove();
-    }
-    finally {
-      assertThat(it.next()).isEqualTo("propertyOne");
-      assertThat(it.hasNext()).isFalse();
-    }
+    assertThatExceptionOfType(UnsupportedOperationException.class)
+      .isThrownBy(it::remove)
+      .withNoCause();
+
+    assertThat(it.next()).isEqualTo("propertyOne");
+    assertThat(it.hasNext()).isFalse();
   }
 
   @Test

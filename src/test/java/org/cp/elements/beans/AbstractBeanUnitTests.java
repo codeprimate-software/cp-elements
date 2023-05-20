@@ -16,6 +16,9 @@
 package org.cp.elements.beans;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.assertj.core.api.Assertions.fail;
 import static org.cp.elements.lang.LangExtensions.is;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -38,7 +41,9 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyVetoException;
 import java.beans.VetoableChangeListener;
+import java.io.FileNotFoundException;
 import java.time.Instant;
+import java.util.Arrays;
 
 import org.junit.jupiter.api.Test;
 
@@ -47,12 +52,13 @@ import org.cp.elements.beans.event.ChangeEvent;
 import org.cp.elements.beans.event.ChangeListener;
 import org.cp.elements.beans.model.BeanAdapter;
 import org.cp.elements.lang.ObjectUtils;
+import org.cp.elements.lang.ThrowableAssertions;
+import org.cp.elements.lang.ThrowableOperation;
 import org.cp.elements.lang.Visitor;
 import org.cp.elements.lang.annotation.NotNull;
 import org.cp.elements.lang.annotation.Nullable;
 import org.cp.elements.lang.reflect.FieldNotFoundException;
 import org.cp.elements.security.model.User;
-
 import org.mockito.InOrder;
 import org.mockito.quality.Strictness;
 import org.mockito.stubbing.Answer;
@@ -287,7 +293,7 @@ public class AbstractBeanUnitTests {
     assertThat(valueHolder.getValue()).isEqualTo("mock");
   }
 
-  @Test(expected = FieldNotFoundException.class)
+  @Test
   public void changeStateForPropertyWithUnmappedFieldThrowsException() {
 
     ValueHolder valueHolder = new ValueHolder("test");
@@ -296,55 +302,35 @@ public class AbstractBeanUnitTests {
     assertThat(valueHolder.getValue()).isEqualTo("test");
     assertThat(valueHolder.getFieldName("nonExistingProperty")).isEqualTo("nonExistingProperty");
 
-    try {
-      valueHolder.changeState("nonExistingProperty", "mock");
-    }
-    catch (FieldNotFoundException expected) {
+    ThrowableAssertions.assertThatThrowableOfType(FileNotFoundException.class)
+      .isThrownBy(ThrowableOperation.fromRunnable(() ->
+        valueHolder.changeState("nonExistingProperty", "mock")))
+      .havingMessage("No field [nonExistingProperty] for property [nonExistingProperty] was found on this Bean [%s]",
+          valueHolder.getClass().getName())
+      .causedBy(IllegalArgumentException.class)
+      .causedBy(FieldNotFoundException.class)
+      .causedBy(NoSuchFieldException.class)
+      .withNoCause();
 
-      assertThat(expected)
-        .hasMessage("No field [nonExistingProperty] for property [nonExistingProperty] was found on this Bean [%s]",
-          valueHolder.getClass().getName());
-
-      assertThat(expected).hasCauseInstanceOf(IllegalArgumentException.class);
-      assertThat(expected.getCause()).hasCauseInstanceOf(FieldNotFoundException.class);
-      assertThat(expected.getCause().getCause()).hasCauseInstanceOf(NoSuchFieldException.class);
-      assertThat(expected.getCause().getCause().getCause()).hasNoCause();
-
-      throw expected;
-    }
-    finally {
-      assertThat(valueHolder.getValue()).isEqualTo("test");
-    }
+    assertThat(valueHolder.getValue()).isEqualTo("test");
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void firePropertyChangeEventWithNullEvent() {
 
-    try {
-      new TestBean<>().firePropertyChangeEvent(null);
-    }
-    catch (IllegalArgumentException expected) {
-
-      assertThat(expected).hasMessage("PropertyChangeEvent is required");
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> new TestBean<>().firePropertyChangeEvent(null))
+      .withMessage("PropertyChangeEvent is required")
+      .withNoCause();
   }
 
-  @Test(expected = IllegalArgumentException.class)
-  public void fireVetoableChangeEventWithNullEvent() throws PropertyVetoException {
+  @Test
+  public void fireVetoableChangeEventWithNullEvent() {
 
-    try {
-      new TestBean<>().fireVetoableChangeEvent(null);
-    }
-    catch (IllegalArgumentException expected) {
-
-      assertThat(expected).hasMessage("PropertyChangeEvent is required");
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
+    assertThatIllegalArgumentException()
+      .isThrownBy(() ->new TestBean<>().fireVetoableChangeEvent(null))
+      .withMessage("PropertyChangeEvent is required")
+      .withNoCause();
   }
 
   @Test
@@ -360,62 +346,24 @@ public class AbstractBeanUnitTests {
     assertThat(bean.getFieldName("mockProperty")).isEqualTo("mockProperty");
   }
 
-  private void testMapIllegalPropertyNameToFieldName(String propertyName) {
+  @Test
+  public void mapIllegalPropertyNameToFieldName() {
 
-    try {
-      new ValueHolder().mapPropertyNameToFieldName(propertyName, "value");
-    }
-    catch (IllegalArgumentException expected) {
-
-      assertThat(expected).hasMessage("Property name [%s] is required", propertyName);
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
+    Arrays.asList("  ", "", null).forEach(propertyName ->
+      assertThatIllegalArgumentException()
+        .isThrownBy(() -> new ValueHolder().mapPropertyNameToFieldName(propertyName, "value"))
+        .withMessage("Property name [%s] is required", propertyName)
+        .withNoCause());
   }
 
-  @Test(expected = IllegalArgumentException.class)
-  public void mapBlankPropertyNameToFieldName() {
-    testMapIllegalPropertyNameToFieldName("  ");
-  }
+  @Test
+  public void mapPropertyNameToIllegalFieldName() {
 
-  @Test(expected = IllegalArgumentException.class)
-  public void mapEmptyPropertyNameToFieldName() {
-    testMapIllegalPropertyNameToFieldName("");
-  }
-
-  @Test(expected = IllegalArgumentException.class)
-  public void mapNullPropertyNameToFieldName() {
-    testMapIllegalPropertyNameToFieldName(null);
-  }
-
-  private void testMapPropertyNameToIllegalFieldName(String fieldName) {
-
-    try {
-      new ValueHolder().mapPropertyNameToFieldName("alias", fieldName);
-    }
-    catch (IllegalArgumentException expected) {
-
-      assertThat(expected).hasMessage("Field name [%s] is required", fieldName);
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
-  }
-
-  @Test(expected = IllegalArgumentException.class)
-  public void mapPropertyNameToBlankFieldName() {
-    testMapPropertyNameToIllegalFieldName("  ");
-  }
-
-  @Test(expected = IllegalArgumentException.class)
-  public void mapPropertyNameToEmptyFieldName() {
-    testMapPropertyNameToIllegalFieldName("");
-  }
-
-  @Test(expected = IllegalArgumentException.class)
-  public void mapPropertyNameToNullFieldName() {
-    testMapPropertyNameToIllegalFieldName(null);
+    Arrays.asList("  ", "", null).forEach(fieldName ->
+      assertThatIllegalArgumentException()
+        .isThrownBy(() -> new ValueHolder().mapPropertyNameToFieldName("alias", fieldName))
+        .withMessage("Field name [%s] is required", fieldName)
+        .withNoCause());
   }
 
   @Test
@@ -441,49 +389,28 @@ public class AbstractBeanUnitTests {
     verifyNoMoreInteractions(mockCallback);
   }
 
+  @Test
   @SuppressWarnings("unchecked")
-  private void testMapIllegalPropertyNameToStateChangeCallback(String propertyName) {
+  public void mapIllegalPropertyNameToStateChangeCallback() {
 
-    try {
-      new ValueHolder().mapPropertyNameToStateChangeCallback(propertyName, mock(StateChangeCallback.class));
-    }
-    catch (IllegalArgumentException expected) {
+    StateChangeCallback<Object> mockStateChangeCallback = mock(StateChangeCallback.class);
 
-      assertThat(expected).hasMessage("Property name [%s] is required", propertyName);
-      assertThat(expected).hasNoCause();
+    Arrays.asList("  ", "", null).forEach(propertyName ->
+      assertThatIllegalArgumentException()
+        .isThrownBy(() -> new ValueHolder().mapPropertyNameToStateChangeCallback(propertyName, mockStateChangeCallback))
+        .withMessage("Property name [%s] is required", propertyName)
+        .withNoCause());
 
-      throw expected;
-    }
+    verifyNoInteractions(mockStateChangeCallback);
   }
 
-  @Test(expected = IllegalArgumentException.class)
-  public void mapBlankPropertyNameToStateChangeCallback() {
-    testMapIllegalPropertyNameToStateChangeCallback("  ");
-  }
-
-  @Test(expected = IllegalArgumentException.class)
-  public void mapEmptyPropertyNameToStateChangeCallback() {
-    testMapIllegalPropertyNameToStateChangeCallback("");
-  }
-
-  @Test(expected = IllegalArgumentException.class)
-  public void mapNullPropertyNameToStateChangeCallback() {
-    testMapIllegalPropertyNameToStateChangeCallback(null);
-  }
-
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void mapPropertyNameToNullStateChangeCallback() {
 
-    try {
-      new ValueHolder().mapPropertyNameToStateChangeCallback("alias", null);
-    }
-    catch (IllegalArgumentException expected) {
-
-      assertThat(expected).hasMessage("The StateChangeCallback to map to property [alias] is required");
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> new ValueHolder().mapPropertyNameToStateChangeCallback("alias", null))
+      .withMessage("The StateChangeCallback to map to property [alias] is required")
+      .withNoCause();
   }
 
   @Test
@@ -493,7 +420,8 @@ public class AbstractBeanUnitTests {
 
     assertThat(bean).isNotNull();
 
-    PropertyChangeEvent event = bean.newPropertyChangeEvent("testProperty", "test", "mock");
+    PropertyChangeEvent event =
+      bean.newPropertyChangeEvent("testProperty", "test", "mock");
 
     assertThat(event).isNotNull();
     assertThat(event.getSource()).isSameAs(bean);
@@ -502,7 +430,7 @@ public class AbstractBeanUnitTests {
     assertThat(event.getNewValue()).isEqualTo("mock");
   }
 
-  @Test(expected = FieldNotFoundException.class)
+  @Test
   public void setPropertyForUnmappedFieldAndUnmappedStateChangeCallback() {
 
     ValueHolder valueHolder = new ValueHolder("test");
@@ -510,21 +438,14 @@ public class AbstractBeanUnitTests {
     assertThat(valueHolder).isNotNull();
     assertThat(valueHolder.getValue()).isEqualTo("test");
 
-    try {
-      valueHolder.setAlias("mock");
-    }
-    catch (FieldNotFoundException expected) {
+    ThrowableAssertions.assertThatThrowableOfType(FileNotFoundException.class)
+      .isThrownBy(ThrowableOperation.fromRunnable(() -> valueHolder.setAlias("mock")))
+      .havingMessage("No field [alias] for property [alias] was found on this Bean [%s]",
+        valueHolder.getClass().getName())
+      .causedBy(IllegalArgumentException.class)
+      .withNoCause();
 
-      assertThat(expected).hasMessage("No field [alias] for property [alias] was found on this Bean [%s]",
-        valueHolder.getClass().getName());
-
-      assertThat(expected).hasCauseInstanceOf(IllegalArgumentException.class);
-
-      throw expected;
-    }
-    finally {
-      assertThat(valueHolder.getValue()).isEqualTo("test");
-    }
+    assertThat(valueHolder.getValue()).isEqualTo("test");
   }
 
   @Test
@@ -753,7 +674,7 @@ public class AbstractBeanUnitTests {
     verifyNoInteractions(mockVetoableChangeListener);
   }
 
-  @Test(expected = IllegalPropertyValueException.class)
+  @Test
   public void propertyChangeIsVetoed() throws PropertyVetoException {
 
     ChangeListener mockChangeListener = mock(ChangeListener.class);
@@ -776,6 +697,7 @@ public class AbstractBeanUnitTests {
 
     try {
       valueHolder.setValue("mock");
+      fail("Expected %s", IllegalPropertyValueException.class.getName());
     }
     catch (IllegalPropertyValueException expected) {
 
@@ -795,8 +717,6 @@ public class AbstractBeanUnitTests {
       assertThat(event.getPropertyName()).isEqualTo("value");
       assertThat(event.getOldValue()).isEqualTo("test");
       assertThat(event.getNewValue()).isEqualTo("mock");
-
-      throw expected;
     }
     finally {
 
@@ -808,22 +728,19 @@ public class AbstractBeanUnitTests {
     }
   }
 
+  @Test
   @SuppressWarnings({ "all", "unchecked" })
-  @Test(expected = ClassCastException.class)
   public void compareToNonAbstractBean() {
 
-    try {
-      new TestBean<Integer>().compareTo(mock(Bean.class));
-    }
-    catch (ClassCastException expected) {
+    Bean mockBean = mock(Bean.class);
 
-      assertThat(expected).hasMessage("The Bean to compare with this Bean must be an instance of [%s]",
-        TestBean.class.getName());
+    assertThatExceptionOfType(ClassCastException.class)
+      .isThrownBy(() -> new TestBean<Integer>().compareTo(mockBean))
+      .withMessage("The Bean to compare with this Bean must be an instance of [%s]",
+        TestBean.class.getName())
+      .withNoCause();
 
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
+    verifyNoInteractions(mockBean);
   }
 
   @Test
@@ -970,9 +887,6 @@ public class AbstractBeanUnitTests {
       processChange("value", getValue(), value);
     }
 
-    /**
-     * @inheritDoc
-     */
     @Override
     public boolean equals(Object obj) {
 
@@ -980,28 +894,18 @@ public class AbstractBeanUnitTests {
         return true;
       }
 
-      if (!(obj instanceof ValueHolder)) {
+      if (!(obj instanceof ValueHolder that)) {
         return false;
       }
-
-      ValueHolder that = (ValueHolder) obj;
 
       return ObjectUtils.equals(this.getValue(), that.getValue());
     }
 
-    /**
-     * @inheritDoc
-     */
     @Override
     public int hashCode() {
-      int hashValue = 17;
-      hashValue = 37 * hashValue + ObjectUtils.hashCode(getValue());
-      return hashValue;
+      return ObjectUtils.hashCodeOf(getValue());
     }
 
-    /**
-     * @inheritDoc
-     */
     @Override
     public String toString() {
       return String.format("ValueHolder [%s]", getValue());

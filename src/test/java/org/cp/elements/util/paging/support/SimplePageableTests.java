@@ -13,10 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.util.paging.support;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doReturn;
@@ -33,12 +34,14 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
 
-import org.cp.elements.util.paging.Page;
-import org.cp.elements.util.paging.PageNotFoundException;
 import org.junit.jupiter.api.Test;
 
+import org.cp.elements.lang.ThrowableAssertions;
+import org.cp.elements.util.paging.Page;
+import org.cp.elements.util.paging.PageNotFoundException;
+
 /**
- * Unit tests for {@link SimplePageable}.
+ * Unit Tests for {@link SimplePageable}.
  *
  * @author John Blum
  * @see org.junit.jupiter.api.Test
@@ -92,34 +95,22 @@ public class SimplePageableTests {
     assertThat(pageable.getPageSize()).isEqualTo(3);
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void constructSimplePageableWithInvalidPageSize() {
 
-    try {
-      new SimplePageable<>(Collections.emptyList(), -1);
-    }
-    catch (IllegalArgumentException expected) {
-
-      assertThat(expected).hasMessage("Page size [-1] must be greater than 0");
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> new SimplePageable<>(Collections.emptyList(), -1))
+      .withMessage("Page size [-1] must be greater than 0")
+      .withNoCause();
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void constructSimplePageableWithNullList() {
 
-    try {
-      new SimplePageable<>(null);
-    }
-    catch (IllegalArgumentException expected) {
-
-      assertThat(expected).hasMessage("List is required");
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> new SimplePageable<>(null))
+      .withMessage("List is required")
+      .withNoCause();
   }
 
   @Test
@@ -260,47 +251,37 @@ public class SimplePageableTests {
     verify(pageable, times(2)).iterator();
   }
 
-  @Test(expected = PageNotFoundException.class)
+  @Test
   public void firstPageOfEmptySimplePageableThrowsException() {
 
-    try {
-      SimplePageable.empty().firstPage();
-    }
-    catch (PageNotFoundException expected) {
-
-      assertThat(expected).hasMessage("No first page");
-      assertThat(expected).hasCauseInstanceOf(PageNotFoundException.class);
-      assertThat(expected.getCause()).hasMessage("Page with number [1] not found");
-      assertThat(expected.getCause()).hasNoCause();
-
-      throw expected;
-    }
+    ThrowableAssertions.assertThatThrowableOfType(PageNotFoundException.class)
+      .isThrownBy(args -> SimplePageable.empty().firstPage())
+      .havingMessage("No first page")
+      .causedBy(PageNotFoundException.class)
+      .havingMessage( "Page with number [1] not found")
+      .withNoCause();
   }
 
-  @Test(expected = NoSuchElementException.class)
+  @Test
   public void iteratorNextOnSimplePageableWithNoPagesThrowsException() {
 
-    try {
+    assertThatExceptionOfType(NoSuchElementException.class)
+      .isThrownBy(() -> {
 
-      SimplePageable<Object> pageable = SimplePageable.of();
+        SimplePageable<Object> pageable = SimplePageable.of();
 
-      assertThat(pageable).isNotNull();
-      assertThat(pageable).isEmpty();
+        assertThat(pageable).isNotNull();
+        assertThat(pageable).isEmpty();
 
-      Iterator<Page<Object>> pages = pageable.iterator();
+        Iterator<Page<Object>> pages = pageable.iterator();
 
-      assertThat(pages).isNotNull();
-      assertThat(pages.hasNext()).isFalse();
+        assertThat(pages).isNotNull();
+        assertThat(pages.hasNext()).isFalse();
 
-      pages.next();
-    }
-    catch (NoSuchElementException expected) {
-
-      assertThat(expected).hasMessage("No more pages");
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
+        pages.next();
+      })
+      .withMessage("No more pages")
+      .withNoCause();
   }
 
   @Test
@@ -346,22 +327,15 @@ public class SimplePageableTests {
     verify(pageable, times(2)).iterator();
   }
 
-  @Test(expected = PageNotFoundException.class)
-  @SuppressWarnings("unchecked")
+  @Test
   public void lastPageWithEmptySimplePageableReturnsLastPage() {
 
-    try {
-      SimplePageable.empty().lastPage();
-    }
-    catch (PageNotFoundException expected) {
-
-      assertThat(expected).hasMessage("No last page");
-      assertThat(expected).hasCauseInstanceOf(IllegalArgumentException.class);
-      assertThat(expected.getCause()).hasMessage("Page number [0] must be greater than 0");
-      assertThat(expected.getCause()).hasNoCause();
-
-      throw expected;
-    }
+    ThrowableAssertions.assertThatThrowableOfType(PageNotFoundException.class)
+      .isThrownBy(args -> SimplePageable.empty().lastPage())
+      .havingMessage("No last page")
+      .causedBy(IllegalArgumentException.class)
+      .havingMessage("Page number [0] must be greater than 0")
+      .withNoCause();
   }
 
   @Test
@@ -532,33 +506,21 @@ public class SimplePageableTests {
     assertThat(pageable.getPageSize()).isEqualTo(10);
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void withInvalidPageSizeThrowsException() {
 
-    try {
-      SimplePageable.empty().with(-1);
-    }
-    catch (IllegalArgumentException expected) {
-
-      assertThat(expected).hasMessage("Page size [-1] must be greater than 0");
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> SimplePageable.empty().with(-1))
+      .withMessage("Page size [-1] must be greater than 0")
+      .withNoCause();
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void withPageSizeZeroThrowsException() {
 
-    try {
-      SimplePageable.empty().with(0);
-    }
-    catch (IllegalArgumentException expected) {
-
-      assertThat(expected).hasMessage("Page size [0] must be greater than 0");
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> SimplePageable.empty().with(0))
+      .withMessage("Page size [0] must be greater than 0")
+      .withNoCause();
   }
 }

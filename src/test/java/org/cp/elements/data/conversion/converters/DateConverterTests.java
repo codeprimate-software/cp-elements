@@ -13,11 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.data.conversion.converters;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertFalse;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -28,12 +27,14 @@ import java.time.LocalDateTime;
 import java.util.Calendar;
 import java.util.Date;
 
-import org.cp.elements.data.conversion.ConversionException;
-import org.cp.elements.test.TestUtils;
 import org.junit.jupiter.api.Test;
 
+import org.cp.elements.data.conversion.ConversionException;
+import org.cp.elements.lang.ThrowableAssertions;
+import org.cp.elements.test.TestUtils;
+
 /**
- * Unit tests for {@link DateConverter}.
+ * Unit Tests for {@link DateConverter}.
  *
  * @author John J. Blum
  * @see java.util.Date
@@ -68,14 +69,14 @@ public class DateConverterTests {
   @Test
   public void cannotConvertToDateReturnsFalse() {
 
-    assertFalse(this.converter.canConvert(Date.class, null));
-    assertFalse(this.converter.canConvert(Date.class, Calendar.class));
-    assertFalse(this.converter.canConvert(Date.class, Object.class));
-    assertFalse(this.converter.canConvert(Date.class, Number.class));
-    assertFalse(this.converter.canConvert(Date.class, String.class));
-    assertFalse(this.converter.canConvert(Date.class, Timestamp.class));
-    assertFalse(this.converter.canConvert(String.class, LocalDate.class));
-    assertFalse(this.converter.canConvert(String.class, LocalDateTime.class));
+    assertThat(this.converter.canConvert(Date.class, null)).isFalse();
+    assertThat(this.converter.canConvert(Date.class, Calendar.class)).isFalse();
+    assertThat(this.converter.canConvert(Date.class, Object.class)).isFalse();
+    assertThat(this.converter.canConvert(Date.class, Number.class)).isFalse();
+    assertThat(this.converter.canConvert(Date.class, String.class)).isFalse();
+    assertThat(this.converter.canConvert(Date.class, Timestamp.class)).isFalse();
+    assertThat(this.converter.canConvert(String.class, LocalDate.class)).isFalse();
+    assertThat(this.converter.canConvert(String.class, LocalDateTime.class)).isFalse();
   }
 
   @Test
@@ -106,7 +107,7 @@ public class DateConverterTests {
   @Test
   public void convertIntegerToDate() {
 
-    Integer timestamp = Long.valueOf(System.currentTimeMillis()).intValue();
+    int timestamp = Long.valueOf(System.currentTimeMillis()).intValue();
 
     assertThat(this.converter.convert(timestamp)).isEqualTo(new Date(timestamp));
   }
@@ -119,19 +120,13 @@ public class DateConverterTests {
     assertThat(this.converter.withDefaultValue(now).convert(null)).isEqualTo(now);
   }
 
-  @Test(expected = ConversionException.class)
+  @Test
   public void convertNullToDateWithNoDefaultValueThrowsException() {
 
-    try {
-      this.converter.convert(null);
-    }
-    catch (ConversionException expected) {
-
-      assertThat(expected).hasMessage("Cannot convert [null] to [java.util.Date]");
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
+    assertThatExceptionOfType(ConversionException.class)
+      .isThrownBy(() -> this.converter.convert(null))
+      .withMessage("Cannot convert [null] to [java.util.Date]")
+      .withNoCause();
   }
 
   @Test
@@ -151,36 +146,23 @@ public class DateConverterTests {
     this.converter.convert(String.valueOf(expectedDateTime.getTimeInMillis()));
   }
 
-  @Test(expected = ConversionException.class)
+  @Test
   public void convertInvalidDateTimeStringThrowsException() {
 
-    try {
-      this.converter.convert("2018-01-12");
-    }
-    catch (ConversionException expected) {
-
-      assertThat(expected).hasMessage("[2018-01-12] is not a valid date/time");
-      assertThat(expected).hasCauseInstanceOf(ParseException.class);
-      assertThat(expected.getCause()).hasNoCause();
-
-      throw expected;
-    }
+    ThrowableAssertions.assertThatThrowableOfType(ConversionException.class)
+      .isThrownBy(args -> this.converter.convert("2018-01-12"))
+      .havingMessage("[2018-01-12] is not a valid date/time")
+      .causedBy(ParseException.class);
   }
 
-  @Test(expected = ConversionException.class)
+  @Test
   public void convertInvalidStringThrowsException() {
 
-    try {
-      this.converter.convert("Once upon a time...");
-    }
-    catch (ConversionException expected) {
-
-      assertThat(expected).hasMessage("[Once upon a time...] is not a valid date/time");
-      assertThat(expected).hasCauseInstanceOf(ParseException.class);
-      assertThat(expected.getCause()).hasNoCause();
-
-      throw expected;
-    }
+    ThrowableAssertions.assertThatThrowableOfType(ConversionException.class)
+      .isThrownBy(args -> this.converter.convert("Once upon a time..."))
+      .havingMessage("[Once upon a time...] is not a valid date/time")
+      .causedBy(ParseException.class)
+      .withNoCause();
   }
 
   @Test

@@ -16,6 +16,7 @@
 package org.cp.elements.lang.support;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -23,10 +24,11 @@ import java.time.Month;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 
-import org.cp.elements.lang.Constants;
-import org.cp.elements.lang.annotation.NotNull;
 import org.junit.Before;
 import org.junit.jupiter.api.Test;
+
+import org.cp.elements.lang.Constants;
+import org.cp.elements.lang.annotation.NotNull;
 
 /**
  * Unit Tests for {@link AuditableSupport}.
@@ -61,23 +63,18 @@ public class AuditableSupportTests {
     assertThat(this.auditableSupport.getCreatedBy()).isEqualTo("testUser");
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void setCreatedByToNullThrowsIllegalArgumentException() {
 
-    try {
-      this.auditableSupport.setCreatedBy("testUser");
-      this.auditableSupport.setCreatedBy(null);
-    }
-    catch (IllegalArgumentException expected) {
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> {
+        this.auditableSupport.setCreatedBy("testUser");
+        this.auditableSupport.setCreatedBy(null);
+      })
+      .withMessage("Created by is required")
+      .withNoCause();
 
-      assertThat(expected).hasMessage("Created by is required");
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
-    finally {
-      assertThat(this.auditableSupport.getCreatedBy()).isEqualTo("testUser");
-    }
+    assertThat(this.auditableSupport.getCreatedBy()).isEqualTo("testUser");
   }
 
   @Test
@@ -90,25 +87,20 @@ public class AuditableSupportTests {
     assertThat(this.auditableSupport.getCreatedOn()).isEqualTo(now);
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void setCreatedOnToNullThrowsIllegalArgumentException() {
 
     Instant createdOn = toInstant(LocalDateTime.of(2018, Month.FEBRUARY, 15, 22, 30));
 
-    try {
-      this.auditableSupport.setCreatedOn(createdOn);
-      this.auditableSupport.setCreatedOn(null);
-    }
-    catch (IllegalArgumentException expected) {
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> {
+        this.auditableSupport.setCreatedOn(createdOn);
+        this.auditableSupport.setCreatedOn(null);
+      })
+      .withMessage("Created on is required")
+      .withNoCause();
 
-      assertThat(expected).hasMessage("Created on is required");
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
-    finally {
-      assertThat(this.auditableSupport.getCreatedOn()).isEqualTo(createdOn);
-    }
+    assertThat(this.auditableSupport.getCreatedOn()).isEqualTo(createdOn);
   }
 
   @Test
@@ -119,23 +111,18 @@ public class AuditableSupportTests {
     assertThat(this.auditableSupport.getCreatedWith()).isEqualTo("testProcess");
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void setCreatedWithToNullThrowsIllegalArgumentException() {
 
-    try {
-      this.auditableSupport.setCreatedWith("testProcess");
-      this.auditableSupport.setCreatedWith(null);
-    }
-    catch (IllegalArgumentException expected) {
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> {
+        this.auditableSupport.setCreatedWith("testProcess");
+        this.auditableSupport.setCreatedWith(null);
+      })
+      .withMessage("Created with is required")
+      .withNoCause();
 
-      assertThat(expected).hasMessage("Created with is required");
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
-    finally {
-      assertThat(this.auditableSupport.getCreatedWith()).isEqualTo("testProcess");
-    }
+    assertThat(this.auditableSupport.getCreatedWith()).isEqualTo("testProcess");
   }
 
   @Test
@@ -161,24 +148,19 @@ public class AuditableSupportTests {
     assertThat(this.auditableSupport.getLastModifiedBy()).isEqualTo("userOne");
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void setModifiedByToNullThrowsIllegalArgumentException() {
 
-    try {
-      this.auditableSupport.setModifiedBy("testUser");
-      this.auditableSupport.setModifiedBy(null);
-    }
-    catch (IllegalArgumentException expected) {
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> {
+        this.auditableSupport.setModifiedBy("testUser");
+        this.auditableSupport.setModifiedBy(null);
+      })
+      .withMessage("Modified by is required")
+      .withNoCause();
 
-      assertThat(expected).hasMessage("Modified by is required");
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
-    finally {
-      assertThat(this.auditableSupport.getModifiedBy()).isEqualTo("testUser");
-      assertThat(this.auditableSupport.getLastModifiedBy()).isEqualTo("testUser");
-    }
+    assertThat(this.auditableSupport.getModifiedBy()).isEqualTo("testUser");
+    assertThat(this.auditableSupport.getLastModifiedBy()).isEqualTo("testUser");
   }
 
   @Test
@@ -229,26 +211,21 @@ public class AuditableSupportTests {
     assertThat(this.auditableSupport.getLastModifiedOn()).isEqualTo(modifiedOnOne);
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void setModifiedOnToNullThrowsIllegalArgumentException() {
 
     Instant now = Instant.now();
 
-    try {
-      this.auditableSupport.setModifiedOn(now);
-      this.auditableSupport.setModifiedOn(null);
-    }
-    catch (IllegalArgumentException expected) {
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> {
+        this.auditableSupport.setModifiedOn(now);
+        this.auditableSupport.setModifiedOn(null);
+      })
+      .withMessage("Modified on is required")
+      .withNoCause();
 
-      assertThat(expected).hasMessage("Modified on is required");
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
-    finally {
-      assertThat(this.auditableSupport.getModifiedOn()).isEqualTo(now);
-      assertThat(this.auditableSupport.getLastModifiedOn()).isEqualTo(now);
-    }
+    assertThat(this.auditableSupport.getModifiedOn()).isEqualTo(now);
+    assertThat(this.auditableSupport.getLastModifiedOn()).isEqualTo(now);
   }
 
   @Test
@@ -298,24 +275,19 @@ public class AuditableSupportTests {
     assertThat(this.auditableSupport.getLastModifiedWith()).isEqualTo("processOne");
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void setModifiedWithToNullThrowsIllegalArgumentException() {
 
-    try {
-      this.auditableSupport.setModifiedWith("testProcess");
-      this.auditableSupport.setModifiedWith(null);
-    }
-    catch (IllegalArgumentException expected) {
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> {
+        this.auditableSupport.setModifiedWith("testProcess");
+        this.auditableSupport.setModifiedWith(null);
+      })
+      .withMessage("Modified with is required")
+      .withNoCause();
 
-      assertThat(expected).hasMessage("Modified with is required");
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
-    finally {
-      assertThat(this.auditableSupport.getModifiedWith()).isEqualTo("testProcess");
-      assertThat(this.auditableSupport.getLastModifiedWith()).isEqualTo("testProcess");
-    }
+    assertThat(this.auditableSupport.getModifiedWith()).isEqualTo("testProcess");
+    assertThat(this.auditableSupport.getLastModifiedWith()).isEqualTo("testProcess");
   }
 
   @Test

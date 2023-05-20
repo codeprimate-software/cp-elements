@@ -13,19 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.data.conversion.converters;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
-import org.cp.elements.data.conversion.ConversionException;
 import org.junit.jupiter.api.Test;
 
+import org.cp.elements.data.conversion.ConversionException;
+import org.cp.elements.lang.ThrowableAssertions;
+
 /**
- * Unit tests for {@link ShortConverter}.
+ * Unit Tests for {@link ShortConverter}.
  *
  * @author John J. Blum
  * @see java.lang.Short
@@ -115,19 +117,13 @@ public class ShortConverterTests {
     assertThat(this.converter.withDefaultValue((short) 124).convert(null)).isEqualTo((short) 124);
   }
 
-  @Test(expected = ConversionException.class)
+  @Test
   public void convertNullToShortWithNoDefaultValueThrowsException() {
 
-    try {
-      this.converter.withDefaultValue(null).convert(null);
-    }
-    catch (ConversionException expected) {
-
-      assertThat(expected).hasMessage("Cannot convert [null] to [java.lang.Short]");
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
+    assertThatExceptionOfType(ConversionException.class)
+      .isThrownBy(() -> this.converter.withDefaultValue(null).convert(null))
+      .withMessage("Cannot convert [null] to [java.lang.Short]")
+        .withNoCause();
   }
 
   @Test
@@ -140,35 +136,22 @@ public class ShortConverterTests {
     assertThat(this.converter.convert("1248")).isEqualTo((short) 1248);
   }
 
-  @Test(expected = ConversionException.class)
+  @Test
   public void convertFloatingPointNumberStringToShortThrowsException() {
 
-    try {
-      this.converter.convert("12.34");
-    }
-    catch (ConversionException expected) {
-
-      assertThat(expected).hasMessage("[12.34] is not a valid Short");
-      assertThat(expected).hasCauseInstanceOf(NumberFormatException.class);
-      assertThat(expected.getCause()).hasNoCause();
-
-      throw expected;
-    }
+    ThrowableAssertions.assertThatThrowableOfType(ConversionException.class)
+      .isThrownBy(args -> this.converter.convert("12.34"))
+      .havingMessage("[12.34] is not a valid Short")
+      .withNoCause();
   }
 
-  @Test(expected = ConversionException.class)
+  @Test
   public void convertInvalidNumericStringToShortThrowsException() {
 
-    try {
-      this.converter.convert("oneTwoThree");
-    }
-    catch (ConversionException expected) {
-
-      assertThat(expected).hasMessage("Cannot convert [oneTwoThree] to [java.lang.Short]");
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
+    assertThatExceptionOfType(ConversionException.class)
+      .isThrownBy(() -> this.converter.convert("oneTwoThree"))
+      .withMessage("Cannot convert [oneTwoThree] to [java.lang.Short]")
+      .withNoCause();
   }
 
   @Test

@@ -16,6 +16,7 @@
 package org.cp.elements.process.util;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.cp.elements.process.ProcessAdapter.newProcessAdapter;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
@@ -31,13 +32,14 @@ import java.io.File;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
-import org.cp.elements.io.FileSystemUtils;
-import org.cp.elements.process.PidUnknownException;
-import org.cp.elements.process.ProcessAdapter;
-import org.cp.elements.test.TestUtils;
-import org.cp.elements.test.annotation.IntegrationTest;
 import org.junit.AfterClass;
 import org.junit.jupiter.api.Test;
+
+import org.cp.elements.io.FileSystemUtils;
+import org.cp.elements.lang.ThrowableAssertions;
+import org.cp.elements.process.PidUnknownException;
+import org.cp.elements.process.ProcessAdapter;
+import org.cp.elements.test.annotation.IntegrationTest;
 
 /**
  * Unit Tests for {@link ProcessUtils}.
@@ -313,8 +315,8 @@ public class ProcessUtilsTests {
     }
   }
 
+  @Test
   @IntegrationTest
-  @Test(expected = PidUnknownException.class)
   public void readPidFromEmptyFileThrowsPidUnknownExceptionCausedByNumberFormatException() throws IOException {
 
     File tmpPid = File.createTempFile("tempFile", ".pid");
@@ -324,23 +326,16 @@ public class ProcessUtilsTests {
 
     tmpPid.deleteOnExit();
 
-    try {
-      ProcessUtils.readPid(tmpPid);
-    }
-    catch (PidUnknownException expected) {
-
-      assertThat(expected).hasMessage("Failed to read Process ID (PID) from file [%s]",
-        tmpPid.getAbsolutePath());
-
-      assertThat(expected).hasCauseInstanceOf(NumberFormatException.class);
-      assertThat(expected.getCause()).hasNoCause();
-
-      throw expected;
-    }
+    ThrowableAssertions.assertThatThrowableOfType(PidUnknownException.class)
+      .isThrownBy(args -> ProcessUtils.readPid(tmpPid))
+      .havingMessage("Failed to read Process ID (PID) from file [%s]",
+        tmpPid.getAbsolutePath())
+      .causedBy(NumberFormatException.class)
+      .withNoCause();
   }
 
+  @Test
   @SuppressWarnings("all")
-  @Test(expected = PidUnknownException.class)
   public void readPidFromNonExistingFileThrowsPidUnknownExceptionCausedByIllegalArgumentException() {
 
     File mockFile = mock(File.class);
@@ -348,25 +343,18 @@ public class ProcessUtilsTests {
     when(mockFile.isFile()).thenReturn(false);
     when(mockFile.toString()).thenReturn("mockFile.pid");
 
-    try {
-      ProcessUtils.readPid(mockFile);
-    }
-    catch (PidUnknownException expected) {
+    ThrowableAssertions.assertThatThrowableOfType(PidUnknownException.class)
+      .isThrownBy(args -> ProcessUtils.readPid(mockFile))
+      .havingMessage("Failed to read Process ID (PID) from file [mockFile.pid]")
+      .causedBy(IllegalArgumentException.class)
+      .withNoCause();
 
-      assertThat(expected).hasMessage("Failed to read Process ID (PID) from file [mockFile.pid]");
-      assertThat(expected).hasCauseInstanceOf(IllegalArgumentException.class);
-      assertThat(expected.getCause()).hasNoCause();
-
-      throw expected;
-    }
-    finally {
-      verify(mockFile, times(1)).isFile();
-      verify(mockFile, never()).canRead();
-    }
+    verify(mockFile, times(1)).isFile();
+    verify(mockFile, never()).canRead();
   }
 
+  @Test
   @SuppressWarnings("all")
-  @Test(expected = PidUnknownException.class)
   public void readPidFromUnreadableFileThrowsPidUnknownExceptionCausedByIllegalStateException() {
 
     File mockFile = mock(File.class);
@@ -375,21 +363,14 @@ public class ProcessUtilsTests {
     when(mockFile.canRead()).thenReturn(false);
     when(mockFile.toString()).thenReturn("mockFile.pid");
 
-    try {
-      ProcessUtils.readPid(mockFile);
-    }
-    catch (PidUnknownException expected) {
+    ThrowableAssertions.assertThatThrowableOfType(PidUnknownException.class)
+      .isThrownBy(args -> ProcessUtils.readPid(mockFile))
+      .havingMessage("Failed to read Process ID (PID) from file [mockFile.pid]")
+      .causedBy(IllegalStateException.class)
+      .withNoCause();
 
-      assertThat(expected).hasMessage("Failed to read Process ID (PID) from file [mockFile.pid]");
-      assertThat(expected).hasCauseInstanceOf(IllegalStateException.class);
-      assertThat(expected.getCause()).hasNoCause();
-
-      throw expected;
-    }
-    finally {
-      verify(mockFile, times(1)).isFile();
-      verify(mockFile, times(1)).canRead();
-    }
+    verify(mockFile, times(1)).isFile();
+    verify(mockFile, times(1)).canRead();
   }
 
   @Test
@@ -397,19 +378,23 @@ public class ProcessUtilsTests {
     assertThat(ProcessUtils.findPidFile(FileSystemUtils.WORKING_DIRECTORY)).isNull();
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void findPidFileWithNonExistingPathThrowsIllegalArgumentException() {
 
     File nonExistingFile = new File("/absolute/path/to/non/existing/file");
 
-    TestUtils.doIllegalArgumentExceptionThrowingOperation(() -> ProcessUtils.findPidFile(nonExistingFile),
-      () -> "The path [/absolute/path/to/non/existing/file] used to search for a .pid file must exist");
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> ProcessUtils.findPidFile(nonExistingFile))
+      .withMessage("The path [/absolute/path/to/non/existing/file] used to search for a .pid file must exist")
+      .withNoCause();
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void findPidFileWithNullThrowsIllegalArgumentException() {
 
-    TestUtils.doIllegalArgumentExceptionThrowingOperation(() -> ProcessUtils.findPidFile(null),
-      () -> "The path [null] used to search for a .pid file must exist");
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> ProcessUtils.findPidFile(null))
+      .withMessage("The path [null] used to search for a .pid file must exist")
+      .withNoCause();
   }
 }

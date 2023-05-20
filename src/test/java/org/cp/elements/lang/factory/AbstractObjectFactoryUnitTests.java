@@ -16,6 +16,8 @@
 package org.cp.elements.lang.factory;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doAnswer;
@@ -31,13 +33,14 @@ import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.function.Function;
 
+import org.junit.jupiter.api.Test;
+import org.junit.runner.RunWith;
+
 import org.cp.elements.context.configure.Configuration;
 import org.cp.elements.data.conversion.ConversionService;
 import org.cp.elements.lang.ObjectUtils;
-import org.cp.elements.test.TestUtils;
+import org.cp.elements.lang.ThrowableAssertions;
 import org.cp.elements.util.ArrayUtils;
-import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
 import org.mockito.Spy;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.mockito.stubbing.Answer;
@@ -78,12 +81,14 @@ public class AbstractObjectFactoryUnitTests {
     assertThat(this.objectFactory.isConfigurationAvailable()).isFalse();
   }
 
-  @Test(expected = IllegalStateException.class)
+  @Test
   public void getUninitializedConfiguration() {
 
-    TestUtils.doIllegalStateExceptionThrowingOperation(this.objectFactory::getConfiguration,
-      () -> String.format("A Configuration for this ObjectFactory [%s] was not properly initialized",
-        this.objectFactory.getClass().getName()));
+    assertThatIllegalStateException()
+      .isThrownBy(this.objectFactory::getConfiguration)
+      .withMessage("A Configuration for this ObjectFactory [%s] was not properly initialized",
+        this.objectFactory.getClass().getName())
+      .withNoCause();
   }
 
   @Test
@@ -103,12 +108,14 @@ public class AbstractObjectFactoryUnitTests {
     assertThat(this.objectFactory.isConversionServiceAvailable()).isFalse();
   }
 
-  @Test(expected = IllegalStateException.class)
+  @Test
   public void getUninitializedConversionService() {
 
-    TestUtils.doIllegalStateExceptionThrowingOperation(this.objectFactory::getConversionService,
-      () -> String.format("The ConversionService used by this ObjectFactory [%s] was not properly initialized",
-        this.objectFactory.getClass().getName()));
+    assertThatIllegalStateException()
+      .isThrownBy(this.objectFactory::getConversionService)
+      .withMessage("The ConversionService used by this ObjectFactory [%s] was not properly initialized",
+        this.objectFactory.getClass().getName())
+      .withNoCause();
   }
 
   @Test
@@ -147,19 +154,13 @@ public class AbstractObjectFactoryUnitTests {
     verifyNoMoreInteractions(mockFunctionOne, mockFunctionTwo);
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void registerNullObjectPostProcessor() {
 
-    try {
-      this.objectFactory.registerObjectPostProcessor(null);
-    }
-    catch (IllegalArgumentException expected) {
-
-      assertThat(expected).hasMessage("The Function used to post process the object is required");
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> this.objectFactory.registerObjectPostProcessor(null))
+      .withMessage("The Function used to post process the object is required")
+      .withNoCause();
   }
 
   @Test
@@ -211,40 +212,26 @@ public class AbstractObjectFactoryUnitTests {
     assertThat(parameterTypes.length).isEqualTo(0);
   }
 
-  @Test(expected = NoSuchConstructorException.class)
+  @Test
   public void resolveConstructorWhenNoSuchConstructorExists() {
 
-    try {
-      this.objectFactory.resolveConstructor(TestObject.class, String.class);
-    }
-    catch (NoSuchConstructorException expected) {
-
-      assertThat(expected).hasMessage("Failed to find a constructor with signature [%s] in Class [%s]",
-        Arrays.toString(ArrayUtils.asArray(String.class)), TestObject.class.getName());
-
-      assertThat(expected).hasCauseInstanceOf(NoSuchMethodException.class);
-      assertThat(expected.getCause()).hasNoCause();
-
-      throw expected;
-    }
+    ThrowableAssertions.assertThatThrowableOfType(NoSuchConstructorException.class)
+      .isThrownBy(args -> this.objectFactory.resolveConstructor(TestObject.class, String.class))
+      .havingMessage("Failed to find a constructor with signature [%s] in Class [%s]",
+        Arrays.toString(ArrayUtils.asArray(String.class)), TestObject.class.getName())
+      .causedBy(NoSuchMethodException.class)
+      .withNoCause();
   }
 
-  @Test(expected = NoSuchConstructorException.class)
+  @Test
   public void resolveDefaultConstructorWhenNoSuchConstructorExists() {
 
-    try {
-      this.objectFactory.resolveConstructor(TestObject.class);
-    }
-    catch (NoSuchConstructorException expected) {
-
-      assertThat(expected).hasMessage("Failed to find a constructor with signature [[]] in Class [%s]",
-        TestObject.class.getName());
-
-      assertThat(expected).hasCauseInstanceOf(NoSuchMethodException.class);
-      assertThat(expected.getCause()).hasNoCause();
-
-      throw expected;
-    }
+    ThrowableAssertions.assertThatThrowableOfType(NoSuchConstructorException.class)
+      .isThrownBy(args -> this.objectFactory.resolveConstructor(TestObject.class))
+      .havingMessage("Failed to find a constructor with signature [[]] in Class [%s]",
+        TestObject.class.getName())
+      .causedBy(NoSuchMethodException.class)
+      .withNoCause();
   }
 
   @Test
@@ -336,29 +323,18 @@ public class AbstractObjectFactoryUnitTests {
     verify(this.objectFactory, times(1)).postConstruct(eq(domainObject));
   }
 
-  @Test(expected = ObjectInstantiationException.class)
+  @Test
   public void createThrowsObjectInstantiationException() {
 
-    try {
-      this.objectFactory.create(TestObject.class, "test");
-    }
-    catch (ObjectInstantiationException expected) {
-
-      assertThat(expected)
-        .hasMessage("Failed to instantiate an instance of class [%1$s] with constructor having signature [%2$s] using arguments [%3$s]!",
-        TestObject.class.getName(), "[class java.lang.String]", "[test]");
-
-      assertThat(expected).hasCauseInstanceOf(NoSuchConstructorException.class);
-
-      assertThat(expected.getCause())
-        .hasMessage("Failed to find a constructor with signature [%1$s] in Class [%2$s]",
-          "[class java.lang.String]", TestObject.class.getName());
-
-      assertThat(expected.getCause()).hasCauseInstanceOf(NoSuchMethodException.class);
-      assertThat(expected.getCause().getCause()).hasNoCause();
-
-      throw expected;
-    }
+    ThrowableAssertions.assertThatThrowableOfType(ObjectInstantiationException.class)
+      .isThrownBy(args -> this.objectFactory.create(TestObject.class, "test"))
+      .havingMessage("Failed to instantiate an instance of class [%1$s] with constructor having signature [%2$s] using arguments [%3$s]!",
+        TestObject.class.getName(), "[class java.lang.String]", "[test]")
+      .causedBy(NoSuchConstructorException.class)
+      .havingMessage("Failed to find a constructor with signature [%1$s] in Class [%2$s]",
+        "[class java.lang.String]", TestObject.class.getName())
+      .causedBy(NoSuchMethodException.class)
+      .withNoCause();
   }
 
   public static class TestObject {
@@ -415,11 +391,9 @@ public class AbstractObjectFactoryUnitTests {
         return true;
       }
 
-      if (!(obj instanceof TestObject)) {
+      if (!(obj instanceof TestObject that)) {
         return false;
       }
-
-      TestObject that = (TestObject) obj;
 
       return ObjectUtils.equals(this.getDateTime(), this.getDateTime())
         && ObjectUtils.equals(this.getId(), that.getId())
@@ -428,14 +402,7 @@ public class AbstractObjectFactoryUnitTests {
 
     @Override
     public int hashCode() {
-
-      int hashValue = 17;
-
-      hashValue = 37 * hashValue + ObjectUtils.hashCode(getDateTime());
-      hashValue = 37 * hashValue + ObjectUtils.hashCode(getId());
-      hashValue = 37 * hashValue + ObjectUtils.hashCode(getName());
-
-      return hashValue;
+      return ObjectUtils.hashCodeOf(getDateTime(), getId(), getName());
     }
 
     private static String toString(Instant dateTime) {

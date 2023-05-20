@@ -16,6 +16,7 @@
 package org.cp.elements.lang;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 
 import org.junit.jupiter.api.Test;
 
@@ -78,19 +79,25 @@ public class JavaVersionUnitTests {
     }
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void parseBlankJavaVersion() {
-    parseIllegalJavaVersionString("  ");
+
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> parseIllegalJavaVersionString("  "));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void parseEmptyJavaVersion() {
-    parseIllegalJavaVersionString("");
+
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> parseIllegalJavaVersionString(""));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void parseNullJavaVersion() {
-    parseIllegalJavaVersionString(null);
+
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> parseIllegalJavaVersionString(null));
   }
 
   @Test

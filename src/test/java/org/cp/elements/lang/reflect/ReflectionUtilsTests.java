@@ -16,6 +16,7 @@
 package org.cp.elements.lang.reflect;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 
 import java.io.File;
@@ -46,6 +47,7 @@ import org.junit.jupiter.api.Test;
 
 import org.cp.elements.io.FileSystemUtils;
 import org.cp.elements.lang.NumberUtils;
+import org.cp.elements.lang.ThrowableAssertions;
 import org.cp.elements.lang.annotation.Id;
 import org.cp.elements.test.AbstractBaseTestSuite;
 import org.cp.elements.test.TestUtils;
@@ -161,23 +163,16 @@ public class ReflectionUtilsTests extends AbstractBaseTestSuite {
     assertThat(ReflectionUtils.getValue(DerivedType.class, "serialVersionUID", Long.class).longValue()).isEqualTo(42L);
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void getValueOfNonExistingClassField() {
 
-    try {
-      ReflectionUtils.getValue(SuperType.class, "DEFAULT_ID", Long.class);
-    }
-    catch (IllegalArgumentException expected) {
-
-      assertThat(expected).hasMessage("Field with name [DEFAULT_ID] does not exist on class type [%s]",
-        SuperType.class.getName());
-
-      assertThat(expected).hasCauseInstanceOf(FieldNotFoundException.class);
-      assertThat(expected.getCause()).hasCauseInstanceOf(NoSuchFieldException.class);
-      assertThat(expected.getCause().getCause()).hasNoCause();
-
-      throw expected;
-    }
+    ThrowableAssertions.assertThatIllegalArgumentException()
+      .isThrownBy(args -> ReflectionUtils.getValue(SuperType.class, "DEFAULT_ID", Long.class))
+      .havingMessage("Field with name [DEFAULT_ID] does not exist on class type [%s]",
+        SuperType.class.getName())
+      .causedBy(FieldNotFoundException.class)
+      .causedBy(NoSuchFieldException.class)
+      .withNoCause();
   }
 
   @Test
@@ -185,40 +180,27 @@ public class ReflectionUtilsTests extends AbstractBaseTestSuite {
     assertThat(ReflectionUtils.getValue(new DerivedType(), "id", Long.class).longValue()).isEqualTo(1L);
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void getValueOfNonExistingObjectField() {
 
-    try {
-      ReflectionUtils.getValue(new DerivedType(), "name", String.class);
-    }
-    catch (IllegalArgumentException expected) {
-
-      assertThat(expected).hasMessage("Field with name [name] does not exist on object of type [%s]",
-        DerivedType.class.getName());
-
-      assertThat(expected).hasCauseInstanceOf(FieldNotFoundException.class);
-      assertThat(expected.getCause()).hasCauseInstanceOf(NoSuchFieldException.class);
-      assertThat(expected.getCause().getCause()).hasNoCause();
-
-      throw expected;
-    }
+    ThrowableAssertions.assertThatIllegalArgumentException()
+      .isThrownBy(args -> ReflectionUtils.getValue(new DerivedType(), "name", String.class))
+      .havingMessage("Field with name [name] does not exist on object of type [%s]",
+        DerivedType.class.getName())
+      .causedBy(FieldNotFoundException.class)
+      .causedBy(NoSuchFieldException.class)
+      .withNoCause();
   }
 
-  @Test(expected = FieldAccessException.class)
+  @Test
   public void getValueThrowsFieldAccessException() {
 
-    try {
-      ReflectionUtils.getValue(new Object(), ReflectionUtils.getField(DerivedType.class, "id"), Object.class);
-    }
-    catch (FieldAccessException expected) {
-
-      assertThat(expected).hasMessage("Failed to get value of field [id] from object of type [%s]",
-        Object.class.getName());
-
-      assertThat(expected).hasCauseInstanceOf(IllegalArgumentException.class);
-
-      throw expected;
-    }
+    ThrowableAssertions.assertThatThrowableOfType(FieldAccessException.class)
+      .isThrownBy(args -> ReflectionUtils.getValue(new Object(),
+        ReflectionUtils.getField(DerivedType.class, "id"), Object.class))
+      .havingMessage("Failed to get value of field [id] from object of type [%s]", Object.class.getName())
+      .causedBy(IllegalArgumentException.class)
+      .withNoCause();
   }
 
   @Test
@@ -249,45 +231,34 @@ public class ReflectionUtilsTests extends AbstractBaseTestSuite {
     assertThat(SuperType.stringField).isEqualTo("test");
   }
 
-  @Test(expected = FieldAccessException.class)
+  @Test
   public void setFinalClassField() {
 
-    try {
-      assertThat(SuperType.serialVersionUID).isEqualTo(42L);
-      ReflectionUtils.setField(SuperType.class, "serialVersionUID", 24L);
-    }
-    catch (FieldAccessException expected) {
+    assertThatExceptionOfType(FieldAccessException.class)
+      .isThrownBy(() -> {
+        assertThat(SuperType.serialVersionUID).isEqualTo(42L);
+        ReflectionUtils.setField(SuperType.class, "serialVersionUID", 24L);
+      })
+      .withMessage("Cannot set the value of a final field [serialVersionUID] on class type [%s]",
+        SuperType.class.getName())
+      .withNoCause();
 
-      assertThat(expected)
-        .hasMessage("Cannot set the value of a final field [serialVersionUID] on class type [%s]",
-          SuperType.class.getName());
-
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
-    finally {
-      assertThat(SuperType.serialVersionUID).isEqualTo(42L);
-    }
+    assertThat(SuperType.serialVersionUID).isEqualTo(42L);
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void setNonExistingClassField() {
 
-    try {
-      ReflectionUtils.setField(SuperType.class, "nonExistingField", "test");
-    }
-    catch (IllegalArgumentException expected) {
-
-      assertThat(expected).hasMessage("Field with name [nonExistingField] does not exist on class type [%s]",
-        SuperType.class.getName());
-
-      assertThat(expected).hasCauseInstanceOf(FieldNotFoundException.class);
-      assertThat(expected.getCause()).hasCauseInstanceOf(NoSuchFieldException.class);
-      assertThat(expected.getCause().getCause()).hasNoCause();
-
-      throw expected;
-    }
+    ThrowableAssertions.assertThatIllegalArgumentException()
+      .isThrownBy(args -> {
+        ReflectionUtils.setField(SuperType.class, "nonExistingField", "test");
+        return null;
+      })
+      .havingMessage("Field with name [nonExistingField] does not exist on class type [%s]",
+        SuperType.class.getName())
+      .causedBy(FieldNotFoundException.class)
+      .causedBy(NoSuchFieldException.class)
+      .withNoCause();
   }
 
   @Test
@@ -302,73 +273,55 @@ public class ReflectionUtilsTests extends AbstractBaseTestSuite {
     assertThat(derivedType.booleanField).isTrue();
   }
 
-  @Test(expected = FieldAccessException.class)
+  @Test
   public void setFinalObjectField() {
 
     DerivedType derivedType = new DerivedType();
 
-    try {
-      assertThat(derivedType.magicNumber.intValue()).isEqualTo(0xCAFEBABE);
+    assertThatExceptionOfType(FieldAccessException.class)
+      .isThrownBy(() -> {
+        assertThat(derivedType.magicNumber.intValue()).isEqualTo(0xCAFEBABE);
+        ReflectionUtils.setField(derivedType, "magicNumber", 0x0);
+      })
+      .withMessage("Cannot set the value of a final field [magicNumber] on object of type [%s]",
+        derivedType.getClass().getName())
+      .withNoCause();
 
-      ReflectionUtils.setField(derivedType, "magicNumber", 0x0);
-    }
-    catch (FieldAccessException expected) {
-
-      assertThat(expected)
-        .hasMessage("Cannot set the value of a final field [magicNumber] on object of type [%s]",
-          derivedType.getClass().getName());
-
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
-    finally {
-      assertThat(derivedType.magicNumber.intValue()).isEqualTo(0xCAFEBABE);
-    }
+    assertThat(derivedType.magicNumber.intValue()).isEqualTo(0xCAFEBABE);
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void setNonExistingObjectField() {
 
-    try {
-      ReflectionUtils.setField(new DerivedType(), "nonExistingField", "test");
-    }
-    catch (IllegalArgumentException expected) {
-
-      assertThat(expected).hasMessage("Field with name [nonExistingField] does not exist on object of type [%s]",
-        DerivedType.class.getName());
-
-      assertThat(expected).hasCauseInstanceOf(FieldNotFoundException.class);
-      assertThat(expected.getCause()).hasCauseInstanceOf(NoSuchFieldException.class);
-      assertThat(expected.getCause().getCause()).hasNoCause();
-
-      throw expected;
-    }
+    ThrowableAssertions.assertThatIllegalArgumentException()
+      .isThrownBy(args -> {
+        ReflectionUtils.setField(new DerivedType(), "nonExistingField", "test");
+        return null;
+      })
+      .havingMessage("Field with name [nonExistingField] does not exist on object of type [%s]",
+        DerivedType.class.getName())
+      .causedBy(FieldNotFoundException.class)
+      .causedBy(NoSuchFieldException.class)
+      .withNoCause();
   }
 
-  @Test(expected = FieldAccessException.class)
+  @Test
   public void setObjectFieldWithIllegalValue() {
 
     DerivedType derivedType = new DerivedType();
 
-    try {
-      assertThat(derivedType.booleanField).isNull();
+    ThrowableAssertions.assertThatThrowableOfType(FieldAccessException.class)
+      .isThrownBy(args -> {
+        assertThat(derivedType.booleanField).isNull();
+        ReflectionUtils.setField(derivedType, "booleanField", 1);
+        return null;
+      })
+      .havingMessage("Failed to set field [booleanField] to value [1] on object of type [%s]",
+        derivedType.getClass().getName())
+      .causedBy(IllegalArgumentException.class)
+      .withNoCause();
 
-      ReflectionUtils.setField(derivedType, "booleanField", 1);
-    }
-    catch (FieldAccessException expected) {
-
-      assertThat(expected).hasMessage("Failed to set field [booleanField] to value [1] on object of type [%s]",
-        derivedType.getClass().getName());
-
-      assertThat(expected).hasCauseInstanceOf(IllegalArgumentException.class);
-      assertThat(expected.getCause()).hasNoCause();
-
-      throw expected;
-    }
-    finally {
-      assertThat(derivedType.booleanField).isNull();
-    }
+    assertThat(derivedType.booleanField).isNull();
   }
 
   @Test
@@ -451,28 +404,22 @@ public class ReflectionUtilsTests extends AbstractBaseTestSuite {
     assertThat(METHOD_NAME.get()).isEqualTo("methodFour");
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void invokeNoSuchClassMethod() {
 
-    try {
-      assertThat(METHOD_NAME.get()).isNull();
+    ThrowableAssertions.assertThatIllegalArgumentException()
+      .isThrownBy(args -> {
+        assertThat(METHOD_NAME.get()).isNull();
+        ReflectionUtils.invoke(SuperType.class, "methodSix", "test");
+        return null;
+      })
+      .havingMessage("No method with signature [methodSix(:String):void] exists on class type [%s]",
+        SuperType.class.getName())
+      .causedBy(MethodNotFoundException.class)
+      .causedBy(NoSuchMethodException.class)
+      .withNoCause();
 
-      ReflectionUtils.invoke(SuperType.class, "methodSix", "test");
-    }
-    catch (IllegalArgumentException expected) {
-
-      assertThat(expected)
-        .hasMessage("No method with signature [methodSix(:String):void] exists on class type [%s]",
-          SuperType.class.getName());
-
-      assertThat(expected).hasCauseInstanceOf(MethodNotFoundException.class);
-      assertThat(expected.getCause()).hasCauseInstanceOf(NoSuchMethodException.class);
-
-      throw expected;
-    }
-    finally {
-      assertThat(METHOD_NAME.get()).isNull();
-    }
+    assertThat(METHOD_NAME.get()).isNull();
   }
 
   @Test
@@ -529,105 +476,87 @@ public class ReflectionUtilsTests extends AbstractBaseTestSuite {
     assertThat(METHOD_NAME.get()).isEqualTo("methodEight");
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void invokeNoSuchObjectMethod() {
 
-    try {
-      assertThat(METHOD_NAME.get()).isNull();
+    ThrowableAssertions.assertThatIllegalArgumentException()
+      .isThrownBy(args -> {
+        assertThat(METHOD_NAME.get()).isNull();
+        ReflectionUtils.invoke(new DerivedType(), "methodEight",
+          ArrayUtils.asArray('A', 'C'), String.class);
+        return null;
+      })
+      .havingMessage("No method with signature [methodEight(:Character, :Character):String] exists on object of type [%s]",
+        DerivedType.class.getName())
+      .causedBy(MethodNotFoundException.class)
+      .causedBy(NoSuchMethodException.class)
+      .withNoCause();
 
-      ReflectionUtils.invoke(new DerivedType(), "methodEight", ArrayUtils.asArray('A', 'C'), String.class);
-    }
-    catch (IllegalArgumentException expected) {
-
-      assertThat(expected)
-        .hasMessage("No method with signature [methodEight(:Character, :Character):String] exists on object of type [%s]",
-          DerivedType.class.getName());
-
-      assertThat(expected).hasCauseInstanceOf(MethodNotFoundException.class);
-      assertThat(expected.getCause()).hasCauseInstanceOf(NoSuchMethodException.class);
-      assertThat(expected.getCause().getCause()).hasNoCause();
-
-      throw expected;
-    }
-    finally {
-      assertThat(METHOD_NAME.get()).isNull();
-    }
+    assertThat(METHOD_NAME.get()).isNull();
   }
 
-  @Test(expected = MethodInvocationException.class)
+  @Test
   public void invokeMethodWithWrongNumberOfArguments() {
 
-    try {
-      assertThat(METHOD_NAME.get()).isNull();
+    ThrowableAssertions.assertThatThrowableOfType(MethodInvocationException.class)
+      .isThrownBy(args -> {
 
-      ReflectionUtils.invoke(SuperType.class, "methodFour", ArrayUtils.<Class<?>>asArray(String.class),
-        ArrayUtils.asArray("Jon", "Doe"), String.class);
-    }
-    catch (MethodInvocationException expected) {
+        assertThat(METHOD_NAME.get()).isNull();
 
-      assertThat(expected)
-        .hasMessage("Failed to invoke method [methodFour(:String):String] on class type [%s]",
-          SuperType.class.getName());
+        ReflectionUtils.invoke(SuperType.class, "methodFour", ArrayUtils.<Class<?>>asArray(String.class),
+          ArrayUtils.asArray("Jon", "Doe"), String.class);
 
-      assertThat(expected).hasCauseInstanceOf(IllegalArgumentException.class);
-      assertThat(expected.getCause()).hasMessageStartingWith("wrong number of arguments");
+        return null;
+      })
+      .havingMessage("Failed to invoke method [methodFour(:String):String] on class type [%s]",
+        SuperType.class.getName())
+      .causedBy(IllegalArgumentException.class)
+      .havingMessageStartingWith("wrong number of arguments")
+      .withNoCause();
 
-      throw expected;
-    }
-    finally {
-      assertThat(METHOD_NAME.get()).isNull();
-    }
+    assertThat(METHOD_NAME.get()).isNull();
   }
 
-  @Test(expected = MethodInvocationException.class)
+  @Test
   public void invokeMethodWithArgumentParameterTypeMismatch() {
 
-    try {
-      assertThat(METHOD_NAME.get()).isNull();
+    ThrowableAssertions.assertThatThrowableOfType(MethodInvocationException.class)
+      .isThrownBy(args -> {
 
-      ReflectionUtils.invoke(SuperType.class, "methodFour",
-        ArrayUtils.<Class<?>>asArray(Integer.TYPE, Integer.TYPE), ArrayUtils.asArray(5.4d, 4.5d), Integer.TYPE);
-    }
-    catch (MethodInvocationException expected) {
+        assertThat(METHOD_NAME.get()).isNull();
 
-      assertThat(expected)
-        .hasMessage("Failed to invoke method [methodFour(:int, :int):int] on class type [%s]",
-          SuperType.class.getName());
+        ReflectionUtils.invoke(SuperType.class, "methodFour",
+          ArrayUtils.<Class<?>>asArray(Integer.TYPE, Integer.TYPE), ArrayUtils.asArray(5.4d, 4.5d), Integer.TYPE);
 
-      assertThat(expected).hasCauseInstanceOf(IllegalArgumentException.class);
-      assertThat(expected.getCause()).hasMessage("argument type mismatch");
-      assertThat(expected.getCause()).hasNoCause();
+        return null;
+      })
+      .havingMessage("Failed to invoke method [methodFour(:int, :int):int] on class type [%s]",
+        SuperType.class.getName())
+      .causedBy(IllegalArgumentException.class)
+      .havingMessage("argument type mismatch")
+      .withNoCause();
 
-      throw expected;
-    }
-    finally {
-      assertThat(METHOD_NAME.get()).isNull();
-    }
+    assertThat(METHOD_NAME.get()).isNull();
   }
 
-  @Test(expected = MethodInvocationException.class)
+  @Test
   public void invokeMethodThrowsMethodInvocationException() {
 
-    try {
-      assertThat(METHOD_NAME.get()).isNull();
-      ReflectionUtils.invoke(new DerivedType(), "methodNine",
-        ArrayUtils.asArray("test"), Object.class);
-    }
-    catch (MethodInvocationException expected) {
+    ThrowableAssertions.assertThatThrowableOfType(MethodInvocationException.class)
+      .isThrownBy(args -> {
+        assertThat(METHOD_NAME.get()).isNull();
+        ReflectionUtils.invoke(new DerivedType(), "methodNine",
+          ArrayUtils.asArray("test"), Object.class);
+        return null;
+      })
+      .havingMessage("Failed to invoke method [methodNine(:String):Object] on object of type [%s]",
+        DerivedType.class.getName())
+      .causedBy(InvocationTargetException.class)
+      .causedBy(IllegalArgumentException.class)
+      .havingMessage("test")
+      .withNoCause();
 
-      assertThat(expected)
-        .hasMessage("Failed to invoke method [methodNine(:String):Object] on object of type [%s]",
-          DerivedType.class.getName());
-
-      assertThat(expected).hasCauseInstanceOf(InvocationTargetException.class);
-      assertThat(expected.getCause()).hasCauseInstanceOf(IllegalArgumentException.class);
-      assertThat(expected.getCause().getCause()).hasMessage("test");
-
-      throw expected;
-    }
-    finally {
-      assertThat(METHOD_NAME.get()).isEqualTo("methodNine");
-    }
+    assertThat(METHOD_NAME.get()).isEqualTo("methodNine");
   }
 
   @Test
@@ -688,24 +617,23 @@ public class ReflectionUtilsTests extends AbstractBaseTestSuite {
     assertThat(fieldNames.containsAll(Collections.singletonList("magicNumber"))).isTrue();
   }
 
-  @Test(expected = FieldNotFoundException.class)
+  @Test
   public void withPublicProtectedNonFinalInstanceFields() {
 
     AtomicInteger count = new AtomicInteger(0);
 
-    try {
-      ReflectionUtils.withFields().on(new DerivedType()).matching((field) -> {
+    assertThatExceptionOfType(FieldNotFoundException.class)
+      .isThrownBy(() -> ReflectionUtils.withFields().on(new DerivedType()).matching((field) -> {
           int fieldModifiers = field.getModifiers();
           return ((Modifier.isPublic(fieldModifiers) || Modifier.isProtected(fieldModifiers))
             && !Modifier.isFinal(fieldModifiers) && !Modifier.isStatic(fieldModifiers));
         }).call((field) -> {
           logDebug(field.getName());
           count.incrementAndGet();
-      }).throwing(new FieldNotFoundException());
-    }
-    finally {
-      assertThat(count.get()).isEqualTo(0);
-    }
+      }).throwing(new FieldNotFoundException()))
+      .withNoCause();
+
+    assertThat(count.get()).isEqualTo(0);
   }
 
   @Test
@@ -756,18 +684,17 @@ public class ReflectionUtilsTests extends AbstractBaseTestSuite {
     assertThat(count.get()).isEqualTo(0);
   }
 
-  @Test(expected = MethodNotFoundException.class)
+  @Test
   public void withNonMatchingMethodOnObjectThrowsMethodNotFoundException() {
 
     AtomicInteger count = new AtomicInteger(0);
 
-    try {
-      ReflectionUtils.withMethods().on(new DerivedType()).matching((method) ->  false)
-        .call((method) ->  count.incrementAndGet()).throwing(new MethodNotFoundException());
-    }
-    finally {
-      assertThat(count.get()).isEqualTo(0);
-    }
+    assertThatExceptionOfType(MethodNotFoundException.class)
+      .isThrownBy(() -> ReflectionUtils.withMethods().on(new DerivedType()).matching((method) ->  false)
+        .call((method) ->  count.incrementAndGet()).throwing(new MethodNotFoundException()))
+      .withNoCause();
+
+    assertThat(count.get()).isEqualTo(0);
   }
 
   @Test

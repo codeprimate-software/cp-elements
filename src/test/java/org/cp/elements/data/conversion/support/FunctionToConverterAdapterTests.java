@@ -16,6 +16,7 @@
 package org.cp.elements.data.conversion.support;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verifyNoInteractions;
 
@@ -49,19 +50,13 @@ public class FunctionToConverterAdapterTests {
     verifyNoInteractions(mockFunction);
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void constructWithNullFunctionThrowsIllegalArgumentException() {
 
-    try {
-      new FunctionToConverterAdapter<>(null);
-    }
-    catch (IllegalArgumentException expected) {
-
-      assertThat(expected).hasMessage("Function is required");
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> new FunctionToConverterAdapter<>(null))
+      .withMessage("Function is required")
+      .withNoCause();
   }
 
   @Test
@@ -78,23 +73,16 @@ public class FunctionToConverterAdapterTests {
     verifyNoInteractions(mockFunction);
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void ofNullFunctionThrowsIllegalArgumentException() {
 
-    try {
-      FunctionToConverterAdapter.of(null);
-    }
-    catch (IllegalArgumentException expected) {
-
-      assertThat(expected).hasMessage("Function is required");
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> FunctionToConverterAdapter.of(null))
+      .withMessage("Function is required")
+      .withNoCause();
   }
 
   @Test
-  @SuppressWarnings("unchecked")
   public void convertCallsFunctionApply() {
 
     Function<String, Number> mockFunction = Integer::parseInt;

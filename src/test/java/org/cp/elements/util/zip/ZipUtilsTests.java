@@ -16,6 +16,7 @@
 package org.cp.elements.util.zip;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.isA;
@@ -38,6 +39,7 @@ import org.junit.jupiter.api.Test;
 
 import org.cp.elements.io.FileSystemUtils;
 import org.cp.elements.lang.StringUtils;
+import org.cp.elements.lang.ThrowableAssertions;
 import org.cp.elements.test.annotation.UnitTest;
 import org.cp.elements.util.SystemException;
 
@@ -109,19 +111,13 @@ public class ZipUtilsTests {
     verify(mockFile, times(1)).lastModified();
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void newZipEntryWithNull() {
 
-    try {
-      ZipUtils.newZipEntry(FileSystemUtils.TEMPORARY_DIRECTORY, null);
-    }
-    catch (IllegalArgumentException expected) {
-
-      assertThat(expected).hasMessage("File is required");
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> ZipUtils.newZipEntry(FileSystemUtils.TEMPORARY_DIRECTORY, null))
+      .withMessage("File is required")
+      .withNoCause();
   }
 
   @Test
@@ -215,49 +211,31 @@ public class ZipUtilsTests {
     verify(mockFile, never()).getName();
   }
 
-  @Test(expected = IllegalArgumentException.class)
-  public void unzipWithNullZipFile() throws IOException {
+  @Test
+  public void unzipWithNullZipFile() {
 
-    try {
-      ZipUtils.unzip(null, FileSystemUtils.TEMPORARY_DIRECTORY);
-    }
-    catch (IllegalArgumentException expected) {
-
-      assertThat(expected).hasMessage("ZIP file is required");
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> ZipUtils.unzip(null, FileSystemUtils.TEMPORARY_DIRECTORY))
+      .withMessage("ZIP file is required")
+      .withNoCause();
   }
 
-  @Test(expected = IllegalArgumentException.class)
-  public void zipWithInvalidDirectory() throws IOException {
+  @Test
+  public void zipWithInvalidDirectory() {
 
-    try {
-      ZipUtils.zip(new File("/absolute/path/to/invalid/directory"));
-    }
-    catch (IllegalArgumentException expected) {
-
-      assertThat(expected).hasMessage("[/absolute/path/to/invalid/directory] is not a valid directory");
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> ZipUtils.zip(new File("/absolute/path/to/invalid/directory")))
+      .withMessage("[/absolute/path/to/invalid/directory] is not a valid directory")
+      .withNoCause();
   }
 
-  @Test(expected = IllegalArgumentException.class)
-  public void zipWithNullDirectory() throws IOException {
+  @Test
+  public void zipWithNullDirectory() {
 
-    try {
-      ZipUtils.zip(null);
-    }
-    catch (IllegalArgumentException expected) {
-
-      assertThat(expected).hasMessage("[null] is not a valid directory");
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> ZipUtils.zip(null))
+      .withMessage("[null] is not a valid directory")
+      .withNoCause();
   }
 
   @Test
@@ -293,7 +271,7 @@ public class ZipUtilsTests {
     verify(mockOutputStream, times(1)).closeEntry();
   }
 
-  @Test(expected = SystemException.class)
+  @Test
   public void zipEntryWithZipEntryThrowsSystemExceptionWhenZippingEntryFails() throws IOException {
 
     ZipEntry mockZipEntry = mock(ZipEntry.class);
@@ -303,23 +281,16 @@ public class ZipUtilsTests {
     when(mockZipEntry.getName()).thenReturn("MockZipEntry");
     doThrow(new IOException("test")).when(mockOutputStream).putNextEntry(any(ZipEntry.class));
 
-    try {
-      ZipUtils.zipEntry(mockZipEntry, mockOutputStream);
-    }
-    catch (SystemException expected) {
+    ThrowableAssertions.assertThatThrowableOfType(SystemException.class)
+      .isThrownBy(args -> ZipUtils.zipEntry(mockZipEntry, mockOutputStream))
+      .havingMessage("Failed to zip entry [MockZipEntry]")
+      .causedBy(IOException.class)
+      .havingMessage("test")
+      .withNoCause();
 
-      assertThat(expected).hasMessage("Failed to zip entry [MockZipEntry]");
-      assertThat(expected).hasCauseInstanceOf(IOException.class);
-      assertThat(expected.getCause()).hasMessage("test");
-      assertThat(expected.getCause()).hasNoCause();
-
-      throw expected;
-    }
-    finally {
-      verify(mockOutputStream, times(1)).putNextEntry(eq(mockZipEntry));
-      verify(mockOutputStream, never()).closeEntry();
-      verify(mockZipEntry, times(1)).getName();
-    }
+    verify(mockOutputStream, times(1)).putNextEntry(eq(mockZipEntry));
+    verify(mockOutputStream, never()).closeEntry();
+    verify(mockZipEntry, times(1)).getName();
   }
 
   @Test

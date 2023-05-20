@@ -13,19 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.data.conversion.converters;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
-import org.cp.elements.data.conversion.ConversionException;
 import org.junit.jupiter.api.Test;
 
+import org.cp.elements.data.conversion.ConversionException;
+import org.cp.elements.lang.ThrowableAssertions;
+
 /**
- * Unit tests for {@link FloatConverter}.
+ * Unit Tests for {@link FloatConverter}.
  *
  * @author John J. Blum
  * @see java.lang.Float
@@ -117,35 +119,23 @@ public class FloatConverterTests {
     assertThat(this.converter.convert(Math.PI)).isEqualTo((float) Math.PI);
   }
 
-  @Test(expected = ConversionException.class)
+  @Test
   public void convertInvalidFloatStringThrowsException() {
 
-    try {
-      this.converter.convert("one.twothree");
-    }
-    catch (ConversionException expected) {
-
-      assertThat(expected).hasMessage("Cannot convert [one.twothree] to [java.lang.Float]");
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
+    assertThatExceptionOfType(ConversionException.class)
+      .isThrownBy(() -> this.converter.convert("one.twothree"))
+      .withMessage("Cannot convert [one.twothree] to [java.lang.Float]")
+      .withNoCause();
   }
 
-  @Test(expected = ConversionException.class)
+  @Test
   public void convertInvalidNumericStringThrowsException() {
 
-    try {
-      this.converter.convert("$101.23.45");
-    }
-    catch (ConversionException expected) {
-
-      assertThat(expected).hasMessage("[$101.23.45] is not a valid float");
-      assertThat(expected).hasCauseInstanceOf(NumberFormatException.class);
-      assertThat(expected.getCause()).hasNoCause();
-
-      throw expected;
-    }
+    ThrowableAssertions.assertThatThrowableOfType(ConversionException.class)
+      .isThrownBy(args -> this.converter.convert("$101.23.45"))
+      .havingMessage("[$101.23.45] is not a valid float")
+      .causedBy(NumberFormatException.class)
+      .withNoCause();
   }
 
   @Test
@@ -153,19 +143,13 @@ public class FloatConverterTests {
     assertThat(this.converter.withDefaultValue(1.23f).convert(null)).isEqualTo(1.23f);
   }
 
-  @Test(expected = ConversionException.class)
+  @Test
   public void convertNullToFloatWithoutDefaultValueThrowsException() {
 
-    try {
-      this.converter.convert(null);
-    }
-    catch (ConversionException expected) {
-
-      assertThat(expected).hasMessage("Cannot convert [null] to [java.lang.Float]");
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
+    assertThatExceptionOfType(ConversionException.class)
+      .isThrownBy(() -> this.converter.convert(null))
+      .withMessage("Cannot convert [null] to [java.lang.Float]")
+      .withNoCause();
   }
 
   @Test

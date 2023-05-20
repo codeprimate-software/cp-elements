@@ -16,7 +16,9 @@
 package org.cp.elements.util;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.assertj.core.api.Assertions.assertThatNullPointerException;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verifyNoInteractions;
 
@@ -34,8 +36,8 @@ import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.Filter;
 import org.cp.elements.lang.FilteringTransformer;
 import org.cp.elements.lang.NumberUtils;
+import org.cp.elements.lang.ThrowableAssertions;
 import org.cp.elements.lang.Transformer;
-import org.cp.elements.test.TestUtils;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -61,7 +63,7 @@ public class ArrayUtilsTests {
   private static final Object[] NULL_OBJECT_ARRAY = null;
 
   @SafeVarargs
-  private final <T> void assertElements(T[] array, T... elements) {
+  private <T> void assertElements(T[] array, T... elements) {
 
     assertThat(array).isNotNull();
     assertThat(array.length).isEqualTo(elements.length);
@@ -121,14 +123,14 @@ public class ArrayUtilsTests {
   }
 
   @SafeVarargs
-  private final <T> T[] toArray(T... elements) {
+  private <T> T[] toArray(T... elements) {
     return elements;
   }
 
   @SafeVarargs
-  private final <T> Enumeration<T> toEnumeration(T... elements) {
+  private <T> Enumeration<T> toEnumeration(T... elements) {
 
-    return new Enumeration<T>() {
+    return new Enumeration<>() {
 
       int index = 0;
 
@@ -146,14 +148,14 @@ public class ArrayUtilsTests {
   }
 
   @SafeVarargs
-  private final <T> Iterable<T> toIterable(T... elements) {
+  private <T> Iterable<T> toIterable(T... elements) {
     return () -> toIterator(elements);
   }
 
   @SafeVarargs
-  private final <T> Iterator<T> toIterator(T... elements) {
+  private <T> Iterator<T> toIterator(T... elements) {
 
-    return new Iterator<T>() {
+    return new Iterator<>() {
 
       int index = 0;
 
@@ -206,10 +208,13 @@ public class ArrayUtilsTests {
     assertElements(newArray, "test", "testing", "tested");
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void appendToNullArray() {
-    TestUtils.doIllegalArgumentExceptionThrowingOperation(() -> ArrayUtils.append("test", null),
-      () -> "Array is required");
+
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> ArrayUtils.append("test", null))
+      .withMessage("Array is required")
+      .withNoCause();
   }
 
   @Test
@@ -336,34 +341,44 @@ public class ArrayUtilsTests {
     assertThat(array.length).isEqualTo(0);
   }
 
-  @Test(expected = NoSuchElementException.class)
+  @Test
   public void asEnumerationFromArray() {
 
-    Object[] array = { "test", "testing", "tested" };
+    assertThatExceptionOfType(NoSuchElementException.class)
+      .isThrownBy(() -> {
 
-    Enumeration<Object> enumeration = ArrayUtils.asEnumeration(array);
+        Object[] array = { "test", "testing", "tested" };
 
-    assertThat(enumeration).isNotNull();
+        Enumeration<Object> enumeration = ArrayUtils.asEnumeration(array);
 
-    for (Object element : array) {
-      assertThat(enumeration.hasMoreElements()).isTrue();
-      assertThat(enumeration.nextElement()).isEqualTo(element);
-    }
+        assertThat(enumeration).isNotNull();
 
-    assertThat(enumeration.hasMoreElements()).isFalse();
+        for (Object element : array) {
+          assertThat(enumeration.hasMoreElements()).isTrue();
+          assertThat(enumeration.nextElement()).isEqualTo(element);
+        }
 
-    noSuchElementExceptionThrowingOperation(enumeration::nextElement);
+        assertThat(enumeration.hasMoreElements()).isFalse();
+
+        noSuchElementExceptionThrowingOperation(enumeration::nextElement);
+      })
+      .withNoCause();
   }
 
-  @Test(expected = NoSuchElementException.class)
+  @Test
   public void asEnumerationFromEmptyArray() {
 
-    Enumeration<Object> enumeration = ArrayUtils.asEnumeration();
+    assertThatExceptionOfType(NoSuchElementException.class)
+      .isThrownBy(() -> {
 
-    assertThat(enumeration).isNotNull();
-    assertThat(enumeration.hasMoreElements()).isFalse();
+        Enumeration<Object> enumeration = ArrayUtils.asEnumeration();
 
-    noSuchElementExceptionThrowingOperation(enumeration::nextElement);
+        assertThat(enumeration).isNotNull();
+        assertThat(enumeration.hasMoreElements()).isFalse();
+
+        noSuchElementExceptionThrowingOperation(enumeration::nextElement);
+      })
+      .withNoCause();
   }
 
   @Test
@@ -432,35 +447,45 @@ public class ArrayUtilsTests {
     assertThat(iterable.iterator().next()).isEqualTo("test");
   }
 
-  @Test(expected = NoSuchElementException.class)
+  @Test
   public void asIteratorFromArray() {
 
-    Object[] array = { "test", "testing", "tested" };
+    assertThatExceptionOfType(NoSuchElementException.class)
+      .isThrownBy(() -> {
 
-    Iterator<Object> arrayIterator = ArrayUtils.asIterator(array);
+        Object[] array = { "test", "testing", "tested" };
 
-    assertThat(arrayIterator).isNotNull();
-    assertThat(arrayIterator.hasNext()).isTrue();
+        Iterator<Object> arrayIterator = ArrayUtils.asIterator(array);
 
-    for (Object element : array) {
-      assertThat(arrayIterator.hasNext()).isTrue();
-      assertThat(arrayIterator.next()).isEqualTo(element);
-    }
+        assertThat(arrayIterator).isNotNull();
+        assertThat(arrayIterator.hasNext()).isTrue();
 
-    assertThat(arrayIterator.hasNext()).isFalse();
+        for (Object element : array) {
+          assertThat(arrayIterator.hasNext()).isTrue();
+          assertThat(arrayIterator.next()).isEqualTo(element);
+        }
 
-    noSuchElementExceptionThrowingOperation(arrayIterator::next);
+        assertThat(arrayIterator.hasNext()).isFalse();
+
+        noSuchElementExceptionThrowingOperation(arrayIterator::next);
+      })
+      .withNoCause();
   }
 
-  @Test(expected = NoSuchElementException.class)
+  @Test
   public void asIteratorFromEmptyArray() {
 
-    Iterator<?> arrayIterator = ArrayUtils.asIterator();
+    assertThatExceptionOfType(NoSuchElementException.class)
+      .isThrownBy(() -> {
 
-    assertThat(arrayIterator).isNotNull();
-    assertThat(arrayIterator.hasNext()).isFalse();
+        Iterator<?> arrayIterator = ArrayUtils.asIterator();
 
-    noSuchElementExceptionThrowingOperation(arrayIterator::next);
+        assertThat(arrayIterator).isNotNull();
+        assertThat(arrayIterator.hasNext()).isFalse();
+
+        noSuchElementExceptionThrowingOperation(arrayIterator::next);
+      })
+      .withNoCause();
   }
 
   @Test
@@ -552,22 +577,16 @@ public class ArrayUtilsTests {
     }
   }
 
-  @Test(expected = UnsupportedOperationException.class)
+  @Test
   public void deepCopyWithArrayContainingNonCloneableElementsThrowsUnsupportedOperationException() {
 
     Object[] array = { "test", Person.newPerson("Jon", "Doe") };
 
-    try {
-      ArrayUtils.deepCopy(array);
-    }
-    catch (UnsupportedOperationException expected) {
-
-      assertThat(expected).hasMessageEndingWith("[clone] is not supported for object of type [Person]");
-      assertThat(expected).hasCauseInstanceOf(CloneNotSupportedException.class);
-      assertThat(expected.getCause()).hasNoCause();
-
-      throw expected;
-    }
+    ThrowableAssertions.assertThatUnsupportedOperationException()
+      .isThrownBy(args -> ArrayUtils.deepCopy(array))
+      .havingMessage("[clone] is not supported for object of type [Person]")
+      .causedBy(CloneNotSupportedException.class)
+      .withNoCause();
   }
 
   @Test
@@ -584,10 +603,13 @@ public class ArrayUtilsTests {
     }
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void deepCopyWithNullArrayThrowsIllegalArgumentException() {
-    TestUtils.doIllegalArgumentExceptionThrowingOperation(() -> ArrayUtils.deepCopy(null),
-      () -> "Array is required");
+
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> ArrayUtils.deepCopy(null))
+      .withMessage("Array is required")
+      .withNoCause();
   }
 
   @Test
@@ -608,16 +630,22 @@ public class ArrayUtilsTests {
     }
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void deepCopyWithNullArrayAndCopyFunctionThrowsIllegalArgumentException() {
-    TestUtils.doIllegalArgumentExceptionThrowingOperation(() -> ArrayUtils.deepCopy(null, Function.identity()),
-      () -> "Array is required");
+
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> ArrayUtils.deepCopy(null, Function.identity()))
+      .withMessage("Array is required")
+      .withNoCause();
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void deepCopyWithArrayAndNullCopyFunctionThrowsIllegalArgumentException() {
-    TestUtils.doIllegalArgumentExceptionThrowingOperation(() ->
-      ArrayUtils.deepCopy(ArrayUtils.emptyArray(), null), () -> "Copy Function is required");
+
+    assertThatIllegalArgumentException()
+      .isThrownBy(ArrayUtils::emptyArray)
+      .withMessage("Copy Function is required")
+      .withNoCause();
   }
 
   @Test
@@ -739,7 +767,7 @@ public class ArrayUtilsTests {
   @Test
   public void filterAndTransform() {
 
-    FilteringTransformer<String> filteringTransformer = new FilteringTransformer<String>() {
+    FilteringTransformer<String> filteringTransformer = new FilteringTransformer<>() {
 
       @Override
       public boolean accept(String value) {
@@ -765,7 +793,7 @@ public class ArrayUtilsTests {
   @Test
   public void filterArrayAndTransformEmptyArray() {
 
-    FilteringTransformer<String> filteringTransformer = new FilteringTransformer<String>() {
+    FilteringTransformer<String> filteringTransformer = new FilteringTransformer<>() {
 
       @Override
       public boolean accept(String value) {
@@ -803,15 +831,18 @@ public class ArrayUtilsTests {
     verifyNoInteractions(mockFilteringTransformer);
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   @SuppressWarnings("unchecked")
   public void filterAndTransformNullArray() {
 
     FilteringTransformer<Object> mockFilteringTransformer = mock(FilteringTransformer.class);
 
-    TestUtils.doIllegalArgumentExceptionThrowingOperation(() ->
-      ArrayUtils.filterAndTransform(null, mockFilteringTransformer),
-      () -> "Array is required", () -> verifyNoInteractions(mockFilteringTransformer));
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> ArrayUtils.filterAndTransform(null, mockFilteringTransformer))
+      .withMessage("Array is required")
+      .withNoCause();
+
+    verifyNoInteractions(mockFilteringTransformer);
   }
 
   @Test
@@ -1133,10 +1164,13 @@ public class ArrayUtilsTests {
     assertElements(ArrayUtils.insert("one", toArray(), 0), "one");
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void insertIntoNullArray() {
-    TestUtils.doIllegalArgumentExceptionThrowingOperation(() -> ArrayUtils.insert("test", null, 0),
-      () -> "Array is required");
+
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> ArrayUtils.insert("test", null, 0))
+      .withMessage("Array is required")
+      .withNoCause();
   }
 
   @Test
@@ -1154,34 +1188,22 @@ public class ArrayUtilsTests {
     assertElements(ArrayUtils.insert(null, toArray("one", "two"), 2), "one", "two", null);
   }
 
-  @Test(expected = ArrayIndexOutOfBoundsException.class)
+  @Test
   public void insertIntoArrayWithNegativeArrayIndex() {
 
-    try {
-      ArrayUtils.insert("one", toArray("zero", "two"), -1);
-    }
-    catch (ArrayIndexOutOfBoundsException expected) {
-
-      assertThat(expected).hasMessage("[-1] is not a valid index [0, 2] in the array");
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
+    assertThatExceptionOfType(ArrayIndexOutOfBoundsException.class)
+      .isThrownBy(() -> ArrayUtils.insert("one", toArray("zero", "two"), -1))
+      .withMessage("[-1] is not a valid index [0, 2] in the array")
+      .withNoCause();
   }
 
-  @Test(expected = ArrayIndexOutOfBoundsException.class)
+  @Test
   public void insertIntoArrayWithOverflowArrayIndex() {
 
-    try {
-      ArrayUtils.insert("three", toArray("one", "two"), 3);
-    }
-    catch (ArrayIndexOutOfBoundsException expected) {
-
-      assertThat(expected).hasMessage("[3] is not a valid index [0, 2] in the array");
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
+    assertThatExceptionOfType(ArrayIndexOutOfBoundsException.class)
+      .isThrownBy(() -> ArrayUtils.insert("three", toArray("one", "two"), 3))
+      .withMessage("[3] is not a valid index [0, 2] in the array")
+      .withNoCause();
   }
 
   @Test
@@ -1272,7 +1294,7 @@ public class ArrayUtilsTests {
     assertThat(ArrayUtils.isSizeOne(1, 2)).isFalse();
   }
 
-  @Test(expected = UnsupportedOperationException.class)
+  @Test
   public void attemptRemovalFromArrayIterator() {
 
     String[] array = { "one", "two" };
@@ -1285,15 +1307,14 @@ public class ArrayUtilsTests {
     assertThat(arrayIterator.hasNext()).isTrue();
     assertElements(array, "one", "two");
 
-    try {
-      arrayIterator.remove();
-    }
-    finally {
-      assertElements(array, "one", "two");
-      assertThat(arrayIterator.hasNext()).isTrue();
-      assertThat(arrayIterator.next()).isEqualTo("two");
-      assertThat(arrayIterator.hasNext()).isFalse();
-    }
+    assertThatExceptionOfType(UnsupportedOperationException.class)
+      .isThrownBy(arrayIterator::remove)
+      .withNoCause();
+
+    assertElements(array, "one", "two");
+    assertThat(arrayIterator.hasNext()).isTrue();
+    assertThat(arrayIterator.next()).isEqualTo("two");
+    assertThat(arrayIterator.hasNext()).isFalse();
   }
 
   @Test
@@ -1441,10 +1462,13 @@ public class ArrayUtilsTests {
     assertElements(array, "testing", "tested");
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void prependToNullArray() {
-    TestUtils.doIllegalArgumentExceptionThrowingOperation(() -> ArrayUtils.prepend("test", null),
-      () -> "Array is required");
+
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> ArrayUtils.prepend("test", null))
+      .withMessage("Array is required")
+      .withNoCause();
   }
 
   @Test
@@ -1498,24 +1522,22 @@ public class ArrayUtilsTests {
     assertThat(array.length).isEqualTo(1);
   }
 
-  @Test(expected = ArrayIndexOutOfBoundsException.class)
+  @Test
   public void removeIllegalIndexFromArrayThrowsArrayIndexOutOfBoundsException() {
 
-    try {
-      ArrayUtils.remove(new Object[] { 1, 2, 3, 4 }, 4);
-    }
-    catch (ArrayIndexOutOfBoundsException expected) {
-
-      assertThat(expected).hasMessage("[4] is not a valid index [0, 4] in the array");
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
+    assertThatExceptionOfType(ArrayIndexOutOfBoundsException.class)
+      .isThrownBy(() -> ArrayUtils.remove(new Object[] { 1, 2, 3, 4 }, 4))
+      .withMessage("[4] is not a valid index [0, 4] in the array")
+      .withNoCause();
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void removeFromNullArrayThrowsIllegalArgumentException() {
-    TestUtils.doIllegalArgumentExceptionThrowingOperation(() -> ArrayUtils.remove(null, 0), () -> "Array is required");
+
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> ArrayUtils.remove(null, 0))
+      .withMessage("Array is required")
+      .withNoCause();
   }
 
   @Test
@@ -1550,10 +1572,13 @@ public class ArrayUtilsTests {
     }
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void shallowCopyWithNullArray() {
-    TestUtils.doIllegalArgumentExceptionThrowingOperation(() -> ArrayUtils.shallowCopy(null),
-      () -> "Array is required");
+
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> ArrayUtils.shallowCopy(null))
+      .withMessage("Array is required")
+      .withNoCause();
   }
 
   @Test
@@ -1650,9 +1675,12 @@ public class ArrayUtilsTests {
     assertThat(subArray).hasSize(0);
   }
 
-  @Test(expected = ArrayIndexOutOfBoundsException.class)
+  @Test
   public void subArrayWithEmptyArrayAndIndices() {
-    ArrayUtils.subArray(new Object[0], 0);
+
+    assertThatExceptionOfType(ArrayIndexOutOfBoundsException.class)
+      .isThrownBy(() -> ArrayUtils.subArray(new Object[0], 0))
+      .withNoCause();
   }
 
   @Test
@@ -1666,9 +1694,12 @@ public class ArrayUtilsTests {
     assertThat(subArray).hasSize(0);
   }
 
-  @Test(expected = NullPointerException.class)
+  @Test
   public void subArrayWithNullArray() {
-    ArrayUtils.subArray(null, 1);
+
+    assertThatNullPointerException()
+      .isThrownBy(() -> ArrayUtils.subArray(null, 1))
+      .withNoCause();
   }
 
   @Test
@@ -1682,9 +1713,12 @@ public class ArrayUtilsTests {
     assertThat(subArray).containsExactly("test");
   }
 
-  @Test(expected = ArrayIndexOutOfBoundsException.class)
+  @Test
   public void subArrayWithSingleElementArrayAndInvalidIndex() {
-    ArrayUtils.subArray(new Integer[] { 0 }, 1);
+
+    assertThatExceptionOfType(ArrayIndexOutOfBoundsException.class)
+      .isThrownBy(() -> ArrayUtils.subArray(new Integer[] { 0 }, 1))
+      .withNoCause();
   }
 
   @Test
@@ -1698,19 +1732,28 @@ public class ArrayUtilsTests {
     assertThat(subArray).containsExactly((byte) 4, (byte) 5, (byte) 6);
   }
 
-  @Test(expected = ArrayIndexOutOfBoundsException.class)
+  @Test
   public void subArrayWithOffsetAndLengthUsingInvalidLength() {
-    ArrayUtils.subArray(new Object[] { "test" }, 0, 10);
+
+    assertThatExceptionOfType(ArrayIndexOutOfBoundsException.class)
+      .isThrownBy(() -> ArrayUtils.subArray(new Object[] { "test" }, 0, 10))
+      .withNoCause();
   }
 
-  @Test(expected = ArrayIndexOutOfBoundsException.class)
+  @Test
   public void subArrayWithOffsetAndLengthUsingInvalidOffset() {
-    ArrayUtils.subArray(new Object[0], 1, 10);
+
+    assertThatExceptionOfType(ArrayIndexOutOfBoundsException.class)
+      .isThrownBy(() -> ArrayUtils.subArray(new Object[0], 1, 10))
+      .withNoCause();
   }
 
-  @Test(expected = NullPointerException.class)
+  @Test
   public void subArrayWithOffsetAndLengthUsingNullArray() {
-    ArrayUtils.subArray(null, 5, 10);
+
+    assertThatNullPointerException()
+      .isThrownBy(() -> ArrayUtils.subArray(null, 5, 10))
+      .withNoCause();
   }
 
   @Test
@@ -1743,36 +1786,37 @@ public class ArrayUtilsTests {
     assertElements(actualArray, 1, 0);
   }
 
-  @Test(expected = ArrayIndexOutOfBoundsException.class)
+  @Test
   public void swapWithIllegalFirstIndex() {
 
     Integer[] array = { 0, 1, 2 };
 
-    try {
-      ArrayUtils.swap(array, -1, 1);
-    }
-    finally {
-      assertElements(array, 0, 1, 2);
-    }
+    assertThatExceptionOfType(ArrayIndexOutOfBoundsException.class)
+      .isThrownBy(() -> ArrayUtils.swap(array, -1, 1))
+      .withNoCause();
+
+    assertElements(array, 0, 1, 2);
   }
 
-  @Test(expected = ArrayIndexOutOfBoundsException.class)
+  @Test
   public void swapWithIllegalSecondIndex() {
 
     Integer[] array = { 0, 1, 2 };
 
-    try {
-      ArrayUtils.swap(array, 1, 3);
-    }
-    finally {
-      assertElements(array, 0, 1, 2);
-    }
+    assertThatExceptionOfType(ArrayIndexOutOfBoundsException.class)
+      .isThrownBy(() -> ArrayUtils.swap(array, 1, 3))
+      .withNoCause();
+
+    assertElements(array, 0, 1, 2);
   }
 
+  @Test
   @SuppressWarnings("all")
-  @Test(expected = NullPointerException.class)
   public void swapWithNullArray() {
-    ArrayUtils.swap(null, 0, 10);
+
+    assertThatNullPointerException()
+      .isThrownBy(() -> ArrayUtils.swap(null, 0, 10))
+      .withNoCause();
   }
 
   @Test
@@ -1835,16 +1879,22 @@ public class ArrayUtilsTests {
     assertThat(transformedArray).isSameAs(array);
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void transformNullArray() {
-    TestUtils.doIllegalArgumentExceptionThrowingOperation(() -> ArrayUtils.transform(null, (value) -> "test"),
-      () -> "Array is required");
+
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> ArrayUtils.transform(null, (value) -> "test"))
+      .withMessage("Array is required")
+      .withNoCause();
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void transformWithNullTransformer() {
-    TestUtils.doIllegalArgumentExceptionThrowingOperation(() -> ArrayUtils.transform(new Object[0], null),
-      () -> "Transformer is required");
+
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> ArrayUtils.transform(new Object[0], null))
+      .withMessage("Transformer is required")
+      .withNoCause();
   }
 
   @Getter

@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.lang.reflect.support;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
 import static org.cp.elements.lang.reflect.support.DelegatingMethodInterceptor.newDelegatingMethodInterceptor;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -27,15 +27,16 @@ import static org.mockito.Mockito.when;
 
 import java.util.Optional;
 
-import org.cp.elements.lang.reflect.MethodInterceptor;
-import org.cp.elements.lang.reflect.MethodInvocation;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
+
+import org.cp.elements.lang.reflect.MethodInterceptor;
+import org.cp.elements.lang.reflect.MethodInvocation;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
 /**
- * Unit tests for {@link DelegatingMethodInterceptor}.
+ * Unit Tests for {@link DelegatingMethodInterceptor}.
  *
  * @author John Blum
  * @see org.junit.jupiter.api.Test
@@ -66,18 +67,20 @@ public class DelegatingMethodInterceptorTests {
     assertThat(methodInterceptor.getDelegate()).isSameAs(mockDelegate);
   }
 
-  @Test(expected = IllegalStateException.class)
+  @Test
   public void newDelegatingMethodInterceptorWithoutDelegateIsSuccessful() {
 
     DelegatingMethodInterceptor<?> methodInterceptor = newDelegatingMethodInterceptor();
 
     assertThat(methodInterceptor).isNotNull();
 
-    methodInterceptor.getDelegate();
+    assertThatIllegalStateException()
+      .isThrownBy(methodInterceptor::getDelegate)
+      .withNoCause();
   }
 
   @Test
-  @SuppressWarnings("unchecked")
+  @SuppressWarnings({ "rawtypes", "unchecked" })
   public void setAndGetDelegateIsSuccessful() {
 
     MethodInterceptor<?> mockMethodInterceptor = mock(MethodInterceptor.class);
@@ -96,19 +99,13 @@ public class DelegatingMethodInterceptorTests {
     assertThat(methodInterceptor.getDelegate()).isSameAs(mockMethodInterceptor);
   }
 
-  @Test(expected = IllegalStateException.class)
+  @Test
   public void getUninitializedDelegateThrowsIllegalStateException() {
 
-    try {
-      newDelegatingMethodInterceptor().getDelegate();
-    }
-    catch (IllegalStateException expected) {
-
-      assertThat(expected).hasMessage("The delegate MethodInterceptor was not properly initialized");
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
+    assertThatIllegalStateException()
+      .isThrownBy(() -> newDelegatingMethodInterceptor().getDelegate())
+      .withMessage("The delegate MethodInterceptor was not properly initialized")
+      .withNoCause();
   }
 
   @Test
@@ -122,7 +119,6 @@ public class DelegatingMethodInterceptorTests {
   }
 
   @Test
-  @SuppressWarnings("unchecked")
   public void interceptDelegatesToDelegateInvoke() {
 
     when(mockDelegate.intercept(any(MethodInvocation.class))).thenReturn(Optional.of("test"));

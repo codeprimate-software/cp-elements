@@ -16,6 +16,7 @@
 package org.cp.elements.lang.support;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
@@ -31,11 +32,12 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.logging.Logger;
 
+import org.junit.jupiter.api.Test;
+
 import org.cp.elements.enums.Gender;
+import org.cp.elements.function.FunctionUtils;
 import org.cp.elements.lang.AssertionException;
 import org.cp.elements.lang.ObjectUtils;
-import org.cp.elements.test.TestUtils;
-import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentMatcher;
 
 import lombok.Data;
@@ -47,7 +49,6 @@ import lombok.RequiredArgsConstructor;
  * Unit Tests for {@link HashCodeBuilder}.
  *
  * @author John J. Blum
- * @see java.util.logging.Logger
  * @see org.junit.jupiter.api.Test
  * @see org.mockito.Mockito
  * @see org.cp.elements.lang.support.HashCodeBuilder
@@ -75,18 +76,22 @@ public class HashCodeBuilderTests {
     assertThat(builder.multiplier()).isEqualTo(51);
   }
 
-  @Test(expected = AssertionException.class)
+  @Test
   public void createHashCodeBuilderWithIllegalBaseValue() {
 
-    TestUtils.doAssertionExceptionThrowingOperation(() -> HashCodeBuilder.create(-1, 51),
-      () -> "baseValue [-1] must be greater than 0");
+    assertThatExceptionOfType(AssertionException.class)
+      .isThrownBy(() -> HashCodeBuilder.create(-1, 51))
+      .withMessage("baseValue [-1] must be greater than 0")
+      .withNoCause();
   }
 
-  @Test(expected = AssertionException.class)
+  @Test
   public void createHashCodeBuilderWithIllegalMultiplier() {
 
-    TestUtils.doAssertionExceptionThrowingOperation(() -> HashCodeBuilder.create(1, 0),
-      () -> "multiplier [0] must be greater than 0");
+    assertThatExceptionOfType(AssertionException.class)
+      .isThrownBy(() -> HashCodeBuilder.create(1, 0))
+      .withMessage("multiplier [0] must be greater than 0")
+      .withNoCause();
   }
 
   @Test
@@ -253,7 +258,8 @@ public class HashCodeBuilderTests {
   private static final class SupplierArgumentMatcher<T> implements ArgumentMatcher<Supplier<T>> {
 
     private Object actualValue;
-    private Object expectedValue;
+
+    private final Object expectedValue;
 
     private static <T> Supplier<T> equalSuppliers(Supplier<T> expected) {
       return argThat(new SupplierArgumentMatcher<>(expected));
@@ -266,7 +272,8 @@ public class HashCodeBuilderTests {
 
     @Override
     public boolean matches(Supplier<T> actual) {
-      actualValue = Optional.ofNullable(actual).map(Supplier::get).orElseGet(null);
+
+      this.actualValue = FunctionUtils.nullSafeSupplier(actual).get();
 
       return Optional.ofNullable(actualValue)
         .filter(localActualValue -> localActualValue.equals(expectedValue))
@@ -305,11 +312,9 @@ public class HashCodeBuilderTests {
         return true;
       }
 
-      if (!(obj instanceof Person)) {
+      if (!(obj instanceof Person that)) {
         return false;
       }
-
-      Person that = (Person) obj;
 
       return ObjectUtils.equals(this.getBirthDate(), that.getBirthDate())
         && ObjectUtils.equals(this.getFirstName(), that.getFirstName())
@@ -354,23 +359,16 @@ public class HashCodeBuilderTests {
         return true;
       }
 
-      if (!(obj instanceof ObjectWithBadHashCodeImplementation)) {
+      if (!(obj instanceof ObjectWithBadHashCodeImplementation that)) {
         return false;
       }
-
-      ObjectWithBadHashCodeImplementation that = (ObjectWithBadHashCodeImplementation) obj;
 
       return ObjectUtils.equals(this.getStringValue(), that.getStringValue());
     }
 
     @Override
     public int hashCode() {
-
-      int hashValue = 17;
-
-      hashValue = 37 * hashValue + ObjectUtils.hashCode(getStringValue());
-
-      return hashValue;
+      return ObjectUtils.hashCodeOf(getStringValue());
     }
 
     @Override

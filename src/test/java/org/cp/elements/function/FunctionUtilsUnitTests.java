@@ -16,6 +16,7 @@
 package org.cp.elements.function;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.isNull;
@@ -419,19 +420,13 @@ public class FunctionUtilsUnitTests {
     verifyNoMoreInteractions(mockFunction);
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void toConsumerFromNullFunction() {
 
-    try {
-      FunctionUtils.toConsumer(null);
-    }
-    catch (IllegalArgumentException expected) {
-
-      assertThat(expected).hasMessage("Function is required");
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> FunctionUtils.toConsumer(null))
+      .withMessage("Function is required")
+      .withNoCause();
   }
 
   @Test
@@ -449,19 +444,13 @@ public class FunctionUtilsUnitTests {
     verifyNoMoreInteractions(mockConsumer);
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void toFunctionFromNullConsumer() {
 
-    try {
-      FunctionUtils.toFunction((Consumer<?>) null);
-    }
-    catch (IllegalArgumentException expected) {
-
-      assertThat(expected).hasMessage("Consumer is required");
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> FunctionUtils.toFunction((Consumer<?>) null))
+      .withMessage("Consumer is required")
+      .withNoCause();
   }
 
   @Test
@@ -481,20 +470,14 @@ public class FunctionUtilsUnitTests {
     verifyNoMoreInteractions(mockPredicate);
   }
 
+  @Test
   @SuppressWarnings("all")
-  @Test(expected = IllegalArgumentException.class)
   public void toFunctionFromNullPredicate() {
 
-    try {
-      FunctionUtils.toFunction((Predicate<?>) null);
-    }
-    catch (IllegalArgumentException expected) {
-
-      assertThat(expected).hasMessage("Predicate is required");
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> FunctionUtils.toFunction((Predicate<?>) null))
+      .withMessage("Predicate is required")
+      .withNoCause();
   }
 
   @Test
@@ -514,19 +497,13 @@ public class FunctionUtilsUnitTests {
     verifyNoMoreInteractions(mockSupplier);
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void toFunctionFromNullSupplier() {
 
-    try {
-      FunctionUtils.toFunction((Supplier<?>) null);
-    }
-    catch (IllegalArgumentException expected) {
-
-      assertThat(expected).hasMessage("Supplier is required");
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
+    assertThatIllegalArgumentException()
+      .isThrownBy(() ->FunctionUtils.toFunction((Supplier<?>) null))
+      .withMessage("Supplier is required")
+      .withNoCause();
   }
 
   @Test
@@ -548,19 +525,13 @@ public class FunctionUtilsUnitTests {
     verifyNoMoreInteractions(mockFunction);
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void toPredicateFromNullFunction() {
 
-    try {
-      FunctionUtils.toPredicate(null);
-    }
-    catch (IllegalArgumentException expected) {
-
-      assertThat(expected).hasMessage("Function is required");
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> FunctionUtils.toPredicate(null))
+      .withMessage("Function is required")
+      .withNoCause();
   }
 
   @Test
@@ -580,19 +551,13 @@ public class FunctionUtilsUnitTests {
     verifyNoMoreInteractions(mockFunction);
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void toSupplierFromNullFunction() {
 
-    try {
-      FunctionUtils.toSupplier(null);
-    }
-    catch (IllegalArgumentException expected) {
-
-      assertThat(expected).hasMessage("Function is required");
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
+    assertThatIllegalArgumentException()
+      .isThrownBy(() ->FunctionUtils.toSupplier(null))
+      .withMessage("Function is required")
+      .withNoCause();
   }
 
   enum Par {

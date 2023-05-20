@@ -13,10 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.data.conversion.converters;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -24,11 +25,13 @@ import java.util.Date;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
-import org.cp.elements.data.conversion.ConversionException;
 import org.junit.jupiter.api.Test;
 
+import org.cp.elements.data.conversion.ConversionException;
+import org.cp.elements.lang.ThrowableAssertions;
+
 /**
- * Unit tests for {@link NumberConverter}.
+ * Unit Tests for {@link NumberConverter}.
  *
  * @author John J. Blum
  * @see java.lang.Number
@@ -158,110 +161,68 @@ public class NumberConverterTests {
     assertThat(this.converter.convert("1248", Integer.class)).isEqualTo(1248);
   }
 
-  @Test(expected = ConversionException.class)
+  @Test
   public void convertStringFloatingPointNumberToIntegerThrowsException() {
 
-    try {
-      this.converter.convert("9.99", Integer.class);
-    }
-    catch (ConversionException expected) {
-
-      assertThat(expected).hasMessage("[9.99] is not a valid number of the qualifying type [java.lang.Integer]");
-      assertThat(expected).hasCauseInstanceOf(NumberFormatException.class);
-      assertThat(expected.getCause()).hasNoCause();
-
-      throw expected;
-    }
+    ThrowableAssertions.assertThatThrowableOfType(ConversionException.class)
+      .isThrownBy(args -> this.converter.convert("9.99", Integer.class))
+      .havingMessage("[9.99] is not a valid number of the qualifying type [java.lang.Integer]")
+      .causedBy(NumberFormatException.class)
+      .withNoCause();
   }
 
-  @Test(expected = ConversionException.class)
+  @Test
   public void convertStringToNumberThrowsException() {
 
-    try {
-      this.converter.convert("123456789", Number.class);
-    }
-    catch (ConversionException expected) {
-
-      assertThat(expected).hasMessage("[java.lang.Number] is not a valid Number type");
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
+    assertThatExceptionOfType(ConversionException.class)
+      .isThrownBy(() -> this.converter.convert("123456789", Number.class))
+      .withMessage("[java.lang.Number] is not a valid Number type")
+      .withNoCause();
   }
 
-  @Test(expected = ConversionException.class)
+  @Test
   public void convertCharacterToNumberThrowsException() {
 
-    try {
-      this.converter.convert('1', Integer.class);
-    }
-    catch (ConversionException expected) {
-
-      assertThat(expected).hasMessage("[1] is not a valid number of the qualifying type [java.lang.Integer]");
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
+    assertThatExceptionOfType(ConversionException.class)
+      .isThrownBy(() -> this.converter.convert('1', Integer.class))
+      .withMessage("[1] is not a valid number of the qualifying type [java.lang.Integer]")
+      .withNoCause();
   }
 
-  @Test(expected = ConversionException.class)
+  @Test
   public void convertCurrencyToBigDecimalThrowsException() {
 
-    try {
-      this.converter.convert("$100.00", BigDecimal.class);
-    }
-    catch (ConversionException expected) {
-
-      assertThat(expected).hasMessage("[$100.00] is not a valid number of the qualifying type [java.math.BigDecimal]");
-      assertThat(expected).hasCauseInstanceOf(NumberFormatException.class);
-      assertThat(expected.getCause()).hasNoCause();
-
-      throw expected;
-    }
+    ThrowableAssertions.assertThatThrowableOfType(ConversionException.class)
+      .isThrownBy(args -> this.converter.convert("$100.00", BigDecimal.class))
+      .havingMessage("[$100.00] is not a valid number of the qualifying type [java.math.BigDecimal]")
+      .causedBy(NumberFormatException.class)
+      .withNoCause();
   }
 
-  @Test(expected = ConversionException.class)
+  @Test
   public void convertNullToNumberThrowsException() {
 
-    try {
-      this.converter.convert(null, Number.class);
-    }
-    catch (ConversionException expected) {
-
-      assertThat(expected).hasMessage("[null] is not a valid number of the qualifying type [java.lang.Number]");
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
+    assertThatExceptionOfType(ConversionException.class)
+      .isThrownBy(() -> this.converter.convert(null, Number.class))
+      .withMessage("[null] is not a valid number of the qualifying type [java.lang.Number]")
+      .withNoCause();
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void convertWithNullQualifyingTypeThrowsException() {
 
-    try {
-      this.converter.convert(1, null);
-    }
-    catch (IllegalArgumentException expected) {
-
-      assertThat(expected).hasMessage("Qualifying type is required");
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> this.converter.convert(1, null))
+      .withMessage("Qualifying type is required")
+      .withNoCause();
   }
 
-  @Test(expected = ConversionException.class)
+  @Test
   public void fromNumberToUnqualifiedTypeThrowsException() {
 
-    try {
-      this.converter.toQualifyingNumber(1, Number.class);
-    }
-    catch (ConversionException expected) {
-
-      assertThat(expected).hasMessage("[java.lang.Number] is not a valid Number type");
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
+    assertThatExceptionOfType(ConversionException.class)
+      .isThrownBy(() -> this.converter.toQualifyingNumber(1, Number.class))
+      .withMessage("[java.lang.Number] is not a valid Number type")
+      .withNoCause();
   }
 }

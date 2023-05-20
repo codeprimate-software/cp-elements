@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.tools.io;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.cp.elements.io.FileUtils.newFile;
 import static org.cp.elements.tools.io.ListFiles.newListFiles;
 import static org.cp.elements.util.ArrayUtils.asArray;
@@ -32,13 +32,14 @@ import static org.mockito.Mockito.when;
 
 import java.io.File;
 
+import org.junit.jupiter.api.Test;
+
 import org.cp.elements.io.FileSystemUtils;
 import org.cp.elements.lang.StringUtils;
 import org.cp.elements.test.AbstractBaseTestSuite;
-import org.junit.jupiter.api.Test;
 
 /**
- * Unit tests for {@link ListFiles}.
+ * Unit Tests for {@link ListFiles}.
  *
  * @author John Blum
  * @see org.junit.jupiter.api.Test
@@ -79,49 +80,31 @@ public class ListFilesTests extends AbstractBaseTestSuite {
       .isEqualTo("/path/to/directory");
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void resolveArgumentWithNullArgumentsThrowsIllegalArgumentException() {
 
-    try {
-      ListFiles.resolveArgument(null);
-    }
-    catch (Exception expected) {
-
-      assertThat(expected).hasMessage("Directory is required");
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> ListFiles.resolveArgument(null))
+      .withMessage("Directory is required")
+      .withNoCause();
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void resolveArgumentWithEmptyArgumentsThrowsIllegalArgumentException() {
 
-    try {
-      ListFiles.resolveArgument(StringUtils.EMPTY_STRING_ARRAY);
-    }
-    catch (Exception expected) {
-
-      assertThat(expected).hasMessage("Directory is required");
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> ListFiles.resolveArgument(StringUtils.EMPTY_STRING_ARRAY))
+      .withMessage("Directory is required")
+      .withNoCause();
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void resolveArgumentWithAnEmptyArgumentThrowsIllegalArgumentException() {
 
-    try {
-      ListFiles.resolveArgument(new String[] { null });
-    }
-    catch (Exception expected) {
-
-      assertThat(expected).hasMessage("Directory is required");
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> ListFiles.resolveArgument(new String[] { null }))
+      .withMessage("Directory is required")
+      .withNoCause();
   }
 
   @Test
@@ -136,35 +119,24 @@ public class ListFilesTests extends AbstractBaseTestSuite {
       "/path/to/invalid/directory"))).isEqualTo(FileSystemUtils.USER_HOME_DIRECTORY);
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void resolveDirectoryWithInvalidDirectoryThrowsIllegalArgumentException() {
 
-    try {
-      ListFiles.resolveDirectory(asArray("/path/to/invalid/directory"));
-    }
-    catch (IllegalArgumentException expected) {
-
-      assertThat(expected).hasMessage("Argument [/path/to/invalid/directory] is not a valid directory");
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> ListFiles.resolveDirectory(asArray("/path/to/invalid/directory")))
+      .withMessage("Argument [/path/to/invalid/directory] is not a valid directory")
+      .withNoCause();
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void resolveDirectoryWithFileThrowsIllegalArgumentException() {
 
     String pathname = getLocation(ListFiles.class).getAbsolutePath();
 
-    try {
-      ListFiles.resolveDirectory(asArray(pathname));
-    }
-    catch (IllegalArgumentException expected) {
-      assertThat(expected).hasMessage("Argument [%s] is not a valid directory", pathname);
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> ListFiles.resolveDirectory(asArray(pathname)))
+      .withMessage("Argument [%s] is not a valid directory", pathname)
+      .withNoCause();
   }
 
   @Test
@@ -185,22 +157,16 @@ public class ListFilesTests extends AbstractBaseTestSuite {
     assertThat(listFiles.getDirectory()).isEqualTo(FileSystemUtils.USER_HOME_DIRECTORY);
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void newListFilesWithInvalidDirectoryThrowsIllegalArgumentException() {
 
-    try {
-      newListFiles(newFile("/path/to/invalid/directory"));
-    }
-    catch (IllegalArgumentException expected) {
-
-      assertThat(expected).hasMessage("File [/path/to/invalid/directory] is not a valid directory");
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> newListFiles(newFile("/path/to/invalid/directory")))
+      .withMessage("File [/path/to/invalid/directory] is not a valid directory")
+      .withNoCause();
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void newListFilesWithFileThrowsIllegalArgumentException() {
 
     File listFilesClass = getLocation(ListFiles.class);
@@ -208,31 +174,19 @@ public class ListFilesTests extends AbstractBaseTestSuite {
     assertThat(listFilesClass).isNotNull();
     assertThat(listFilesClass.isFile()).isTrue();
 
-    try {
-      newListFiles(listFilesClass);
-    }
-    catch (IllegalArgumentException expected) {
-
-      assertThat(expected).hasMessage("File [%s] is not a valid directory", listFilesClass.getAbsolutePath());
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> newListFiles(listFilesClass))
+      .withMessage("File [%s] is not a valid directory", listFilesClass.getAbsolutePath())
+      .withNoCause();
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void newListFilesWithNullThrowsIllegalArgumentException() {
 
-    try {
-      newListFiles(null);
-    }
-    catch (IllegalArgumentException expected) {
-
-      assertThat(expected).hasMessage("File [null] is not a valid directory");
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> newListFiles(null))
+      .withMessage("File [null] is not a valid directory")
+      .withNoCause();
   }
 
   @Test
@@ -244,19 +198,13 @@ public class ListFilesTests extends AbstractBaseTestSuite {
     assertThat(listFiles.getDirectory()).isEqualTo(FileSystemUtils.TEMPORARY_DIRECTORY);
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void constructListFilesWithInvalidDirectoryThrowsIllegalArgumentException() {
 
-    try {
-      new ListFiles(newFile("/path/to/invalid/directory"));
-    }
-    catch (IllegalArgumentException expected) {
-
-      assertThat(expected).hasMessage("File [/path/to/invalid/directory] is not a valid directory");
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> new ListFiles(newFile("/path/to/invalid/directory")))
+      .withMessage("File [/path/to/invalid/directory] is not a valid directory")
+      .withNoCause();
   }
 
   @Test
@@ -274,22 +222,17 @@ public class ListFilesTests extends AbstractBaseTestSuite {
       eq(FileSystemUtils.TEMPORARY_DIRECTORY), eq(StringUtils.EMPTY_STRING));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void listFilesWithInvalidDirectoryThrowsIllegalArgumentException() {
 
-    try {
-      newListFiles().listFiles(newFile("/path/to/invalid/directory"), StringUtils.SINGLE_SPACE);
-    }
-    catch (IllegalArgumentException expected) {
-
-      assertThat(expected).hasMessage("File [/path/to/invalid/directory] is not a valid directory");
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> newListFiles().listFiles(newFile("/path/to/invalid/directory"),
+        StringUtils.SINGLE_SPACE))
+      .withMessage("File [/path/to/invalid/directory] is not a valid directory")
+      .withNoCause();
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void listFilesWithFileThrowsIllegalArgumentException() {
 
     File listFilesClass = getLocation(ListFiles.class);
@@ -297,16 +240,10 @@ public class ListFilesTests extends AbstractBaseTestSuite {
     assertThat(listFilesClass).isNotNull();
     assertThat(listFilesClass.isFile()).isTrue();
 
-    try {
-      newListFiles().listFiles(listFilesClass, StringUtils.SINGLE_SPACE);
-    }
-    catch (IllegalArgumentException expected) {
-
-      assertThat(expected).hasMessage("File [%s] is not a valid directory", listFilesClass.getAbsolutePath());
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> newListFiles().listFiles(listFilesClass, StringUtils.SINGLE_SPACE))
+      .withMessage("File [%s] is not a valid directory", listFilesClass.getAbsolutePath())
+      .withNoCause();
   }
 
   @Test

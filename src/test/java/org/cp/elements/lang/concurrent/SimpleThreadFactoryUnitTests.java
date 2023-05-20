@@ -16,6 +16,7 @@
 package org.cp.elements.lang.concurrent;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.cp.elements.lang.concurrent.SimpleThreadFactory.SimpleUncaughtExceptionHandler;
 import static org.cp.elements.lang.concurrent.ThreadUtils.waitFor;
 import static org.mockito.ArgumentMatchers.any;
@@ -37,10 +38,10 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.cp.elements.lang.ThrowableUtils;
-import org.cp.elements.test.TestUtils;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
+
+import org.cp.elements.lang.ThrowableUtils;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
@@ -162,36 +163,40 @@ public class SimpleThreadFactoryUnitTests {
     verifyNoInteractions(mockClassLoader, mockUncaughtExceptionHandler);
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void newThreadWithBlankName() {
 
-    TestUtils.doIllegalArgumentExceptionThrowingOperation(
-      () -> SimpleThreadFactory.newThreadFactory().newThread("  ", this.mockRunnable),
-        () -> "Name [  ] is required");
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> SimpleThreadFactory.newThreadFactory().newThread("  ", this.mockRunnable))
+      .withMessage("Name [  ] is required")
+      .withNoCause();
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void newThreadWithEmptyName() {
 
-    TestUtils.doIllegalArgumentExceptionThrowingOperation(
-      () -> SimpleThreadFactory.newThreadFactory().newThread("", this.mockRunnable),
-        () -> "Name [] is required");
+    assertThatIllegalArgumentException()
+      .isThrownBy(() ->SimpleThreadFactory.newThreadFactory().newThread("", this.mockRunnable))
+      .withMessage("Name [] is required")
+      .withNoCause();
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void newThreadWithNullName() {
 
-    TestUtils.doIllegalArgumentExceptionThrowingOperation(
-      () -> SimpleThreadFactory.newThreadFactory().newThread(null, this.mockRunnable),
-        () -> "Name [null] is required");
+    assertThatIllegalArgumentException()
+      .isThrownBy(() ->SimpleThreadFactory.newThreadFactory().newThread(null, this.mockRunnable))
+      .withMessage("Name [null] is required")
+      .withNoCause();
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void newThreadWithNullRunnable() {
 
-    TestUtils.doIllegalArgumentExceptionThrowingOperation(
-      () -> SimpleThreadFactory.newThreadFactory().newThread(null),
-        () -> "Runnable task is required");
+    assertThatIllegalArgumentException()
+      .isThrownBy(() ->SimpleThreadFactory.newThreadFactory().newThread(null))
+      .withMessage("Runnable task is required")
+      .withNoCause();
   }
 
   @Test

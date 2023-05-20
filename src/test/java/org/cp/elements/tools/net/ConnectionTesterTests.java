@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.tools.net;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.cp.elements.lang.CheckedExceptionsFactory.newIOException;
 import static org.cp.elements.lang.NumberUtils.intValue;
 import static org.cp.elements.tools.net.ConnectionTester.newConnectionTester;
@@ -41,7 +41,7 @@ import java.net.SocketAddress;
 import org.junit.jupiter.api.Test;
 
 /**
- * Unit tests for {@link ConnectionTester}.
+ * Unit Rests for {@link ConnectionTester}.
  *
  * @author John Blum
  * @see java.net.Socket
@@ -84,32 +84,22 @@ public class ConnectionTesterTests {
     assertThat(connectionTester.getPort()).isEqualTo(9876);
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void constructConnectionTesterWithNegativePortThrowsIllegalArgumentException() {
 
-    try {
-      new ConnectionTester("localhost", -1);
-    }
-    catch (IllegalArgumentException expected) {
-      assertThat(expected).hasMessage("[-1] is not a valid port number");
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> new ConnectionTester("localhost", -1))
+      .withMessage("[-1] is not a valid port number")
+      .withNoCause();
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void constructConnectionTesterWithPortExceedingMaximumThrowsIllegalArgumentException() {
 
-    try {
-      new ConnectionTester("localhost", 123456789);
-    }
-    catch (IllegalArgumentException expected) {
-      assertThat(expected).hasMessage("[123456789] is not a valid port number");
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> new ConnectionTester("localhost", 123456789))
+      .withMessage("[123456789] is not a valid port number")
+      .withNoCause();
   }
 
   @Test

@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.tools.net;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.cp.elements.lang.CheckedExceptionsFactory.newIOException;
 import static org.cp.elements.test.TestUtils.timeIt;
 import static org.cp.elements.tools.net.EchoServer.newEchoServer;
@@ -46,10 +46,12 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.cp.elements.test.annotation.SubjectUnderTest;
 import org.junit.Before;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
+
+import org.cp.elements.test.annotation.SubjectUnderTest;
+
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
@@ -57,7 +59,7 @@ import edu.umd.cs.mtc.MultithreadedTestCase;
 import edu.umd.cs.mtc.TestFramework;
 
 /**
- * Unit tests for {@link EchoServer}.
+ * Unit Tests for {@link EchoServer}.
  *
  * @author John Blum
  * @see java.net.ServerSocket
@@ -120,32 +122,22 @@ public class EchoServerTests {
     assertThat(echoServer.getServerSocket().getLocalPort()).isEqualTo(1234);
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void newEchoServerWithNegativePortThrowsIllegalArgumentException() {
 
-    try  {
-      newEchoServer(-1);
-    }
-    catch (IllegalArgumentException expected) {
-      assertThat(expected).hasMessage("Port [-1] must be greater than 1024 and less than equal to 65535");
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> newEchoServer(-1))
+      .withMessage("Port [-1] must be greater than 1024 and less than equal to 65535")
+      .withNoCause();
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void newEchoServerWithOverflowPortThrowsIllegalArgumentException() {
 
-    try  {
-      newEchoServer(123456789);
-    }
-    catch (IllegalArgumentException expected) {
-      assertThat(expected).hasMessage("Port [123456789] must be greater than 1024 and less than equal to 65535");
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> newEchoServer(123456789))
+      .withMessage("Port [123456789] must be greater than 1024 and less than equal to 65535")
+      .withNoCause();
   }
 
   @Test

@@ -13,10 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.util.paging.support;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.cp.elements.util.paging.support.SimplePageable.SimplePage;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.eq;
@@ -29,12 +30,13 @@ import static org.mockito.Mockito.when;
 import java.util.Comparator;
 import java.util.List;
 
-import org.cp.elements.util.paging.Page;
-import org.cp.elements.util.paging.PageNotFoundException;
 import org.junit.jupiter.api.Test;
 
+import org.cp.elements.util.paging.Page;
+import org.cp.elements.util.paging.PageNotFoundException;
+
 /**
- * Unit tests for {@link SimplePageable.SimplePage}.
+ * Unit Tests for {@link SimplePageable.SimplePage}.
  *
  * @author John Blum
  * @see java.util.List
@@ -103,64 +105,40 @@ public class SimplePageableSimplePageTests {
     verify(pageable, times(2)).getPageSize();
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void constructSimplePageWithNullPageableThrowsException() {
 
-    try {
-      SimplePage.of(null);
-    }
-    catch (IllegalArgumentException expected) {
-
-      assertThat(expected).hasMessage("Pageable is required");
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> SimplePage.of(null))
+      .withMessage("Pageable is required")
+      .withNoCause();
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void constructSimplePageWithEmptyPageableThrowsException() {
 
-    try {
-      SimplePage.of(SimplePageable.empty());
-    }
-    catch (IllegalArgumentException expected) {
-
-      assertThat(expected).hasMessage("Pageable object must contain pages");
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> SimplePage.of(SimplePageable.empty()))
+      .withMessage("Pageable object must contain pages")
+      .withNoCause();
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void constructSimplePageWithNegativePageNumberThrowsException() {
 
-    try {
-      SimplePage.of(SimplePageable.of("test"), -1);
-    }
-    catch (IllegalArgumentException expected) {
-
-      assertThat(expected).hasMessage("Page number [-1] must be greater than 0");
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> SimplePage.of(SimplePageable.of("test"), -1))
+      .withMessage("Page number [-1] must be greater than 0")
+      .withNoCause();
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void constructSimplePageWithPageNumberGreaterThanTheNumberOfPagesThrowsException() {
 
-    try {
-      SimplePage.of(SimplePageable.of("test"), 2);
-    }
-    catch (IllegalArgumentException expected) {
-
-      assertThat(expected).hasMessage("Page number [2] must be less than equal to the number of pages [1]");
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> SimplePage.of(SimplePageable.of("test"), 2))
+      .withMessage("Page number [2] must be less than equal to the number of pages [1]")
+      .withNoCause();
   }
 
   @Test
@@ -172,12 +150,12 @@ public class SimplePageableSimplePageTests {
     when(mockList.isEmpty()).thenReturn(false);
     when(mockList.size()).thenReturn(SimplePageable.DEFAULT_PAGE_SIZE + 1);
 
-    SimplePageable pageable = SimplePageable.of(mockList);
+    SimplePageable<?> pageable = SimplePageable.of(mockList);
 
     assertThat(pageable).isNotNull();
     assertThat(pageable.count()).isEqualTo(2);
 
-    Page page = pageable.getPage(1);
+    Page<?> page = pageable.getPage(1);
 
     assertThat(page).isNotNull();
     assertThat(page.getNumber()).isEqualTo(1);
@@ -193,12 +171,12 @@ public class SimplePageableSimplePageTests {
     when(mockList.isEmpty()).thenReturn(false);
     when(mockList.size()).thenReturn(SimplePageable.DEFAULT_PAGE_SIZE * 2);
 
-    SimplePageable pageable = SimplePageable.of(mockList);
+    SimplePageable<?> pageable = SimplePageable.of(mockList);
 
     assertThat(pageable).isNotNull();
     assertThat(pageable.count()).isEqualTo(2);
 
-    Page page = pageable.getPage(2);
+    Page<?> page = pageable.getPage(2);
 
     assertThat(page).isNotNull();
     assertThat(page.getNumber()).isEqualTo(2);
@@ -206,7 +184,6 @@ public class SimplePageableSimplePageTests {
   }
 
   @Test
-  @SuppressWarnings("unchecked")
   public void nextPageFromPageOneWithTwoPagesReturnsNextPage() {
 
     SimplePageable<Object> pageable = SimplePageable.<Object>of("test", "testing", "tested").with(2);
@@ -232,8 +209,7 @@ public class SimplePageableSimplePageTests {
     assertThat(pageTwo.hasNext()).isFalse();
   }
 
-  @Test(expected = PageNotFoundException.class)
-  @SuppressWarnings("unchecked")
+  @Test
   public void nextPageFromPageOneWithOnePageThrowsException() {
 
     SimplePageable<Object> pageable = SimplePageable.of("test", "testing", "tested");
@@ -250,16 +226,10 @@ public class SimplePageableSimplePageTests {
     assertThat(pageOne).containsExactly("test", "testing", "tested");
     assertThat(pageOne.hasNext()).isFalse();
 
-    try {
-      pageOne.next();
-    }
-    catch (PageNotFoundException expected) {
-
-      assertThat(expected).hasMessage("No next page after [1]");
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
+    assertThatExceptionOfType(PageNotFoundException.class)
+      .isThrownBy(pageOne::next)
+      .withMessage("No next page after [1]")
+      .withNoCause();
   }
 
   @Test
@@ -271,12 +241,12 @@ public class SimplePageableSimplePageTests {
     when(mockList.isEmpty()).thenReturn(false);
     when(mockList.size()).thenReturn(SimplePageable.DEFAULT_PAGE_SIZE * 2);
 
-    SimplePageable pageable = SimplePageable.of(mockList);
+    SimplePageable<?> pageable = SimplePageable.of(mockList);
 
     assertThat(pageable).isNotNull();
     assertThat(pageable.count()).isEqualTo(2);
 
-    Page page = pageable.getPage(2);
+    Page<?> page = pageable.getPage(2);
 
     assertThat(page).isNotNull();
     assertThat(page.getNumber()).isEqualTo(2);
@@ -292,12 +262,12 @@ public class SimplePageableSimplePageTests {
     when(mockList.isEmpty()).thenReturn(false);
     when(mockList.size()).thenReturn(SimplePageable.DEFAULT_PAGE_SIZE * 2);
 
-    SimplePageable pageable = SimplePageable.of(mockList);
+    SimplePageable<?> pageable = SimplePageable.of(mockList);
 
     assertThat(pageable).isNotNull();
     assertThat(pageable.count()).isEqualTo(2);
 
-    Page page = pageable.getPage(1);
+    Page<?> page = pageable.getPage(1);
 
     assertThat(page).isNotNull();
     assertThat(page.getNumber()).isEqualTo(1);
@@ -305,7 +275,6 @@ public class SimplePageableSimplePageTests {
   }
 
   @Test
-  @SuppressWarnings("unchecked")
   public void previousPageFromPageTwoReturnsPageOne() {
 
     SimplePageable<Object> pageable = SimplePageable.<Object>of("test", "testing", "tested").with(2);
@@ -331,8 +300,7 @@ public class SimplePageableSimplePageTests {
     assertThat(pageOne.hasNext()).isTrue();
   }
 
-  @Test(expected = PageNotFoundException.class)
-  @SuppressWarnings("unchecked")
+  @Test
   public void previousPageFromPageOneThrowsException() {
 
     SimplePageable<Object> pageable = SimplePageable.of("test", "testing", "tested");
@@ -349,16 +317,10 @@ public class SimplePageableSimplePageTests {
     assertThat(pageOne).containsExactly("test", "testing", "tested");
     assertThat(pageOne.hasPrevious()).isFalse();
 
-    try {
-      pageOne.previous();
-    }
-    catch (PageNotFoundException expected) {
-
-      assertThat(expected).hasMessage("No previous page before [1]");
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
+    assertThatExceptionOfType(PageNotFoundException.class)
+      .isThrownBy(pageOne::previous)
+      .withMessage("No previous page before [1]")
+      .withNoCause();
   }
 
   @Test

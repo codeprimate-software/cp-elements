@@ -13,22 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.lang.support;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
+import org.junit.jupiter.api.Test;
+
 import org.cp.elements.lang.Identifiable;
 import org.cp.elements.lang.IdentifierSequence;
 import org.cp.elements.lang.Visitable;
-import org.junit.jupiter.api.Test;
 
 /**
- * Unit tests for {@link SetIdentityVisitor}.
+ * Unit Tests for {@link SetIdentityVisitor}.
  *
  * @author John J. Blum
  * @see org.junit.jupiter.api.Test
@@ -41,7 +42,7 @@ import org.junit.jupiter.api.Test;
  */
 public class SetIdentityVisitorTest {
 
-  private SetIdentityVisitor visitor = new SetIdentityVisitor();
+  private final SetIdentityVisitor<?> visitor = new SetIdentityVisitor<>();
 
   @Test
   public void constructDefaultSetIdentifyVisitor() {
@@ -62,19 +63,13 @@ public class SetIdentityVisitorTest {
     assertThat(visitor.getIdentifierSequence()).isSameAs(mockIdentifierSequence);
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void constructSetIdentityVisitorWithNull() {
 
-    try {
-      new SetIdentityVisitor<>(null);
-    }
-    catch (IllegalArgumentException expected) {
-
-      assertThat(expected).hasMessage("The IdentifierSequence cannot be null");
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> new SetIdentityVisitor<>(null))
+      .withMessage("The IdentifierSequence cannot be null")
+      .withNoCause();
   }
 
   @Test

@@ -15,9 +15,8 @@
  */
 package org.cp.elements.data.conversion.provider;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
-import static org.cp.elements.lang.LangExtensions.assertThat;
-import static org.cp.elements.lang.ThrowableAssertions.assertThatThrowableOfType;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -27,6 +26,7 @@ import java.util.Arrays;
 import org.junit.jupiter.api.Test;
 
 import org.cp.elements.data.conversion.ConversionException;
+import org.cp.elements.lang.ThrowableAssertions;
 import org.cp.elements.security.model.User;
 import org.cp.elements.util.ArrayUtils;
 
@@ -67,7 +67,7 @@ public class SimpleTypeConversionsUnitTests {
 
   @Test
   public void convertsStringToBigDecimal() {
-    assertThat(SimpleTypeConversions.BIG_DECIMAL_CONVERTER.convert("3.14159"))
+    assertThat(SimpleTypeConversions.BIG_DECIMAL_CONVERTER.<BigDecimal>convert("3.14159"))
       .isEqualTo(new BigDecimal("3.14159"));
   }
 
@@ -129,7 +129,7 @@ public class SimpleTypeConversionsUnitTests {
 
     // The number is NOT binary, it is ten thousand one hundred and one.
     // A binary number requires the binary number prefix notation 'b' as in 'b10101'.
-    assertThatThrowableOfType(ConversionException.class)
+    ThrowableAssertions.assertThatThrowableOfType(ConversionException.class)
       .isThrownBy(args -> SimpleTypeConversions.BYTE_CONVERTER.convert("10101"))
       .havingMessage("Cannot convert [10101] into a Byte")
       .causedBy(NumberFormatException.class)
@@ -141,7 +141,7 @@ public class SimpleTypeConversionsUnitTests {
   public void convertInvalidHexStringToByte() {
 
     Arrays.stream(ArrayUtils.asArray("Ox0010", "0XAF", "x0011")).forEach(value ->
-      assertThatThrowableOfType(ConversionException.class)
+      ThrowableAssertions.assertThatThrowableOfType(ConversionException.class)
         .isThrownBy(args -> SimpleTypeConversions.BYTE_CONVERTER.convert(value))
         .havingMessage("Cannot convert [%s] into a Byte", value)
         .causedBy(NumberFormatException.class)
@@ -190,7 +190,7 @@ public class SimpleTypeConversionsUnitTests {
   @Test
   public void convertInvalidStringToInteger() {
 
-    assertThatThrowableOfType(ConversionException.class)
+    ThrowableAssertions.assertThatThrowableOfType(ConversionException.class)
       .isThrownBy(args -> SimpleTypeConversions.INTEGER_CONVERTER.convert("*12345"))
       .havingMessageContaining("Cannot convert [*12345] into an Integer")
       .causedBy(NumberFormatException.class)
@@ -216,7 +216,7 @@ public class SimpleTypeConversionsUnitTests {
   @Test
   public void convertInvalidStringToDouble() {
 
-    assertThatThrowableOfType(ConversionException.class)
+    ThrowableAssertions.assertThatThrowableOfType(ConversionException.class)
       .isThrownBy(args -> SimpleTypeConversions.DOUBLE_CONVERTER.convert("3.14.159"))
       .havingMessage("Cannot convert [3.14.159] into a Double")
       .causedBy(NumberFormatException.class)

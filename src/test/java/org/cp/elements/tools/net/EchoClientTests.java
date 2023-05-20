@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.tools.net;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.cp.elements.lang.CheckedExceptionsFactory.newIOException;
 import static org.cp.elements.lang.NumberUtils.intValue;
 import static org.cp.elements.tools.net.EchoClient.newEchoClient;
@@ -38,15 +38,17 @@ import java.net.SocketAddress;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.cp.elements.test.annotation.SubjectUnderTest;
 import org.junit.Before;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
+
+import org.cp.elements.test.annotation.SubjectUnderTest;
+
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
 /**
- * Unit tests for {@link EchoClient}.
+ * Unit Tests for {@link EchoClient}.
  *
  * @author John Blum
  * @see java.net.ServerSocket
@@ -97,32 +99,22 @@ public class EchoClientTests {
     assertThat(echoClient.getPort()).isEqualTo(1234);
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void newEchoClientWithNegativePortThrowsIllegalArgumentException() {
 
-    try {
-      newEchoClient(-1);
-    }
-    catch (IllegalArgumentException expected) {
-      assertThat(expected).hasMessage("Port [-1] must be greater than 0 and less than equal to 65535");
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> newEchoClient(-1))
+      .withMessage("Port [-1] must be greater than 0 and less than equal to 65535")
+      .withNoCause();
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void newEchoClientWithOverflowPortThrowsIllegalArgumentException() {
 
-    try {
-      newEchoClient(65536);
-    }
-    catch (IllegalArgumentException expected) {
-      assertThat(expected).hasMessage("Port [65536] must be greater than 0 and less than equal to 65535");
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> newEchoClient(65536))
+      .withMessage("Port [65536] must be greater than 0 and less than equal to 65535")
+      .withNoCause();
   }
 
   @Test
@@ -178,7 +170,7 @@ public class EchoClientTests {
 
     @Override
     protected Socket newSocket() {
-      return mockSocket;
+      return EchoClientTests.this.mockSocket;
     }
   }
 }

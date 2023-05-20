@@ -19,6 +19,8 @@ import static org.mockito.Mockito.mock;
 
 import org.junit.jupiter.api.Test;
 
+import org.cp.elements.lang.ThrowableAssertions;
+
 /**
  * Unit Tests for {@link AbstractTable}.
  *
@@ -32,14 +34,20 @@ public class AbstractTableUnitTests {
 
   private final AbstractTable table = new TestTable();
 
-  @Test(expected = UnsupportedOperationException.class)
+  @Test
   public void addColumnThrowsUnsupportedOperationException() {
-    this.table.add(mock(Column.class));
+
+    ThrowableAssertions.assertThatUnsupportedOperationException()
+      .isThrownBy(args -> this.table.add(mock(Column.class)))
+      .withNoCause();
   }
 
-  @Test(expected = UnsupportedOperationException.class)
+  @Test
   public void addRowThrowsUnsupportedOperationException() {
-    this.table.add(mock(Row.class));
+
+    ThrowableAssertions.assertThatUnsupportedOperationException()
+      .isThrownBy(args -> this.table.add(mock(Row.class)))
+      .withNoCause();
   }
 
   private static final class TestTable extends AbstractTable { }

@@ -41,9 +41,8 @@ import java.util.function.Supplier;
 
 import org.junit.jupiter.api.Test;
 
-import org.cp.elements.lang.annotation.NotNull;
-
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
+import org.cp.elements.lang.annotation.NotNull;
 
 import edu.umd.cs.mtc.MultithreadedTestCase;
 import edu.umd.cs.mtc.TestFramework;

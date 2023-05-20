@@ -19,7 +19,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
 import static org.cp.elements.lang.RuntimeExceptionsFactory.newUnsupportedOperationException;
-import static org.cp.elements.lang.ThrowableAssertions.assertThatThrowableOfType;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.isNull;
@@ -42,6 +41,7 @@ import org.cp.elements.beans.model.Property;
 import org.cp.elements.data.mapping.MappingException;
 import org.cp.elements.enums.Gender;
 import org.cp.elements.lang.Constants;
+import org.cp.elements.lang.ThrowableAssertions;
 import org.cp.elements.lang.reflect.MethodInvocationException;
 
 import lombok.Data;
@@ -178,7 +178,7 @@ public class AbstractRowUnitTests {
     doReturn("test").when(row).getValue(eq(mockValueColumn));
     doReturn(2).when(row).index();
 
-    assertThatThrowableOfType(MappingException.class)
+    ThrowableAssertions.assertThatThrowableOfType(MappingException.class)
       .isThrownBy(args -> row.map(ExplodingType.class))
       .havingMessage("Failed to map object of type [%s] with values from this Row [2]",
         ExplodingType.class.getName())
@@ -210,7 +210,7 @@ public class AbstractRowUnitTests {
     doReturn(Optional.of(mockView)).when(row).getView();
     doReturn(4).when(row).index();
 
-    assertThatThrowableOfType(MappingException.class)
+    ThrowableAssertions.assertThatThrowableOfType(MappingException.class)
       .isThrownBy(args -> row.map(NonInstantiableType.class))
       .havingMessage("Failed to map object of type [%s] with values from this Row [4]",
         NonInstantiableType.class.getName())

@@ -16,6 +16,7 @@
 package org.cp.elements.lang;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatNullPointerException;
 import static org.cp.elements.lang.CheckedExceptionsFactory.UNKNOWN_REASON_MESSAGE;
 import static org.cp.elements.lang.CheckedExceptionsFactory.newCloneNotSupportedException;
 import static org.cp.elements.lang.CheckedExceptionsFactory.newIOException;
@@ -26,6 +27,7 @@ import java.util.concurrent.TimeoutException;
 
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
+
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
@@ -78,10 +80,13 @@ public class CheckedExceptionsFactoryUnitTests {
       "test", this.mockCause);
   }
 
+  @Test
   @SuppressWarnings("all")
-  @Test(expected = NullPointerException.class)
   public void newCloneNotSuppoertedExceptionWithNullMessage() {
-    newCloneNotSupportedException(null, ObjectUtils.EMPTY_OBJECT_ARRAY);
+
+    assertThatNullPointerException()
+      .isThrownBy(() -> newCloneNotSupportedException(null, ObjectUtils.EMPTY_OBJECT_ARRAY))
+      .withNoCause();
   }
 
   @Test
@@ -99,10 +104,13 @@ public class CheckedExceptionsFactoryUnitTests {
     assertThrowable(newIOException(this.mockCause, "test"), IOException.class, "test", this.mockCause);
   }
 
+  @Test
   @SuppressWarnings("all")
-  @Test(expected = NullPointerException.class)
   public void newIOExceptionWithNullMessage() {
-    newIOException(null, ObjectUtils.EMPTY_OBJECT_ARRAY);
+
+    assertThatNullPointerException()
+      .isThrownBy(() -> newIOException(null, ObjectUtils.EMPTY_OBJECT_ARRAY))
+      .withNoCause();
   }
 
   @Test
@@ -123,9 +131,12 @@ public class CheckedExceptionsFactoryUnitTests {
       "test", this.mockCause);
   }
 
+  @Test
   @SuppressWarnings("all")
-  @Test(expected = NullPointerException.class)
   public void newTimeoutExceptionWithNullMessage() {
-    newTimeoutException(null, ObjectUtils.EMPTY_OBJECT_ARRAY);
+
+    assertThatNullPointerException()
+      .isThrownBy(() -> newTimeoutException(null, ObjectUtils.EMPTY_OBJECT_ARRAY))
+      .withNoCause();
   }
 }

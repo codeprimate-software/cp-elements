@@ -16,19 +16,19 @@
 package org.cp.elements.beans.event.support;
 
 import static org.cp.elements.lang.LangExtensions.assertThat;
-import static org.cp.elements.lang.ThrowableAssertions.assertThatThrowableOfType;
 
 import java.beans.PropertyVetoException;
+
+import org.junit.jupiter.api.Test;
 
 import org.cp.elements.beans.AbstractBean;
 import org.cp.elements.beans.IllegalPropertyValueException;
 import org.cp.elements.beans.PropertyNotSetException;
 import org.cp.elements.beans.annotation.Required;
 import org.cp.elements.lang.Nameable;
+import org.cp.elements.lang.ThrowableAssertions;
 import org.cp.elements.lang.ThrowableOperation;
 import org.cp.elements.lang.annotation.NotNull;
-
-import org.junit.jupiter.api.Test;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -85,7 +85,7 @@ public class RequiredPropertyVetoableChangeListenerIntegrationTests {
     assertThat(janeDoe.getName()).isEqualTo("janeDoe");
     assertThat(janeDoe.isEventDispatchEnabled()).isTrue();
 
-    assertThatThrowableOfType(IllegalPropertyValueException.class)
+    ThrowableAssertions.assertThatThrowableOfType(IllegalPropertyValueException.class)
       .isThrownBy(ThrowableOperation.fromConsumer(args -> janeDoe.setName(null)))
       .havingMessage("The new value [null] for property [name] of Bean [%s] is not valid", janeDoe.getClass().getName())
       .causedBy(PropertyVetoException.class)

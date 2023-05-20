@@ -16,6 +16,7 @@
 package org.cp.elements.nio;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import java.nio.BufferOverflowException;
 import java.nio.ByteBuffer;
@@ -45,13 +46,18 @@ public class ByteBufferUnitTests {
     assertThat(buffer.capacity()).isEqualTo(capacity);
   }
 
-  @Test(expected = BufferOverflowException.class)
+  @Test
   public void writeToByteBufferOverCapacityThrowsBufferOverflowException() {
 
-    ByteBuffer buffer = ByteBuffer.allocate(10);
+    assertThatExceptionOfType(BufferOverflowException.class)
+      .isThrownBy(() -> {
 
-    for (int index = 0; index < 10; index++) {
-      buffer.putInt(index);
-    }
+        ByteBuffer buffer = ByteBuffer.allocate(10);
+
+        for (int index = 0; index < 10; index++) {
+          buffer.putInt(index);
+        }
+      })
+      .withNoCause();
   }
 }

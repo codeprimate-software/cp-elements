@@ -16,6 +16,7 @@
 package org.cp.elements.dao;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.isA;
@@ -38,10 +39,12 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-import org.cp.elements.lang.Identifiable;
-import org.cp.elements.util.CollectionUtils;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
+
+import org.cp.elements.lang.Identifiable;
+import org.cp.elements.util.CollectionUtils;
+
 import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
@@ -88,24 +91,17 @@ public class DaoTemplateUnitTests {
     verifyNoMoreInteractions(mockFunction);
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void createWithNullFunctionThrowsIllegalArgumentException() {
 
     doCallRealMethod().when(this.mockDao).create(any());
 
-    try {
-      this.mockDao.create(null);
-    }
-    catch (IllegalArgumentException expected) {
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> this.mockDao.create(null))
+      .withMessage("Callback Function is required")
+      .withNoCause();
 
-      assertThat(expected).hasMessage("Callback Function is required");
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
-    finally {
-      verify(this.mockDao, never()).create();
-    }
+    verify(this.mockDao, never()).create();
   }
 
   @Test
@@ -184,24 +180,17 @@ public class DaoTemplateUnitTests {
     verifyNoInteractions(mockComparator);
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void findAllWithNullComparatorThrowsIllegalArgumentException() {
 
     doCallRealMethod().when(this.mockDao).findAll(ArgumentMatchers.<Comparator<User>>any());
 
-    try {
-      this.mockDao.findAll((Comparator<User>) null);
-    }
-    catch (IllegalArgumentException expected) {
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> this.mockDao.findAll((Comparator<User>) null))
+      .withMessage("Comparator used to order (sort) the beans is required")
+      .withNoCause();
 
-      assertThat(expected).hasMessage("Comparator used to order (sort) the beans is required");
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
-    finally {
-      verify(this.mockDao, never()).findAll();
-    }
+    verify(this.mockDao, never()).findAll();
   }
 
   @Test
@@ -259,24 +248,17 @@ public class DaoTemplateUnitTests {
     verifyNoInteractions(mockPredicate);
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void findAllWithNullPredicateThrowsIllegalArgumentException() {
 
     doCallRealMethod().when(this.mockDao).findAll(ArgumentMatchers.<Predicate<User>>any());
 
-    try {
-      this.mockDao.findAll((Predicate<User>) null);
-    }
-    catch (IllegalArgumentException expected) {
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> this.mockDao.findAll((Predicate<User>) null))
+      .withMessage("Query Predicate is required")
+      .withNoCause();
 
-      assertThat(expected).hasMessage("Query Predicate is required");
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
-    finally {
-      verify(this.mockDao, never()).findAll();
-    }
+    verify(this.mockDao, never()).findAll();
   }
 
   @Test
@@ -334,51 +316,37 @@ public class DaoTemplateUnitTests {
   }
 
   @SuppressWarnings("unchecked")
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void findAllWithNullPredicateAndComparatorThrowsIllegalArgumentException() {
 
     Comparator<User> mockComparator = mock(Comparator.class);
 
     doCallRealMethod().when(this.mockDao).findAll(any(), isA(Comparator.class));
 
-    try {
-      this.mockDao.findAll(null, mockComparator);
-    }
-    catch (IllegalArgumentException expected) {
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> this.mockDao.findAll(null, mockComparator))
+      .withMessage("Query Predicate is required")
+      .withNoCause();
 
-      assertThat(expected).hasMessage("Query Predicate is required");
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
-    finally {
-      verify(this.mockDao, never()).findAll(isA(Predicate.class));
-      verifyNoInteractions(mockComparator);
-    }
+    verify(this.mockDao, never()).findAll(isA(Predicate.class));
+    verifyNoInteractions(mockComparator);
   }
 
   @SuppressWarnings("unchecked")
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void findAllWithPredicateAndNullComparatorThrowsIllegalArgumentException() {
 
     Predicate<User> mockPredicate = mock(Predicate.class);
 
     doCallRealMethod().when(this.mockDao).findAll(isA(Predicate.class), any());
 
-    try {
-      this.mockDao.findAll(mockPredicate, null);
-    }
-    catch (IllegalArgumentException expected) {
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> this.mockDao.findAll(mockPredicate, null))
+      .withMessage("Comparator used to order (sort) the beans is required")
+      .withNoCause();
 
-      assertThat(expected).hasMessage("Comparator used to order (sort) the beans is required");
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
-    finally {
-      verify(this.mockDao, never()).findAll(eq(mockPredicate));
-      verifyNoInteractions(mockPredicate);
-    }
+    verify(this.mockDao, never()).findAll(eq(mockPredicate));
+    verifyNoInteractions(mockPredicate);
   }
 
   @Test
@@ -430,30 +398,22 @@ public class DaoTemplateUnitTests {
     verifyNoInteractions(mockPredicate);
   }
 
+  @Test
   @SuppressWarnings("unchecked")
-  @Test(expected = IllegalArgumentException.class)
   public void removeAllWithNullPredicateThrowsIllegalArgumentException() {
 
     doCallRealMethod().when(this.mockDao).removeAll(ArgumentMatchers.<Predicate<User>>any());
 
-    try {
-      this.mockDao.removeAll((Predicate<User>) null);
-    }
-    catch (IllegalArgumentException expected) {
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> this.mockDao.removeAll((Predicate<User>) null))
+      .withMessage("Predicate identifying beans to remove is required")
+      .withNoCause();
 
-      assertThat(expected).hasMessage("Predicate identifying beans to remove is required");
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
-    finally {
-      verify(this.mockDao, never()).findAll(any(Predicate.class));
-      verify(this.mockDao, never()).removeAll(any(Set.class));
-    }
+    verify(this.mockDao, never()).findAll(any(Predicate.class));
+    verify(this.mockDao, never()).removeAll(any(Set.class));
   }
 
   @Test
-  @SuppressWarnings("unchecked")
   public void removeAllWithSetCallsRemove() {
 
     User jonDoe = User.of("Jon Doe").identifiedBy(1L);
@@ -474,7 +434,6 @@ public class DaoTemplateUnitTests {
   }
 
   @Test
-  @SuppressWarnings("unchecked")
   public void removeAllWithSetCallsRemoveWithOnlyNonNullBeans() {
 
     User cookieDoe = User.of("Cookie Doe").identifiedBy(1L);
@@ -499,7 +458,6 @@ public class DaoTemplateUnitTests {
   }
 
   @Test
-  @SuppressWarnings("unchecked")
   public void removeAllWithSetIsNullSafe() {
 
     doCallRealMethod().when(this.mockDao).removeAll(ArgumentMatchers.<Set<User>>any());
@@ -615,6 +573,7 @@ public class DaoTemplateUnitTests {
   @ToString(of = "name")
   @EqualsAndHashCode(of = "name")
   @RequiredArgsConstructor(staticName = "of")
+  @SuppressWarnings("all")
   static class User implements Comparable<User>, Identifiable<Long> {
 
     @Setter

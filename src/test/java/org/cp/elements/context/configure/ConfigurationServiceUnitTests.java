@@ -17,7 +17,6 @@ package org.cp.elements.context.configure;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.cp.elements.lang.ThrowableAssertions.assertThatThrowableOfType;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -40,6 +39,7 @@ import java.util.function.Supplier;
 import org.junit.jupiter.api.Test;
 
 import org.cp.elements.context.annotation.ActiveProfiles;
+import org.cp.elements.lang.ThrowableAssertions;
 import org.cp.elements.util.ArrayUtils;
 
 import org.mockito.ArgumentMatchers;
@@ -482,7 +482,7 @@ public class ConfigurationServiceUnitTests {
     doReturn(false).when(mockConfigurationOne).isPresent(anyString());
     doReturn(false).when(mockConfigurationTwo).isPresent(anyString());
 
-    assertThatThrowableOfType(ConfigurationException.class)
+    ThrowableAssertions.assertThatThrowableOfType(ConfigurationException.class)
       .isThrownBy(args -> configurationService.getPropertyValue("mockProperty", Configuration.REQUIRED))
       .havingMessage("Property [mockProperty] not found")
       .withNoCause();
@@ -701,7 +701,7 @@ public class ConfigurationServiceUnitTests {
     doReturn(false).when(mockConfigurationOne).isPresent(anyString());
     doReturn(false).when(mockConfigurationTwo).isPresent(anyString());
 
-    assertThatThrowableOfType(ConfigurationException.class)
+    ThrowableAssertions.assertThatThrowableOfType(ConfigurationException.class)
       .isThrownBy(args ->configurationService.getPropertyValueAs("mockProperty", User.class, Configuration.REQUIRED))
       .havingMessage("Property [mockProperty] not found")
       .withNoCause();

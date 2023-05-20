@@ -16,6 +16,7 @@
 package org.cp.elements.lang.support;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.assertj.core.api.Fail.fail;
 import static org.cp.elements.util.ArrayUtils.asIterable;
 import static org.cp.elements.util.ArrayUtils.getFirstElement;
@@ -27,17 +28,17 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.junit.jupiter.api.Test;
+
 import org.cp.elements.lang.ObjectUtils;
 import org.cp.elements.lang.Visitable;
 import org.cp.elements.lang.Visitor;
 import org.cp.elements.util.CollectionUtils;
-import org.junit.jupiter.api.Test;
 
 /**
- * Unit tests for {@link ComposableVisitor}.
+ * Unit Tests for {@link ComposableVisitor}.
  *
  * @author John J. Blum
- * @see org.junit.Rule
  * @see org.junit.jupiter.api.Test
  * @see org.mockito.Mockito
  * @see org.cp.elements.lang.Visitable
@@ -75,19 +76,13 @@ public class ComposableVisitorTests {
     assertThat(visitors.add(mockVisitor)).isFalse();
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void addNullVisitorThrowsIllegalArgumentException() {
 
-    try {
-      new ComposableVisitor().add(null);
-    }
-    catch (IllegalArgumentException expected) {
-
-      assertThat(expected).hasMessage("The Visitor to add to this composite cannot be null");
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> new ComposableVisitor().add(null))
+      .withMessage("The Visitor to add to this composite cannot be null")
+      .withNoCause();
   }
 
   @Test
@@ -358,20 +353,16 @@ public class ComposableVisitorTests {
         return true;
       }
 
-      if (!(obj instanceof TestVisitable)) {
+      if (!(obj instanceof TestVisitable that)) {
         return false;
       }
-
-      TestVisitable that = (TestVisitable) obj;
 
       return (this.getId() == that.getId());
     }
 
     @Override
     public int hashCode() {
-      int hashValue = 17;
-      hashValue = 37 * hashValue + ObjectUtils.hashCode(getId());
-      return hashValue;
+      return ObjectUtils.hashCodeOf(getId());
     }
 
     @Override

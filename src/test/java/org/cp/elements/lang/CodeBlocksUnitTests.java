@@ -16,6 +16,8 @@
 package org.cp.elements.lang;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.isA;
@@ -89,69 +91,48 @@ public class CodeBlocksUnitTests {
     verifyNoInteractions(ifBlock);
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void ifElseWithNullIfCondition() {
 
     Function<Object, Object> ifBlock = mock(Function.class);
     Function<Object, Object> elseBlock = mock(Function.class);
 
-    try {
-      CodeBlocks.ifElse("test", null, ifBlock, elseBlock);
-    }
-    catch (IllegalArgumentException expected) {
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> CodeBlocks.ifElse("test", null, ifBlock, elseBlock))
+      .withMessage("The Predicate used in the condition of the if statement is required")
+      .withNoCause();
 
-      assertThat(expected).hasMessage("The Predicate used in the condition of the if statement is required");
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
-    finally {
-      verifyNoInteractions(ifBlock, elseBlock);
-    }
+    verifyNoInteractions(ifBlock, elseBlock);
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void ifElseWithNullIfBlock() {
 
     Predicate<Object> ifCondition = mock(Predicate.class);
 
     Function<Object, Object> elseBlock = mock(Function.class);
 
-    try {
-      CodeBlocks.ifElse("test", ifCondition, null, elseBlock);
-    }
-    catch (IllegalArgumentException expected) {
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> CodeBlocks.ifElse("test", ifCondition, null, elseBlock))
+      .withMessage("The Function for the if block is required")
+      .withNoCause();
 
-      assertThat(expected).hasMessage("The Function for the if block is required");
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
-    finally {
-      verifyNoInteractions(ifCondition, elseBlock);
-    }
+    verifyNoInteractions(ifCondition, elseBlock);
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void ifElseWithNullElseBlock() {
 
     Predicate<Object> ifCondition = mock(Predicate.class);
 
     Function<Object, Object> ifBlock = mock(Function.class);
 
-    try {
-      CodeBlocks.ifElse("test", ifCondition, ifBlock, null);
-    }
-    catch (IllegalArgumentException expected) {
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> CodeBlocks.ifElse("test", ifCondition, ifBlock, null))
+      .withMessage("The Function for the else block is required")
+      .withNoCause();
 
-      assertThat(expected).hasMessage("The Function for the else block is required");
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
-    finally {
-      verifyNoInteractions(ifCondition, ifBlock);
-    }
+    verifyNoInteractions(ifCondition, ifBlock);
   }
 
   @Test
@@ -189,7 +170,7 @@ public class CodeBlocksUnitTests {
     verifyNoInteractions(catchBlock);
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void tryCatchThrowsRuntimeException() throws Throwable {
 
     ThrowableOperation<Object> operation = mock(ThrowableOperation.class);
@@ -202,28 +183,20 @@ public class CodeBlocksUnitTests {
       throw new IllegalArgumentException(invocation.getArgument(0, Throwable.class).getMessage());
     }).when(catchBlock).apply(any(Throwable.class));
 
-    try {
-      CodeBlocks.tryCatch(operation, catchBlock);
-    }
-    catch (IllegalArgumentException expected) {
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> CodeBlocks.tryCatch(operation, catchBlock))
+      .withMessage("test")
+      .withNoCause();
 
-      assertThat(expected).hasMessage("test");
-      assertThat(expected).hasNoCause();
+    InOrder order = inOrder(operation, catchBlock);
 
-      throw expected;
-    }
-    finally {
+    order.verify(operation, times(1)).run(any(Object[].class));
+    order.verify(catchBlock, times(1)).apply(isA(TestException.class));
 
-      InOrder order = inOrder(operation, catchBlock);
-
-      order.verify(operation, times(1)).run(any(Object[].class));
-      order.verify(catchBlock, times(1)).apply(isA(TestException.class));
-
-      verifyNoMoreInteractions(operation, catchBlock);
-    }
+    verifyNoMoreInteractions(operation, catchBlock);
   }
 
-  @Test(expected = IllegalStateException.class)
+  @Test
   public void tryCatchFinallyThrowsRuntimeException() throws Throwable {
 
     ThrowableOperation<Object> operation = mock(ThrowableOperation.class);
@@ -238,92 +211,63 @@ public class CodeBlocksUnitTests {
       throw new IllegalStateException(invocation.getArgument(0, Throwable.class).getMessage());
     }).when(catchBlock).apply(any(Throwable.class));
 
-    try {
-      CodeBlocks.tryCatchFinally(operation, catchBlock, finallyBlock);
-    }
-    catch (IllegalStateException expected) {
+    assertThatIllegalStateException()
+      .isThrownBy(() -> CodeBlocks.tryCatchFinally(operation, catchBlock, finallyBlock))
+      .withMessage("test")
+      .withNoCause();
 
-      assertThat(expected).hasMessage("test");
-      assertThat(expected).hasNoCause();
+    InOrder order = inOrder(operation, catchBlock, finallyBlock);
 
-      throw expected;
-    }
-    finally {
+    order.verify(operation, times(1)).run(any(Object[].class));
+    order.verify(catchBlock, times(1)).apply(isA(TestError.class));
+    order.verify(finallyBlock, times(1)).run();
 
-      InOrder order = inOrder(operation, catchBlock, finallyBlock);
-
-      order.verify(operation, times(1)).run(any(Object[].class));
-      order.verify(catchBlock, times(1)).apply(isA(TestError.class));
-      order.verify(finallyBlock, times(1)).run();
-
-      verifyNoMoreInteractions(operation, finallyBlock, catchBlock);
-    }
+    verifyNoMoreInteractions(operation, finallyBlock, catchBlock);
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void tryCatchFinallyWithNullTryBlock() {
 
     Runnable finallyBlock = mock(Runnable.class);
 
     Function<Throwable, RuntimeException> catchBlock = mock(Function.class);
 
-    try {
-      CodeBlocks.tryCatchFinally(null, catchBlock, finallyBlock);
-    }
-    catch (IllegalArgumentException expected) {
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> CodeBlocks.tryCatchFinally(null, catchBlock, finallyBlock))
+      .withMessage("The ThrowableOperation invoked in the try block is required")
+      .withNoCause();
 
-      assertThat(expected).hasMessage("The ThrowableOperation invoked in the try block is required");
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
-    finally {
-      verifyNoInteractions(finallyBlock, catchBlock);
-    }
+    verifyNoInteractions(finallyBlock, catchBlock);
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void tryCatchFinallyWithNullFinallyBlock() {
 
     ThrowableOperation<Object> operation = mock(ThrowableOperation.class);
 
     Function<Throwable, RuntimeException> catchBlock = mock(Function.class);
 
-    try {
-      CodeBlocks.tryCatchFinally(operation, catchBlock, null);
-    }
-    catch (IllegalArgumentException expected) {
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> CodeBlocks.tryCatchFinally(operation, catchBlock, null))
+      .withMessage("The Runnable invoked in the finally block is required")
+      .withNoCause();
 
-      assertThat(expected).hasMessage("The Runnable invoked in the finally block is required");
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
-    finally {
-      verifyNoInteractions(operation, catchBlock);
-    }
+    verifyNoInteractions(operation, catchBlock);
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void tryCatchFinallyWithNullCatchBlock() {
 
     ThrowableOperation<Object> operation = mock(ThrowableOperation.class);
 
     Runnable finallyBlock = mock(Runnable.class);
 
-    try {
-      CodeBlocks.tryCatchFinally(operation, null, finallyBlock);
-    }
-    catch (IllegalArgumentException expected) {
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> CodeBlocks.tryCatchFinally(operation, null, finallyBlock))
+      .withMessage("The Function converter invoked in the catch block is required")
+      .withNoCause();
 
-      assertThat(expected).hasMessage("The Function converter invoked in the catch block is required");
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
-    finally {
-      verifyNoInteractions(operation, finallyBlock);
-    }
+    verifyNoInteractions(operation, finallyBlock);
   }
 
   @Test
@@ -342,7 +286,7 @@ public class CodeBlocksUnitTests {
     verifyNoInteractions(catchBlock);
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void tryHandleThrowsRuntimeException() throws Throwable {
 
     ThrowableOperation<Object> operation = mock(ThrowableOperation.class);
@@ -355,28 +299,20 @@ public class CodeBlocksUnitTests {
       throw new IllegalArgumentException(invocation.getArgument(0, Throwable.class).getMessage());
     }).when(catchBlock).apply(isA(Throwable.class));
 
-    try {
-      CodeBlocks.tryHandle(operation, catchBlock);
-    }
-    catch (IllegalArgumentException expected) {
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> CodeBlocks.tryHandle(operation, catchBlock))
+      .withMessage("test")
+      .withNoCause();
 
-      assertThat(expected).hasMessage("test");
-      assertThat(expected).hasNoCause();
+    InOrder order = inOrder(operation, catchBlock);
 
-      throw expected;
-    }
-    finally {
+    order.verify(operation, times(1)).run(any(Object[].class));
+    order.verify(catchBlock, times(1)).apply(isA(TestException.class));
 
-      InOrder order = inOrder(operation, catchBlock);
-
-      order.verify(operation, times(1)).run(any(Object[].class));
-      order.verify(catchBlock, times(1)).apply(isA(TestException.class));
-
-      verifyNoMoreInteractions(operation, catchBlock);
-    }
+    verifyNoMoreInteractions(operation, catchBlock);
   }
 
-  @Test(expected = IllegalStateException.class)
+  @Test
   public void tryHandleFinallyThrowsRuntimeException() throws Throwable {
 
     ThrowableOperation<Object> operation = mock(ThrowableOperation.class);
@@ -391,92 +327,63 @@ public class CodeBlocksUnitTests {
       throw new IllegalStateException(invocation.getArgument(0, Throwable.class).getMessage());
     }).when(catchBlock).apply(isA(Throwable.class));
 
-    try {
-      CodeBlocks.tryHandleFinally(operation, catchBlock, finallyBlock);
-    }
-    catch (IllegalStateException expected) {
+    assertThatIllegalStateException()
+      .isThrownBy(() -> CodeBlocks.tryHandleFinally(operation, catchBlock, finallyBlock))
+      .withMessage("test")
+      .withNoCause();
 
-      assertThat(expected).hasMessage("test");
-      assertThat(expected).hasNoCause();
+    InOrder order = inOrder(operation, catchBlock, finallyBlock);
 
-      throw expected;
-    }
-    finally {
+    order.verify(operation, times(1)).run(any(Object[].class));
+    order.verify(catchBlock, times(1)).apply(isA(TestError.class));
+    order.verify(finallyBlock, times(1)).run();
 
-      InOrder order = inOrder(operation, catchBlock, finallyBlock);
-
-      order.verify(operation, times(1)).run(any(Object[].class));
-      order.verify(catchBlock, times(1)).apply(isA(TestError.class));
-      order.verify(finallyBlock, times(1)).run();
-
-      verifyNoMoreInteractions(operation, catchBlock);
-    }
+    verifyNoMoreInteractions(operation, catchBlock);
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void tryHandleFinallyWithNullTryBlock() {
 
     Runnable finallyBlock = mock(Runnable.class);
 
     Function<Throwable, Object> catchBlock = mock(Function.class);
 
-    try {
-      CodeBlocks.tryHandleFinally(null, catchBlock, finallyBlock);
-    }
-    catch (IllegalArgumentException expected) {
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> CodeBlocks.tryHandleFinally(null, catchBlock, finallyBlock))
+      .withMessage("The ThrowableOperation invoked in the try block is required")
+      .withNoCause();
 
-      assertThat(expected).hasMessage("The ThrowableOperation invoked in the try block is required");
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
-    finally {
-      verifyNoInteractions(finallyBlock, catchBlock);
-    }
+    verifyNoInteractions(finallyBlock, catchBlock);
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void tryHandleFinallyWithNullFinallyBlock() {
 
     ThrowableOperation<Object> tryBlock = mock(ThrowableOperation.class);
 
     Function<Throwable, Object> catchBlock = mock(Function.class);
 
-    try {
-      CodeBlocks.tryHandleFinally(tryBlock, catchBlock, null);
-    }
-    catch (IllegalArgumentException expected) {
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> CodeBlocks.tryHandleFinally(tryBlock, catchBlock, null))
+      .withMessage("The Runnable invoked in the finally block is required")
+      .withNoCause();
 
-      assertThat(expected).hasMessage("The Runnable invoked in the finally block is required");
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
-    finally {
-      verifyNoInteractions(tryBlock, catchBlock);
-    }
+    verifyNoInteractions(tryBlock, catchBlock);
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void tryHandleFinallyWithNullCatchBlock() {
 
     ThrowableOperation<Object> tryBlock = mock(ThrowableOperation.class);
 
     Runnable finallyBlock = mock(Runnable.class);
 
-    try {
-      CodeBlocks.tryHandleFinally(tryBlock, null, finallyBlock);
-    }
-    catch (IllegalArgumentException expected) {
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> CodeBlocks.tryHandleFinally(tryBlock, null, finallyBlock))
+      .withMessage("The Function handler invoked in the catch block is required")
+      .withNoCause();
 
-      assertThat(expected).hasMessage("The Function handler invoked in the catch block is required");
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
-    finally {
-      verifyNoInteractions(tryBlock, finallyBlock);
-    }
+    verifyNoInteractions(tryBlock, finallyBlock);
   }
 
   @Test
@@ -489,44 +396,30 @@ public class CodeBlocksUnitTests {
     assertThat(CodeBlocks.whileLoop(2, whileCondition, powerOfTwo)).isEqualTo(256);
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void whileLoopWithNullWhileCondition() {
 
     Function<Object, Object> whileBlock = mock(Function.class);
 
-    try {
-      CodeBlocks.whileLoop("test", null, whileBlock);
-    }
-    catch (IllegalArgumentException expected) {
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> CodeBlocks.whileLoop("test", null, whileBlock))
+      .withMessage("The condition for the while-loop is required")
+      .withNoCause();
 
-      assertThat(expected).hasMessage("The condition for the while-loop is required");
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
-    finally {
-      verifyNoInteractions(whileBlock);
-    }
+    verifyNoInteractions(whileBlock);
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void whileLoopWithNullWhileBlock() {
 
     Predicate<Object> whileCondition = mock(Predicate.class);
 
-    try {
-      CodeBlocks.whileLoop("test", whileCondition, null);
-    }
-    catch (IllegalArgumentException expected) {
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> CodeBlocks.whileLoop("test", whileCondition, null))
+      .withMessage("The Function of the while-loop is required")
+      .withNoCause();
 
-      assertThat(expected).hasMessage("The Function of the while-loop is required");
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
-    finally {
-      verifyNoInteractions(whileCondition);
-    }
+    verifyNoInteractions(whileCondition);
   }
 
   @SuppressWarnings("unused")

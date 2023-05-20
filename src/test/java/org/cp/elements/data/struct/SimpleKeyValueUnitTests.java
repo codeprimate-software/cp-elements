@@ -17,7 +17,6 @@ package org.cp.elements.data.struct;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
-import static org.cp.elements.lang.ThrowableAssertions.assertThatUnsupportedOperationException;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 
@@ -27,6 +26,7 @@ import java.util.Optional;
 import org.junit.jupiter.api.Test;
 
 import org.cp.elements.lang.Constants;
+import org.cp.elements.lang.ThrowableAssertions;
 
 /**
  * Unit Tests for {@link SimpleKeyValue}.
@@ -186,7 +186,7 @@ public class SimpleKeyValueUnitTests {
     assertThat(mapEntry.getKey()).isEqualTo("TestKey");
     assertThat(mapEntry.getValue()).isEqualTo("TestValue");
 
-    assertThatUnsupportedOperationException()
+    ThrowableAssertions.assertThatUnsupportedOperationException()
       .isThrownBy(args -> mapEntry.setValue("MockValue"))
       .havingMessage(Constants.OPERATION_NOT_SUPPORTED)
       .withNoCause();

@@ -16,13 +16,15 @@
 package org.cp.elements.lang;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 
 import java.time.LocalDateTime;
 import java.time.Month;
+import java.util.Arrays;
+
+import org.junit.jupiter.api.Test;
 
 import org.cp.elements.lang.Version.Qualifier;
-import org.cp.elements.test.TestUtils;
-import org.junit.jupiter.api.Test;
 
 /**
  * Unit Tests for {@link Version} and {@link Version.Qualifier}.
@@ -156,28 +158,23 @@ public class VersionTests {
     assertThat(version.getReleaseDateTime()).isNull();
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void parseUnrecognizedVersion() {
-    TestUtils.doIllegalArgumentExceptionThrowingOperation(() -> Version.parse("1.2.3.4.5"),
-      () -> "Unrecognized format for version [1.2.3.4.5]");
+
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> Version.parse("1.2.3.4.5"))
+      .withMessage("Unrecognized format for version [1.2.3.4.5]")
+      .withNoCause();
   }
 
-  @Test(expected = IllegalArgumentException.class)
-  public void parseNullVersion() {
-    TestUtils.doIllegalArgumentExceptionThrowingOperation(() -> Version.parse(null),
-      () -> "A version [null] is required");
-  }
+  @Test
+  public void parseIllegalVersion() {
 
-  @Test(expected = IllegalArgumentException.class)
-  public void parseEmptyVersion() {
-    TestUtils.doIllegalArgumentExceptionThrowingOperation(() -> Version.parse(""),
-      () -> "A version [] is required");
-  }
-
-  @Test(expected = IllegalArgumentException.class)
-  public void parseBlankVersion() {
-    TestUtils.doIllegalArgumentExceptionThrowingOperation(() -> Version.parse("  "),
-      () -> "A version [  ] is required");
+    Arrays.asList("", "  ", null).forEach(version ->
+      assertThatIllegalArgumentException()
+        .isThrownBy(() -> Version.parse(null))
+        .withMessage("A version [%s] is required", version)
+        .withNoCause());
   }
 
   @Test
@@ -195,22 +192,31 @@ public class VersionTests {
     assertThat(version.getReleaseDateTime()).isNull();
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void constructVersionWithIllegalMajorVersionNumber() {
-    TestUtils.doIllegalArgumentExceptionThrowingOperation(() -> new Version(-1, 0),
-      () -> "Major version [-1] must be greater than equal to 0");
+
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> new Version(-1, 0))
+      .withMessage("Major version [-1] must be greater than equal to 0")
+      .withNoCause();
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void constructVersionWithIllegalMinorVersionNumber() {
-    TestUtils.doIllegalArgumentExceptionThrowingOperation(() -> new Version(0, -2),
-      () -> "Minor version [-2] must be greater than equal to 0");
+
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> new Version(0, -2))
+      .withMessage("Minor version [-2] must be greater than equal to 0")
+      .withNoCause();
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void constructVersionWithIllegalMaintenanceVersionNumber() {
-    TestUtils.doIllegalArgumentExceptionThrowingOperation(() -> new Version(0, 0, -4),
-      () -> "Maintenance version [-4] must be greater than equal to 0");
+
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> new Version(0, 0, -4))
+      .withMessage("Maintenance version [-4] must be greater than equal to 0")
+      .withNoCause();
   }
 
   @Test

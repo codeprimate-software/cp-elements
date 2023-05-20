@@ -16,6 +16,8 @@
 package org.cp.elements.lang;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -23,7 +25,6 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.Calendar;
 
-import org.cp.elements.test.TestUtils;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -204,19 +205,13 @@ public class ValueHolderUnitTests {
     assertThat(anotherTomorrowClone).isEqualTo(tomorrow);
   }
 
-  @Test(expected = IllegalTypeException.class)
+  @Test
   public void withImmutableValueInitializedWithNull() {
 
-    try {
-      ValueHolder.withImmutableValue(null);
-    }
-    catch (IllegalTypeException expected) {
-
-      assertThat(expected).hasMessage("Value [null] is not Cloneable");
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
+    assertThatExceptionOfType(IllegalTypeException.class)
+      .isThrownBy(() -> ValueHolder.withImmutableValue(null))
+      .withMessage("Value [null] is not Cloneable")
+      .withNoCause();
   }
 
   @Test
@@ -240,13 +235,16 @@ public class ValueHolderUnitTests {
     assertThat(nonNullValue.getValue()).isEqualTo("nil");
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void withNonNullValueInitializedWithNull() {
-    TestUtils.doIllegalArgumentExceptionThrowingOperation(() -> ValueHolder.withNonNullValue(null),
-      () -> "Value is required");
+
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> ValueHolder.withNonNullValue(null))
+      .withMessage("Value is required")
+      .withNoCause();
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void withNonNullValueSetToNull() {
 
     ValueHolder<String> nonNullValue = ValueHolder.withNonNullValue("test");
@@ -254,8 +252,12 @@ public class ValueHolderUnitTests {
     assertThat(nonNullValue).isNotNull();
     assertThat(nonNullValue.getValue()).isEqualTo("test");
 
-    TestUtils.doIllegalArgumentExceptionThrowingOperation(() -> nonNullValue.setValue(null),
-      () -> "Value is required", () -> assertThat(nonNullValue.getValue()).isEqualTo("test"));
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> nonNullValue.setValue(null))
+      .withMessage("Value is required")
+      .withNoCause();
+
+    assertThat(nonNullValue.getValue()).isEqualTo("test");
   }
 
   @Test

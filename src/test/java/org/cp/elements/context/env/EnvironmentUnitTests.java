@@ -38,6 +38,7 @@ import org.junit.jupiter.api.Test;
 
 import org.cp.elements.io.FileUtils;
 import org.cp.elements.lang.StringUtils;
+import org.cp.elements.lang.ThrowableAssertions;
 import org.cp.elements.lang.Version;
 import org.cp.elements.security.model.User;
 import org.cp.elements.util.ArrayUtils;
@@ -379,22 +380,30 @@ public class EnvironmentUnitTests {
 
   // NOTE: The Map returned by System.getenv() is unmodifiable.
   // See: https://docs.oracle.com/javase/8/docs/api/java/lang/System.html#getenv--
-  @Test(expected = UnsupportedOperationException.class)
+  @Test
   public void environmentGetVariableDetectsChangesToSystemEnvironmentVariables() {
 
-    Environment environment = Environment.fromEnvironmentVariables();
+    ThrowableAssertions.assertThatUnsupportedOperationException()
+      .isThrownBy(args -> {
 
-    assertThat(environment).isNotNull();
-    assertThat(environment.getVariable("mock.system.environment.variable")).isNull();
+        Environment environment = Environment.fromEnvironmentVariables();
 
-    try {
-      System.getenv().put("mock.system.environment.variable", "test");
+        assertThat(environment).isNotNull();
+        assertThat(environment.getVariable("mock.system.environment.variable")).isNull();
 
-      assertThat(environment.getVariable("mock.system.environment.variable")).isEqualTo("test");
-    }
-    finally {
-      System.getenv().remove("mock.system.environment.variable");
-    }
+        try {
+          System.getenv().put("mock.system.environment.variable", "test");
+
+          assertThat(environment.getVariable("mock.system.environment.variable"))
+            .isEqualTo("test");
+
+          return null;
+        }
+        finally {
+          System.getenv().remove("mock.system.environment.variable");
+        }
+      })
+      .withNoCause();
   }
 
   @Test

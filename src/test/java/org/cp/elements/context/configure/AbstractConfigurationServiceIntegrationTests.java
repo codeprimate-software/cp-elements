@@ -16,7 +16,6 @@
 package org.cp.elements.context.configure;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.cp.elements.lang.ThrowableAssertions.assertThatThrowableOfType;
 
 import java.net.URI;
 import java.util.Properties;
@@ -27,6 +26,7 @@ import org.junit.jupiter.api.Test;
 import org.cp.elements.beans.annotation.Required;
 import org.cp.elements.context.configure.annotation.ConfigurationProperties;
 import org.cp.elements.context.configure.support.PropertiesConfiguration;
+import org.cp.elements.lang.ThrowableAssertions;
 import org.cp.elements.util.PropertiesBuilder;
 
 /**
@@ -134,7 +134,7 @@ public class AbstractConfigurationServiceIntegrationTests {
     assertThat(jdbcConfiguration.getConnection()).isNotNull();
     assertThat(jdbcConfiguration.getConnection().getMin()).isEqualTo(10);
 
-    assertThatThrowableOfType(ConfigurationException.class)
+    ThrowableAssertions.assertThatThrowableOfType(ConfigurationException.class)
       .isThrownBy(args -> jdbcConfiguration.getConnection().getMax())
       .havingMessage("Failed to resolve a qualified property name in the set of possible property names"
         + " [[Max, max]] for the given method name [getMax] using the base property name [jdbc.connection]")

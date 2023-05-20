@@ -17,7 +17,6 @@ package org.cp.elements.data.conversion;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
-import static org.cp.elements.lang.ThrowableAssertions.assertThatThrowableOfType;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
@@ -38,6 +37,7 @@ import java.util.function.Function;
 import org.junit.jupiter.api.Test;
 
 import org.cp.elements.lang.Constants;
+import org.cp.elements.lang.ThrowableAssertions;
 
 import org.mockito.ArgumentMatchers;
 
@@ -229,7 +229,7 @@ public class ConverterUnitTests {
     doAnswer(invocation -> invocation.getArgument(0)).when(mockConverter).convert(any());
     doCallRealMethod().when(mockConverter).convert(any(), any(Class.class));
 
-    assertThatThrowableOfType(ConversionException.class)
+    ThrowableAssertions.assertThatThrowableOfType(ConversionException.class)
       .isThrownBy(args -> mockConverter.convert("test", TestObject.class))
       .havingMessage("Cannot convert value [test] into an Object of type [%s]", TestObject.class.getName())
       .causedBy(ClassCastException.class)

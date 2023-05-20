@@ -16,9 +16,11 @@
 package org.cp.elements.util.sort;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.mockito.Mockito.mock;
 
-import org.cp.elements.test.TestUtils;
+import org.junit.jupiter.api.Test;
+
 import org.cp.elements.util.sort.support.BubbleSort;
 import org.cp.elements.util.sort.support.CombSort;
 import org.cp.elements.util.sort.support.HeapSort;
@@ -27,7 +29,6 @@ import org.cp.elements.util.sort.support.MergeSort;
 import org.cp.elements.util.sort.support.QuickSort;
 import org.cp.elements.util.sort.support.SelectionSort;
 import org.cp.elements.util.sort.support.ShellSort;
-import org.junit.jupiter.api.Test;
 
 /**
  * Unit Tests for {@link SorterFactory}.
@@ -62,10 +63,13 @@ public class SorterFactoryTests {
     assertThat(SorterFactory.<Sorter>createSorter(SortType.SHELL_SORT)).isInstanceOf(ShellSort.class);
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void createWithNull() {
-    TestUtils.doIllegalArgumentExceptionThrowingOperation(() -> SorterFactory.createSorter(null),
-      () -> String.format("The SortType (null) is not supported by the %s!", SorterFactory.class.getSimpleName()));
+
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> SorterFactory.createSorter(null))
+      .withMessage("The SortType (null) is not supported by the %s!", SorterFactory.class.getSimpleName())
+      .withNoCause();
   }
 
   @Test

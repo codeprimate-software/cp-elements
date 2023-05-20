@@ -16,6 +16,8 @@
 package org.cp.elements.lang;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.isA;
@@ -242,25 +244,18 @@ public class AuditorUnitTests {
     verify(mockAuditor, never()).audit(isA(Auditable.class));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void auditNullAuditable() {
 
     Auditor<Object, Object> mockAuditor = spy(new Auditor<Object, Object>() { });
 
-    try {
-      mockAuditor.audit((Auditable<Object, Object, Integer>) null);
-    }
-    catch (IllegalArgumentException expected) {
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> mockAuditor.audit((Auditable<Object, Object, Integer>) null))
+      .withMessage("The Auditable object to audit is required")
+      .withNoCause();
 
-      assertThat(expected).hasMessage("The Auditable object to audit is required");
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
-    finally {
-      verify(mockAuditor, times(1)).audit(isNull());
-      verifyNoMoreInteractions(mockAuditor);
-    }
+    verify(mockAuditor, times(1)).audit(isNull());
+    verifyNoMoreInteractions(mockAuditor);
   }
 
   @Test
@@ -395,26 +390,19 @@ public class AuditorUnitTests {
     verifyNoMoreInteractions(mockAuditor);
   }
 
-  @Test(expected = IllegalStateException.class)
+  @Test
   public void requireUserWithNull() {
 
     Auditor<Object, Object> mockAuditor = mock(Auditor.class);
 
     doCallRealMethod().when(mockAuditor).requireUser(any());
 
-    try {
-      mockAuditor.requireUser(null);
-    }
-    catch (IllegalStateException expected) {
+    assertThatIllegalStateException()
+      .isThrownBy(() -> mockAuditor.requireUser(null))
+      .withMessage("User is required")
+      .withNoCause();
 
-      assertThat(expected).hasMessage("User is required");
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
-    finally {
-      verify(mockAuditor, times(1)).requireUser(isNull());
-      verifyNoMoreInteractions(mockAuditor);
-    }
+    verify(mockAuditor, times(1)).requireUser(isNull());
+    verifyNoMoreInteractions(mockAuditor);
   }
 }

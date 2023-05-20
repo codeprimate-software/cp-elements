@@ -16,6 +16,8 @@
 package org.cp.elements.process;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
 import static org.cp.elements.io.FileUtils.newFile;
 import static org.cp.elements.process.ProcessContext.newProcessContext;
 
@@ -23,14 +25,13 @@ import java.io.File;
 import java.util.Arrays;
 import java.util.Collections;
 
+import org.junit.jupiter.api.Test;
+import org.junit.runner.RunWith;
+
 import org.cp.elements.context.env.Environment;
 import org.cp.elements.io.FileSystemUtils;
 import org.cp.elements.lang.SystemUtils;
 import org.cp.elements.test.AbstractBaseTestSuite;
-import org.cp.elements.test.TestUtils;
-
-import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
@@ -74,11 +75,13 @@ public class ProcessContextTests extends AbstractBaseTestSuite {
     assertThat(processContext.isRedirectingErrorStream()).isFalse();
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void newProcessContextWithNullProcessThrowsIllegalArgumentException() {
 
-    TestUtils.doIllegalArgumentExceptionThrowingOperation(() -> newProcessContext(null),
-      () -> "Process cannot be null");
+    assertThatIllegalStateException()
+      .isThrownBy(() -> newProcessContext(null))
+      .withMessage("Process cannot be null")
+      .withNoCause();
   }
 
   @Test
@@ -196,28 +199,32 @@ public class ProcessContextTests extends AbstractBaseTestSuite {
       .isEqualTo(FileSystemUtils.USER_HOME_DIRECTORY);
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void setInDirectoryToFile() {
 
     File processContextJava = getLocation(ProcessContext.class);
 
-    TestUtils.doIllegalArgumentExceptionThrowingOperation(
-      () -> newProcessContext(this.mockProcess).ranIn(processContextJava),
-        () -> String.format("[%s] must be a valid directory", processContextJava.getAbsolutePath()));
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> newProcessContext(this.mockProcess).ranIn(processContextJava))
+      .withMessage("[%s] must be a valid directory", processContextJava.getAbsolutePath())
+      .withNoCause();
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void setInDirectoryToNonExistingDirectory() {
 
-    TestUtils.doIllegalArgumentExceptionThrowingOperation(
-      () -> newProcessContext(this.mockProcess).ranIn(newFile("/absolute/path/to/non/existing/directory")),
-        () -> "[/absolute/path/to/non/existing/directory] must be a valid directory");
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> newProcessContext(this.mockProcess).ranIn(newFile("/absolute/path/to/non/existing/directory")))
+      .withMessage("[/absolute/path/to/non/existing/directory] must be a valid directory")
+      .withNoCause();
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void setInDirectoryToNullDirectory() {
 
-    TestUtils.doIllegalArgumentExceptionThrowingOperation(() -> newProcessContext(this.mockProcess).ranIn(null),
-      () -> "[null] must be a valid directory");
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> newProcessContext(this.mockProcess).ranIn(null))
+      .withMessage("[null] must be a valid directory")
+      .withNoCause();
   }
 }

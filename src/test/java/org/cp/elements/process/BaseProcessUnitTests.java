@@ -16,14 +16,16 @@
 package org.cp.elements.process;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 
+import org.junit.jupiter.api.Test;
+
 import org.cp.elements.io.FileSystemUtils;
 import org.cp.elements.io.FileUtils;
-import org.junit.jupiter.api.Test;
 
 /**
  * Unit Tests for {@link AbstractBaseProcess}.
@@ -58,21 +60,14 @@ public class BaseProcessUnitTests {
     }
   }
 
-  @Test(expected = UnsupportedOperationException.class)
+  @Test
   public void setIdIsNotAllowed() {
 
-    try {
-      this.testProcess.setId(123);
-    }
-    catch (UnsupportedOperationException expected) {
-
-      assertThat(expected).hasMessage("Setting the ID of the Process is not supported;"
-        + " a Process ID (PID) is assigned by the Operating System");
-
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
+    assertThatExceptionOfType(UnsupportedOperationException.class)
+      .isThrownBy(() -> this.testProcess.setId(123))
+      .withMessage("Setting the ID of the Process is not supported;"
+        + " a Process ID (PID) is assigned by the Operating System")
+      .withNoCause();
   }
 
   @Test
@@ -80,19 +75,28 @@ public class BaseProcessUnitTests {
     assertThat(this.testProcess.getName()).isNull();
   }
 
-  @Test(expected = UnsupportedOperationException.class)
+  @Test
   public void getErrorStreamIsUnsupported() {
-    this.testProcess.getErrorStream();
+
+    assertThatExceptionOfType(UnsupportedOperationException.class)
+      .isThrownBy(this.testProcess::getErrorStream)
+      .withNoCause();
   }
 
-  @Test(expected = UnsupportedOperationException.class)
+  @Test
   public void getInputStreamIsUnsupported() {
-    this.testProcess.getInputStream();
+
+    assertThatExceptionOfType(UnsupportedOperationException.class)
+      .isThrownBy(this.testProcess::getInputStream)
+      .withNoCause();
   }
 
-  @Test(expected = UnsupportedOperationException.class)
+  @Test
   public void getOutputStreamIsUnsupported() {
-    this.testProcess.getOutputStream();
+
+    assertThatExceptionOfType(UnsupportedOperationException.class)
+      .isThrownBy(this.testProcess::getOutputStream)
+      .withNoCause();
   }
 
   @Test

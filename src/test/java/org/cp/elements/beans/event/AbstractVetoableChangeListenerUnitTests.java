@@ -16,7 +16,6 @@
 package org.cp.elements.beans.event;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.cp.elements.lang.ThrowableAssertions.assertThatThrowableOfType;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doNothing;
@@ -35,6 +34,7 @@ import org.junit.jupiter.api.Test;
 
 import org.cp.elements.beans.IllegalPropertyValueException;
 import org.cp.elements.lang.Constants;
+import org.cp.elements.lang.ThrowableAssertions;
 import org.cp.elements.lang.ThrowableOperation;
 
 /**
@@ -97,7 +97,7 @@ public class AbstractVetoableChangeListenerUnitTests {
 
     doThrow(new IllegalPropertyValueException("TEST")).when(listener).handle(any(PropertyChangeEvent.class));
 
-    assertThatThrowableOfType(PropertyVetoException.class)
+    ThrowableAssertions.assertThatThrowableOfType(PropertyVetoException.class)
       .isThrownBy(ThrowableOperation.fromVoidReturning(args -> listener.vetoableChange(mockEvent)))
       .havingMessage("Failed to process event [%s]", mockEvent)
       .causedBy(IllegalPropertyValueException.class)

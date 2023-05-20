@@ -16,6 +16,7 @@
 package org.cp.elements.util;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
@@ -33,13 +34,14 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Set;
 
+import org.junit.jupiter.api.Test;
+
 import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.Filter;
 import org.cp.elements.lang.FilteringTransformer;
 import org.cp.elements.lang.NumberUtils;
 import org.cp.elements.lang.ObjectUtils;
 import org.cp.elements.lang.StringUtils;
-import org.junit.jupiter.api.Test;
 
 /**
  * Unit Tests for {@link CollectionUtils}.
@@ -53,7 +55,6 @@ import org.junit.jupiter.api.Test;
  * @see java.util.Iterator
  * @see java.util.List
  * @see java.util.Set
- * @see org.junit.Rule
  * @see org.junit.jupiter.api.Test
  * @see org.cp.elements.util.CollectionUtils
  * @since 1.0.0
@@ -61,7 +62,7 @@ import org.junit.jupiter.api.Test;
 public class CollectionUtilsTests {
 
   @SafeVarargs
-  private final <T> void assertElements(Collection<T> collection, T... elements) {
+  private <T> void assertElements(Collection<T> collection, T... elements) {
 
     assertThat(collection).isNotNull();
     assertThat(collection.size()).isEqualTo(elements.length);
@@ -91,14 +92,14 @@ public class CollectionUtilsTests {
   }
 
   @SafeVarargs
-  private final <T> Collection<T> asCollection(T... elements) {
+  private <T> Collection<T> asCollection(T... elements) {
     return Arrays.asList(elements);
   }
 
   @SafeVarargs
-  private final <T> Enumeration<T> asEnumeration(T... elements) {
+  private <T> Enumeration<T> asEnumeration(T... elements) {
 
-    return new Enumeration<T>() {
+    return new Enumeration<>() {
 
       int index = 0;
 
@@ -116,14 +117,14 @@ public class CollectionUtilsTests {
   }
 
   @SafeVarargs
-  private final <T> Iterable<T> asIterable(T... elements) {
+  private <T> Iterable<T> asIterable(T... elements) {
     return () -> asIterator(elements);
   }
 
   @SafeVarargs
-  private final <T> Iterator<T> asIterator(T... elements) {
+  private <T> Iterator<T> asIterator(T... elements) {
 
-    return new Iterator<T>() {
+    return new Iterator<>() {
 
       int index = 0;
 
@@ -187,19 +188,13 @@ public class CollectionUtilsTests {
     assertThat(newNumbers).containsExactly(1, 2, 3);
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void addArrayElementsToNullCollection() {
 
-    try {
-      CollectionUtils.addAll(null, 1, 2, 3);
-    }
-    catch (IllegalArgumentException expected) {
-
-      assertThat(expected).hasMessage("Collection is required");
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> CollectionUtils.addAll(null, 1, 2, 3))
+      .withMessage("Collection is required")
+      .withNoCause();
   }
 
   @Test
@@ -246,19 +241,13 @@ public class CollectionUtilsTests {
     assertThat(newNumbers).containsExactly(1, 2, 3);
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void addIterableElementsToNullCollection() {
 
-    try {
-      CollectionUtils.addAll(null, asIterable(1));
-    }
-    catch (IllegalArgumentException expected) {
-
-      assertThat(expected).hasMessage("Collection is required");
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> CollectionUtils.addAll(null, asIterable(1)))
+      .withMessage("Collection is required")
+      .withNoCause();
   }
 
   @Test
@@ -400,7 +389,7 @@ public class CollectionUtilsTests {
     assertThat(iterator.hasNext()).isFalse();
   }
 
-  @Test(expected = UnsupportedOperationException.class)
+  @Test
   public void asIteratorForEnumerationIsUnmodifiable() {
 
     Iterator<String> iterator = CollectionUtils.asIterator(asEnumeration("test"));
@@ -408,14 +397,13 @@ public class CollectionUtilsTests {
     assertThat(iterator).isNotNull();
     assertThat(iterator.hasNext()).isTrue();
 
-    try {
-      iterator.remove();
-    }
-    finally {
-      assertThat(iterator.hasNext()).isTrue();
-      assertThat(iterator.next()).isEqualTo("test");
-      assertThat(iterator.hasNext()).isFalse();
-    }
+    assertThatExceptionOfType(UnsupportedOperationException.class)
+      .isThrownBy(iterator::remove)
+      .withNoCause();
+
+    assertThat(iterator).hasNext();
+    assertThat(iterator.next()).isEqualTo("test");
+    assertThat(iterator.hasNext()).isFalse();
   }
 
   @Test
@@ -809,19 +797,13 @@ public class CollectionUtilsTests {
     assertElements(CollectionUtils.filter(Collections.emptyList(), (element) -> true));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void filterNullCollection() {
 
-    try {
-      CollectionUtils.filter(null, (element) -> true);
-    }
-    catch (IllegalArgumentException expected) {
-
-      assertThat(expected).hasMessage("Collection is required");
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> CollectionUtils.filter(null, (element) -> true))
+      .withMessage("Collection is required")
+      .withNoCause();
   }
 
   @Test
@@ -839,7 +821,9 @@ public class CollectionUtilsTests {
     Collection<String> strings = asCollection("test", null, "testing", "", "tested", "  ");
 
     Collection<String> upperCaseStrings = CollectionUtils.filterAndTransform(strings,
-      new FilteringTransformer<String>() {
+
+      new FilteringTransformer<>() {
+
         @Override
         public boolean accept(String value) {
           return StringUtils.hasText(value);
@@ -863,7 +847,9 @@ public class CollectionUtilsTests {
     Collection<Integer> numbers = asCollection(0, 1, 2, 4, 8);
 
     Collection<Integer> negativeNumbers = CollectionUtils.filterAndTransform(numbers,
-      new FilteringTransformer<Integer>() {
+
+      new FilteringTransformer<>() {
+
         @Override
         public boolean accept(Integer number) {
           return (number != null);
@@ -887,7 +873,9 @@ public class CollectionUtilsTests {
     Collection<Integer> numbers = asCollection(0, 1, 2, 4, 8);
 
     Collection<Integer> noNumbers = CollectionUtils.filterAndTransform(numbers,
-      new FilteringTransformer<Integer>() {
+
+      new FilteringTransformer<>() {
+
         @Override
         public boolean accept(Integer number) {
           return false;
@@ -925,40 +913,27 @@ public class CollectionUtilsTests {
     verifyNoInteractions(mockFilteringTransformer);
   }
 
+  @Test
   @SuppressWarnings({ "rawtypes", "unchecked" })
-  @Test(expected = IllegalArgumentException.class)
   public void filterAndTransformNullCollection() {
 
     FilteringTransformer mockFilteringTransformer = mock(FilteringTransformer.class);
 
-    try {
-      CollectionUtils.filterAndTransform(null, mockFilteringTransformer);
-    }
-    catch (IllegalArgumentException expected) {
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> CollectionUtils.filterAndTransform(null, mockFilteringTransformer))
+      .withMessage("Collection is required")
+      .withNoCause();
 
-      assertThat(expected).hasMessage("Collection is required");
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
-    finally {
-      verifyNoInteractions(mockFilteringTransformer);
-    }
+    verifyNoInteractions(mockFilteringTransformer);
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void filterAndTransformWithNullFilter() {
 
-    try {
-      CollectionUtils.filterAndTransform(Collections.emptyList(), null);
-    }
-    catch (IllegalArgumentException expected) {
-
-      assertThat(expected).hasMessage("FilteringTransformer is required");
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> CollectionUtils.filterAndTransform(Collections.emptyList(), null))
+      .withMessage("FilteringTransformer is required")
+      .withNoCause();
   }
 
   @Test
@@ -1525,9 +1500,12 @@ public class CollectionUtilsTests {
     assertThat(subList.isEmpty()).isTrue();
   }
 
-  @Test(expected = IndexOutOfBoundsException.class)
+  @Test
   public void subListWithEmptyListAndIndices() {
-    CollectionUtils.subList(Collections.emptyList(), 0, 1, 2);
+
+    assertThatExceptionOfType(IndexOutOfBoundsException.class)
+      .isThrownBy(() -> CollectionUtils.subList(Collections.emptyList(), 0, 1, 2))
+      .withNoCause();
   }
 
   @Test
@@ -1539,44 +1517,38 @@ public class CollectionUtilsTests {
     assertThat(subList.isEmpty()).isTrue();
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void subListWithNullList() {
 
-    try {
-      CollectionUtils.subList(null, 0, 1, 2);
-    }
-    catch (IllegalArgumentException expected) {
-
-      assertThat(expected).hasMessage("List is required");
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> CollectionUtils.subList(null, 0, 1, 2))
+      .withMessage("List is required")
+      .withNoCause();
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void subListWithNullIndices() {
 
-    try {
-      CollectionUtils.subList(Collections.emptyList(), (int[]) null);
-    }
-    catch (IllegalArgumentException expected) {
-
-      assertThat(expected).hasMessage("Indices are required");
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> CollectionUtils.subList(Collections.emptyList(), (int[]) null))
+      .withMessage("Indices are required")
+      .withNoCause();
   }
 
-  @Test(expected = IndexOutOfBoundsException.class)
+  @Test
   public void subListWithOverflowIndex() {
-    CollectionUtils.subList(Collections.singletonList("test"), 1);
+
+    assertThatExceptionOfType(IndexOutOfBoundsException.class)
+      .isThrownBy(() -> CollectionUtils.subList(Collections.singletonList("test"), 1))
+      .withNoCause();
   }
 
-  @Test(expected = IndexOutOfBoundsException.class)
+  @Test
   public void subListWithUnderFlowIndex() {
-    CollectionUtils.subList(Collections.singletonList("test"), -1);
+
+    assertThatExceptionOfType(IndexOutOfBoundsException.class)
+      .isThrownBy(() -> CollectionUtils.subList(Collections.singletonList("test"), -1))
+      .withNoCause();
   }
 
   @Test
@@ -1668,34 +1640,22 @@ public class CollectionUtilsTests {
     assertThat(transformedCollection.isEmpty()).isTrue();
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void transformNullCollection() {
 
-    try {
-      CollectionUtils.transform(null, (value) -> "test");
-    }
-    catch (IllegalArgumentException expected) {
-
-      assertThat(expected).hasMessage("Collection is required");
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> CollectionUtils.transform(null, (value) -> "test"))
+      .withMessage("Collection is required")
+      .withNoCause();
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void transformWithNullTransformer() {
 
-    try {
-      CollectionUtils.transform(Collections.emptyList(), null);
-    }
-    catch (IllegalArgumentException expected) {
-
-      assertThat(expected).hasMessage("Transformer is required");
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> CollectionUtils.transform(Collections.emptyList(), null))
+      .withMessage("Transformer is required")
+      .withNoCause();
   }
 
   @Test
@@ -1715,62 +1675,37 @@ public class CollectionUtilsTests {
     assertThat(unmodifiableIterator.hasNext()).isFalse();
   }
 
-  @Test(expected = UnsupportedOperationException.class)
+  @Test
   public void unmodifiableIteratorIsImmutable() {
 
     Iterator<String> iterator = CollectionUtils.unmodifiableIterator(asIterator("test"));
 
     assertThat(iterator).isNotNull();
+    assertThat(iterator).hasNext();
+
+    assertThatExceptionOfType(UnsupportedOperationException.class)
+      .isThrownBy(iterator::remove)
+      .withMessage("Iterator is immutable")
+      .withNoCause();
+
     assertThat(iterator.hasNext()).isTrue();
-
-    try {
-      iterator.remove();
-    }
-    catch (UnsupportedOperationException expected) {
-
-      assertThat(expected).hasMessage("Iterator is immutable");
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
-    finally {
-      assertThat(iterator.hasNext()).isTrue();
-      assertThat(iterator.next()).isEqualTo("test");
-      assertThat(iterator.hasNext()).isFalse();
-    }
+    assertThat(iterator.next()).isEqualTo("test");
+    assertThat(iterator.hasNext()).isFalse();
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void unmodifiableIteratorWithNullIterator() {
 
-    try {
-      CollectionUtils.unmodifiableIterator(null);
-    }
-    catch (IllegalArgumentException expected) {
-
-      assertThat(expected).hasMessage("Iterator is required");
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> CollectionUtils.unmodifiableIterator(null))
+      .withMessage("Iterator is required")
+      .withNoCause();
   }
 
-  static class Person {
-
-    private final String firstName;
-    private final String lastName;
+  record Person(String firstName, String lastName){
 
     public static Person newPerson(String firstName, String lastName) {
       return new Person(firstName, lastName);
-    }
-
-    Person(String firstName, String lastName) {
-
-      Assert.hasText(firstName, "'firstName' must be specified");
-      Assert.hasText(lastName, "'lastName' must be specified");
-
-      this.firstName = firstName;
-      this.lastName = lastName;
     }
 
     public String getFirstName() {
@@ -1788,11 +1723,9 @@ public class CollectionUtilsTests {
         return true;
       }
 
-      if (!(obj instanceof Person)) {
+      if (!(obj instanceof Person that)) {
         return false;
       }
-
-      Person that = (Person) obj;
 
       return ObjectUtils.equals(this.getFirstName(), that.getFirstName())
         && ObjectUtils.equals(this.getLastName(), that.getLastName());
@@ -1800,13 +1733,7 @@ public class CollectionUtilsTests {
 
     @Override
     public int hashCode() {
-
-      int hashValue = 17;
-
-      hashValue = 37 * hashValue + ObjectUtils.hashCode(getFirstName());
-      hashValue = 37 * hashValue + ObjectUtils.hashCode(getLastName());
-
-      return hashValue;
+      return ObjectUtils.hashCodeOf(getFirstName(), getLastName());
     }
 
     @Override

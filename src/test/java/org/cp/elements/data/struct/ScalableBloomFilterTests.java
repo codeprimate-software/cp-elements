@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.data.struct;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.cp.elements.util.stream.StreamUtils.stream;
 
 import java.util.Objects;
@@ -27,7 +27,7 @@ import java.util.stream.Stream;
 import org.junit.jupiter.api.Test;
 
 /**
- * Unit tests for {@link ScalableBloomFilter}.
+ * Unit Tests for {@link ScalableBloomFilter}.
  *
  * @author John Blum
  * @see org.junit.jupiter.api.Test
@@ -75,34 +75,22 @@ public class ScalableBloomFilterTests {
     assertThat(bloomFilter.getScale()).isEqualTo(16);
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void constructBloomFilterWithIllegalScale() {
 
-    try {
-      new ScalableBloomFilter(-128);
-    }
-    catch (IllegalArgumentException expected) {
-
-      assertThat(expected).hasMessage("Scale [-128] must be greater than 0");
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> new ScalableBloomFilter<>(-128))
+      .withMessage("Scale [-128] must be greater than 0")
+      .withNoCause();
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void ofWithIllegalScaleThrowsIllegalArgumentException() {
 
-    try {
-      ScalableBloomFilter.of(-64);
-    }
-    catch (IllegalArgumentException expected) {
-
-      assertThat(expected).hasMessage("Scale [-64] must be greater than 0");
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> ScalableBloomFilter.of(-64))
+      .withMessage("Scale [-64] must be greater than 0")
+      .withNoCause();
   }
 
   @Test
@@ -164,16 +152,15 @@ public class ScalableBloomFilterTests {
   }
 
   @Test
-  @SuppressWarnings("unchecked")
   public void newBloomFilterReturnsNewBloomFilter() {
 
     BloomFilter<Object> bloomFilter = ScalableBloomFilter.ofOne()
       .newBloomFilter(1, 0.1f);
 
     assertThat(bloomFilter).isInstanceOf(SimpleBloomFilter.class);
-    assertThat(((SimpleBloomFilter) bloomFilter).getFalsePositiveRate()).isEqualTo(0.1f);
-    assertThat(((SimpleBloomFilter) bloomFilter).getFilterSize()).isEqualTo(32);
-    assertThat(((SimpleBloomFilter) bloomFilter).getHashFunctionCount(null))
+    assertThat(((SimpleBloomFilter<?>) bloomFilter).getFalsePositiveRate()).isEqualTo(0.1f);
+    assertThat(((SimpleBloomFilter<?>) bloomFilter).getFilterSize()).isEqualTo(32);
+    assertThat(((SimpleBloomFilter<?>) bloomFilter).getHashFunctionCount(null))
       .isLessThan(SimpleBloomFilter.DEFAULT_NUMBER_OF_HASH_FUNCTIONS);
   }
 
@@ -207,19 +194,13 @@ public class ScalableBloomFilterTests {
     assertThat(bloomFilter.getAcceptableFalsePositiveRate()).isEqualTo(0.50f);
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void withIllegalAcceptableFalsePositiveRate() {
 
-    try {
-      ScalableBloomFilter.ofOne().with(-0.05f);
-    }
-    catch (IllegalArgumentException expected) {
-
-      assertThat(expected).hasMessage("The acceptable false positive rate [-0.05] must be greater than 0.0 and less than 1.0");
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> ScalableBloomFilter.ofOne().with(-0.05f))
+      .withMessage("The acceptable false positive rate [-0.05] must be greater than 0.0 and less than 1.0")
+      .withNoCause();
   }
 
   @Test
@@ -232,18 +213,12 @@ public class ScalableBloomFilterTests {
     assertThat(bloomFilter.getApproximateNumberOfElementsPerFilter()).isEqualTo(128000);
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void withIllegalApproximateNumberOfElementsPerFilter() {
 
-    try {
-      ScalableBloomFilter.ofOne().with(-512000);
-    }
-    catch (IllegalArgumentException expected) {
-
-      assertThat(expected).hasMessage("The approximate number of elements [-512000] per Bloom Filter must be greater than 0");
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> ScalableBloomFilter.ofOne().with(-512000))
+      .withMessage("The approximate number of elements [-512000] per Bloom Filter must be greater than 0")
+      .withNoCause();
   }
 }

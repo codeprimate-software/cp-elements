@@ -16,13 +16,13 @@
 package org.cp.elements.data.caching;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.cp.elements.lang.ThrowableAssertions.assertThatUnsupportedOperationException;
 
 import java.util.Set;
 
 import org.junit.Before;
 import org.junit.jupiter.api.Test;
 
+import org.cp.elements.lang.ThrowableAssertions;
 import org.cp.elements.lang.ThrowableOperation;
 
 /**
@@ -73,7 +73,7 @@ public class AbstractCacheUnitTests {
   @Test
   public void clearIsNotSupported() {
 
-    assertThatUnsupportedOperationException()
+    ThrowableAssertions.assertThatUnsupportedOperationException()
       .isThrownBy(ThrowableOperation.fromRunnable(() -> this.cache.clear()))
       .havingMessage("Clear is not supported")
       .withNoCause();
@@ -82,7 +82,7 @@ public class AbstractCacheUnitTests {
   @Test
   public void evictionIsNotSupported() {
 
-    assertThatUnsupportedOperationException()
+    ThrowableAssertions.assertThatUnsupportedOperationException()
       .isThrownBy(ThrowableOperation.fromRunnable(() -> this.cache.evict(1)))
       .havingMessage("Eviction is not supported")
       .withNoCause();
@@ -91,7 +91,7 @@ public class AbstractCacheUnitTests {
   @Test
   public void getIsNotSupported() {
 
-    assertThatUnsupportedOperationException()
+    ThrowableAssertions.assertThatUnsupportedOperationException()
       .isThrownBy(args -> this.cache.get(1))
       .havingMessage("Get is not supported")
       .withNoCause();
@@ -109,7 +109,7 @@ public class AbstractCacheUnitTests {
   @Test
   public void putIsNotSupported() {
 
-    assertThatUnsupportedOperationException()
+    ThrowableAssertions.assertThatUnsupportedOperationException()
       .isThrownBy(ThrowableOperation.fromRunnable(() -> this.cache.put(1, "test")))
       .havingMessage("Put is not supported")
       .withNoCause();

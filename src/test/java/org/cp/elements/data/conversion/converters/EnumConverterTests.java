@@ -16,12 +16,15 @@
 package org.cp.elements.data.conversion.converters;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+
+import org.junit.jupiter.api.Test;
 
 import org.cp.elements.data.conversion.ConversionException;
 import org.cp.elements.enums.Gender;
 import org.cp.elements.enums.Race;
+import org.cp.elements.lang.ThrowableAssertions;
 import org.cp.elements.time.TimeUnit;
-import org.junit.jupiter.api.Test;
 
 /**
  * Unit Tests for {@link EnumConverter}.
@@ -73,57 +76,33 @@ public class EnumConverterTests {
     assertThat(this.converter.convert("WHITE", Race.class)).isEqualTo(Race.WHITE);
   }
 
-  @Test(expected = ConversionException.class)
+  @Test
   public void convertInvalidEnumeratedValueOfEnum() {
 
-    try {
-      this.converter.convert("IT", Gender.class);
-    }
-    catch (ConversionException expected) {
+    assertThatExceptionOfType(ConversionException.class)
+      .isThrownBy(() -> this.converter.convert("IT", Gender.class))
+      .withMessage("[IT] is not a valid enumerated value of Enum [%s]", Gender.class.getName())
+      .withNoCause();
 
-      assertThat(expected).hasMessage("[IT] is not a valid enumerated value of Enum [%s]",
-        Gender.class.getName());
-
-      assertThat(expected).hasCauseInstanceOf(IllegalArgumentException.class);
-      assertThat(expected.getCause()).hasNoCause();
-
-      throw expected;
-    }
   }
 
-  @Test(expected = ConversionException.class)
+  @Test
   public void convertInvalidStringToEnumThrowsException() {
 
-    try {
-      this.converter.convert("BLACK", Gender.class);
-    }
-    catch (ConversionException expected) {
-
-      assertThat(expected).hasMessage("[BLACK] is not a valid enumerated value of Enum [%s]",
-        Gender.class.getName());
-
-      assertThat(expected).hasCauseInstanceOf(IllegalArgumentException.class);
-      assertThat(expected.getCause()).hasNoCause();
-
-      throw expected;
-    }
+    ThrowableAssertions.assertThatThrowableOfType(ConversionException.class)
+      .isThrownBy(args -> this.converter.convert("BLACK", Gender.class))
+      .havingMessage("[BLACK] is not a valid enumerated value of Enum [%s]")
+      .causedBy(IllegalArgumentException.class)
+      .withNoCause();
   }
 
-  @Test(expected = ConversionException.class)
+  @Test
   public void convertWithEnumThrowsException () {
 
-    try {
-      this.converter.convert("test", Enum.class);
-    }
-    catch (ConversionException expected) {
-
-      assertThat(expected).hasMessage("[test] is not a valid enumerated value of Enum [%s]",
-        Enum.class.getName());
-
-      assertThat(expected).hasCauseInstanceOf(IllegalArgumentException.class);
-      assertThat(expected.getCause()).hasNoCause();
-
-      throw expected;
-    }
+    ThrowableAssertions.assertThatThrowableOfType(ConversionException.class)
+      .isThrownBy(args -> this.converter.convert("test", Enum.class))
+      .havingMessage("[test] is not a valid enumerated value of Enum [%s]", Enum.class.getName())
+      .causedBy(IllegalArgumentException.class)
+      .withNoCause();
   }
 }

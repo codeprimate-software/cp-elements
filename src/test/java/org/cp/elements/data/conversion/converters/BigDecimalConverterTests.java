@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.data.conversion.converters;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -21,11 +20,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
-import org.cp.elements.data.conversion.ConversionException;
 import org.junit.jupiter.api.Test;
 
+import org.cp.elements.data.conversion.ConversionException;
+import org.cp.elements.lang.ThrowableAssertions;
+
 /**
- * Unit tests for {@link BigDecimalConverter}.
+ * Unit Tests for {@link BigDecimalConverter}.
  *
  * @author John J. Blum
  * @see java.math.BigDecimal
@@ -35,7 +36,7 @@ import org.junit.jupiter.api.Test;
  */
 public class BigDecimalConverterTests {
 
-  private BigDecimalConverter converter = new BigDecimalConverter();
+  private final BigDecimalConverter converter = new BigDecimalConverter();
 
   @Test
   public void canConvertStringToBigDecimalReturnsTrue() {
@@ -82,19 +83,13 @@ public class BigDecimalConverterTests {
     assertThat(actual).isEqualTo(new BigDecimal(expected));
   }
 
-  @Test(expected = ConversionException.class)
+  @Test
   public void convertInvalidValueToBigDecimalThrowsException() {
 
-    try {
-      this.converter.convert("test");
-    }
-    catch (ConversionException expected) {
-
-      assertThat(expected).hasMessage("[test] is not a valid BigDecimal");
-      assertThat(expected).hasCauseInstanceOf(NumberFormatException.class);
-      assertThat(expected.getCause()).hasNoCause();
-
-      throw expected;
-    }
+    ThrowableAssertions.assertThatThrowableOfType(ConversionException.class)
+      .isThrownBy(args -> this.converter.convert("test"))
+      .havingMessage("[test] is not a valid BigDecimal")
+      .causedBy(NumberFormatException.class)
+      .withNoCause();
   }
 }

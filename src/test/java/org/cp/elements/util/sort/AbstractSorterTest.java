@@ -18,7 +18,6 @@ package org.cp.elements.util.sort;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
-import static org.cp.elements.lang.ThrowableAssertions.assertThatThrowableOfType;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
@@ -34,6 +33,7 @@ import java.util.List;
 import org.junit.After;
 import org.junit.jupiter.api.Test;
 
+import org.cp.elements.lang.ThrowableAssertions;
 import org.cp.elements.lang.support.SmartComparator;
 import org.cp.elements.lang.support.SmartComparator.ComparableComparator;
 
@@ -327,7 +327,7 @@ public class AbstractSorterTest {
     org.cp.elements.util.sort.annotation.Sortable sortableMetaData =
       sorter.getSortableMetaData(TestSortableWithProblem.INSTANCE);
 
-    assertThatThrowableOfType(SortException.class)
+    ThrowableAssertions.assertThatThrowableOfType(SortException.class)
       .isThrownBy(args -> sorter.configureComparator(sortableMetaData))
       .havingMessage(
         "Error occurred creating an instance of Comparator class (%1$s) to be used by this Sorter (%2$s)!"
@@ -541,7 +541,7 @@ public class AbstractSorterTest {
         public <E> List<E> sort(List<E> elements) {
 
           if ("Thread One".equalsIgnoreCase(Thread.currentThread().getName())) {
-            assertNotSame(ComparableComparator.INSTANCE, getOrderBy());
+            assertThat(getOrderBy()).isNotSameAs(ComparableComparator.INSTANCE);
             waitForTick(2);
           }
 
@@ -553,7 +553,7 @@ public class AbstractSorterTest {
 
       this.sorter.setCustomComparatorAllowed(true);
 
-      assertSame(SmartComparator.ComparableComparator.INSTANCE, sorter.getOrderBy());
+      assertThat(this.sorter.getOrderBy()).isSameAs(SmartComparator.ComparableComparator.INSTANCE);
     }
 
     public void thread1() {
@@ -561,10 +561,10 @@ public class AbstractSorterTest {
       Thread.currentThread().setName("Thread One");
 
       assertTick(0);
-      assertTrue(this.sorter.isCustomComparatorAllowed());
-      assertSame(SmartComparator.ComparableComparator.INSTANCE, sorter.getOrderBy());
+      assertThat(this.sorter.isCustomComparatorAllowed()).isTrue();
+      assertThat( sorter.getOrderBy()).isSameAs(SmartComparator.ComparableComparator.INSTANCE);
 
-      Sortable<String> sortable = this.sorter.sort(new Sortable<String>() {
+      Sortable<String> sortable = this.sorter.sort(new Sortable<>() {
 
         private final List<String> elements = new ArrayList<>(Arrays.asList(ELEMENTS));
 
@@ -579,16 +579,14 @@ public class AbstractSorterTest {
         }
       });
 
-      assertNotNull(sortable);
+      assertThat(sortable).isNotNull();
 
       List<String> elements = sortable.asList();
 
-      assertNotNull(elements);
-      assertFalse(elements.isEmpty());
-      assertEquals(3, elements.size());
-      assertEquals("testing", elements.get(0));
-      assertEquals("tested", elements.get(1));
-      assertEquals("test", elements.get(2));
+      assertThat(elements).isNotNull();
+      assertThat(elements).isNotEmpty();
+      assertThat(elements).hasSize(3);
+      assertThat(elements).containsExactly("testing", "tested", "test");
     }
 
     public void thread2() {
@@ -596,10 +594,10 @@ public class AbstractSorterTest {
       Thread.currentThread().setName("Thread Two");
 
       waitForTick(1);
-      assertTrue(sorter.isCustomComparatorAllowed());
-      assertSame(SmartComparator.ComparableComparator.INSTANCE, sorter.getOrderBy());
+      assertThat(this.sorter.isCustomComparatorAllowed()).isTrue();
+      assertThat(this.sorter.getOrderBy()).isSameAs(SmartComparator.ComparableComparator.INSTANCE);
 
-      Sortable<String> sortable = sorter.sort(new Sortable<String>() {
+      Sortable<String> sortable = sorter.sort(new Sortable<>() {
 
         private final List<String> elements = new ArrayList<>(Arrays.asList(ELEMENTS));
 
@@ -614,16 +612,14 @@ public class AbstractSorterTest {
         }
       });
 
-      assertNotNull(sortable);
+      assertThat(sortable).isNotNull();
 
       List<String> elements = sortable.asList();
 
-      assertNotNull(elements);
-      assertFalse(elements.isEmpty());
-      assertEquals(3, elements.size());
-      assertEquals("test", elements.get(0));
-      assertEquals("tested", elements.get(1));
-      assertEquals("testing", elements.get(2));
+      assertThat(elements).isNotNull();
+      assertThat(elements).isNotEmpty();
+      assertThat(elements).hasSize(3);
+      assertThat(elements).containsExactly("test", "tested", "testing");
     }
 
     @Override

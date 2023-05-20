@@ -16,6 +16,7 @@
 package org.cp.elements.lang.support;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.same;
@@ -31,12 +32,12 @@ import java.time.Month;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 
+import org.junit.jupiter.api.Test;
+import org.junit.runner.RunWith;
+
 import org.cp.elements.lang.Auditable;
 import org.cp.elements.lang.Visitable;
 import org.cp.elements.lang.annotation.NotNull;
-import org.cp.elements.test.TestUtils;
-import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
@@ -98,20 +99,22 @@ public class AuditableVisitorTests {
     assertThat(visitor.getDateTime()).isEqualTo(now);
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void constructWithNullUser() {
 
-    TestUtils.doIllegalArgumentExceptionThrowingOperation(
-      () -> new AuditableVisitor<User, Process>(null, mockProcess),
-        () -> "User is required");
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> new AuditableVisitor<User, Process>(null, this.mockProcess))
+      .withMessage("User is required")
+      .withNoCause();
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void constructWithNullProcess() {
 
-    TestUtils.doIllegalArgumentExceptionThrowingOperation(
-      () -> new AuditableVisitor<User, Process>(mockUser, null),
-        () -> "Process is required");
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> new AuditableVisitor<User, Process>(this.mockUser, null))
+      .withMessage("Process is required")
+      .withNoCause();
   }
 
   @Test

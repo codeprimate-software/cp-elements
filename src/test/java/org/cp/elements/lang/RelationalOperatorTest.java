@@ -13,26 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.lang;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 
 import org.junit.jupiter.api.Test;
 
 /**
- * The RelationalOperatorTest class is a test suite of test cases testing the contract and functionality of the
- * RelationalOperator class.
+ * Unit Tests for {@link RelationalOperator}.
  *
  * @author John J. Blum
- * @see org.cp.elements.lang.RelationalOperator
- * @see org.junit.Assert
  * @see org.junit.jupiter.api.Test
+ * @see org.cp.elements.lang.RelationalOperator
  * @since 1.0.0
  */
 public class RelationalOperatorTest {
@@ -41,336 +34,389 @@ public class RelationalOperatorTest {
 
   @Test
   public void testEqualTo() {
-    final RelationalOperator<String> equalTo = RelationalOperator.equalTo("test");
 
-    assertNotNull(equalTo);
-    assertEquals("equal to", equalTo.getDescription());
-    assertEquals("==", equalTo.getSymbol());
+    RelationalOperator<String> equalTo = RelationalOperator.equalTo("test");
+
+    assertThat(equalTo).isNotNull();
+    assertThat(equalTo.getDescription()).isEqualTo("equal to");
+    assertThat(equalTo.getSymbol()).isEqualTo("==");
   }
 
   @Test
   public void testEqualToEvaluation() {
-    final RelationalOperator<Double> equalTo = RelationalOperator.equalTo(3.0d);
 
-    assertFalse(equalTo.evaluate(0.0d));
-    assertFalse(equalTo.evaluate(1.0d));
-    assertFalse(equalTo.evaluate(2.99d));
-    assertFalse(equalTo.evaluate(-3.0d));
-    assertTrue(equalTo.evaluate(3.0));
-    assertFalse(equalTo.evaluate(3.01d));
-    assertFalse(equalTo.evaluate(5.0d));
-    assertFalse(equalTo.evaluate(13.0d));
-    assertFalse(equalTo.evaluate(30.0d));
+    RelationalOperator<Double> equalTo = RelationalOperator.equalTo(3.0d);
+
+    assertThat(equalTo.evaluate(0.0d)).isFalse();
+    assertThat(equalTo.evaluate(1.0d)).isFalse();
+    assertThat(equalTo.evaluate(2.99d)).isFalse();
+    assertThat(equalTo.evaluate(-3.0d)).isFalse();
+    assertThat(equalTo.evaluate(3.0)).isTrue();
+    assertThat(equalTo.evaluate(3.01d)).isFalse();
+    assertThat(equalTo.evaluate(5.0d)).isFalse();
+    assertThat(equalTo.evaluate(13.0d)).isFalse();
+    assertThat(equalTo.evaluate(30.0d)).isFalse();
   }
 
   @Test
   public void testGreaterThan() {
-    final RelationalOperator<String> greaterThan = RelationalOperator.greaterThan("test");
 
-    assertNotNull(greaterThan);
-    assertEquals("greater than", greaterThan.getDescription());
-    assertEquals(">", greaterThan.getSymbol());
+    RelationalOperator<String> greaterThan = RelationalOperator.greaterThan("test");
+
+    assertThat(greaterThan).isNotNull();
+    assertThat(greaterThan.getDescription()).isEqualTo("greater than");
+    assertThat(greaterThan.getSymbol()).isEqualTo(">");
   }
 
   @Test
   public void testGreaterThanEvaluation() {
-    final RelationalOperator<Double> greaterThan = RelationalOperator.greaterThan(3.0d);
 
-    assertFalse(greaterThan.evaluate(1.0d));
-    assertFalse(greaterThan.evaluate(2.0d));
-    assertFalse(greaterThan.evaluate(3.0d));
-    assertTrue(greaterThan.evaluate(4.0d));
-    assertTrue(greaterThan.evaluate(5.0d));
+    RelationalOperator<Double> greaterThan = RelationalOperator.greaterThan(3.0d);
+
+    assertThat(greaterThan.evaluate(1.0d)).isFalse();
+    assertThat(greaterThan.evaluate(2.0d)).isFalse();
+    assertThat(greaterThan.evaluate(3.0d)).isFalse();
+    assertThat(greaterThan.evaluate(4.0d)).isTrue();
+    assertThat(greaterThan.evaluate(5.0d)).isTrue();
   }
 
   @Test
   public void testGreaterThanAndLessThan() {
-    final RelationalOperator<String> greaterThanAndLessThan =
+
+    RelationalOperator<String> greaterThanAndLessThan =
       RelationalOperator.greaterThanAndLessThan("test", "testing");
 
-    assertNotNull(greaterThanAndLessThan);
-    assertEquals("greater than and less than", greaterThanAndLessThan.getDescription());
-    assertEquals("> && <", greaterThanAndLessThan.getSymbol());
+    assertThat(greaterThanAndLessThan).isNotNull();
+    assertThat(greaterThanAndLessThan.getDescription()).isEqualTo("greater than and less than");
+    assertThat(greaterThanAndLessThan.getSymbol()).isEqualTo("> && <");
   }
 
   @Test
   public void testGreaterThanAndLessThanEvaluation() {
-    final RelationalOperator<Double> greaterThanAndLessThan = RelationalOperator.greaterThanAndLessThan(2.0d, 4.0d);
 
-    assertFalse(greaterThanAndLessThan.evaluate(1.0d));
-    assertFalse(greaterThanAndLessThan.evaluate(2.0d));
-    assertTrue(greaterThanAndLessThan.evaluate(3.0d));
-    assertFalse(greaterThanAndLessThan.evaluate(4.0d));
-    assertFalse(greaterThanAndLessThan.evaluate(5.0d));
+    RelationalOperator<Double> greaterThanAndLessThan =
+      RelationalOperator.greaterThanAndLessThan(2.0d, 4.0d);
+
+    assertThat(greaterThanAndLessThan.evaluate(1.0d)).isFalse();
+    assertThat(greaterThanAndLessThan.evaluate(2.0d)).isFalse();
+    assertThat(greaterThanAndLessThan.evaluate(3.0d)).isTrue();
+    assertThat(greaterThanAndLessThan.evaluate(4.0d)).isFalse();
+    assertThat(greaterThanAndLessThan.evaluate(5.0d)).isFalse();
   }
 
   @Test
   public void testGreaterThanAndLessThanEqualTo() {
-    final RelationalOperator<String> greaterThanAndLessThanEqualTo =
+
+    RelationalOperator<String> greaterThanAndLessThanEqualTo =
       RelationalOperator.greaterThanAndLessThanEqualTo("test", "testing");
 
-    assertNotNull(greaterThanAndLessThanEqualTo);
-    assertEquals("greater than and less than equal to", greaterThanAndLessThanEqualTo.getDescription());
-    assertEquals("> && <=", greaterThanAndLessThanEqualTo.getSymbol());
+    assertThat(greaterThanAndLessThanEqualTo).isNotNull();
+    assertThat(greaterThanAndLessThanEqualTo.getDescription()).isEqualTo("greater than and less than equal to");
+    assertThat(greaterThanAndLessThanEqualTo.getSymbol()).isEqualTo("> && <=");
   }
 
   @Test
   public void testGreaterThanAndLessThanEqualToEvaluation() {
-    final RelationalOperator<Double> greaterThanAndLessThanEqualTo =
+
+    RelationalOperator<Double> greaterThanAndLessThanEqualTo =
       RelationalOperator.greaterThanAndLessThanEqualTo(2.0d, 4.0d);
 
-    assertFalse(greaterThanAndLessThanEqualTo.evaluate(1.0d));
-    assertFalse(greaterThanAndLessThanEqualTo.evaluate(2.0d));
-    assertTrue(greaterThanAndLessThanEqualTo.evaluate(3.0d));
-    assertTrue(greaterThanAndLessThanEqualTo.evaluate(4.0d));
-    assertFalse(greaterThanAndLessThanEqualTo.evaluate(5.0d));
+    assertThat(greaterThanAndLessThanEqualTo.evaluate(1.0d)).isFalse();
+    assertThat(greaterThanAndLessThanEqualTo.evaluate(2.0d)).isFalse();
+    assertThat(greaterThanAndLessThanEqualTo.evaluate(3.0d)).isTrue();
+    assertThat(greaterThanAndLessThanEqualTo.evaluate(4.0d)).isTrue();
+    assertThat(greaterThanAndLessThanEqualTo.evaluate(5.0d)).isFalse();
   }
 
   @Test
   public void testGreaterThanEqualTo() {
-    final RelationalOperator<String> greaterThanEqualTo = RelationalOperator.greaterThanEqualTo("test");
 
-    assertNotNull(greaterThanEqualTo);
-    assertEquals("greater than equal to", greaterThanEqualTo.getDescription());
-    assertEquals(">=", greaterThanEqualTo.getSymbol());
+    RelationalOperator<String> greaterThanEqualTo = RelationalOperator.greaterThanEqualTo("test");
+
+    assertThat(greaterThanEqualTo).isNotNull();
+    assertThat(greaterThanEqualTo.getDescription()).isEqualTo("greater than equal to");
+    assertThat(greaterThanEqualTo.getSymbol()).isEqualTo(">=");
   }
 
   @Test
   public void testGreaterThanEqualToEvaluation() {
-    final RelationalOperator<Double> greaterThanEqualTo = RelationalOperator.greaterThanEqualTo(3.0d);
 
-    assertFalse(greaterThanEqualTo.evaluate(1.0d));
-    assertFalse(greaterThanEqualTo.evaluate(2.0d));
-    assertTrue(greaterThanEqualTo.evaluate(3.0d));
-    assertTrue(greaterThanEqualTo.evaluate(4.0d));
-    assertTrue(greaterThanEqualTo.evaluate(5.0d));
+    RelationalOperator<Double> greaterThanEqualTo = RelationalOperator.greaterThanEqualTo(3.0d);
+
+    assertThat(greaterThanEqualTo.evaluate(1.0d)).isFalse();
+    assertThat(greaterThanEqualTo.evaluate(2.0d)).isFalse();
+    assertThat(greaterThanEqualTo.evaluate(3.0d)).isTrue();
+    assertThat(greaterThanEqualTo.evaluate(4.0d)).isTrue();
+    assertThat(greaterThanEqualTo.evaluate(5.0d)).isTrue();
   }
 
   @Test
   public void testGreaterThanEqualToAndLessThan() {
-    final RelationalOperator<String> greaterThanEqualToAndLessThan =
+
+    RelationalOperator<String> greaterThanEqualToAndLessThan =
       RelationalOperator.greaterThanEqualToAndLessThan("test", "testing");
 
-    assertNotNull(greaterThanEqualToAndLessThan);
-    assertEquals("greater than equal to and less than", greaterThanEqualToAndLessThan.getDescription());
-    assertEquals(">= && <", greaterThanEqualToAndLessThan.getSymbol());
+    assertThat(greaterThanEqualToAndLessThan).isNotNull();
+    assertThat(greaterThanEqualToAndLessThan.getDescription()).isEqualTo("greater than equal to and less than");
+    assertThat(greaterThanEqualToAndLessThan.getSymbol()).isEqualTo(">= && <");
   }
 
   @Test
   public void testGreaterThanEqualToAndLessThanEvaluation() {
-    final RelationalOperator<Double> greaterThanEqualToAndLessThan =
+
+    RelationalOperator<Double> greaterThanEqualToAndLessThan =
       RelationalOperator.greaterThanEqualToAndLessThan(2.0d, 4.0d);
 
-    assertFalse(greaterThanEqualToAndLessThan.evaluate(1.0d));
-    assertTrue(greaterThanEqualToAndLessThan.evaluate(2.0d));
-    assertTrue(greaterThanEqualToAndLessThan.evaluate(3.0d));
-    assertFalse(greaterThanEqualToAndLessThan.evaluate(4.0d));
-    assertFalse(greaterThanEqualToAndLessThan.evaluate(5.0d));
+    assertThat(greaterThanEqualToAndLessThan.evaluate(1.0d)).isFalse();
+    assertThat(greaterThanEqualToAndLessThan.evaluate(2.0d)).isTrue();
+    assertThat(greaterThanEqualToAndLessThan.evaluate(3.0d)).isTrue();
+    assertThat(greaterThanEqualToAndLessThan.evaluate(4.0d)).isFalse();
+    assertThat(greaterThanEqualToAndLessThan.evaluate(5.0d)).isFalse();
   }
 
   @Test
   public void testGreaterThanEqualToAndLessThanEqualTo() {
-    final RelationalOperator<String> greaterThanEqualToAndLessThanEqualTo =
+
+    RelationalOperator<String> greaterThanEqualToAndLessThanEqualTo =
       RelationalOperator.greaterThanEqualToAndLessThanEqualTo("test", "testing");
 
-    assertNotNull(greaterThanEqualToAndLessThanEqualTo);
-    assertEquals("greater than equal to and less than equal to", greaterThanEqualToAndLessThanEqualTo.getDescription());
-    assertEquals(">= && <=", greaterThanEqualToAndLessThanEqualTo.getSymbol());
+    assertThat(greaterThanEqualToAndLessThanEqualTo).isNotNull();
+    assertThat(greaterThanEqualToAndLessThanEqualTo.getDescription()).isEqualTo(
+      "greater than equal to and less than equal to");
+    assertThat(greaterThanEqualToAndLessThanEqualTo.getSymbol()).isEqualTo(">= && <=");
   }
 
   @Test
   public void testGreaterThanEqualToAndLessThanEqualToEvaluation() {
-    final RelationalOperator<Double> greaterThanEqualToAndLessThanEqualTo =
+
+    RelationalOperator<Double> greaterThanEqualToAndLessThanEqualTo =
       RelationalOperator.greaterThanEqualToAndLessThanEqualTo(2.0d, 4.0d);
 
-    assertFalse(greaterThanEqualToAndLessThanEqualTo.evaluate(1.0d));
-    assertTrue(greaterThanEqualToAndLessThanEqualTo.evaluate(2.0d));
-    assertTrue(greaterThanEqualToAndLessThanEqualTo.evaluate(3.0d));
-    assertTrue(greaterThanEqualToAndLessThanEqualTo.evaluate(4.0d));
-    assertFalse(greaterThanEqualToAndLessThanEqualTo.evaluate(5.0d));
+    assertThat(greaterThanEqualToAndLessThanEqualTo.evaluate(1.0d)).isFalse();
+    assertThat(greaterThanEqualToAndLessThanEqualTo.evaluate(2.0d)).isTrue();
+    assertThat(greaterThanEqualToAndLessThanEqualTo.evaluate(3.0d)).isTrue();
+    assertThat(greaterThanEqualToAndLessThanEqualTo.evaluate(4.0d)).isTrue();
+    assertThat(greaterThanEqualToAndLessThanEqualTo.evaluate(5.0d)).isFalse();
   }
 
   @Test
   public void testLessThan() {
-    final RelationalOperator<String> lessThan = RelationalOperator.lessThan("test");
 
-    assertNotNull(lessThan);
-    assertEquals("less than", lessThan.getDescription());
-    assertEquals("<", lessThan.getSymbol());
+    RelationalOperator<String> lessThan = RelationalOperator.lessThan("test");
+
+    assertThat(lessThan).isNotNull();
+    assertThat(lessThan.getDescription()).isEqualTo("less than");
+    assertThat(lessThan.getSymbol()).isEqualTo("<");
   }
 
   @Test
   public void testLessThanEvaluation() {
-    final RelationalOperator<Double> lessThan = RelationalOperator.lessThan(3.0d);
 
-    assertTrue(lessThan.evaluate(1.0d));
-    assertTrue(lessThan.evaluate(2.0d));
-    assertFalse(lessThan.evaluate(3.0d));
-    assertFalse(lessThan.evaluate(4.0d));
-    assertFalse(lessThan.evaluate(5.0d));
+    RelationalOperator<Double> lessThan = RelationalOperator.lessThan(3.0d);
+
+    assertThat(lessThan.evaluate(1.0d)).isTrue();
+    assertThat(lessThan.evaluate(2.0d)).isTrue();
+    assertThat(lessThan.evaluate(3.0d)).isFalse();
+    assertThat(lessThan.evaluate(4.0d)).isFalse();
+    assertThat(lessThan.evaluate(5.0d)).isFalse();
   }
 
   @Test
   public void testLessThanOrGreaterThan() {
-    final RelationalOperator<String> lessThanOrGreaterThan =
+
+    RelationalOperator<String> lessThanOrGreaterThan =
       RelationalOperator.lessThanOrGreaterThan("test", "testing");
 
-    assertNotNull(lessThanOrGreaterThan);
-    assertEquals("less than or greater than", lessThanOrGreaterThan.getDescription());
-    assertEquals("< || >", lessThanOrGreaterThan.getSymbol());
+    assertThat(lessThanOrGreaterThan).isNotNull();
+    assertThat(lessThanOrGreaterThan.getDescription()).isEqualTo("less than or greater than");
+    assertThat(lessThanOrGreaterThan.getSymbol()).isEqualTo("< || >");
   }
 
   @Test
   public void testLessThanOrGreaterThanEvaluation() {
-    final RelationalOperator<Double> lessThanOrGreaterThan = RelationalOperator.lessThanOrGreaterThan(2.0d, 4.0d);
 
-    assertTrue(lessThanOrGreaterThan.evaluate(1.0d));
-    assertFalse(lessThanOrGreaterThan.evaluate(2.0d));
-    assertFalse(lessThanOrGreaterThan.evaluate(3.0d));
-    assertFalse(lessThanOrGreaterThan.evaluate(4.0d));
-    assertTrue(lessThanOrGreaterThan.evaluate(5.0d));
+    RelationalOperator<Double> lessThanOrGreaterThan = RelationalOperator.lessThanOrGreaterThan(2.0d, 4.0d);
+
+    assertThat(lessThanOrGreaterThan.evaluate(1.0d)).isTrue();
+    assertThat(lessThanOrGreaterThan.evaluate(2.0d)).isFalse();
+    assertThat(lessThanOrGreaterThan.evaluate(3.0d)).isFalse();
+    assertThat(lessThanOrGreaterThan.evaluate(4.0d)).isFalse();
+    assertThat(lessThanOrGreaterThan.evaluate(5.0d)).isTrue();
   }
 
   @Test
   public void testLessThanOrGreaterThanEqualTo() {
-    final RelationalOperator<String> lessThanOrGreaterThanEqualTo =
+
+    RelationalOperator<String> lessThanOrGreaterThanEqualTo =
       RelationalOperator.lessThanOrGreaterThanEqualTo("test", "testing");
 
-    assertNotNull(lessThanOrGreaterThanEqualTo);
-    assertEquals("less than or greater than equal to", lessThanOrGreaterThanEqualTo.getDescription());
-    assertEquals("< || >=", lessThanOrGreaterThanEqualTo.getSymbol());
+    assertThat(lessThanOrGreaterThanEqualTo).isNotNull();
+    assertThat(lessThanOrGreaterThanEqualTo.getDescription()).isEqualTo("less than or greater than equal to");
+    assertThat(lessThanOrGreaterThanEqualTo.getSymbol()).isEqualTo("< || >=");
   }
 
   @Test
   public void testLessThanOrGreaterThanEqualToEvaluation() {
-    final RelationalOperator<Double> lessThanOrGreaterThanEqualTo =
+
+    RelationalOperator<Double> lessThanOrGreaterThanEqualTo =
       RelationalOperator.lessThanOrGreaterThanEqualTo(2.0d, 4.0d);
 
-    assertTrue(lessThanOrGreaterThanEqualTo.evaluate(1.0d));
-    assertFalse(lessThanOrGreaterThanEqualTo.evaluate(2.0d));
-    assertFalse(lessThanOrGreaterThanEqualTo.evaluate(3.0d));
-    assertTrue(lessThanOrGreaterThanEqualTo.evaluate(4.0d));
-    assertTrue(lessThanOrGreaterThanEqualTo.evaluate(5.0d));
+    assertThat(lessThanOrGreaterThanEqualTo.evaluate(1.0d)).isTrue();
+    assertThat(lessThanOrGreaterThanEqualTo.evaluate(2.0d)).isFalse();
+    assertThat(lessThanOrGreaterThanEqualTo.evaluate(3.0d)).isFalse();
+    assertThat(lessThanOrGreaterThanEqualTo.evaluate(4.0d)).isTrue();
+    assertThat(lessThanOrGreaterThanEqualTo.evaluate(5.0d)).isTrue();
   }
 
   @Test
   public void testLessThanEqualTo() {
-    final RelationalOperator<String> lessThanEqualTo = RelationalOperator.lessThanEqualTo("test");
 
-    assertNotNull(lessThanEqualTo);
-    assertEquals("less than equal to", lessThanEqualTo.getDescription());
-    assertEquals("<=", lessThanEqualTo.getSymbol());
+    RelationalOperator<String> lessThanEqualTo = RelationalOperator.lessThanEqualTo("test");
+
+    assertThat(lessThanEqualTo).isNotNull();
+    assertThat(lessThanEqualTo.getDescription()).isEqualTo("less than equal to");
+    assertThat(lessThanEqualTo.getSymbol()).isEqualTo("<=");
   }
 
   @Test
   public void testLessThanEqualToEvaluation() {
-    final RelationalOperator<Double> lessThanEqualTo = RelationalOperator.lessThanEqualTo(3.0d);
 
-    assertTrue(lessThanEqualTo.evaluate(1.0d));
-    assertTrue(lessThanEqualTo.evaluate(2.0d));
-    assertTrue(lessThanEqualTo.evaluate(3.0d));
-    assertFalse(lessThanEqualTo.evaluate(4.0d));
-    assertFalse(lessThanEqualTo.evaluate(5.0d));
+    RelationalOperator<Double> lessThanEqualTo = RelationalOperator.lessThanEqualTo(3.0d);
+
+    assertThat(lessThanEqualTo.evaluate(1.0d)).isTrue();
+    assertThat(lessThanEqualTo.evaluate(2.0d)).isTrue();
+    assertThat(lessThanEqualTo.evaluate(3.0d)).isTrue();
+    assertThat(lessThanEqualTo.evaluate(4.0d)).isFalse();
+    assertThat(lessThanEqualTo.evaluate(5.0d)).isFalse();
   }
 
   @Test
   public void testLessThanEqualToOrGreaterThan() {
-    final RelationalOperator<String> lessThanEqualToOrGreaterThan =
+
+    RelationalOperator<String> lessThanEqualToOrGreaterThan =
       RelationalOperator.lessThanEqualToOrGreaterThan("test", "testing");
 
-    assertNotNull(lessThanEqualToOrGreaterThan);
-    assertEquals("less than equal to or greater than", lessThanEqualToOrGreaterThan.getDescription());
-    assertEquals("<= || >", lessThanEqualToOrGreaterThan.getSymbol());
+    assertThat(lessThanEqualToOrGreaterThan).isNotNull();
+    assertThat(lessThanEqualToOrGreaterThan.getDescription()).isEqualTo("less than equal to or greater than");
+    assertThat(lessThanEqualToOrGreaterThan.getSymbol()).isEqualTo("<= || >");
   }
 
   @Test
   public void testLessThanEqualToOrGreaterThanEvaluation() {
-    final RelationalOperator<Double> lessThanEqualToOrGreaterThan =
+
+    RelationalOperator<Double> lessThanEqualToOrGreaterThan =
       RelationalOperator.lessThanEqualToOrGreaterThan(2.0d, 4.0d);
 
-    assertTrue(lessThanEqualToOrGreaterThan.evaluate(1.0d));
-    assertTrue(lessThanEqualToOrGreaterThan.evaluate(2.0d));
-    assertFalse(lessThanEqualToOrGreaterThan.evaluate(3.0d));
-    assertFalse(lessThanEqualToOrGreaterThan.evaluate(4.0d));
-    assertTrue(lessThanEqualToOrGreaterThan.evaluate(5.0d));
+    assertThat(lessThanEqualToOrGreaterThan.evaluate(1.0d)).isTrue();
+    assertThat(lessThanEqualToOrGreaterThan.evaluate(2.0d)).isTrue();
+    assertThat(lessThanEqualToOrGreaterThan.evaluate(3.0d)).isFalse();
+    assertThat(lessThanEqualToOrGreaterThan.evaluate(4.0d)).isFalse();
+    assertThat(lessThanEqualToOrGreaterThan.evaluate(5.0d)).isTrue();
   }
 
   @Test
   public void testLessThanEqualToOrGreaterThanEqualTo() {
-    final RelationalOperator<String> lessThanEqualToOrGreaterThanEqualTo =
+
+    RelationalOperator<String> lessThanEqualToOrGreaterThanEqualTo =
       RelationalOperator.lessThanEqualToOrGreaterThanEqualTo("test", "testing");
 
-    assertNotNull(lessThanEqualToOrGreaterThanEqualTo);
-    assertEquals("less than equal to or greater than equal to", lessThanEqualToOrGreaterThanEqualTo.getDescription());
-    assertEquals("<= || >=", lessThanEqualToOrGreaterThanEqualTo.getSymbol());
+    assertThat(lessThanEqualToOrGreaterThanEqualTo).isNotNull();
+    assertThat(lessThanEqualToOrGreaterThanEqualTo.getDescription()).isEqualTo(
+      "less than equal to or greater than equal to");
+    assertThat(lessThanEqualToOrGreaterThanEqualTo.getSymbol()).isEqualTo("<= || >=");
   }
 
   @Test
   public void testLessThanEqualToOrGreaterThanEqualToEvaluation() {
-    final RelationalOperator<Double> lessThanEqualToOrGreaterThanEqualTo =
+
+    RelationalOperator<Double> lessThanEqualToOrGreaterThanEqualTo =
       RelationalOperator.lessThanEqualToOrGreaterThanEqualTo(2.0d, 4.0d);
 
-    assertTrue(lessThanEqualToOrGreaterThanEqualTo.evaluate(1.0d));
-    assertTrue(lessThanEqualToOrGreaterThanEqualTo.evaluate(2.0d));
-    assertFalse(lessThanEqualToOrGreaterThanEqualTo.evaluate(3.0d));
-    assertTrue(lessThanEqualToOrGreaterThanEqualTo.evaluate(4.0d));
-    assertTrue(lessThanEqualToOrGreaterThanEqualTo.evaluate(5.0d));
-  }
-
-  @Test(expected = IllegalArgumentException.class)
-  public void testRelationalOperatorInstantiationWithBlankDescription() {
-    new MockRelationalOperator<>(" ", "<>", "test");
-  }
-
-  @Test(expected = IllegalArgumentException.class)
-  public void testRelationalOperatorInstantiationWithEmptyDescription() {
-    new MockRelationalOperator<>("", "<>", "test");
-  }
-
-  @Test(expected = IllegalArgumentException.class)
-  public void testRelationalOperatorInstantiationWithNullDescription() {
-    new MockRelationalOperator<>(null, "<>", "test");
-  }
-
-  @Test(expected = IllegalArgumentException.class)
-  public void testRelationalOperatorInstantiationWithNullExpectedValue() {
-    new MockRelationalOperator<>("description", "<>", null);
-  }
-
-  @Test(expected = IllegalArgumentException.class)
-  public void testRelationalOperatorInstantiationWithBlankSymbol() {
-    new MockRelationalOperator<>("description", " ", "test");
-  }
-
-  @Test(expected = IllegalArgumentException.class)
-  public void testRelationalOperatorInstantiationWithEmptySymbol() {
-    new MockRelationalOperator<>("description", "", "test");
-  }
-
-  @Test(expected = IllegalArgumentException.class)
-  public void testRelationalOperatorInstantiationWithNullSymbol() {
-    new MockRelationalOperator<>("description", null, "test");
+    assertThat(lessThanEqualToOrGreaterThanEqualTo.evaluate(1.0d)).isTrue();
+    assertThat(lessThanEqualToOrGreaterThanEqualTo.evaluate(2.0d)).isTrue();
+    assertThat(lessThanEqualToOrGreaterThanEqualTo.evaluate(3.0d)).isFalse();
+    assertThat(lessThanEqualToOrGreaterThanEqualTo.evaluate(4.0d)).isTrue();
+    assertThat(lessThanEqualToOrGreaterThanEqualTo.evaluate(5.0d)).isTrue();
   }
 
   @Test
-  public void testRelationalOperatorComposition() throws Exception {
+  public void testRelationalOperatorInstantiationWithBlankDescription() {
+
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> new MockRelationalOperator<>(" ", "<>", "test"))
+      .withNoCause();
+  }
+
+  @Test
+  public void testRelationalOperatorInstantiationWithEmptyDescription() {
+
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> new MockRelationalOperator<>("", "<>", "test"))
+      .withNoCause();
+  }
+
+  @Test
+  public void testRelationalOperatorInstantiationWithNullDescription() {
+
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> new MockRelationalOperator<>(null, "<>", "test"))
+      .withNoCause();
+  }
+
+  @Test
+  public void testRelationalOperatorInstantiationWithNullExpectedValue() {
+
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> new MockRelationalOperator<>("description", "<>", null))
+      .withNoCause();
+  }
+
+  @Test
+  public void testRelationalOperatorInstantiationWithBlankSymbol() {
+
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> new MockRelationalOperator<>("description", " ", "test"))
+      .withNoCause();
+  }
+
+  @Test
+  public void testRelationalOperatorInstantiationWithEmptySymbol() {
+
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> new MockRelationalOperator<>("description", "", "test"))
+      .withNoCause();
+  }
+
+  @Test
+  public void testRelationalOperatorInstantiationWithNullSymbol() {
+
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> new MockRelationalOperator<>("description", null, "test"))
+      .withNoCause();
+  }
+
+  @Test
+  @SuppressWarnings("all")
+  public void testRelationalOperatorComposition() {
+
     MockRelationalOperator<String> leftOperand = new MockRelationalOperator<>("left operand", "<>", "test");
     MockRelationalOperator<String> rightOperand = new MockRelationalOperator<>("right operand", "<>", "test");
 
-    assertNull(RelationalOperator.ComposableRelationalOperator.compose(NULL, LogicalOperator.AND, NULL));
-    assertSame(leftOperand, RelationalOperator.ComposableRelationalOperator.compose(leftOperand, LogicalOperator.AND, null));
-    assertSame(rightOperand, RelationalOperator.ComposableRelationalOperator.compose(null, LogicalOperator.AND, rightOperand));
+    assertThat(RelationalOperator.ComposableRelationalOperator.compose(NULL, LogicalOperator.AND, NULL)).isNotNull();
+    assertThat(RelationalOperator.ComposableRelationalOperator.compose(leftOperand, LogicalOperator.AND, null)).isSameAs(leftOperand);
+    assertThat(RelationalOperator.ComposableRelationalOperator.compose(null, LogicalOperator.AND, rightOperand)).isSameAs(rightOperand);
 
-    RelationalOperator op = RelationalOperator.ComposableRelationalOperator.compose(
-      leftOperand, LogicalOperator.AND, rightOperand);
+    RelationalOperator op = RelationalOperator.ComposableRelationalOperator
+      .compose(leftOperand, LogicalOperator.AND, rightOperand);
 
-    assertTrue(op instanceof RelationalOperator.ComposableRelationalOperator);
-    assertSame(leftOperand, ((RelationalOperator.ComposableRelationalOperator) op).getLeftOperand());
-    assertEquals(LogicalOperator.AND, ((RelationalOperator.ComposableRelationalOperator) op).getOperator());
-    assertSame(rightOperand, ((RelationalOperator.ComposableRelationalOperator) op).getRightOperand());
+    assertThat(op).isInstanceOf(RelationalOperator.ComposableRelationalOperator.class);
+    assertThat(((RelationalOperator.ComposableRelationalOperator) op).getLeftOperand()).isSameAs(leftOperand);
+    assertThat(((RelationalOperator.ComposableRelationalOperator) op).getOperator()).isEqualTo(LogicalOperator.AND);
+    assertThat(((RelationalOperator.ComposableRelationalOperator) op).getRightOperand()).isSameAs(rightOperand);
   }
 
-  protected static final class MockRelationalOperator<T extends Comparable<T>> extends RelationalOperator.AbstractRelationalOperator<T> {
+  protected static final class MockRelationalOperator<T extends Comparable<T>>
+      extends RelationalOperator.AbstractRelationalOperator<T> {
 
     public MockRelationalOperator(final String description, final String symbol, final T expectedValue) {
       super(description, symbol, expectedValue);

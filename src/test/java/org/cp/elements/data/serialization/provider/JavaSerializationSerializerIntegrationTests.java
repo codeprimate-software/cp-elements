@@ -17,7 +17,6 @@ package org.cp.elements.data.serialization.provider;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
-import static org.cp.elements.lang.ThrowableAssertions.assertThatThrowableOfType;
 
 import java.io.EOFException;
 import java.io.NotSerializableException;
@@ -28,6 +27,7 @@ import org.junit.jupiter.api.Test;
 
 import org.cp.elements.data.serialization.DeserializationException;
 import org.cp.elements.data.serialization.SerializationException;
+import org.cp.elements.lang.ThrowableAssertions;
 import org.cp.elements.security.model.User;
 
 import lombok.EqualsAndHashCode;
@@ -71,7 +71,7 @@ public class JavaSerializationSerializerIntegrationTests {
 
     NonSerializableObject target = new NonSerializableObject();
 
-    assertThatThrowableOfType(SerializationException.class)
+    ThrowableAssertions.assertThatThrowableOfType(SerializationException.class)
       .isThrownBy(args -> JavaSerializationSerializer.INSTANCE.serialize(target))
       .havingMessage("Failed to serialize object [%s]", target)
       .causedBy(NotSerializableException.class)
@@ -102,7 +102,7 @@ public class JavaSerializationSerializerIntegrationTests {
 
     ByteBuffer bytes = ByteBuffer.allocate(0);
 
-    assertThatThrowableOfType(DeserializationException.class)
+    ThrowableAssertions.assertThatThrowableOfType(DeserializationException.class)
       .isThrownBy(args -> JavaSerializationSerializer.INSTANCE.deserialize(bytes))
       .havingMessage("Failed to deserialize object from bytes")
       .causedBy(EOFException.class)

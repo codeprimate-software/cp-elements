@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.data.conversion.converters;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -22,11 +21,13 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 
-import org.cp.elements.data.conversion.ConversionException;
 import org.junit.jupiter.api.Test;
 
+import org.cp.elements.data.conversion.ConversionException;
+import org.cp.elements.lang.ThrowableAssertions;
+
 /**
- * Unit tests for {@link URLConverter}.
+ * Unit Tests for {@link URLConverter}.
  *
  * @author John J. Blum
  * @see java.net.URI
@@ -105,34 +106,22 @@ public class URLConverterTests {
     assertThat(actualUrl).isEqualTo(expectedUrl);
   }
 
-  @Test(expected = ConversionException.class)
+  @Test
   public void convertMalformedUrlThrowsException() {
 
-    try {
-      this.converter.convert("$:/where/to\\boldly/\\go ?with=it");
-    }
-    catch (ConversionException expected) {
-
-      assertThat(expected).hasMessage("[$:/where/to\\boldly/\\go ?with=it] is not a valid URL");
-      assertThat(expected).hasCauseInstanceOf(MalformedURLException.class);
-      assertThat(expected.getCause()).hasNoCause();
-
-      throw expected;
-    }
+    ThrowableAssertions.assertThatThrowableOfType(ConversionException.class)
+      .isThrownBy(args -> this.converter.convert("$:/where/to\\boldly/\\go ?with=it"))
+      .havingMessage("[$:/where/to\\boldly/\\go ?with=it] is not a valid URL")
+      .causedBy(MalformedURLException.class)
+      .withNoCause();
   }
 
-  @Test(expected = ConversionException.class)
+  @Test
   public void convertNullThrowsException() {
 
-    try {
-      this.converter.convert(null);
-    }
-    catch (ConversionException expected) {
-
-      assertThat(expected).hasMessage("[null] is not a valid URL");
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
+    ThrowableAssertions.assertThatThrowableOfType(ConversionException.class)
+      .isThrownBy(args -> this.converter.convert(null))
+      .havingMessage("[null] is not a valid URL")
+      .withNoCause();
   }
 }

@@ -17,7 +17,6 @@ package org.cp.elements.lang.reflect;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
-import static org.cp.elements.lang.ThrowableAssertions.assertThatThrowableOfType;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 
@@ -26,9 +25,11 @@ import java.time.LocalDate;
 import java.time.Period;
 import java.util.Arrays;
 
+import org.junit.jupiter.api.Test;
+
+import org.cp.elements.lang.ThrowableAssertions;
 import org.cp.elements.lang.reflect.ReflectionUtils.MethodReference;
 import org.cp.elements.lang.reflect.ReflectionUtils.MethodResolver;
-import org.junit.jupiter.api.Test;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -241,7 +242,7 @@ public class OverloadedOverriddenMethodReflectionUtilsUnitTests {
   @Test
   public void methodReferenceIsNonResolvable() {
 
-    assertThatThrowableOfType(MethodNotFoundException.class)
+    ThrowableAssertions.assertThatThrowableOfType(MethodNotFoundException.class)
       .isThrownBy(args -> MethodResolver.fromType(Customer.class)
         .havingName("getNonExistingMethod")
         .withParameterTypes(Object.class)

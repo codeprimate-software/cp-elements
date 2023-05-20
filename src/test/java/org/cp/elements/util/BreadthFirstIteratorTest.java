@@ -13,13 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.util;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
 import static org.cp.elements.util.CollectionUtils.asIterable;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -31,13 +31,12 @@ import java.util.NoSuchElementException;
 import org.junit.jupiter.api.Test;
 
 /**
- * The BreadthFirstIteratorTest class is a test suite of test cases testing the contract and functionality
- * of the BreadthFirstIterator class.
+ * Unit Tests for {@link BreadthFirstIterator}.
  *
  * @author John J. Blum
  * @see java.util.Iterator
- * @see org.cp.elements.util.BreadthFirstIterator
  * @see org.junit.jupiter.api.Test
+ * @see org.cp.elements.util.BreadthFirstIterator
  * @since 1.0.0
  */
 @SuppressWarnings("unchecked")
@@ -49,13 +48,14 @@ public class BreadthFirstIteratorTest {
   }
 
   protected <T> List<T> asList(T... elements) {
-    List<T> list = new ArrayList<T>(elements.length);
+    List<T> list = new ArrayList<>(elements.length);
     Collections.addAll(list, elements);
     return list;
   }
 
   protected <T> List<T> toList(final Iterator<T> iterator) {
-    List<T> list = new ArrayList<T>();
+
+    List<T> list = new ArrayList<>();
 
     for (T element : asIterable(iterator)) {
       list.add(element);
@@ -65,7 +65,9 @@ public class BreadthFirstIteratorTest {
   }
 
   protected <T> List<T> toListWeavedWithRemoves(final Iterator<T> iterator) {
-    List<T> list = new ArrayList<T>();
+
+    List<T> list = new ArrayList<>();
+
     int index = 0;
 
     while (iterator.hasNext()) {
@@ -82,19 +84,18 @@ public class BreadthFirstIteratorTest {
     return list;
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void constructWithNullIteratorOfIterators() {
-    try {
-      new BreadthFirstIterator<Object>(null);
-    }
-    catch (IllegalArgumentException expected) {
-      assertEquals("The Iterator of Iterators must not be null!", expected.getMessage());
-      throw expected;
-    }
+
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> new BreadthFirstIterator<>(null))
+      .withMessage("The Iterator of Iterators must not be null!")
+      .withNoCause();
   }
 
   @Test
   public void iterationOfUniformIteratorOfIterators() {
+
     List<String> row1 = Arrays.asList("A", "B", "C");
     List<String> row2 = Arrays.asList("D", "E", "F");
     List<String> row3 = Arrays.asList("G", "H", "I");
@@ -102,14 +103,15 @@ public class BreadthFirstIteratorTest {
     Iterator<Iterator<String>> iteratorOfIterators = Arrays.asList(row1.iterator(), row2.iterator(), row3.iterator())
       .iterator();
 
-    BreadthFirstIterator<String> iterator = new BreadthFirstIterator<String>(iteratorOfIterators);
+    BreadthFirstIterator<String> iterator = new BreadthFirstIterator<>(iteratorOfIterators);
 
-    assertEquals(Arrays.asList("A", "B", "C", "D", "E", "F", "G", "H", "I"), toList(iterator));
-    assertFalse(iterator.hasNext());
+    assertThat(toList(iterator)).isEqualTo(Arrays.asList("A", "B", "C", "D", "E", "F", "G", "H", "I"));
+    assertThat(iterator.hasNext()).isFalse();
   }
 
   @Test
   public void iterationOfNonUniformIteratorOfIterators() {
+
     List<String> row1 = Arrays.asList("A", "B", "C", "D");
     List<String> row2 = Arrays.asList("E", "F");
     List<String> row3 = Arrays.asList("G", "H", "I");
@@ -117,15 +119,16 @@ public class BreadthFirstIteratorTest {
     Iterator<Iterator<String>> iteratorOfIterators = Arrays.asList(row1.iterator(), row2.iterator(), row3.iterator())
       .iterator();
 
-    BreadthFirstIterator<String> iterator = new BreadthFirstIterator<String>(iteratorOfIterators);
+    BreadthFirstIterator<String> iterator = new BreadthFirstIterator<>(iteratorOfIterators);
 
-    assertEquals(Arrays.asList("A", "B", "C", "D", "E", "F", "G", "H", "I"), toList(iterator));
-    assertFalse(iterator.hasNext());
+    assertThat(toList(iterator)).isEqualTo(Arrays.asList("A", "B", "C", "D", "E", "F", "G", "H", "I"));
+    assertThat(iterator.hasNext()).isFalse();
   }
 
   @Test
   public void iterationOfIncreasingIteratorOfIterators() {
-    List<String> row1 = Arrays.asList("A");
+
+    List<String> row1 = Collections.singletonList("A");
     List<String> row2 = Arrays.asList("B", "C");
     List<String> row3 = Arrays.asList("D", "E", "F");
     List<String> row4 = Arrays.asList("G", "H", "I", "J");
@@ -133,37 +136,40 @@ public class BreadthFirstIteratorTest {
     Iterator<Iterator<String>> iteratorOfIterators = Arrays.asList(row1.iterator(), row2.iterator(), row3.iterator(),
       row4.iterator()).iterator();
 
-    BreadthFirstIterator<String> iterator = new BreadthFirstIterator<String>(iteratorOfIterators);
+    BreadthFirstIterator<String> iterator = new BreadthFirstIterator<>(iteratorOfIterators);
 
-    assertEquals(Arrays.asList("A", "B", "C", "D", "E", "F", "G", "H", "I", "J"), toList(iterator));
-    assertFalse(iterator.hasNext());
+    assertThat(toList(iterator)).isEqualTo(Arrays.asList("A", "B", "C", "D", "E", "F", "G", "H", "I", "J"));
+    assertThat(iterator.hasNext()).isFalse();
   }
 
   @Test
   public void iterationOfDecreasingIteratorOfIterators() {
+
     List<String> row1 = Arrays.asList("A", "B", "C", "D");
     List<String> row2 = Arrays.asList("E", "F", "G");
     List<String> row3 = Arrays.asList("H", "I");
-    List<String> row4 = Arrays.asList("J");
+    List<String> row4 = Collections.singletonList("J");
 
     Iterator<Iterator<String>> iteratorOfIterators = Arrays.asList(row1.iterator(), row2.iterator(), row3.iterator(),
       row4.iterator()).iterator();
 
-    BreadthFirstIterator<String> iterator = new BreadthFirstIterator<String>(iteratorOfIterators);
+    BreadthFirstIterator<String> iterator = new BreadthFirstIterator<>(iteratorOfIterators);
 
-    assertEquals(Arrays.asList("A", "B", "C", "D", "E", "F", "G", "H", "I", "J"), toList(iterator));
-    assertFalse(iterator.hasNext());
+    assertThat(toList(iterator)).isEqualTo(Arrays.asList("A", "B", "C", "D", "E", "F", "G", "H", "I", "J"));
+    assertThat(iterator.hasNext()).isFalse();
   }
 
   @Test
+  @SuppressWarnings("all")
   public void iterationOfIteratorOfIteratorsWithEmptyRows() {
+
     List<String> row1 = Arrays.asList("A", "B", "C", "D");
     List<String> row2 = Collections.emptyList();
     List<String> row3 = Arrays.asList("E", "F", "G");
     List<String> row4 = Collections.emptyList();
     List<String> row5 = Arrays.asList("H", "I");
     List<String> row6 = Collections.emptyList();
-    List<String> row7 = Arrays.asList("J");
+    List<String> row7 = Collections.singletonList("J");
     List<String> row8 = Collections.emptyList();
 
     Iterator<Iterator<String>> iteratorOfIterators = Arrays.asList(row1.iterator(), row2.iterator(), row3.iterator(),
@@ -171,43 +177,43 @@ public class BreadthFirstIteratorTest {
 
     BreadthFirstIterator<String> iterator = new BreadthFirstIterator<String>(iteratorOfIterators);
 
-    assertEquals(Arrays.asList("A", "B", "C", "D", "E", "F", "G", "H", "I", "J"), toList(iterator));
-    assertFalse(iterator.hasNext());
+    assertThat(toList(iterator)).isEqualTo(Arrays.asList("A", "B", "C", "D", "E", "F", "G", "H", "I", "J"));
+    assertThat(iterator.hasNext()).isFalse();
   }
 
   @Test
   public void iterationOfStaggeredIteratorOfIteratorsAndNullRows() {
-    List<String> row1 = Arrays.asList("A");
+
+    List<String> row1 = Collections.singletonList("A");
     // row2 is null
     List<String> row3 = Arrays.asList("B", "C", "D", "E", "F");
     // row4, row5 are null
     List<String> row6 = Arrays.asList("G", "H");
     List<String> row7 = Arrays.asList("I", "J", "K");
     // row8 is null
-    List<String> row9 = Arrays.asList("L");
+    List<String> row9 = Collections.singletonList("L");
 
     Iterator<Iterator<String>> iteratorOfIterators = Arrays.asList(row1.iterator(), null, row3.iterator(),
       null, null, row6.iterator(), row7.iterator(), null, row9.iterator()).iterator();
 
-    BreadthFirstIterator<String> iterator = new BreadthFirstIterator<String>(iteratorOfIterators);
+    BreadthFirstIterator<String> iterator = new BreadthFirstIterator<>(iteratorOfIterators);
 
-    assertEquals(Arrays.asList("A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L"), toList(iterator));
-    assertFalse(iterator.hasNext());
+    assertThat(toList(iterator)).isEqualTo(Arrays.asList("A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L"));
+    assertThat(iterator.hasNext()).isFalse();
   }
 
-  @Test(expected = NoSuchElementException.class)
+  @Test
   public void nextWhenIteratorExhausted() {
-    try {
-      new BreadthFirstIterator<Object>(Collections.<Iterator<Object>>emptyList().iterator()).next();
-    }
-    catch (NoSuchElementException expected) {
-      assertEquals("The iteration has no more elements!", expected.getMessage());
-      throw expected;
-    }
+
+    assertThatExceptionOfType(NoSuchElementException.class)
+      .isThrownBy(() -> new BreadthFirstIterator<>(Collections.emptyIterator()).next())
+      .withMessage("The iteration has no more elements!")
+      .withNoCause();
   }
 
   @Test
   public void removeOddIndexedElements() {
+
     List<String> row1 = asList("A", "B", "C");
     List<String> row2 = asList("D", "E", "F");
     List<String> row3 = asList("G", "H", "I");
@@ -215,41 +221,37 @@ public class BreadthFirstIteratorTest {
     Iterator<Iterator<String>> iteratorOfIterators = asList(row1.iterator(), row2.iterator(), row3.iterator())
       .iterator();
 
-    BreadthFirstIterator<String> iterator = new BreadthFirstIterator<String>(iteratorOfIterators);
+    BreadthFirstIterator<String> iterator = new BreadthFirstIterator<>(iteratorOfIterators);
 
-    assertEquals(Arrays.asList("A", "C", "E", "G", "I"), toListWeavedWithRemoves(iterator));
-    assertFalse(iterator.hasNext());
+    assertThat(toListWeavedWithRemoves(iterator)).isEqualTo(Arrays.asList("A", "C", "E", "G", "I"));
+    assertThat(iterator.hasNext()).isFalse();
   }
 
-  @Test(expected = IllegalStateException.class)
+  @Test
   public void removeCalledBeforeNext() {
-    try {
-      new BreadthFirstIterator<String>(asList(asList("A").iterator()).iterator()).remove();
-    }
-    catch (IllegalStateException expected) {
-      assertEquals("next was not called before remove", expected.getMessage());
-      throw expected;
-    }
+
+    assertThatIllegalStateException()
+      .isThrownBy(() -> new BreadthFirstIterator<>(asList(asList("A").iterator()).iterator()).remove())
+      .withMessage("next was not called before remove")
+      .withNoCause();
   }
 
-  @Test(expected = IllegalStateException.class)
+  @Test
   public void removeCalledTwiceBeforeNext() {
-    try {
-      BreadthFirstIterator<String> iterator = new BreadthFirstIterator<String>(
-        asList(asList("A").iterator()).iterator());
 
-      assertTrue(iterator.hasNext());
-      assertEquals("A", iterator.next());
+    BreadthFirstIterator<String> iterator = new BreadthFirstIterator<>(
+      asList(asList("A").iterator()).iterator());
 
-      iterator.remove();
+    assertThat(iterator).hasNext();
+    assertThat(iterator.next()).isEqualTo("A");
 
-      assertFalse(iterator.hasNext());
+    iterator.remove();
 
-      iterator.remove();
-    }
-    catch (IllegalStateException expected) {
-      assertEquals("next was not called before remove", expected.getMessage());
-      throw expected;
-    }
+    assertThat(iterator.hasNext()).isFalse();
+
+    assertThatIllegalStateException()
+      .isThrownBy(iterator::remove)
+      .withMessage("next was not called before remove")
+      .withNoCause();
   }
 }

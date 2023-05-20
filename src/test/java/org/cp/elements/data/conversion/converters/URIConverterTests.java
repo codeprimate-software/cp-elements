@@ -13,20 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.data.conversion.converters;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 
-import org.cp.elements.data.conversion.ConversionException;
 import org.junit.jupiter.api.Test;
 
+import org.cp.elements.data.conversion.ConversionException;
+import org.cp.elements.lang.ThrowableAssertions;
+
 /**
- * Unit tests for {@link URIConverter}.
+ * Unit Tests for {@link URIConverter}.
  *
  * @author John J. Blum
  * @see java.net.URI
@@ -87,7 +89,7 @@ public class URIConverterTests {
   }
 
   @Test
-  public void convertUriToUri() throws Exception {
+  public void convertUriToUri() {
 
     URI expectedUri = URI.create("http://github.com");
     URI actualUri = this.converter.convert(expectedUri);
@@ -104,35 +106,23 @@ public class URIConverterTests {
     assertThat(uri.toURL()).isEqualTo(url);
   }
 
-  @Test(expected = ConversionException.class)
+  @Test
   public void convertMalformedUriThrowsException() {
 
-    try {
-      this.converter.convert("$:/where/to\\boldly/\\go ?with=it");
-    }
-    catch (ConversionException expected) {
-
-      assertThat(expected).hasMessage("[$:/where/to\\boldly/\\go ?with=it] is not a valid URI");
-      assertThat(expected).hasCauseInstanceOf(IllegalArgumentException.class);
-      assertThat(expected.getCause()).hasCauseInstanceOf(URISyntaxException.class);
-      assertThat(expected.getCause().getCause()).hasNoCause();
-
-      throw expected;
-    }
+    ThrowableAssertions.assertThatThrowableOfType(ConversionException.class)
+      .isThrownBy(args -> this.converter.convert("$:/where/to\\boldly/\\go ?with=it"))
+      .havingMessage("[$:/where/to\\boldly/\\go ?with=it] is not a valid URI")
+      .causedBy(IllegalArgumentException.class)
+      .causedBy(URISyntaxException.class)
+      .withNoCause();
   }
 
-  @Test(expected = ConversionException.class)
+  @Test
   public void convertNullThrowsException() {
 
-    try {
-      this.converter.convert(null);
-    }
-    catch (ConversionException expected) {
-
-      assertThat(expected).hasMessage("[null] is not a valid URI");
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
+    assertThatExceptionOfType(ConversionException.class)
+      .isThrownBy(() -> this.converter.convert(null))
+      .withMessage("[null] is not a valid URI")
+      .withNoCause();
   }
 }

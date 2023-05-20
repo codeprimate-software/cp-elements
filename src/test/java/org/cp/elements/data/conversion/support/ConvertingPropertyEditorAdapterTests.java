@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.data.conversion.support;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.cp.elements.lang.ElementsExceptionsFactory.newConversionException;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
@@ -24,16 +24,19 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import org.junit.jupiter.api.Test;
+import org.junit.runner.RunWith;
+
 import org.cp.elements.data.conversion.ConversionException;
 import org.cp.elements.data.conversion.Converter;
 import org.cp.elements.enums.Gender;
-import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
+import org.cp.elements.lang.ThrowableAssertions;
+
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
 /**
- * Unit tests for {@link ConvertingPropertyEditorAdapter}.
+ * Unit Tests for {@link ConvertingPropertyEditorAdapter}.
  *
  * @author John Blum
  * @see java.beans.PropertyEditor
@@ -59,19 +62,13 @@ public class ConvertingPropertyEditorAdapterTests {
     assertThat(propertyEditor.getConverter()).isEqualTo(this.mockConverter);
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void constructsNewConvertingPropertyEditorWithNullConverterThrowsException() {
 
-    try {
-      new ConvertingPropertyEditorAdapter(null);
-    }
-    catch (IllegalArgumentException expected) {
-
-      assertThat(expected).hasMessage("Converter is required");
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> new ConvertingPropertyEditorAdapter(null))
+      .withMessage("Converter is required")
+      .withNoCause();
   }
 
   @Test
@@ -91,32 +88,30 @@ public class ConvertingPropertyEditorAdapterTests {
     verify(this.mockConverter, times(1)).convert(eq("female"));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void setAsTextHandlesConversionExceptionThrowsIllegalArgumentException() {
 
     when(this.mockConverter.convert(anyString())).thenThrow(newConversionException("test"));
 
     ConvertingPropertyEditorAdapter propertyEditor = ConvertingPropertyEditorAdapter.of(this.mockConverter);
 
-    try {
-      assertThat(propertyEditor).isNotNull();
-      assertThat(propertyEditor.getConverter()).isEqualTo(this.mockConverter);
-      assertThat(propertyEditor.getValue()).isNull();
+    ThrowableAssertions.assertThatIllegalArgumentException()
+      .isThrownBy(args -> {
 
-      propertyEditor.setAsText("test");
-    }
-    catch (IllegalArgumentException expected) {
+        assertThat(propertyEditor).isNotNull();
+        assertThat(propertyEditor.getConverter()).isEqualTo(this.mockConverter);
+        assertThat(propertyEditor.getValue()).isNull();
 
-      assertThat(expected).hasMessage("Could not set text [test] as value");
-      assertThat(expected).hasCauseInstanceOf(ConversionException.class);
-      assertThat(expected.getCause()).hasMessage("test");
-      assertThat(expected.getCause()).hasNoCause();
+        propertyEditor.setAsText("test");
 
-      throw expected;
-    }
-    finally {
-      verify(this.mockConverter, times(1)).convert(eq("test"));
-      assertThat(propertyEditor.getValue()).isNull();
-    }
+        return null;
+      })
+      .havingMessage("Could not set text [test] as value")
+      .causedBy(ConversionException.class)
+      .withNoCause();
+
+    verify(this.mockConverter, times(1)).convert(eq("test"));
+
+    assertThat(propertyEditor.getValue()).isNull();
   }
 }

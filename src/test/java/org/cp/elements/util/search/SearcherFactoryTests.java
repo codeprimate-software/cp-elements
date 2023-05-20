@@ -16,12 +16,13 @@
 package org.cp.elements.util.search;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.mockito.Mockito.mock;
 
-import org.cp.elements.test.TestUtils;
+import org.junit.jupiter.api.Test;
+
 import org.cp.elements.util.search.support.BinarySearch;
 import org.cp.elements.util.search.support.LinearSearch;
-import org.junit.jupiter.api.Test;
 
 /**
  * Unit Tests for {@link SearcherFactory}.
@@ -43,10 +44,13 @@ public class SearcherFactoryTests {
     assertThat(SearcherFactory.<Searcher>createSearcher(SearchType.LINEAR_SEARCH)).isInstanceOf(LinearSearch.class);
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void createSearcherWithNull() {
-    TestUtils.doIllegalArgumentExceptionThrowingOperation(() -> SearcherFactory.createSearcher(null),
-      () -> String.format("The SearchType (null) is not supported by the %s!", SearcherFactory.class.getSimpleName()));
+
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> SearcherFactory.createSearcher(null))
+      .withMessage("The SearchType (null) is not supported by the %s!", SearcherFactory.class.getSimpleName())
+      .withNoCause();
   }
 
   @Test

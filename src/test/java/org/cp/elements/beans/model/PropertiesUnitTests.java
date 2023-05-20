@@ -18,7 +18,6 @@ package org.cp.elements.beans.model;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
-import static org.cp.elements.lang.ThrowableAssertions.assertThatUnsupportedOperationException;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.atLeast;
 import static org.mockito.Mockito.atLeastOnce;
@@ -38,11 +37,13 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
+import org.junit.jupiter.api.Test;
+
 import org.cp.elements.beans.PropertyNotFoundException;
+import org.cp.elements.lang.ThrowableAssertions;
 import org.cp.elements.util.ArrayUtils;
 import org.cp.elements.util.CollectionUtils;
 import org.cp.elements.util.stream.StreamUtils;
-import org.junit.jupiter.api.Test;
 
 /**
  * Unit Tests for {@link Properties}.
@@ -269,14 +270,14 @@ public class PropertiesUnitTests {
     assertThat(propertySet).hasSize(1);
     assertThat(propertySet).containsExactly(mockPropertyOne);
 
-    assertThatUnsupportedOperationException()
+    ThrowableAssertions.assertThatUnsupportedOperationException()
       .isThrownBy(args -> propertySet.add(mockPropertyTwo))
       .withNoCause();
 
     assertThat(propertySet).hasSize(1);
     assertThat(propertySet).containsExactly(mockPropertyOne);
 
-    assertThatUnsupportedOperationException()
+    ThrowableAssertions.assertThatUnsupportedOperationException()
       .isThrownBy(args -> propertySet.remove(mockPropertyOne))
       .withNoCause();
 

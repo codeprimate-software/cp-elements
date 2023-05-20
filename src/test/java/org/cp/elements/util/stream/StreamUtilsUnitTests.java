@@ -17,6 +17,7 @@ package org.cp.elements.util.stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.assertj.core.api.Assertions.assertThatNullPointerException;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verifyNoInteractions;
 
@@ -119,10 +120,13 @@ public class StreamUtilsUnitTests {
     assertThat(stream).isEmpty();
   }
 
+  @Test
   @SuppressWarnings("all")
-  @Test(expected = NullPointerException.class)
   public void streamFromNullArray() {
-    StreamUtils.stream((Object[]) null);
+
+    assertThatNullPointerException()
+      .isThrownBy(() -> StreamUtils.stream((Object[]) null))
+      .withNoCause();
   }
 
   @Test

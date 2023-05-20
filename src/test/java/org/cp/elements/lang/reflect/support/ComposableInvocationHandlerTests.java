@@ -16,6 +16,7 @@
 package org.cp.elements.lang.reflect.support;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.cp.elements.util.ArrayUtils.asArray;
 import static org.cp.elements.util.ArrayUtils.asIterable;
 import static org.mockito.ArgumentMatchers.any;
@@ -29,9 +30,10 @@ import static org.mockito.Mockito.when;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 
-import org.cp.elements.lang.reflect.UnhandledMethodInvocationException;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
+
+import org.cp.elements.lang.reflect.UnhandledMethodInvocationException;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
@@ -124,37 +126,30 @@ public class ComposableInvocationHandlerTests {
     verify(mockInvocationHandlerTwo, times(1)).invoke(eq(proxy), eq(getName), eq(arguments));
   }
 
-  @Test(expected = UnhandledMethodInvocationException.class)
+  @Test
   public void invokeThrowsUnhandledMethodInvocationException() throws Throwable {
 
     Object proxy = new Object();
     Method getName = Contact.class.getMethod("getName");
     Object[] arguments = asArray("argOne", "argTwo");
 
-    when(mockInvocationHandlerOne.invoke(any(), any(Method.class), any(Object[].class)))
+    when(this.mockInvocationHandlerOne.invoke(any(), any(Method.class), any(Object[].class)))
       .thenThrow(new UnhandledMethodInvocationException("test"));
-    when(mockInvocationHandlerTwo.invoke(any(), any(Method.class), any(Object[].class)))
+    when(this.mockInvocationHandlerTwo.invoke(any(), any(Method.class), any(Object[].class)))
       .thenThrow(new UnhandledMethodInvocationException("test"));
 
     ComposableInvocationHandler invocationHandler =
-      ComposableInvocationHandler.compose(mockInvocationHandlerOne, mockInvocationHandlerTwo);
+      ComposableInvocationHandler.compose(this.mockInvocationHandlerOne, this.mockInvocationHandlerTwo);
 
     assertThat(invocationHandler).isNotNull();
 
-    try {
-      invocationHandler.invoke(proxy, getName, arguments);
-    }
-    catch (UnhandledMethodInvocationException expected) {
+    assertThatExceptionOfType(UnhandledMethodInvocationException.class)
+      .isThrownBy(() -> invocationHandler.invoke(proxy, getName, arguments))
+      .withMessage("Method [getName] was not handled")
+      .withNoCause();
 
-      assertThat(expected).hasMessage("Method [getName] was not handled");
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
-    finally {
-      verify(mockInvocationHandlerOne, times(1)).invoke(eq(proxy), eq(getName), eq(arguments));
-      verify(mockInvocationHandlerTwo, times(1)).invoke(eq(proxy), eq(getName), eq(arguments));
-    }
+    verify(this.mockInvocationHandlerOne, times(1)).invoke(eq(proxy), eq(getName), eq(arguments));
+    verify(this.mockInvocationHandlerTwo, times(1)).invoke(eq(proxy), eq(getName), eq(arguments));
   }
 
   @Test
@@ -173,6 +168,7 @@ public class ComposableInvocationHandlerTests {
 
   @Data
   @RequiredArgsConstructor(staticName = "newContact")
+  @SuppressWarnings("all")
   static class Contact {
     @NonNull String name;
   }

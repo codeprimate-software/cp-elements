@@ -13,17 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.data.conversion.converters;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+
+import org.junit.jupiter.api.Test;
 
 import org.cp.elements.data.conversion.ConversionException;
 import org.cp.elements.lang.StringUtils;
-import org.junit.jupiter.api.Test;
 
 /**
- * Unit tests for {@link CharacterConverter}.
+ * Unit Tests for {@link CharacterConverter}.
  *
  * @author John J. Blum
  * @see java.lang.Character
@@ -33,7 +34,7 @@ import org.junit.jupiter.api.Test;
  */
 public class CharacterConverterTests {
 
-  private CharacterConverter converter = new CharacterConverter();
+  private final CharacterConverter converter = new CharacterConverter();
 
   @Test
   public void canConvertToCharacterReturnsTrue() {
@@ -60,19 +61,13 @@ public class CharacterConverterTests {
     assertThat(this.converter.canConvert(Number.class, Character.class)).isFalse();
   }
 
-  @Test(expected = ConversionException.class)
+  @Test
   public void convertBooleanToCharacterThrowsException() {
 
-    try {
-      this.converter.convert(true);
-    }
-    catch (ConversionException expected) {
-
-      assertThat(expected).hasMessage("Cannot convert [true] to [java.lang.Character]");
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
+    assertThatExceptionOfType(ConversionException.class)
+      .isThrownBy(() -> this.converter.convert(true))
+      .withMessage("Cannot convert [true] to [java.lang.Character]")
+      .withNoCause();
   }
 
   @Test
@@ -80,19 +75,13 @@ public class CharacterConverterTests {
     assertThat(this.converter.convert('X')).isEqualTo('X');
   }
 
-  @Test(expected = ConversionException.class)
+  @Test
   public void convertNumberToCharacterThrowsException() {
 
-    try {
-      this.converter.convert(123);
-    }
-    catch (ConversionException expected) {
-
-      assertThat(expected).hasMessage("Cannot convert [123] to [java.lang.Character]");
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
+    assertThatExceptionOfType(ConversionException.class)
+      .isThrownBy(() -> this.converter.convert(123))
+      .withMessage("Cannot convert [123] to [java.lang.Character]")
+      .withNoCause();
   }
 
   @Test
@@ -100,19 +89,13 @@ public class CharacterConverterTests {
     assertThat(this.converter.withDefaultValue('X').convert(null)).isEqualTo('X');
   }
 
-  @Test(expected = ConversionException.class)
+  @Test
   public void convertNullToCharacterWithoutDefaultValueThrowsException() {
 
-    try {
-      this.converter.convert(null);
-    }
-    catch (ConversionException expected) {
-
-      assertThat(expected).hasMessage("Cannot convert [null] to [java.lang.Character]");
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
+    assertThatExceptionOfType(ConversionException.class)
+      .isThrownBy(() -> this.converter.convert(null))
+      .withMessage("Cannot convert [null] to [java.lang.Character]")
+      .withNoCause();
   }
 
   @Test

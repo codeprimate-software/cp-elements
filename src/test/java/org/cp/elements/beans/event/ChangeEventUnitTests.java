@@ -16,6 +16,7 @@
 package org.cp.elements.beans.event;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -45,9 +46,12 @@ public class ChangeEventUnitTests {
     assertThat(event.getChangeDateTime()).isEqualTo(event.getChangeDateTime());
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void constructChangeEventWithNullSource() {
-    new ChangeEvent(null);
+
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> new ChangeEvent(null))
+      .withNoCause();
   }
 
   @Test

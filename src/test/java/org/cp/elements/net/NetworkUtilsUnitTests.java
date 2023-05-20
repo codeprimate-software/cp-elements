@@ -17,7 +17,6 @@ package org.cp.elements.net;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.cp.elements.lang.CheckedExceptionsFactory.newIOException;
-import static org.cp.elements.lang.ThrowableAssertions.assertThatThrowableOfType;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -31,6 +30,8 @@ import java.net.SocketAddress;
 import java.util.Arrays;
 
 import org.junit.jupiter.api.Test;
+
+import org.cp.elements.lang.ThrowableAssertions;
 
 import org.assertj.core.api.InstanceOfAssertFactories;
 
@@ -144,7 +145,7 @@ public class NetworkUtilsUnitTests {
   public void lenientParsePortWithInvalidPortNumberThrowsIllegalArgumentException() {
 
     Arrays.asList("invalid", "BOBO", "$##!", "  ", "", null).forEach(invalidPort ->
-      assertThatThrowableOfType(IllegalArgumentException.class)
+      ThrowableAssertions.assertThatThrowableOfType(IllegalArgumentException.class)
         .isThrownBy(args -> NetworkUtils.lenientParsePort(invalidPort))
         .havingMessage("Port [] is not valid")
         .causedBy(NumberFormatException.class)
@@ -167,7 +168,7 @@ public class NetworkUtilsUnitTests {
   public void parsePortWithInvalidPortNumberThrowsIllegalArgumentException() {
 
     Arrays.asList("invalid", "BOBO", "$##!", "  ", "", null).forEach(invalidPort ->
-      assertThatThrowableOfType(IllegalArgumentException.class)
+      ThrowableAssertions.assertThatThrowableOfType(IllegalArgumentException.class)
         .isThrownBy(args -> NetworkUtils.parsePort(invalidPort))
         .havingMessage("Port [%s] is not valid", invalidPort)
         .causedBy(NumberFormatException.class)

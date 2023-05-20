@@ -13,19 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.data.conversion.converters;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
-import org.cp.elements.data.conversion.ConversionException;
 import org.junit.jupiter.api.Test;
 
+import org.cp.elements.data.conversion.ConversionException;
+import org.cp.elements.lang.ThrowableAssertions;
+
 /**
- * Unit tests for {@link IntegerConverter}.
+ * Unit Tests for {@link IntegerConverter}.
  *
  * @author John J. Blum
  * @see java.lang.Integer
@@ -57,7 +59,7 @@ public class IntegerConverterTests {
   }
 
   @Test
-  public void testCannotConvert() {
+  public void cannotConvert() {
 
     assertThat(this.converter.canConvert(Integer.class, null)).isFalse();
     assertThat(this.converter.canConvert(Integer.class, Integer.TYPE)).isFalse();
@@ -71,9 +73,9 @@ public class IntegerConverterTests {
     assertThat(this.converter.canConvert(Integer.class, Number.class)).isFalse();
     assertThat(this.converter.canConvert(Integer.class, Short.class)).isFalse();
     assertThat(this.converter.canConvert(Integer.class, String.class)).isFalse();
-    assertThat(this.converter.canConvert(Boolean.class, Integer.class));
-    assertThat(this.converter.canConvert(Character.class, Integer.class));
-    assertThat(this.converter.canConvert(Object.class, Integer.class));
+    assertThat(this.converter.canConvert(Boolean.class, Integer.class)).isFalse();
+    assertThat(this.converter.canConvert(Character.class, Integer.class)).isFalse();
+    assertThat(this.converter.canConvert(Object.class, Integer.class)).isFalse();
   }
 
   @Test
@@ -116,35 +118,23 @@ public class IntegerConverterTests {
     assertThat(this.converter.convert(3.14159d)).isEqualTo(3);
   }
 
-  @Test(expected = ConversionException.class)
+  @Test
   public void convertInvalidIntegerStringThrowsException() {
 
-    try {
-      this.converter.convert("oneTwoThree");
-    }
-    catch (ConversionException expected) {
-
-      assertThat(expected).hasMessage("Cannot convert [oneTwoThree] to [java.lang.Integer]");
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
+    assertThatExceptionOfType(ConversionException.class)
+      .isThrownBy(() -> this.converter.convert("oneTwoThree"))
+      .withMessage("Cannot convert [oneTwoThree] to [java.lang.Integer]")
+      .withNoCause();
   }
 
-  @Test(expected = ConversionException.class)
+  @Test
   public void convertInvalidNumericStringThrowsException() {
 
-    try {
-      this.converter.convert("$1OO");
-    }
-    catch (ConversionException expected) {
-
-      assertThat(expected).hasMessage("[$1OO] is not a valid Integer");
-      assertThat(expected).hasCauseInstanceOf(NumberFormatException.class);
-      assertThat(expected.getCause()).hasNoCause();
-
-      throw expected;
-    }
+    ThrowableAssertions.assertThatThrowableOfType(ConversionException.class)
+      .isThrownBy(args -> this.converter.convert("$1OO"))
+      .havingMessage("[$1OO] is not a valid Integer")
+      .causedBy(NumberFormatException.class)
+      .withNoCause();
   }
 
   @Test
@@ -152,19 +142,13 @@ public class IntegerConverterTests {
     assertThat(this.converter.withDefaultValue(2).convert(null)).isEqualTo(2);
   }
 
-  @Test(expected = ConversionException.class)
+  @Test
   public void convertNullToIntegerWithoutDefaultValueThrowsException() {
 
-    try {
-      this.converter.convert(null);
-    }
-    catch (ConversionException expected) {
-
-      assertThat(expected).hasMessage("Cannot convert [null] to [java.lang.Integer]");
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
+    assertThatExceptionOfType(ConversionException.class)
+      .isThrownBy(() -> this.converter.convert(null))
+      .withMessage("Cannot convert [null] to [java.lang.Integer]")
+      .withNoCause();
   }
 
   @Test

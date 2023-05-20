@@ -16,6 +16,7 @@
 package org.cp.elements.data.conversion;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verifyNoInteractions;
@@ -256,14 +257,20 @@ public class AbstractConverterUnitTests {
     assertThat(new ObjectToStringConverter().canConvert(String.class, Character.class)).isFalse();
   }
 
-  @Test(expected = UnsupportedOperationException.class)
+  @Test
   public void convertThrowsUnsupportedOperationException() {
-    newConverter().convert("test");
+
+    assertThatExceptionOfType(UnsupportedOperationException.class)
+      .isThrownBy(() -> newConverter().convert("test"))
+      .withNoCause();
   }
 
-  @Test(expected = UnsupportedOperationException.class)
+  @Test
   public void convertWithQualifyingTypeThrowsUnsupportedOperationException() {
-    newConverter().convert(1, Long.class);
+
+    assertThatExceptionOfType(UnsupportedOperationException.class)
+      .isThrownBy(() -> newConverter().convert(1, Long.class))
+      .withNoCause();
   }
 
   static class ObjectToStringConverter extends AbstractConverter<Object, String> { }

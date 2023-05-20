@@ -16,10 +16,10 @@
 package org.cp.elements.lang.factory;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verifyNoInteractions;
 
-import org.cp.elements.test.TestUtils;
 import org.junit.Before;
 import org.junit.jupiter.api.Test;
 
@@ -67,16 +67,18 @@ public class ObjectFactoryReferenceHolderUnitTests {
     verifyNoInteractions(mockObjectFactory);
   }
 
-  @Test(expected = IllegalStateException.class)
+  @Test
   public void getWhenReferenceIsUnset() {
 
     assertThat(ObjectFactoryReferenceHolder.hasReference()).isFalse();
 
-    TestUtils.doIllegalStateExceptionThrowingOperation(ObjectFactoryReferenceHolder::get,
-      () -> "An ObjectFactory was not properly initialized");
+    assertThatIllegalStateException()
+      .isThrownBy(ObjectFactoryReferenceHolder::get)
+      .withMessage("An ObjectFactory was not properly initialized")
+      .withNoCause();
   }
 
-  @Test(expected = IllegalStateException.class)
+  @Test
   public void setWhenReferenceIsSet() {
 
     assertThat(ObjectFactoryReferenceHolder.hasReference()).isFalse();
@@ -88,20 +90,15 @@ public class ObjectFactoryReferenceHolderUnitTests {
     assertThat(ObjectFactoryReferenceHolder.hasReference()).isTrue();
     assertThat(ObjectFactoryReferenceHolder.get()).isSameAs(mockObjectFactory);
 
-    try {
-      ObjectFactoryReferenceHolder.set(mock(ObjectFactory.class, "Illegal ObjectFactory"));
-    }
-    catch (IllegalStateException expected) {
+    assertThatIllegalStateException()
+      .isThrownBy(() -> ObjectFactoryReferenceHolder.set(mock(ObjectFactory.class, "Illegal ObjectFactory")))
+      .withMessage("An ObjectFactory reference is already set to [%s]", mockObjectFactory)
+      .withNoCause();
 
-      assertThat(expected).hasMessage("An ObjectFactory reference is already set to [%s]", mockObjectFactory);
-      assertThat(ObjectFactoryReferenceHolder.hasReference()).isTrue();
-      assertThat(ObjectFactoryReferenceHolder.get()).isSameAs(mockObjectFactory);
+    assertThat(ObjectFactoryReferenceHolder.hasReference()).isTrue();
+    assertThat(ObjectFactoryReferenceHolder.get()).isSameAs(mockObjectFactory);
 
-      throw expected;
-    }
-    finally {
-      verifyNoInteractions(mockObjectFactory);
-    }
+    verifyNoInteractions(mockObjectFactory);
   }
 
   @Test
@@ -154,8 +151,8 @@ public class ObjectFactoryReferenceHolderUnitTests {
 
       super.initialize();
 
-      mockGetterObjectFactory = mock(ObjectFactory.class, "Getter ObjectFactory");
-      mockSetterObjectFactory = mock(ObjectFactory.class, "Setter ObjectFactory");
+      this.mockGetterObjectFactory = mock(ObjectFactory.class, "Getter ObjectFactory");
+      this.mockSetterObjectFactory = mock(ObjectFactory.class, "Setter ObjectFactory");
     }
 
     public void thread1() {
@@ -163,17 +160,17 @@ public class ObjectFactoryReferenceHolderUnitTests {
       Thread.currentThread().setName("Setter Thread!");
 
       assertTick(0);
-      assertFalse(ObjectFactoryReferenceHolder.hasReference());
+      assertThat(ObjectFactoryReferenceHolder.hasReference()).isFalse();
 
-      ObjectFactoryReferenceHolder.set(mockGetterObjectFactory);
+      ObjectFactoryReferenceHolder.set(this.mockGetterObjectFactory);
 
-      assertTrue(ObjectFactoryReferenceHolder.hasReference());
-      assertSame(mockGetterObjectFactory, ObjectFactoryReferenceHolder.get());
+      assertThat(ObjectFactoryReferenceHolder.hasReference()).isTrue();
+      assertThat(ObjectFactoryReferenceHolder.get()).isSameAs(this.mockGetterObjectFactory);
 
       waitForTick(2);
 
-      assertTrue(ObjectFactoryReferenceHolder.hasReference());
-      assertSame(mockSetterObjectFactory, ObjectFactoryReferenceHolder.get());
+      assertThat(ObjectFactoryReferenceHolder.hasReference()).isTrue();
+      assertThat(ObjectFactoryReferenceHolder.get()).isSameAs(this.mockSetterObjectFactory);
     }
 
     public void thread2() {
@@ -183,13 +180,13 @@ public class ObjectFactoryReferenceHolderUnitTests {
       Thread.currentThread().setName("Getter Thread!");
 
       assertTick(1);
-      assertTrue(ObjectFactoryReferenceHolder.hasReference());
-      assertSame(mockGetterObjectFactory, ObjectFactoryReferenceHolder.get());
+      assertThat(ObjectFactoryReferenceHolder.hasReference()).isTrue();
+      assertThat(ObjectFactoryReferenceHolder.get()).isSameAs(this.mockGetterObjectFactory);
 
-      ObjectFactoryReferenceHolder.compareAndSet(mockGetterObjectFactory, mockSetterObjectFactory);
+      ObjectFactoryReferenceHolder.compareAndSet(this.mockGetterObjectFactory, this.mockSetterObjectFactory);
 
-      assertTrue(ObjectFactoryReferenceHolder.hasReference());
-      assertSame(mockSetterObjectFactory, ObjectFactoryReferenceHolder.get());
+      assertThat(ObjectFactoryReferenceHolder.hasReference()).isTrue();
+      assertThat(ObjectFactoryReferenceHolder.get()).isSameAs(this.mockSetterObjectFactory);
     }
 
     @Override
@@ -199,7 +196,7 @@ public class ObjectFactoryReferenceHolderUnitTests {
 
       ObjectFactoryReferenceHolder.clear();
 
-      assertFalse(ObjectFactoryReferenceHolder.hasReference());
+      assertThat(ObjectFactoryReferenceHolder.hasReference()).isFalse();
     }
   }
 }

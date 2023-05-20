@@ -13,13 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.util;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
 import static org.cp.elements.util.CollectionUtils.asIterable;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -44,13 +44,14 @@ import org.junit.jupiter.api.Test;
 public class DepthFirstIteratorTest {
 
   protected <T> List<T> asList(T... elements) {
-    List<T> list = new ArrayList<T>(elements.length);
+    List<T> list = new ArrayList<>(elements.length);
     Collections.addAll(list, elements);
     return list;
   }
 
   protected <T> List<T> toList(final Iterator<T> iterator) {
-    List<T> list = new ArrayList<T>();
+
+    List<T> list = new ArrayList<>();
 
     for (T element : asIterable(iterator)) {
       list.add(element);
@@ -60,7 +61,8 @@ public class DepthFirstIteratorTest {
   }
 
   protected <T> List<T> toListWeavedWithRemoves(final Iterator<T> iterator) {
-    List<T> list = new ArrayList<T>();
+
+    List<T> list = new ArrayList<>();
     int index = 0;
 
     while (iterator.hasNext()) {
@@ -77,15 +79,13 @@ public class DepthFirstIteratorTest {
     return list;
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void constructWithNullIteratorOfIterators() {
-    try {
-      new DepthFirstIterator<Object>(null);
-    }
-    catch (IllegalArgumentException expected) {
-      assertEquals("The Iterator of Iterators must not be null!", expected.getMessage());
-      throw expected;
-    }
+
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> new DepthFirstIterator<>(null))
+      .withMessage("The Iterator of Iterators must not be null!")
+      .withNoCause();
   }
 
   @Test
@@ -97,9 +97,9 @@ public class DepthFirstIteratorTest {
     Iterator<Iterator<String>> iteratorOfIterators = Arrays.asList(row1.iterator(), row2.iterator(), row3.iterator())
       .iterator();
 
-    DepthFirstIterator<String> iterator = new DepthFirstIterator<String>(iteratorOfIterators);
+    DepthFirstIterator<String> iterator = new DepthFirstIterator<>(iteratorOfIterators);
 
-    assertEquals(Arrays.asList("A", "D", "G", "B", "E", "H", "C", "F", "I"), toList(iterator));
+    assertThat(toList(iterator)).isEqualTo(Arrays.asList("A", "D", "G", "B", "E", "H", "C", "F", "I"));
   }
 
   @Test
@@ -111,14 +111,15 @@ public class DepthFirstIteratorTest {
     Iterator<Iterator<String>> iteratorOfIterators = Arrays.asList(row1.iterator(), row2.iterator(), row3.iterator())
       .iterator();
 
-    DepthFirstIterator<String> iterator = new DepthFirstIterator<String>(iteratorOfIterators);
+    DepthFirstIterator<String> iterator = new DepthFirstIterator<>(iteratorOfIterators);
 
-    assertEquals(Arrays.asList("A", "E", "G", "B", "F", "H", "C", "I", "D"), toList(iterator));
+    assertThat(toList(iterator)).isEqualTo(Arrays.asList("A", "E", "G", "B", "F", "H", "C", "I", "D"));
   }
 
   @Test
   public void iterationOfIncreasingIteratorOfIterators() {
-    List<String> row1 = Arrays.asList("A");
+
+    List<String> row1 = Collections.singletonList("A");
     List<String> row2 = Arrays.asList("B", "C");
     List<String> row3 = Arrays.asList("D", "E", "F");
     List<String> row4 = Arrays.asList("G", "H", "I", "J");
@@ -126,48 +127,52 @@ public class DepthFirstIteratorTest {
     Iterator<Iterator<String>> iteratorOfIterators = Arrays.asList(row1.iterator(), row2.iterator(), row3.iterator(),
       row4.iterator()).iterator();
 
-    DepthFirstIterator<String> iterator = new DepthFirstIterator<String>(iteratorOfIterators);
+    DepthFirstIterator<String> iterator = new DepthFirstIterator<>(iteratorOfIterators);
 
-    assertEquals(Arrays.asList("A", "B", "D", "G", "C", "E", "H", "F", "I", "J"), toList(iterator));
+    assertThat(toList(iterator)).isEqualTo(Arrays.asList("A", "B", "D", "G", "C", "E", "H", "F", "I", "J"));
   }
 
   @Test
   public void iterationOfDecreasingIteratorOfIterators() {
+
     List<String> row1 = Arrays.asList("A", "B", "C", "D");
     List<String> row2 = Arrays.asList("E", "F", "G");
     List<String> row3 = Arrays.asList("H", "I");
-    List<String> row4 = Arrays.asList("J");
+    List<String> row4 = Collections.singletonList("J");
 
     Iterator<Iterator<String>> iteratorOfIterators = Arrays.asList(row1.iterator(), row2.iterator(), row3.iterator(),
       row4.iterator()).iterator();
 
-    DepthFirstIterator<String> iterator = new DepthFirstIterator<String>(iteratorOfIterators);
+    DepthFirstIterator<String> iterator = new DepthFirstIterator<>(iteratorOfIterators);
 
-    assertEquals(Arrays.asList("A", "E", "H", "J", "B", "F", "I", "C", "G", "D"), toList(iterator));
+    assertThat(toList(iterator)).isEqualTo(Arrays.asList("A", "E", "H", "J", "B", "F", "I", "C", "G", "D"));
   }
 
   @Test
+  @SuppressWarnings("all")
   public void iterationOfIteratorOfIteratorsWithEmptyRows() {
+
     List<String> row1 = Arrays.asList("A", "B", "C", "D");
     List<String> row2 = Collections.emptyList();
     List<String> row3 = Arrays.asList("E", "F", "G");
     List<String> row4 = Collections.emptyList();
     List<String> row5 = Arrays.asList("H", "I");
     List<String> row6 = Collections.emptyList();
-    List<String> row7 = Arrays.asList("J");
+    List<String> row7 = Collections.singletonList("J");
     List<String> row8 = Collections.emptyList();
 
     Iterator<Iterator<String>> iteratorOfIterators = Arrays.asList(row1.iterator(), row2.iterator(), row3.iterator(),
       row4.iterator(), row5.iterator(), row6.iterator(), row7.iterator(), row8.iterator()).iterator();
 
-    DepthFirstIterator<String> iterator = new DepthFirstIterator<String>(iteratorOfIterators);
+    DepthFirstIterator<String> iterator = new DepthFirstIterator<>(iteratorOfIterators);
 
-    assertEquals(Arrays.asList("A", "E", "H", "J", "B", "F", "I", "C", "G", "D"), toList(iterator));
+    assertThat(toList(iterator)).isEqualTo(Arrays.asList("A", "E", "H", "J", "B", "F", "I", "C", "G", "D"));
   }
 
   @Test
   public void iterationOfStaggeredIteratorOfIteratorsAndNullRows() {
-    List<String> row1 = Arrays.asList("A");
+
+    List<String> row1 = Collections.singletonList("A");
     // row2 is null
     List<String> row3 = Arrays.asList("B", "C", "D", "E", "F");
     // row4, row5 are null
@@ -178,24 +183,23 @@ public class DepthFirstIteratorTest {
     Iterator<Iterator<String>> iteratorOfIterators = Arrays.asList(row1.iterator(), null, row3.iterator(),
       null, null, row6.iterator(), row7.iterator(), null).iterator();
 
-    DepthFirstIterator<String> iterator = new DepthFirstIterator<String>(iteratorOfIterators);
+    DepthFirstIterator<String> iterator = new DepthFirstIterator<>(iteratorOfIterators);
 
-    assertEquals(Arrays.asList("A", "B", "G", "I", "C", "H", "J", "D", "K", "E", "F"), toList(iterator));
+    assertThat(toList(iterator)).isEqualTo(Arrays.asList("A", "B", "G", "I", "C", "H", "J", "D", "K", "E", "F"));
   }
 
-  @Test(expected = NoSuchElementException.class)
+  @Test
   public void nextWhenIteratorExhausted() {
-    try {
-      new DepthFirstIterator<Object>(Collections.<Iterator<Object>>emptyList().iterator()).next();
-    }
-    catch (NoSuchElementException expected) {
-      assertEquals("The iteration has no more elements!", expected.getMessage());
-      throw expected;
-    }
+
+    assertThatExceptionOfType(NoSuchElementException.class)
+      .isThrownBy(() -> new DepthFirstIterator<>(Collections.emptyIterator()).next())
+      .withMessage("The iteration has no more elements!")
+      .withNoCause();
   }
 
   @Test
   public void removeOddIndexedElements() {
+
     List<String> row1 = asList("A", "B", "C");
     List<String> row2 = asList("D", "E", "F");
     List<String> row3 = asList("G", "H", "I");
@@ -203,41 +207,40 @@ public class DepthFirstIteratorTest {
     Iterator<Iterator<String>> iteratorOfIterators = asList(row1.iterator(), row2.iterator(), row3.iterator())
       .iterator();
 
-    DepthFirstIterator<String> iterator = new DepthFirstIterator<String>(iteratorOfIterators);
+    DepthFirstIterator<String> iterator = new DepthFirstIterator<>(iteratorOfIterators);
 
-    assertEquals(Arrays.asList("A", "G", "E", "C", "I"), toListWeavedWithRemoves(iterator));
-    assertFalse(iterator.hasNext());
+    assertThat(toListWeavedWithRemoves(iterator)).isEqualTo(Arrays.asList("A", "G", "E", "C", "I"));
+    assertThat(iterator.hasNext()).isFalse();
   }
 
-  @Test(expected = IllegalStateException.class)
+  @Test
   public void removeCalledBeforeNext() {
-    try {
-      new DepthFirstIterator<String>(asList(asList("A").iterator()).iterator()).remove();
-    }
-    catch (IllegalStateException expected) {
-      assertEquals("next was not called before remove", expected.getMessage());
-      throw expected;
-    }
+
+    assertThatIllegalStateException()
+      .isThrownBy(() -> new DepthFirstIterator<>(asList(asList("A").iterator()).iterator()).remove())
+      .withMessage("next was not called before remove")
+      .withNoCause();
   }
 
-  @Test(expected = IllegalStateException.class)
+  @Test
   public void removeCalledTwiceBeforeNext() {
-    try {
-      DepthFirstIterator<String> iterator = new DepthFirstIterator<String>(
-        asList(asList("A").iterator()).iterator());
 
-      assertTrue(iterator.hasNext());
-      assertEquals("A", iterator.next());
+    assertThatIllegalStateException()
+      .isThrownBy(() -> {
 
-      iterator.remove();
+        DepthFirstIterator<String> iterator = new DepthFirstIterator<>(
+          asList(asList("A").iterator()).iterator());
 
-      assertFalse(iterator.hasNext());
+        assertThat(iterator.hasNext()).isTrue();
+        assertThat(iterator.next()).isEqualTo("A");
 
-      iterator.remove();
-    }
-    catch (IllegalStateException expected) {
-      assertEquals("next was not called before remove", expected.getMessage());
-      throw expected;
-    }
+        iterator.remove();
+
+        assertThat(iterator.hasNext()).isFalse();
+
+        iterator.remove();
+      })
+      .withMessage("next was not called before remove")
+      .withNoCause();
   }
 }

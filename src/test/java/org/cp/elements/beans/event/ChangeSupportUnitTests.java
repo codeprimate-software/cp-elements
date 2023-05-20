@@ -16,6 +16,7 @@
 package org.cp.elements.beans.event;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.isA;
@@ -37,6 +38,7 @@ import java.util.Arrays;
 import java.util.Collections;
 
 import org.junit.jupiter.api.Test;
+
 import org.mockito.InOrder;
 import org.mockito.stubbing.Answer;
 
@@ -64,19 +66,13 @@ public class ChangeSupportUnitTests {
     assertThat(changeSupport.getSource()).isSameAs(source);
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void constructNewChangeSupportWithNullSource() {
 
-    try {
-      new ChangeSupport(null);
-    }
-    catch (IllegalArgumentException expected) {
-
-      assertThat(expected).hasMessage("A source object is required");
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> new ChangeSupport(null))
+      .withMessage("A source object is required")
+      .withNoCause();
   }
 
   @Test

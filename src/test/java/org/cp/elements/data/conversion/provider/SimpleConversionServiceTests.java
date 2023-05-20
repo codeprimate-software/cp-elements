@@ -16,6 +16,8 @@
 package org.cp.elements.data.conversion.provider;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
@@ -30,6 +32,8 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Supplier;
+
+import org.junit.jupiter.api.Test;
 
 import org.cp.elements.data.conversion.ConversionException;
 import org.cp.elements.data.conversion.Converter;
@@ -53,10 +57,9 @@ import org.cp.elements.data.conversion.converters.URLConverter;
 import org.cp.elements.enums.Gender;
 import org.cp.elements.enums.Race;
 import org.cp.elements.lang.Identifiable;
-import org.junit.jupiter.api.Test;
 
 /**
- * Unit tests for {@link SimpleConversionService}.
+ * Unit Tests for {@link SimpleConversionService}.
  *
  * @author John J. Blum
  * @see org.junit.jupiter.api.Test
@@ -214,19 +217,13 @@ public class SimpleConversionServiceTests {
     assertThat(this.conversionService.getDefaultValue(String.class)).isNull();
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void setDefaultValueWithNullType() {
 
-    try {
-      this.conversionService.setDefaultValue(null, "test");
-    }
-    catch (IllegalArgumentException expected) {
-
-      assertThat(expected).hasMessage("Class type is required");
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> this.conversionService.setDefaultValue(null, "test"))
+      .withMessage("Class type is required")
+      .withNoCause();
   }
 
   @Test
@@ -305,24 +302,17 @@ public class SimpleConversionServiceTests {
     assertThat(this.conversionService.convert(null, String.class)).isEqualTo("null");
   }
 
-  @Test(expected = ConversionException.class)
+  @Test
   public void convertWithDefaultsDisabledThrowsException() {
 
     assertThat(this.conversionService.isDefaultValuesEnabled()).isFalse();
 
-    try {
-      this.conversionService.convert(null, Gender.class);
-    }
-    catch (ConversionException expected) {
+    assertThatExceptionOfType(ConversionException.class)
+      .isThrownBy(() -> this.conversionService.convert(null, Gender.class))
+      .withMessage("Cannot convert [null] into Object of type [%s]", Gender.class.getName())
+      .withNoCause();
 
-      assertThat(expected).hasMessage("Cannot convert [null] into Object of type [%s]", Gender.class.getName());
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
-    finally {
-      assertThat(this.conversionService.isDefaultValuesEnabled()).isFalse();
-    }
+    assertThat(this.conversionService.isDefaultValuesEnabled()).isFalse();
   }
 
   @Test

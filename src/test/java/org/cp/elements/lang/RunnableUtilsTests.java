@@ -13,23 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.lang;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import org.junit.jupiter.api.Test;
+
 import org.assertj.core.api.Assertions;
 import org.cp.elements.lang.concurrent.ThreadUtils;
-import org.junit.jupiter.api.Test;
 
 import edu.umd.cs.mtc.MultithreadedTestCase;
 import edu.umd.cs.mtc.TestFramework;
 
 /**
- * Unit tests for {@link RunnableUtils}.
+ * Unit Tests for {@link RunnableUtils}.
  *
  * @author John Blum
  * @see org.junit.jupiter.api.Test
@@ -44,19 +45,12 @@ public class RunnableUtilsTests {
 
     AtomicBoolean ran = new AtomicBoolean(false);
 
-    try {
-      invoker.invoke(milliseconds, () -> ran.set(true));
-    }
-    catch (IllegalArgumentException expected) {
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> invoker.invoke(milliseconds, () -> ran.set(true)))
+      .withMessage("Milliseconds [%d] must be greater than 0", milliseconds)
+      .withNoCause();
 
-      assertThat(expected).hasMessage("Milliseconds [%d] must be greater than 0", milliseconds);
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
-    finally {
-      assertThat(ran.get()).isFalse();
-    }
+    assertThat(ran.get()).isFalse();
   }
 
   private void testRunWithSleepThenReturnValueUsingIllegalMilliseconds(RunnableUtilsReturningInvoker invoker,
@@ -64,22 +58,15 @@ public class RunnableUtilsTests {
 
     AtomicBoolean ran = new AtomicBoolean(false);
 
-    try {
-      invoker.invoke(milliseconds, () -> {
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> invoker.invoke(milliseconds, () -> {
         ran.set(true);
         return "test";
-      });
-    }
-    catch (IllegalArgumentException expected) {
+      }))
+      .withMessage("Milliseconds [%d] must be greater than 0", milliseconds)
+      .withNoCause();
 
-      assertThat(expected).hasMessage("Milliseconds [%d] must be greater than 0", milliseconds);
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
-    finally {
-      assertThat(ran.get()).isFalse();
-    }
+    assertThat(ran.get()).isFalse();
   }
 
   @Test
@@ -94,12 +81,12 @@ public class RunnableUtilsTests {
     assertThat(ran.get()).isTrue();
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void runWithSleepUsingNegativeMilliseconds() {
     testRunWithSleepUsingIllegalMilliseconds(RunnableUtils::runWithSleep, -1L);
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void runWithSleepUsingZeroMilliseconds() {
     testRunWithSleepUsingIllegalMilliseconds(RunnableUtils::runWithSleep, 0L);
   }
@@ -121,12 +108,12 @@ public class RunnableUtilsTests {
     TestFramework.runOnce(new RunWithSleepThrowOnInterruptThrowsSleepDeprivedException());
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void runWithSleepThrowOnInterruptUsingNegativeMilliseconds() {
     testRunWithSleepUsingIllegalMilliseconds(RunnableUtils::runWithSleepThrowOnInterrupt, -1L);
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void runWithSleepThrowOnInterruptUsingZeroMilliseconds() {
     testRunWithSleepUsingIllegalMilliseconds(RunnableUtils::runWithSleepThrowOnInterrupt, 0L);
   }
@@ -148,12 +135,12 @@ public class RunnableUtilsTests {
     TestFramework.runOnce(new RunWithSleepUninterruptedHandlesInterruptedThread());
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void runWithSleepUninterruptedUsingNegativeMilliseconds() {
     testRunWithSleepUsingIllegalMilliseconds(RunnableUtils::runWithSleepUninterrupted, -1L);
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void runWithSleepUninterruptedUsingZeroMilliseconds() {
     testRunWithSleepUsingIllegalMilliseconds(RunnableUtils::runWithSleepUninterrupted, 0L);
   }
@@ -167,12 +154,12 @@ public class RunnableUtilsTests {
     assertThat(System.currentTimeMillis() - t0).isGreaterThanOrEqualTo(50L);
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void runWithSleepThenReturnValueWithNegativeMilliseconds() {
     testRunWithSleepThenReturnValueUsingIllegalMilliseconds(RunnableUtils::runWithSleepThenReturnValue, -1L);
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void runWithSleepThenReturnValueWithZeroMilliseconds() {
     testRunWithSleepThenReturnValueUsingIllegalMilliseconds(RunnableUtils::runWithSleepThenReturnValue, -0L);
   }
@@ -193,13 +180,13 @@ public class RunnableUtilsTests {
     TestFramework.runOnce(new RunWithSleepThenReturnValueThrowOnInterruptThrowsSleepDeprivedException());
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void runWithSleepThenReturnValueThrowOnInterruptWithNegativeMilliseconds() {
     testRunWithSleepThenReturnValueUsingIllegalMilliseconds(RunnableUtils::runWithSleepThenReturnValueThrowOnInterrupt,
       -1L);
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void runWithSleepThenReturnValueThrowOnInterruptWithZeroMilliseconds() {
     testRunWithSleepThenReturnValueUsingIllegalMilliseconds(RunnableUtils::runWithSleepThenReturnValueThrowOnInterrupt,
       -0L);
@@ -219,13 +206,13 @@ public class RunnableUtilsTests {
     TestFramework.runOnce(new RunWithSleepThenReturnValueUninterruptedHandlesInterruptedThread());
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void runWithSleepThenReturnValueUninterruptedWithNegativeMilliseconds() {
     testRunWithSleepThenReturnValueUsingIllegalMilliseconds(RunnableUtils::runWithSleepThenReturnValueUninterrupted,
       -1L);
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void runWithSleepThenReturnValueUninterruptedWithZeroMilliseconds() {
     testRunWithSleepThenReturnValueUsingIllegalMilliseconds(RunnableUtils::runWithSleepThenReturnValueUninterrupted,
       -0L);

@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.data.conversion.converters;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -24,11 +24,13 @@ import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.Date;
 
-import org.cp.elements.data.conversion.ConversionException;
 import org.junit.jupiter.api.Test;
 
+import org.cp.elements.data.conversion.ConversionException;
+import org.cp.elements.lang.ThrowableAssertions;
+
 /**
- * Unit tests for {@link LongConverter}.
+ * Unit Tests for {@link LongConverter}.
  *
  * @author John J. Blum
  * @see java.lang.Long
@@ -140,35 +142,23 @@ public class LongConverterTests {
     assertThat(this.converter.convert(date)).isEqualTo(date.getTime());
   }
 
-  @Test(expected = ConversionException.class)
+  @Test
   public void convertInvalidNumericValueToLongThrowsException() {
 
-    try {
-      this.converter.convert("$123.45");
-    }
-    catch (ConversionException expected) {
-
-      assertThat(expected).hasMessage("[$123.45] is not a valid Long");
-      assertThat(expected).hasCauseInstanceOf(NumberFormatException.class);
-      assertThat(expected.getCause()).hasNoCause();
-
-      throw expected;
-    }
+    ThrowableAssertions.assertThatThrowableOfType(ConversionException.class)
+      .isThrownBy(args -> this.converter.convert("$123.45"))
+      .havingMessage("[$123.45] is not a valid Long")
+      .causedBy(NumberFormatException.class)
+      .withNoCause();
   }
 
-  @Test(expected = ConversionException.class)
+  @Test
   public void convertInvalidValueToLongThrowsException() {
 
-    try {
-      this.converter.convert("test");
-    }
-    catch (ConversionException expected) {
-
-      assertThat(expected).hasMessage("Cannot convert [test] to [java.lang.Long]");
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
+    assertThatExceptionOfType(ConversionException.class)
+      .isThrownBy(() -> this.converter.convert("test"))
+      .withMessage("Cannot convert [test] to [java.lang.Long]")
+      .withNoCause();
   }
 
   @Test
@@ -176,19 +166,13 @@ public class LongConverterTests {
     assertThat(this.converter.withDefaultValue(2L).convert(null)).isEqualTo(2L);
   }
 
-  @Test(expected = ConversionException.class)
+  @Test
   public void convertNullToLongWithNoDefaultValueThrowsException() {
 
-    try {
-      this.converter.withDefaultValue(null).convert(null);
-    }
-    catch (ConversionException expected) {
-
-      assertThat(expected).hasMessage("Cannot convert [null] to [java.lang.Long]");
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
+    assertThatExceptionOfType(ConversionException.class)
+      .isThrownBy(() -> this.converter.withDefaultValue(null).convert(null))
+      .withMessage("Cannot convert [null] to [java.lang.Long]")
+      .withNoCause();
   }
 
   @Test

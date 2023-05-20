@@ -15,16 +15,17 @@
  */
 package org.cp.elements.lang.support;
 
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
+import org.junit.jupiter.api.Test;
+
 import org.cp.elements.context.configure.Configuration;
 import org.cp.elements.lang.Configurable;
 import org.cp.elements.lang.Visitable;
-import org.cp.elements.test.TestUtils;
-import org.junit.jupiter.api.Test;
 
 /**
  * Unit Tests for {@link ConfigurableVisitor}.
@@ -47,11 +48,13 @@ public class ConfigurableVisitorTests {
     new ConfigurableVisitor<>(mock(Configuration.class));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void constructWithNullConfiguration() {
 
-    TestUtils.doIllegalArgumentExceptionThrowingOperation(() -> new ConfigurableVisitor<Configuration>(null),
-      () -> "Configuration cannot be null!");
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> new ConfigurableVisitor<Configuration>(null))
+      .withMessage("Configuration cannot be null!")
+      .withNoCause();
   }
 
   @Test

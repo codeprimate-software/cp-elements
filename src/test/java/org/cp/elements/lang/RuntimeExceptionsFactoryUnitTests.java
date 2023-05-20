@@ -16,6 +16,7 @@
 package org.cp.elements.lang;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatNullPointerException;
 import static org.cp.elements.lang.CheckedExceptionsFactory.UNKNOWN_REASON_MESSAGE;
 import static org.cp.elements.lang.RuntimeExceptionsFactory.newIllegalArgumentException;
 import static org.cp.elements.lang.RuntimeExceptionsFactory.newIllegalStateException;
@@ -82,10 +83,13 @@ public class RuntimeExceptionsFactoryUnitTests {
       "test", this.mockCause);
   }
 
+  @Test
   @SuppressWarnings("all")
-  @Test(expected = NullPointerException.class)
   public void newIllegalArgumentExceptionWithNullMessage() {
-    newIllegalArgumentException(null, ObjectUtils.EMPTY_OBJECT_ARRAY);
+
+    assertThatNullPointerException()
+      .isThrownBy(() -> newIllegalArgumentException(null, ObjectUtils.EMPTY_OBJECT_ARRAY))
+      .withNoCause();
   }
 
   @Test
@@ -106,10 +110,13 @@ public class RuntimeExceptionsFactoryUnitTests {
       "test", this.mockCause);
   }
 
+  @Test
   @SuppressWarnings("all")
-  @Test(expected = NullPointerException.class)
   public void newIllegalStateExceptionWithNullMessage() {
-    newIllegalStateException(null, ObjectUtils.EMPTY_OBJECT_ARRAY);
+
+    assertThatNullPointerException()
+      .isThrownBy(() -> newIllegalStateException(null, ObjectUtils.EMPTY_OBJECT_ARRAY))
+      .withNoCause();
   }
 
   @Test
@@ -130,10 +137,13 @@ public class RuntimeExceptionsFactoryUnitTests {
       "test", this.mockCause);
   }
 
+  @Test
   @SuppressWarnings("all")
-  @Test(expected = NullPointerException.class)
   public void newIndexOutOfBoundsExceptionWithNullMessage() {
-    newIndexOutOfBoundsException(null, ObjectUtils.EMPTY_OBJECT_ARRAY);
+
+    assertThatNullPointerException()
+      .isThrownBy(() -> newIndexOutOfBoundsException(null, ObjectUtils.EMPTY_OBJECT_ARRAY))
+      .withNoCause();
   }
 
   @Test
@@ -154,10 +164,13 @@ public class RuntimeExceptionsFactoryUnitTests {
       "test", this.mockCause);
   }
 
+  @Test
   @SuppressWarnings("all")
-  @Test(expected = NullPointerException.class)
   public void noSuchElementExceptionWithNullMessage() {
-    newNoSuchElementException(null, ObjectUtils.EMPTY_OBJECT_ARRAY);
+
+    assertThatNullPointerException()
+      .isThrownBy(() -> newNoSuchElementException(null, ObjectUtils.EMPTY_OBJECT_ARRAY))
+      .withNoCause();
   }
 
   @Test
@@ -178,10 +191,13 @@ public class RuntimeExceptionsFactoryUnitTests {
       "test", this.mockCause);
   }
 
+  @Test
   @SuppressWarnings("all")
-  @Test(expected = NullPointerException.class)
   public void newNullPointerExceptionWithNullMessage() {
-    newNullPointerException(null, ObjectUtils.EMPTY_OBJECT_ARRAY);
+
+    assertThatNullPointerException()
+      .isThrownBy(() -> newNullPointerException(null, ObjectUtils.EMPTY_OBJECT_ARRAY))
+      .withNoCause();
   }
 
   @Test
@@ -202,10 +218,13 @@ public class RuntimeExceptionsFactoryUnitTests {
       "test", this.mockCause);
   }
 
+  @Test
   @SuppressWarnings("all")
-  @Test(expected = NullPointerException.class)
   public void newRuntimeExceptionWithNullMessage() {
-    newRuntimeException(null, ObjectUtils.EMPTY_OBJECT_ARRAY);
+
+    assertThatNullPointerException()
+      .isThrownBy(() -> newRuntimeException(null, ObjectUtils.EMPTY_OBJECT_ARRAY))
+      .withNoCause();
   }
 
   @Test
@@ -226,10 +245,13 @@ public class RuntimeExceptionsFactoryUnitTests {
       TypeNotPresentException.class, "Type java.lang.Object not present", this.mockCause);
   }
 
+  @Test
   @SuppressWarnings("all")
-  @Test(expected = NullPointerException.class)
   public void newTypeNotPresentExceptionWithNullMessage() {
-    newTypeNotPresentException(null, ObjectUtils.EMPTY_OBJECT_ARRAY);
+
+    assertThatNullPointerException()
+      .isThrownBy(() -> newTypeNotPresentException(null, ObjectUtils.EMPTY_OBJECT_ARRAY))
+      .withNoCause();
   }
 
   @Test
@@ -250,9 +272,12 @@ public class RuntimeExceptionsFactoryUnitTests {
       "test", this.mockCause);
   }
 
+  @Test
   @SuppressWarnings("all")
-  @Test(expected = NullPointerException.class)
   public void newUnsupportedOperationExceptionWithNullMessage() {
-    newUnsupportedOperationException(null, ObjectUtils.EMPTY_OBJECT_ARRAY);
+
+    assertThatNullPointerException()
+      .isThrownBy(() -> newUnsupportedOperationException(null, ObjectUtils.EMPTY_OBJECT_ARRAY))
+      .withNoCause();
   }
 }

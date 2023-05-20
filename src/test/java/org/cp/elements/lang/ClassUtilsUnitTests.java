@@ -20,11 +20,6 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.cp.elements.test.TestUtils.jacocoFilter;
 import static org.cp.elements.util.ArrayUtils.asIterable;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -85,6 +80,7 @@ import lombok.ToString;
  * @see org.junit.jupiter.api.Test
  * @see org.mockito.Mockito
  * @see org.cp.elements.lang.ClassUtils
+ * @see org.cp.elements.lang.reflect.ReflectionUtils
  * @see org.cp.elements.test.AbstractBaseTestSuite
  * @see org.cp.elements.test.TestUtils
  * @since 1.0.0
@@ -102,25 +98,25 @@ public class ClassUtilsUnitTests extends AbstractBaseTestSuite {
   @Test
   public void assignableTo() {
 
-    assertTrue(ClassUtils.assignableTo(null, Object.class));
-    assertTrue(ClassUtils.assignableTo(null, Calendar.class));
-    assertTrue(ClassUtils.assignableTo(null, Number.class));
-    assertTrue(ClassUtils.assignableTo(null, String.class));
-    assertTrue(ClassUtils.assignableTo(String.class, Object.class));
-    assertTrue(ClassUtils.assignableTo(Number.class, Object.class));
-    assertTrue(ClassUtils.assignableTo(Double.class, Number.class));
-    assertTrue(ClassUtils.assignableTo(Integer.class, Number.class));
-    assertTrue(ClassUtils.assignableTo(java.sql.Date.class, java.util.Date.class));
+    assertThat(ClassUtils.assignableTo(null, Object.class)).isTrue();
+    assertThat(ClassUtils.assignableTo(null, Calendar.class)).isTrue();
+    assertThat(ClassUtils.assignableTo(null, Number.class)).isTrue();
+    assertThat(ClassUtils.assignableTo(null, String.class)).isTrue();
+    assertThat(ClassUtils.assignableTo(String.class, Object.class)).isTrue();
+    assertThat(ClassUtils.assignableTo(Number.class, Object.class)).isTrue();
+    assertThat(ClassUtils.assignableTo(Double.class, Number.class)).isTrue();
+    assertThat(ClassUtils.assignableTo(Integer.class, Number.class)).isTrue();
+    assertThat(ClassUtils.assignableTo(java.sql.Date.class, Date.class)).isTrue();
   }
 
   @Test
   public void notAssignableTo() {
 
-    assertFalse(ClassUtils.assignableTo(null, null));
-    assertFalse(ClassUtils.assignableTo(Object.class, null));
-    assertFalse(ClassUtils.assignableTo(String.class, Number.class));
-    assertFalse(ClassUtils.assignableTo(Character.class, String.class));
-    assertFalse(ClassUtils.assignableTo(Object.class, String.class));
+    assertThat(ClassUtils.assignableTo(null, null)).isFalse();
+    assertThat(ClassUtils.assignableTo(Object.class, null)).isFalse();
+    assertThat(ClassUtils.assignableTo(String.class, Number.class)).isFalse();
+    assertThat(ClassUtils.assignableTo(Character.class, String.class)).isFalse();
+    assertThat(ClassUtils.assignableTo(Object.class, String.class)).isFalse();
   }
 
   @Test
@@ -170,13 +166,13 @@ public class ClassUtilsUnitTests extends AbstractBaseTestSuite {
   @Test
   public void getClassIsCorrect() {
 
-    assertEquals(Object.class, ClassUtils.getClass(new Object()));
-    assertEquals(Boolean.class, ClassUtils.getClass(true));
-    assertEquals(Character.class, ClassUtils.getClass('c'));
-    assertEquals(Date.class, ClassUtils.getClass(Calendar.getInstance().getTime()));
-    assertEquals(Integer.class, ClassUtils.getClass(0));
-    assertEquals(Double.class, ClassUtils.getClass(Math.PI));
-    assertEquals(String.class, ClassUtils.getClass("null"));
+    assertThat(ClassUtils.getClass(new Object())).isEqualTo(Object.class);
+    assertThat(ClassUtils.getClass(true)).isEqualTo(Boolean.class);
+    assertThat(ClassUtils.getClass('c')).isEqualTo(Character.class);
+    assertThat(ClassUtils.getClass(Calendar.getInstance().getTime())).isEqualTo(Date.class);
+    assertThat(ClassUtils.getClass(0)).isEqualTo(Integer.class);
+    assertThat(ClassUtils.getClass(Math.PI)).isEqualTo(Double.class);
+    assertThat(ClassUtils.getClass("null")).isEqualTo(String.class);
   }
 
   @Test
@@ -188,13 +184,13 @@ public class ClassUtilsUnitTests extends AbstractBaseTestSuite {
   @Test
   public void getClassName() {
 
-    assertEquals("java.lang.Object", ClassUtils.getClassName(new Object()));
-    assertEquals("java.lang.Boolean", ClassUtils.getClassName(Boolean.TRUE));
-    assertEquals("java.lang.Character", ClassUtils.getClassName('$'));
-    assertEquals("java.util.Date", ClassUtils.getClassName(Calendar.getInstance().getTime()));
-    assertEquals("java.lang.Integer", ClassUtils.getClassName(2));
-    assertEquals("java.lang.Double", ClassUtils.getClassName(0.0d));
-    assertEquals("java.lang.String", ClassUtils.getClassName("test"));
+    assertThat(ClassUtils.getClassName(new Object())).isEqualTo("java.lang.Object");
+    assertThat(ClassUtils.getClassName(Boolean.TRUE)).isEqualTo("java.lang.Boolean");
+    assertThat(ClassUtils.getClassName('$')).isEqualTo("java.lang.Character");
+    assertThat(ClassUtils.getClassName(Calendar.getInstance().getTime())).isEqualTo("java.util.Date");
+    assertThat(ClassUtils.getClassName(2)).isEqualTo("java.lang.Integer");
+    assertThat(ClassUtils.getClassName(0.0d)).isEqualTo("java.lang.Double");
+    assertThat(ClassUtils.getClassName("test")).isEqualTo("java.lang.String");
   }
 
   @Test
@@ -205,13 +201,13 @@ public class ClassUtilsUnitTests extends AbstractBaseTestSuite {
   @Test
   public void getClassSimpleName() {
 
-    assertEquals("Object", ClassUtils.getClassSimpleName(new Object()));
-    assertEquals("Boolean", ClassUtils.getClassSimpleName(Boolean.TRUE));
-    assertEquals("Character", ClassUtils.getClassSimpleName('!'));
-    assertEquals("Date", ClassUtils.getClassSimpleName(Calendar.getInstance().getTime()));
-    assertEquals("Integer", ClassUtils.getClassSimpleName(9));
-    assertEquals("Double", ClassUtils.getClassSimpleName(1.0d));
-    assertEquals("String", ClassUtils.getClassSimpleName("TEST"));
+    assertThat(ClassUtils.getClassSimpleName(new Object())).isEqualTo("Object");
+    assertThat(ClassUtils.getClassSimpleName(Boolean.TRUE)).isEqualTo("Boolean");
+    assertThat(ClassUtils.getClassSimpleName('!')).isEqualTo("Character");
+    assertThat(ClassUtils.getClassSimpleName(Calendar.getInstance().getTime())).isEqualTo("Date");
+    assertThat(ClassUtils.getClassSimpleName(9)).isEqualTo("Integer");
+    assertThat(ClassUtils.getClassSimpleName(1.0d)).isEqualTo("Double");
+    assertThat(ClassUtils.getClassSimpleName("TEST")).isEqualTo("String");
   }
 
   @Test
@@ -306,12 +302,12 @@ public class ClassUtilsUnitTests extends AbstractBaseTestSuite {
 
   @Test
   public void findNonExistingConstructor() {
-    assertNull(ClassUtils.findConstructor(SubType.class, 1));
+    assertThat(ClassUtils.findConstructor(SubType.class, 1)).isNull();
   }
 
   @Test
   public void findNonExistingNonMatchingConstructor() {
-    assertNull(ClassUtils.findConstructor(SubType.class, "test", 1L, false));
+    assertThat(ClassUtils.findConstructor(SubType.class, "test", 1L, false)).isNull();
   }
 
   @Test
@@ -322,20 +318,14 @@ public class ClassUtilsUnitTests extends AbstractBaseTestSuite {
     assertConstructor(constructor, SuperType.class, ArrayUtils.<Class<?>>asArray(Object.class));
   }
 
-  @Test(expected = ConstructorNotFoundException.class)
+  @Test
   public void getNonExistingConstructor() {
 
-    try {
-      ClassUtils.getConstructor(SuperType.class, String.class);
-    }
-    catch (ConstructorNotFoundException expected) {
-
-      assertThat(expected).hasMessageContaining(NoSuchMethodException.class.getName().concat(":"));
-      assertThat(expected).hasCauseInstanceOf(NoSuchMethodException.class);
-      assertThat(expected.getCause()).hasNoCause();
-
-      throw expected;
-    }
+    ThrowableAssertions.assertThatThrowableOfType(ConstructorNotFoundException.class)
+      .isThrownBy(args -> ClassUtils.getConstructor(SuperType.class, String.class))
+      .havingMessageContaining(NoSuchMethodException.class.getName().concat(":"))
+      .causedBy(NoSuchMethodException.class)
+      .withNoCause();
   }
 
   @Test
@@ -356,20 +346,14 @@ public class ClassUtilsUnitTests extends AbstractBaseTestSuite {
     assertConstructor(constructor, SubType.class, ArrayUtils.<Class<?>>asArray(Boolean.class, Number.class, String.class));
   }
 
-  @Test(expected = ConstructorNotFoundException.class)
+  @Test
   public void resolveNonExistingNonMatchingConstructor() {
 
-    try {
-      ClassUtils.resolveConstructor(SubType.class, new Class<?>[] { Integer.class }, 2);
-    }
-    catch (ConstructorNotFoundException expected) {
-
-      assertThat(expected).hasMessageStartingWith("Failed to resolve constructor with signature");
-      assertThat(expected).hasCauseInstanceOf(NoSuchMethodException.class);
-      assertThat(expected.getCause()).hasNoCause();
-
-      throw expected;
-    }
+    ThrowableAssertions.assertThatThrowableOfType(ConstructorNotFoundException.class)
+      .isThrownBy(args -> ClassUtils.resolveConstructor(SubType.class, new Class<?>[] { Integer.class }, 2))
+      .havingMessage("Failed to resolve constructor with signature")
+      .causedBy(NoSuchMethodException.class)
+      .withNoCause();
   }
 
   @Test
@@ -424,10 +408,10 @@ public class ClassUtilsUnitTests extends AbstractBaseTestSuite {
 
     Field charValueField = ClassUtils.getField(SubType.class, "charValue");
 
-    assertNotNull(charValueField);
-    assertEquals(SubType.class, charValueField.getDeclaringClass());
-    assertEquals("charValue", charValueField.getName());
-    assertEquals(Character.class, charValueField.getType());
+    assertThat(charValueField).isNotNull();
+    assertThat(charValueField.getDeclaringClass()).isEqualTo(SubType.class);
+    assertThat(charValueField.getName()).isEqualTo("charValue");
+    assertThat(charValueField.getType()).isEqualTo(Character.class);
   }
 
   @Test
@@ -435,20 +419,26 @@ public class ClassUtilsUnitTests extends AbstractBaseTestSuite {
 
     Field stringValue = ClassUtils.getField(SubType.class, "stringValue");
 
-    assertNotNull(stringValue);
-    assertEquals(SuperType.class, stringValue.getDeclaringClass());
-    assertEquals("stringValue", stringValue.getName());
-    assertEquals(String.class, stringValue.getType());
+    assertThat(stringValue).isNotNull();
+    assertThat(stringValue.getDeclaringClass()).isEqualTo(SuperType.class);
+    assertThat(stringValue.getName()).isEqualTo("stringValue");
+    assertThat(stringValue.getType()).isEqualTo(String.class);
   }
 
-  @Test(expected = FieldNotFoundException.class)
+  @Test
   public void getFieldOnSubClassFromSuperClass() {
-    ClassUtils.getField(SuperType.class, "charValue");
+
+    assertThatExceptionOfType(FieldNotFoundException.class)
+      .isThrownBy(() -> ClassUtils.getField(SuperType.class, "charValue"))
+      .withNoCause();
   }
 
-  @Test(expected = FieldNotFoundException.class)
+  @Test
   public void getNonExistingField() {
-    ClassUtils.getField(SubType.class, "nonExistingField");
+
+    assertThatExceptionOfType(FieldNotFoundException.class)
+      .isThrownBy(() -> ClassUtils.getField(SubType.class, "nonExistingField"))
+      .withNoCause();
   }
 
   @Test
@@ -456,10 +446,10 @@ public class ClassUtilsUnitTests extends AbstractBaseTestSuite {
 
     Field idField = ClassUtils.getField(SubType.class, "id");
 
-    assertNotNull(idField);
-    assertEquals(SubType.class, idField.getDeclaringClass());
-    assertEquals("id", idField.getName());
-    assertEquals(Long.class, idField.getType());
+    assertThat(idField).isNotNull();
+    assertThat(idField.getDeclaringClass()).isEqualTo(SubType.class);
+    assertThat(idField.getName()).isEqualTo("id");
+    assertThat(idField.getType()).isEqualTo(Long.class);
   }
 
   @Test
@@ -467,37 +457,37 @@ public class ClassUtilsUnitTests extends AbstractBaseTestSuite {
 
     Method method = ClassUtils.findMethod(SubType.class, "methodTwo", true, 1, "test");
 
-    assertNotNull(method);
-    assertEquals(SubType.class, method.getDeclaringClass());
-    assertEquals("methodTwo", method.getName());
+    assertThat(method).isNotNull();
+    assertThat(method.getDeclaringClass()).isEqualTo(SubType.class);
+    assertThat(method.getName()).isEqualTo("methodTwo");
 
     method = ClassUtils.findMethod(SubType.class, "methodTwo", false, Math.PI, "test");
 
-    assertNotNull(method);
-    assertEquals(SuperType.class, method.getDeclaringClass());
-    assertEquals("methodTwo", method.getName());
+    assertThat(method).isNotNull();
+    assertThat(method.getDeclaringClass()).isEqualTo(SuperType.class);
+    assertThat(method.getName()).isEqualTo("methodTwo");
 
     method = ClassUtils.findMethod(SuperType.class, "methodTwo", true, 1L, "test");
 
-    assertNotNull(method);
-    assertEquals(SuperType.class, method.getDeclaringClass());
-    assertEquals("methodTwo", method.getName());
+    assertThat(method).isNotNull();
+    assertThat(method.getDeclaringClass()).isEqualTo(SuperType.class);
+    assertThat(method.getName()).isEqualTo("methodTwo");
 
     method = ClassUtils.findMethod(SubType.class, "methodTwo", "test", 1L, false);
 
-    assertNotNull(method);
-    assertEquals(SubType.class, method.getDeclaringClass());
-    assertEquals("methodTwo", method.getName());
+    assertThat(method).isNotNull();
+    assertThat(method.getDeclaringClass()).isEqualTo(SubType.class);
+    assertThat(method.getName()).isEqualTo("methodTwo");
   }
 
   @Test
   public void findNonExistingMethod() {
 
-    assertNull(ClassUtils.findMethod(SubType.class, "methodThree", true, 1L, "test"));
-    assertNull(ClassUtils.findMethod(SuperType.class, "methodTwo", "test", 1, false));
-    assertNull(ClassUtils.findMethod(SubType.class, "methodTwo", true, "test", 1));
-    assertNull(ClassUtils.findMethod(SubType.class, "methodTwo", true, 1));
-    assertNull(ClassUtils.findMethod(SubType.class, "methodTwo", false, "1", 'C'));
+    assertThat(ClassUtils.findMethod(SubType.class, "methodThree", true, 1L, "test")).isNull();
+    assertThat(ClassUtils.findMethod(SuperType.class, "methodTwo", "test", 1, false)).isNull();
+    assertThat(ClassUtils.findMethod(SubType.class, "methodTwo", true, "test", 1)).isNull();
+    assertThat(ClassUtils.findMethod(SubType.class, "methodTwo", true, 1)).isNull();
+    assertThat(ClassUtils.findMethod(SubType.class, "methodTwo", false, "1", 'C')).isNull();
   }
 
   @Test
@@ -505,10 +495,10 @@ public class ClassUtilsUnitTests extends AbstractBaseTestSuite {
 
     Method getCharacterValueMethod = ClassUtils.getMethod(SubType.class, "getCharacterValue");
 
-    assertNotNull(getCharacterValueMethod);
-    assertEquals(SubType.class, getCharacterValueMethod.getDeclaringClass());
-    assertEquals("getCharacterValue", getCharacterValueMethod.getName());
-    assertEquals(Character.class, getCharacterValueMethod.getReturnType());
+    assertThat(getCharacterValueMethod).isNotNull();
+    assertThat(getCharacterValueMethod.getDeclaringClass()).isEqualTo(SubType.class);
+    assertThat(getCharacterValueMethod.getName()).isEqualTo("getCharacterValue");
+    assertThat(getCharacterValueMethod.getReturnType()).isEqualTo(Character.class);
   }
 
   @Test
@@ -516,20 +506,26 @@ public class ClassUtilsUnitTests extends AbstractBaseTestSuite {
 
     Method getStringValue = ClassUtils.getMethod(SubType.class, "getStringValue");
 
-    assertNotNull(getStringValue);
-    assertEquals(SuperType.class, getStringValue.getDeclaringClass());
-    assertEquals("getStringValue", getStringValue.getName());
-    assertEquals(String.class, getStringValue.getReturnType());
+    assertThat(getStringValue).isNotNull();
+    assertThat(getStringValue.getDeclaringClass()).isEqualTo(SuperType.class);
+    assertThat(getStringValue.getName()).isEqualTo("getStringValue");
+    assertThat(getStringValue.getReturnType()).isEqualTo(String.class);
   }
 
-  @Test(expected = MethodNotFoundException.class)
+  @Test
   public void getMethodOnSubClassFromSuperClass() {
-    ClassUtils.getMethod(SuperType.class, "getCharacterValue");
+
+    assertThatExceptionOfType(MethodNotFoundException.class)
+      .isThrownBy(() -> ClassUtils.getMethod(SuperType.class, "getCharacterValue"))
+      .withNoCause();
   }
 
-  @Test(expected = MethodNotFoundException.class)
+  @Test
   public void getNonExistingMethod() {
-    ClassUtils.getMethod(SubType.class, "nonExistingMethod");
+
+    assertThatExceptionOfType(MethodNotFoundException.class)
+      .isThrownBy(() -> ClassUtils.getMethod(SubType.class, "nonExistingMethod"))
+      .withNoCause();
   }
 
   @Test
@@ -537,10 +533,10 @@ public class ClassUtilsUnitTests extends AbstractBaseTestSuite {
 
     Method methodOne = ClassUtils.getMethod(SubType.class, "methodOne", Integer.class, Double.class);
 
-    assertNotNull(methodOne);
-    assertEquals(SubType.class, methodOne.getDeclaringClass());
-    assertEquals("methodOne", methodOne.getName());
-    assertEquals(Number.class, methodOne.getReturnType());
+    assertThat(methodOne).isNotNull();
+    assertThat(methodOne.getDeclaringClass()).isEqualTo(SubType.class);
+    assertThat(methodOne.getName()).isEqualTo("methodOne");
+    assertThat(methodOne.getReturnType()).isEqualTo(Number.class);
   }
 
   @Test
@@ -548,10 +544,10 @@ public class ClassUtilsUnitTests extends AbstractBaseTestSuite {
 
     Method methodOne = ClassUtils.getMethod(SubType.class, "methodOne", Integer.class);
 
-    assertNotNull(methodOne);
-    assertEquals(SuperType.class, methodOne.getDeclaringClass());
-    assertEquals("methodOne", methodOne.getName());
-    assertEquals(Object.class, methodOne.getReturnType());
+    assertThat(methodOne).isNotNull();
+    assertThat(methodOne.getDeclaringClass()).isEqualTo(SuperType.class);
+    assertThat(methodOne.getName()).isEqualTo("methodOne");
+    assertThat(methodOne.getReturnType()).isEqualTo(Object.class);
   }
 
   @Test
@@ -559,22 +555,25 @@ public class ClassUtilsUnitTests extends AbstractBaseTestSuite {
 
     Method methodOne = ClassUtils.getMethod(SubType.class, "methodOne", String.class);
 
-    assertNotNull(methodOne);
-    assertEquals(SubType.class, methodOne.getDeclaringClass());
-    assertEquals("methodOne", methodOne.getName());
-    assertEquals(String.class, methodOne.getReturnType());
+    assertThat(methodOne).isNotNull();
+    assertThat(methodOne.getDeclaringClass()).isEqualTo(SubType.class);
+    assertThat(methodOne.getName()).isEqualTo("methodOne");
+    assertThat(methodOne.getReturnType()).isEqualTo(String.class);
 
     methodOne = ClassUtils.getMethod(SuperType.class, "methodOne", String.class);
 
-    assertNotNull(methodOne);
-    assertEquals(SuperType.class, methodOne.getDeclaringClass());
-    assertEquals("methodOne", methodOne.getName());
-    assertEquals(Object.class, methodOne.getReturnType());
+    assertThat(methodOne).isNotNull();
+    assertThat(methodOne.getDeclaringClass()).isEqualTo(SuperType.class);
+    assertThat(methodOne.getName()).isEqualTo("methodOne");
+    assertThat(methodOne.getReturnType()).isEqualTo(Object.class);
   }
 
-  @Test(expected = MethodNotFoundException.class)
+  @Test
   public void getOverriddenMethodOnSubClassFromSuperClass() {
-    ClassUtils.getMethod(SuperType.class, "methodOne", Boolean.class);
+
+    assertThatExceptionOfType(MethodNotFoundException.class)
+      .isThrownBy(() -> ClassUtils.getMethod(SuperType.class, "methodOne", Boolean.class))
+      .withNoCause();
   }
 
   @Test
@@ -639,9 +638,9 @@ public class ClassUtilsUnitTests extends AbstractBaseTestSuite {
       ArrayUtils.<Class<?>>asArray(Boolean.class, Integer.class, String.class),
         ArrayUtils.asArray(true, 1, "test"), Void.class);
 
-    assertNotNull(method);
-    assertEquals(SubType.class, method.getDeclaringClass());
-    assertEquals("methodTwo", method.getName());
+    assertThat(method).isNotNull();
+    assertThat(method.getDeclaringClass()).isEqualTo(SubType.class);
+    assertThat(method.getName()).isEqualTo("methodTwo");
   }
 
   @Test
@@ -651,64 +650,65 @@ public class ClassUtilsUnitTests extends AbstractBaseTestSuite {
       ArrayUtils.<Class<?>>asArray(Boolean.class, Long.class, String.class),
         ArrayUtils.asArray(true, 1L, "test"), Void.class);
 
-    assertNotNull(method);
-    assertEquals(SuperType.class, method.getDeclaringClass());
-    assertEquals("methodTwo", method.getName());
+    assertThat(method).isNotNull();
+    assertThat(method.getDeclaringClass()).isEqualTo(SuperType.class);
+    assertThat(method.getName()).isEqualTo("methodTwo");
   }
 
-  @Test(expected = MethodNotFoundException.class)
+  @Test
   public void unresolvableMethod() {
 
-    try {
-      ClassUtils.resolveMethod(SubType.class, "methodTwo",
+    assertThatExceptionOfType(MethodNotFoundException.class)
+      .isThrownBy(() -> ClassUtils.resolveMethod(SubType.class, "methodTwo",
         ArrayUtils.<Class<?>>asArray(Boolean.class, Character.class, Integer.class, Double.class, String.class),
-          ArrayUtils.asArray(false, 'c', 1, Math.PI, "test"), Void.class);
-    }
-    catch (MethodNotFoundException expected) {
-      assertEquals(String.format("Failed to resolve method with signature [methodTwo(:Boolean, :Character, :Integer, :Double, :String):void] on class type [%s]",
-        SubType.class.getName()), expected.getMessage());
-      throw expected;
-    }
+          ArrayUtils.asArray(false, 'c', 1, Math.PI, "test"), Void.class))
+      .withMessage("Failed to resolve method with signature [methodTwo(:Boolean, :Character, :Integer, :Double, :String):void] on class type [%s]",
+        SubType.class.getName())
+      .withNoCause();
   }
 
   @Test
   public void getMethodSignature() {
 
-    assertEquals("methodOne(:Boolean, :Character, :Integer, :Double, :String):Object",
-      ClassUtils.getMethodSignature("methodOne", ArrayUtils.<Class<?>>asArray(Boolean.class, Character.class,
-        Integer.class, Double.class, String.class), Object.class));
-    assertEquals("methodTwo(:String):void", ClassUtils.getMethodSignature("methodTwo",
-      ArrayUtils.<Class<?>>asArray(String.class), Void.class));
-    assertEquals("methodThree():void", ClassUtils.getMethodSignature("methodThree", new Class[0], null));
-    assertEquals("methodFour():void", ClassUtils.getMethodSignature("methodFour", null, null));
-    assertEquals("methodFive(:Object, :null):String", ClassUtils.getMethodSignature("methodFive",
-      ArrayUtils.<Class<?>>asArray(Object.class, null), String.class));
+    assertThat(ClassUtils.getMethodSignature("methodOne", ArrayUtils.<Class<?>>asArray(Boolean.class, Character.class,
+      Integer.class, Double.class, String.class), Object.class)).isEqualTo(
+      "methodOne(:Boolean, :Character, :Integer, :Double, :String):Object");
+    assertThat(ClassUtils.getMethodSignature("methodTwo",
+      ArrayUtils.<Class<?>>asArray(String.class), Void.class)).isEqualTo("methodTwo(:String):void");
+    assertThat(ClassUtils.getMethodSignature("methodThree", new Class[0], null)).isEqualTo("methodThree():void");
+    assertThat(ClassUtils.getMethodSignature("methodFour", null, null)).isEqualTo("methodFour():void");
+    assertThat(ClassUtils.getMethodSignature("methodFive",
+      ArrayUtils.<Class<?>>asArray(Object.class, null), String.class)).isEqualTo("methodFive(:Object, :null):String");
   }
 
   @Test
   public void getMethodSignatureWithMethod() {
 
-    assertEquals("methodOne(:Integer, :Double):Number", ClassUtils.getMethodSignature(ClassUtils.getMethod(
-      SubType.class, "methodOne", ArrayUtils.<Class<?>>asArray(Integer.class, Double.class))));
-    assertEquals("methodTwo(:Boolean, :Integer, :String):void", ClassUtils.getMethodSignature(ClassUtils.getMethod(
-      SubType.class, "methodTwo", ArrayUtils.<Class<?>>asArray(Boolean.class, Integer.class, String.class))));
-    assertEquals("methodTwo(:Boolean, :Number, :String):void", ClassUtils.getMethodSignature(ClassUtils.getMethod(
-      SuperType.class, "methodTwo", ArrayUtils.<Class<?>>asArray(Boolean.class, Number.class, String.class))));
-    assertEquals("getId():String", ClassUtils.getMethodSignature(ClassUtils.getMethod(SubType.class, "getId")));
-    assertEquals("deprecatedMethod():void", ClassUtils.getMethodSignature(ClassUtils.getMethod(
-      SubType.class, "deprecatedMethod")));
+    assertThat(ClassUtils.getMethodSignature(ClassUtils.getMethod(
+      SubType.class, "methodOne", ArrayUtils.<Class<?>>asArray(Integer.class, Double.class)))).isEqualTo(
+      "methodOne(:Integer, :Double):Number");
+    assertThat(ClassUtils.getMethodSignature(ClassUtils.getMethod(
+      SubType.class, "methodTwo", ArrayUtils.<Class<?>>asArray(Boolean.class, Integer.class, String.class)))).isEqualTo(
+      "methodTwo(:Boolean, :Integer, :String):void");
+    assertThat(ClassUtils.getMethodSignature(ClassUtils.getMethod(
+      SuperType.class, "methodTwo",
+      ArrayUtils.<Class<?>>asArray(Boolean.class, Number.class, String.class)))).isEqualTo(
+      "methodTwo(:Boolean, :Number, :String):void");
+    assertThat(ClassUtils.getMethodSignature(ClassUtils.getMethod(SubType.class, "getId"))).isEqualTo("getId():String");
+    assertThat(ClassUtils.getMethodSignature(ClassUtils.getMethod(
+      SubType.class, "deprecatedMethod"))).isEqualTo("deprecatedMethod():void");
   }
 
   @Test
   public void getName() {
 
-    assertEquals("java.lang.Object", ClassUtils.getName(Object.class));
-    assertEquals("java.lang.Boolean", ClassUtils.getName(Boolean.class));
-    assertEquals("java.lang.Character", ClassUtils.getName(Character.class));
-    assertEquals("java.util.Date", ClassUtils.getName(Date.class));
-    assertEquals("java.lang.Integer", ClassUtils.getName(Integer.class));
-    assertEquals("java.lang.Double", ClassUtils.getName(Double.class));
-    assertEquals("java.lang.String", ClassUtils.getName(String.class));
+    assertThat(ClassUtils.getName(Object.class)).isEqualTo("java.lang.Object");
+    assertThat(ClassUtils.getName(Boolean.class)).isEqualTo("java.lang.Boolean");
+    assertThat(ClassUtils.getName(Character.class)).isEqualTo("java.lang.Character");
+    assertThat(ClassUtils.getName(Date.class)).isEqualTo("java.util.Date");
+    assertThat(ClassUtils.getName(Integer.class)).isEqualTo("java.lang.Integer");
+    assertThat(ClassUtils.getName(Double.class)).isEqualTo("java.lang.Double");
+    assertThat(ClassUtils.getName(String.class)).isEqualTo("java.lang.String");
   }
 
   @Test
@@ -735,24 +735,24 @@ public class ClassUtilsUnitTests extends AbstractBaseTestSuite {
   @Test
   public void getSimpleName() {
 
-    assertEquals("Object", ClassUtils.getSimpleName(Object.class));
-    assertEquals("Boolean", ClassUtils.getSimpleName(Boolean.class));
-    assertEquals("Character", ClassUtils.getSimpleName(Character.class));
-    assertEquals("Date", ClassUtils.getSimpleName(Date.class));
-    assertEquals("Integer", ClassUtils.getSimpleName(Integer.class));
-    assertEquals("Double", ClassUtils.getSimpleName(Double.class));
-    assertEquals("String", ClassUtils.getSimpleName(String.class));
+    assertThat(ClassUtils.getSimpleName(Object.class)).isEqualTo("Object");
+    assertThat(ClassUtils.getSimpleName(Boolean.class)).isEqualTo("Boolean");
+    assertThat(ClassUtils.getSimpleName(Character.class)).isEqualTo("Character");
+    assertThat(ClassUtils.getSimpleName(Date.class)).isEqualTo("Date");
+    assertThat(ClassUtils.getSimpleName(Integer.class)).isEqualTo("Integer");
+    assertThat(ClassUtils.getSimpleName(Double.class)).isEqualTo("Double");
+    assertThat(ClassUtils.getSimpleName(String.class)).isEqualTo("String");
   }
 
   @Test
   @SuppressWarnings("all")
   public void getSimpleNameWithNull() {
-    assertNull(ClassUtils.getName(null));
+    assertThat(ClassUtils.getName(null)).isNull();
   }
 
   @Test
   public void hasMainMethodIsNullSafe() {
-    assertFalse(ClassUtils.hasMainMethod(null));
+    assertThat(ClassUtils.hasMainMethod(null)).isFalse();
   }
 
   @Test
@@ -788,112 +788,112 @@ public class ClassUtilsUnitTests extends AbstractBaseTestSuite {
   @Test
   public void instanceOf() {
 
-    assertTrue(ClassUtils.instanceOf(new Object(), Object.class));
-    assertTrue(ClassUtils.instanceOf("test", Object.class));
-    assertTrue(ClassUtils.instanceOf(123, Object.class));
-    assertTrue(ClassUtils.instanceOf(true, Object.class));
-    assertTrue(ClassUtils.instanceOf("test", String.class));
-    assertTrue(ClassUtils.instanceOf("123", String.class));
-    assertTrue(ClassUtils.instanceOf("false", String.class));
-    assertTrue(ClassUtils.instanceOf(123, Integer.class));
-    assertTrue(ClassUtils.instanceOf(123, Number.class));
-    assertTrue(ClassUtils.instanceOf(Class.class, Object.class));
-    assertTrue(ClassUtils.instanceOf(Object.class, Class.class));
+    assertThat(ClassUtils.instanceOf(new Object(), Object.class)).isTrue();
+    assertThat(ClassUtils.instanceOf("test", Object.class)).isTrue();
+    assertThat(ClassUtils.instanceOf(123, Object.class)).isTrue();
+    assertThat(ClassUtils.instanceOf(true, Object.class)).isTrue();
+    assertThat(ClassUtils.instanceOf("test", String.class)).isTrue();
+    assertThat(ClassUtils.instanceOf("123", String.class)).isTrue();
+    assertThat(ClassUtils.instanceOf("false", String.class)).isTrue();
+    assertThat(ClassUtils.instanceOf(123, Integer.class)).isTrue();
+    assertThat(ClassUtils.instanceOf(123, Number.class)).isTrue();
+    assertThat(ClassUtils.instanceOf(Class.class, Object.class)).isTrue();
+    assertThat(ClassUtils.instanceOf(Object.class, Class.class)).isTrue();
   }
 
   @Test
   @SuppressWarnings("all")
   public void notInstanceOf() {
 
-    assertFalse(ClassUtils.instanceOf(false, Number.class));
-    assertFalse(ClassUtils.instanceOf(123.0, Integer.class));
-    assertFalse(ClassUtils.instanceOf("123", Number.class));
-    assertFalse(ClassUtils.instanceOf(new Object(), null));
-    assertFalse(ClassUtils.instanceOf(null, null));
-    assertFalse(ClassUtils.instanceOf(null, Object.class));
+    assertThat(ClassUtils.instanceOf(false, Number.class)).isFalse();
+    assertThat(ClassUtils.instanceOf(123.0, Integer.class)).isFalse();
+    assertThat(ClassUtils.instanceOf("123", Number.class)).isFalse();
+    assertThat(ClassUtils.instanceOf(new Object(), null)).isFalse();
+    assertThat(ClassUtils.instanceOf(null, null)).isFalse();
+    assertThat(ClassUtils.instanceOf(null, Object.class)).isFalse();
   }
 
   @Test
   public void isAnnotation() {
-    assertTrue(ClassUtils.isAnnotation(Documented.class));
+    assertThat(ClassUtils.isAnnotation(Documented.class)).isTrue();
   }
 
   @Test
   @SuppressWarnings("all")
   public void isNotAnnotation() {
 
-    assertFalse(ClassUtils.isAnnotation(null));
-    assertFalse(ClassUtils.isAnnotation(Object.class));
-    assertFalse(ClassUtils.isAnnotation(String.class));
-    assertFalse(ClassUtils.isAnnotation(Object[].class));
-    assertFalse(ClassUtils.isAnnotation(int[][].class));
-    assertFalse(ClassUtils.isAnnotation(Class.class));
-    assertFalse(ClassUtils.isAnnotation(Thread.State.class));
-    assertFalse(ClassUtils.isAnnotation(Cloneable.class));
-    assertFalse(ClassUtils.isAnnotation(Integer.TYPE));
+    assertThat(ClassUtils.isAnnotation(null)).isFalse();
+    assertThat(ClassUtils.isAnnotation(Object.class)).isFalse();
+    assertThat(ClassUtils.isAnnotation(String.class)).isFalse();
+    assertThat(ClassUtils.isAnnotation(Object[].class)).isFalse();
+    assertThat(ClassUtils.isAnnotation(int[][].class)).isFalse();
+    assertThat(ClassUtils.isAnnotation(Class.class)).isFalse();
+    assertThat(ClassUtils.isAnnotation(Thread.State.class)).isFalse();
+    assertThat(ClassUtils.isAnnotation(Cloneable.class)).isFalse();
+    assertThat(ClassUtils.isAnnotation(Integer.TYPE)).isFalse();
   }
 
   @Test
   public void isAnnotationPresent() {
 
-    assertTrue(ClassUtils.isAnnotationPresent(Id.class, ReflectionUtils.getField(SubType.class, "id")));
-    assertTrue(ClassUtils.isAnnotationPresent(Id.class,
+    assertThat(ClassUtils.isAnnotationPresent(Id.class, ReflectionUtils.getField(SubType.class, "id"))).isTrue();
+    assertThat(ClassUtils.isAnnotationPresent(Id.class,
       ReflectionUtils.getField(SubType.class, "nonAnnotatedField"),
-        ReflectionUtils.getMethod(SubType.class, "getId")));
-    assertTrue(ClassUtils.isAnnotationPresent(Deprecated.class,
-      ReflectionUtils.getMethod(SubType.class, "deprecatedMethod")));
-    assertTrue(ClassUtils.isAnnotationPresent(Resource.class, SubType.class));
+      ReflectionUtils.getMethod(SubType.class, "getId"))).isTrue();
+    assertThat(ClassUtils.isAnnotationPresent(Deprecated.class,
+      ReflectionUtils.getMethod(SubType.class, "deprecatedMethod"))).isTrue();
+    assertThat(ClassUtils.isAnnotationPresent(Resource.class, SubType.class)).isTrue();
   }
 
   @Test
   public void isAnnotationNotPresent() {
 
-    assertFalse(ClassUtils.isAnnotationPresent(Id.class,
+    assertThat(ClassUtils.isAnnotationPresent(Id.class,
       ReflectionUtils.getField(SubType.class, "nonAnnotatedField"),
-      ReflectionUtils.getMethod(SubType.class, "nonAnnotatedMethod")));
-    assertFalse(ClassUtils.isAnnotationPresent(Deprecated.class,
-      ReflectionUtils.getMethod(SubType.class, "nonAnnotatedMethod")));
-    assertFalse(ClassUtils.isAnnotationPresent(Resource.class, SuperType.class));
-    assertFalse(ClassUtils.isAnnotationPresent(Id.class));
-    assertFalse(ClassUtils.isAnnotationPresent(Deprecated.class, null, null, null));
+      ReflectionUtils.getMethod(SubType.class, "nonAnnotatedMethod"))).isFalse();
+    assertThat(ClassUtils.isAnnotationPresent(Deprecated.class,
+      ReflectionUtils.getMethod(SubType.class, "nonAnnotatedMethod"))).isFalse();
+    assertThat(ClassUtils.isAnnotationPresent(Resource.class, SuperType.class)).isFalse();
+    assertThat(ClassUtils.isAnnotationPresent(Id.class)).isFalse();
+    assertThat(ClassUtils.isAnnotationPresent(Deprecated.class, null, null, null)).isFalse();
   }
 
   @Test
   public void isArray() {
 
-    assertTrue(ClassUtils.isArray(Object[].class));
-    assertTrue(ClassUtils.isArray(Object[][].class));
-    assertTrue(ClassUtils.isArray(String[].class));
-    assertTrue(ClassUtils.isArray(int[].class));
+    assertThat(ClassUtils.isArray(Object[].class)).isTrue();
+    assertThat(ClassUtils.isArray(Object[][].class)).isTrue();
+    assertThat(ClassUtils.isArray(String[].class)).isTrue();
+    assertThat(ClassUtils.isArray(int[].class)).isTrue();
   }
 
   @Test
   @SuppressWarnings("all")
   public void isNotArray() {
 
-    assertFalse(ClassUtils.isArray(null));
-    assertFalse(ClassUtils.isArray(Object.class));
-    assertFalse(ClassUtils.isArray(Documented.class));
-    assertFalse(ClassUtils.isArray(Object.class));
-    assertFalse(ClassUtils.isArray(Thread.State.class));
-    assertFalse(ClassUtils.isArray(Cloneable.class));
-    assertFalse(ClassUtils.isArray(Integer.TYPE));
+    assertThat(ClassUtils.isArray(null)).isFalse();
+    assertThat(ClassUtils.isArray(Object.class)).isFalse();
+    assertThat(ClassUtils.isArray(Documented.class)).isFalse();
+    assertThat(ClassUtils.isArray(Object.class)).isFalse();
+    assertThat(ClassUtils.isArray(Thread.State.class)).isFalse();
+    assertThat(ClassUtils.isArray(Cloneable.class)).isFalse();
+    assertThat(ClassUtils.isArray(Integer.TYPE)).isFalse();
   }
 
   @Test
   public void isClass() {
-    assertTrue(ClassUtils.isClass(Object.class)); // class!
+    assertThat(ClassUtils.isClass(Object.class)).isTrue(); // class!
   }
 
   @Test
   public void isNotClass() {
 
-    assertFalse(ClassUtils.isClass(null));
-    assertFalse(ClassUtils.isClass(int[].class)); // array
-    assertFalse(ClassUtils.isClass(Documented.class)); // annotation
-    assertFalse(ClassUtils.isClass(Thread.State.class)); // enum
-    assertFalse(ClassUtils.isClass(Cloneable.class)); // interface
-    assertFalse(ClassUtils.isClass(Integer.TYPE)); // primitive
+    assertThat(ClassUtils.isClass(null)).isFalse();
+    assertThat(ClassUtils.isClass(int[].class)).isFalse(); // array
+    assertThat(ClassUtils.isClass(Documented.class)).isFalse(); // annotation
+    assertThat(ClassUtils.isClass(Thread.State.class)).isFalse(); // enum
+    assertThat(ClassUtils.isClass(Cloneable.class)).isFalse(); // interface
+    assertThat(ClassUtils.isClass(Integer.TYPE)).isFalse(); // primitive
   }
 
   @Test
@@ -1087,118 +1087,118 @@ public class ClassUtilsUnitTests extends AbstractBaseTestSuite {
 
   @Test
   public void isEnum() {
-    assertTrue(ClassUtils.isEnum(Thread.State.class));
+    assertThat(ClassUtils.isEnum(Thread.State.class)).isTrue();
   }
 
   @Test
   public void isNotEnum() {
 
-    assertFalse(ClassUtils.isEnum(null));
-    assertFalse(ClassUtils.isEnum(int[].class));
-    assertFalse(ClassUtils.isEnum(Documented.class));
-    assertFalse(ClassUtils.isEnum(Object.class));
-    assertFalse(ClassUtils.isEnum(Runnable.class));
-    assertFalse(ClassUtils.isEnum(Integer.TYPE));
+    assertThat(ClassUtils.isEnum(null)).isFalse();
+    assertThat(ClassUtils.isEnum(int[].class)).isFalse();
+    assertThat(ClassUtils.isEnum(Documented.class)).isFalse();
+    assertThat(ClassUtils.isEnum(Object.class)).isFalse();
+    assertThat(ClassUtils.isEnum(Runnable.class)).isFalse();
+    assertThat(ClassUtils.isEnum(Integer.TYPE)).isFalse();
   }
 
   @Test
   public void isInterface() {
 
-    assertTrue(ClassUtils.isInterface(Documented.class)); // true, even an enum type!
-    assertTrue(ClassUtils.isInterface(Runnable.class));
+    assertThat(ClassUtils.isInterface(Documented.class)).isTrue(); // true, even an enum type!
+    assertThat(ClassUtils.isInterface(Runnable.class)).isTrue();
   }
 
   @Test
   @SuppressWarnings("all")
   public void isNotInterface() {
 
-    assertFalse(ClassUtils.isInterface(null));
-    assertFalse(ClassUtils.isInterface(int[].class));
-    assertFalse(ClassUtils.isInterface(Object.class));
-    assertFalse(ClassUtils.isInterface(Thread.State.class));
-    assertFalse(ClassUtils.isInterface(Integer.TYPE));
+    assertThat(ClassUtils.isInterface(null)).isFalse();
+    assertThat(ClassUtils.isInterface(int[].class)).isFalse();
+    assertThat(ClassUtils.isInterface(Object.class)).isFalse();
+    assertThat(ClassUtils.isInterface(Thread.State.class)).isFalse();
+    assertThat(ClassUtils.isInterface(Integer.TYPE)).isFalse();
   }
 
   @Test
   public void classWithMainMethodIsTrue() {
-    assertTrue(ClassUtils.hasMainMethod(ClassWithMainMethod.class));
+    assertThat(ClassUtils.hasMainMethod(ClassWithMainMethod.class)).isTrue();
   }
 
   @Test
   public void classWithIncorrectlyNamedMainMethodIsFalse() {
-    assertFalse(ClassUtils.hasMainMethod(ClassWithMaineMethod.class));
+    assertThat(ClassUtils.hasMainMethod(ClassWithMaineMethod.class)).isFalse();
   }
 
   @Test
   public void classWithPrivateMainMethodIsFalse() {
-    assertFalse(ClassUtils.hasMainMethod(ClassWithPrivateMainMethod.class));
+    assertThat(ClassUtils.hasMainMethod(ClassWithPrivateMainMethod.class)).isFalse();
   }
 
   @Test
   public void classWithNonStaticMainMethodIsFalse() {
-    assertFalse(ClassUtils.hasMainMethod(ClassWithNonStaticMainMethod.class));
+    assertThat(ClassUtils.hasMainMethod(ClassWithNonStaticMainMethod.class)).isFalse();
   }
 
   @Test
   public void classWithMainMethodReturningValueIsFalse() {
-    assertFalse(ClassUtils.hasMainMethod(ClassWithMainMethodReturningValue.class));
+    assertThat(ClassUtils.hasMainMethod(ClassWithMainMethodReturningValue.class)).isFalse();
   }
 
   @Test
   public void classWithMultiArgumentMainMethodIsFalse() {
-    assertFalse(ClassUtils.hasMainMethod(ClassWithMultiArgumentMainMethod.class));
+    assertThat(ClassUtils.hasMainMethod(ClassWithMultiArgumentMainMethod.class)).isFalse();
   }
 
   @Test
   public void classWithObjectArrayParameterMainMethodIsFalse() {
-    assertFalse(ClassUtils.hasMainMethod(ClassWithObjectArrayParameterMainMethod.class));
+    assertThat(ClassUtils.hasMainMethod(ClassWithObjectArrayParameterMainMethod.class)).isFalse();
   }
 
   @Test
   public void classWithNoMainMethodIsFalse() {
-    assertFalse(ClassUtils.hasMainMethod(ClassWithNoMainMethod.class));
+    assertThat(ClassUtils.hasMainMethod(ClassWithNoMainMethod.class)).isFalse();
   }
 
   @Test
   public void isMainMethodIsNullSafe() {
-    assertFalse(ClassUtils.isMainMethod(null));
+    assertThat(ClassUtils.isMainMethod(null)).isFalse();
   }
 
   @Test
   public void isPresent() {
-    assertTrue(ClassUtils.isPresent("java.lang.Object"));
+    assertThat(ClassUtils.isPresent("java.lang.Object")).isTrue();
   }
 
   @Test
   public void isNotPresent() {
-    assertFalse(ClassUtils.isPresent("com.company.non.existing.Class"));
+    assertThat(ClassUtils.isPresent("com.company.non.existing.Class")).isFalse();
   }
 
   @Test
   public void isPrimitive() {
 
-    assertTrue(ClassUtils.isPrimitive(Boolean.TYPE));
-    assertTrue(ClassUtils.isPrimitive(Character.TYPE));
-    assertTrue(ClassUtils.isPrimitive(Double.TYPE));
-    assertTrue(ClassUtils.isPrimitive(Integer.TYPE));
+    assertThat(ClassUtils.isPrimitive(Boolean.TYPE)).isTrue();
+    assertThat(ClassUtils.isPrimitive(Character.TYPE)).isTrue();
+    assertThat(ClassUtils.isPrimitive(Double.TYPE)).isTrue();
+    assertThat(ClassUtils.isPrimitive(Integer.TYPE)).isTrue();
   }
 
   @Test
   @SuppressWarnings("all")
   public void isNotPrimitive() {
 
-    assertFalse(ClassUtils.isPrimitive(null));
-    assertFalse(ClassUtils.isPrimitive(int[].class));
-    assertFalse(ClassUtils.isPrimitive(double[][].class));
-    assertFalse(ClassUtils.isPrimitive(Documented.class));
-    assertFalse(ClassUtils.isPrimitive(Object.class));
-    assertFalse(ClassUtils.isPrimitive(Boolean.class));
-    assertFalse(ClassUtils.isPrimitive(Character.class));
-    assertFalse(ClassUtils.isPrimitive(Integer.class));
-    assertFalse(ClassUtils.isPrimitive(Double.class));
-    assertFalse(ClassUtils.isPrimitive(String.class));
-    assertFalse(ClassUtils.isPrimitive(Thread.State.class));
-    assertFalse(ClassUtils.isPrimitive(Runnable.class));
+    assertThat(ClassUtils.isPrimitive(null)).isFalse();
+    assertThat(ClassUtils.isPrimitive(int[].class)).isFalse();
+    assertThat(ClassUtils.isPrimitive(double[][].class)).isFalse();
+    assertThat(ClassUtils.isPrimitive(Documented.class)).isFalse();
+    assertThat(ClassUtils.isPrimitive(Object.class)).isFalse();
+    assertThat(ClassUtils.isPrimitive(Boolean.class)).isFalse();
+    assertThat(ClassUtils.isPrimitive(Character.class)).isFalse();
+    assertThat(ClassUtils.isPrimitive(Integer.class)).isFalse();
+    assertThat(ClassUtils.isPrimitive(Double.class)).isFalse();
+    assertThat(ClassUtils.isPrimitive(String.class)).isFalse();
+    assertThat(ClassUtils.isPrimitive(Thread.State.class)).isFalse();
+    assertThat(ClassUtils.isPrimitive(Runnable.class)).isFalse();
   }
 
   @Test
@@ -1206,19 +1206,14 @@ public class ClassUtilsUnitTests extends AbstractBaseTestSuite {
     assertThat(ClassUtils.loadClass("java.lang.Object")).isEqualTo(Object.class);
   }
 
-  @Test(expected = RuntimeException.class)
+  @Test
   public void loadNonExistingClass() {
 
-    try {
-      ClassUtils.loadClass("example.non.existing.Class");
-    }
-    catch (RuntimeException expected) {
-
-      assertThat(expected).hasMessage("Class [example.non.existing.Class] was not found");
-      assertThat(expected).hasCauseInstanceOf(ClassNotFoundException.class);
-
-      throw expected;
-    }
+    ThrowableAssertions.assertThatThrowableOfType(RuntimeException.class)
+      .isThrownBy(args -> ClassUtils.loadClass("example.non.existing.Class"))
+      .havingMessage("Class [example.non.existing.Class] was not found")
+      .causedBy(ClassNotFoundException.class)
+      .withNoCause();
   }
 
   @Test
@@ -1230,14 +1225,14 @@ public class ClassUtilsUnitTests extends AbstractBaseTestSuite {
   @Test
   public void nonInstanceOf() {
 
-    assertTrue(ClassUtils.notInstanceOf(new Object(), (Class<?>[]) null));
-    assertTrue(ClassUtils.notInstanceOf(new Object(), Boolean.class, Number.class, String.class));
-    assertTrue(ClassUtils.notInstanceOf(123.0, Boolean.class, BigDecimal.class, String.class));
+    assertThat(ClassUtils.notInstanceOf(new Object(), (Class<?>[]) null)).isTrue();
+    assertThat(ClassUtils.notInstanceOf(new Object(), Boolean.class, Number.class, String.class)).isTrue();
+    assertThat(ClassUtils.notInstanceOf(123.0, Boolean.class, BigDecimal.class, String.class)).isTrue();
   }
 
   @Test
   public void notNonInstanceOf() {
-    assertFalse(ClassUtils.notInstanceOf(123, Boolean.class, Number.class, String.class));
+    assertThat(ClassUtils.notInstanceOf(123, Boolean.class, Number.class, String.class)).isFalse();
   }
 
   @Test
@@ -1245,19 +1240,13 @@ public class ClassUtilsUnitTests extends AbstractBaseTestSuite {
     assertThat(ClassUtils.toRawType(Object.class)).isEqualTo(Object.class);
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void toRawTypeWithNullThrowsIllegalArgumentException() {
 
-    try {
-      ClassUtils.toRawType(null);
-    }
-    catch (IllegalArgumentException expected) {
-
-      assertThat(expected).hasMessage("[null] is not resolvable as a java.lang.Class");
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> ClassUtils.toRawType(null))
+      .withMessage("[null] is not resolvable as a java.lang.Class")
+      .withNoCause();
   }
 
   @Test

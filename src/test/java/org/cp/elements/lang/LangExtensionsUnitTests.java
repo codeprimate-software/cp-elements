@@ -26,11 +26,9 @@ import static org.cp.elements.lang.LangExtensions.assertThat;
 import static org.cp.elements.lang.LangExtensions.from;
 import static org.cp.elements.lang.LangExtensions.given;
 import static org.cp.elements.lang.LangExtensions.is;
-import static org.cp.elements.lang.ThrowableAssertions.assertThatThrowableOfType;
+import static org.cp.elements.lang.RuntimeExceptionsFactory.newIllegalArgumentException;
 import static org.cp.elements.util.ArrayUtils.nullSafeArray;
 import static org.cp.elements.util.CollectionUtils.nullSafeList;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doReturn;
@@ -76,7 +74,6 @@ import lombok.RequiredArgsConstructor;
  * @see org.junit.jupiter.api.Test
  * @see org.mockito.Mockito
  * @see org.cp.elements.lang.LangExtensions
- * @see org.cp.elements.test.TestUtils
  * @see lombok
  * @since 1.0.0
  */
@@ -118,7 +115,7 @@ public class LangExtensionsUnitTests {
   }
 
   @Test
-  public void assertThatAsWithNullConverterFunction() {
+  public void assertThatAsNullConverterFunction() {
 
     assertThatIllegalArgumentException()
       .isThrownBy(() -> assertThat("mock").asType(null).isEqualTo("test"))
@@ -182,36 +179,44 @@ public class LangExtensionsUnitTests {
     assertThat(new Object()).not().isAssignableTo(String.class);
   }
 
-  @Test(expected = AssertionException.class)
+  @Test
   public void assertThatObjectIsAssignableToStringThrowsAssertionExceptionWithCustomMessage() {
 
-    TestUtils.doAssertionExceptionThrowingOperation(
-      () -> assertThat(Object.class)
+    assertThatExceptionOfType(AssertionException.class)
+      .isThrownBy(() -> assertThat(Object.class)
         .describedAs("This is a %1$s{1}", "test", "!")
-        .isAssignableTo(String.class),
-        () -> "This is a test!");
+        .isAssignableTo(String.class))
+      .withMessage("This is a test!")
+      .withNoCause();
   }
 
-  @Test(expected = AssertionException.class)
+  @Test
   public void assertThatDoubleIsAssignableToIntegerThrowsAssertionException() {
 
-    TestUtils.doAssertionExceptionThrowingOperation(() -> assertThat(Math.PI).isAssignableTo(Integer.class),
-      () -> String.format("[%1$s] is not assignable to [java.lang.Integer]", Math.PI));
+    assertThatExceptionOfType(AssertionException.class)
+      .isThrownBy(() -> assertThat(Math.PI).isAssignableTo(Integer.class))
+      .withMessage("[%s] is not assignable to [java.lang.Integer]", Math.PI)
+      .withNoCause();
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void assertThatCharacterIsAssignableToStringThrowsIllegalArgumentException() {
 
-    TestUtils.doIllegalArgumentExceptionThrowingOperation(
-      () -> assertThat(Character.class).throwing(new IllegalArgumentException("test")).isAssignableTo(String.class),
-        () -> "test");
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> assertThat(Character.class)
+        .throwing(newIllegalArgumentException("test"))
+        .isAssignableTo(String.class))
+      .withMessage("test")
+      .withNoCause();
   }
 
-  @Test(expected = AssertionException.class)
+  @Test
   public void assertThatStringIsNotAssignableToObjectThrowsAssertionException() {
 
-    TestUtils.doAssertionExceptionThrowingOperation(() -> assertThat(String.class).not().isAssignableTo(Object.class),
-      () -> "[class java.lang.String] is assignable to [java.lang.Object]");
+    assertThatExceptionOfType(AssertionException.class)
+      .isThrownBy(() -> assertThat(String.class).not().isAssignableTo(Object.class))
+      .withMessage("[class java.lang.String] is assignable to [java.lang.Object]")
+      .withNoCause();
   }
 
   @Test
@@ -234,34 +239,44 @@ public class LangExtensionsUnitTests {
     assertThat("test").isNotComparableTo("mock");
   }
 
-  @Test(expected = AssertionException.class)
+  @Test
   public void assertThatObjectsAreNotComparableThrowsAssertionException() {
 
-    TestUtils.doAssertionExceptionThrowingOperation(() -> assertThat("queue").isComparableTo("Q"),
-      () -> "[queue] is not comparable to [Q]");
+    assertThatExceptionOfType(AssertionException.class)
+      .isThrownBy(() -> assertThat("queue").isComparableTo("Q"))
+      .withMessage("[queue] is not comparable to [Q]")
+      .withNoCause();
   }
 
-  @Test(expected = AssertionException.class)
+  @Test
   public void assertThatObjectsAreNotComparableThrowsAssertionExceptionWithCustomMessage() {
 
-    TestUtils.doAssertionExceptionThrowingOperation(
-      () -> assertThat("c").describedAs("This is a %1$s{1}", "test", "!").isComparableTo("see"),
-        () -> "This is a test!");
+    assertThatExceptionOfType(AssertionException.class)
+      .isThrownBy(() -> assertThat("c")
+        .describedAs("This is a %1$s{1}", "test", "!")
+        .isComparableTo("see"))
+      .withMessage("This is a test!")
+      .withNoCause();
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void assertThatObjectsAreNotComparableThrowsIllegalArgumentException() {
 
-    TestUtils.doIllegalArgumentExceptionThrowingOperation(
-      () -> assertThat("c").throwing(new IllegalArgumentException("test")).isComparableTo("see"),
-        () -> "test");
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> assertThat("c")
+        .throwing(newIllegalArgumentException("test"))
+        .isComparableTo("see"))
+      .withMessage("test")
+      .withNoCause();
   }
 
-  @Test(expected = AssertionException.class)
+  @Test
   public void assertThatComparableObjectsAreNotComparableThrowsAssertionException() {
 
-    TestUtils.doAssertionExceptionThrowingOperation(() -> assertThat("test").not().isComparableTo("test"),
-      () -> "[test] is comparable to [test]");
+    assertThatExceptionOfType(AssertionException.class)
+      .isThrownBy(() -> assertThat("test").not().isComparableTo("test"))
+      .withMessage("[test] is comparable to [test]")
+      .withNoCause();
   }
 
   @Test
@@ -285,34 +300,44 @@ public class LangExtensionsUnitTests {
     assertThat("test").isNotEqualTo("TEST");
   }
 
-  @Test(expected = AssertionException.class)
+  @Test
   public void assertThatObjectIsEqualToObjectThrowsAssertionException() {
 
-    TestUtils.doAssertionExceptionThrowingOperation(() -> assertThat("test").isEqualTo("mock"),
-      () -> "[test] is not equal to [mock]");
+    assertThatExceptionOfType(AssertionException.class)
+      .isThrownBy(() -> assertThat("test").isEqualTo("mock"))
+      .withMessage("[test] is not equal to [mock]")
+      .withNoCause();
   }
 
-  @Test(expected = AssertionException.class)
+  @Test
   public void assertThatObjectIsEqualToObjectThrowsAssertionExceptionWithCustomMessage() {
 
-    TestUtils.doAssertionExceptionThrowingOperation(
-      () -> assertThat("r").describedAs("This is a %1$s{1}", "test", "!").isEqualTo("are"),
-        () -> "This is a test!");
+    assertThatExceptionOfType(AssertionException.class)
+      .isThrownBy(() -> assertThat("r")
+        .describedAs("This is a %1$s{1}", "test", "!")
+        .isEqualTo("are"))
+      .withMessage("This is a test!")
+      .withNoCause();
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void assertThatObjectIsEqualToObjectThrowsIllegalArgumentException() {
 
-    TestUtils.doIllegalArgumentExceptionThrowingOperation(
-      () -> assertThat("r").throwing(new IllegalArgumentException("test")).isEqualTo("are"),
-        () -> "test");
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> assertThat("r")
+        .throwing(newIllegalArgumentException("test"))
+        .isEqualTo("are"))
+      .withMessage("test")
+      .withNoCause();
   }
 
-  @Test(expected = AssertionException.class)
+  @Test
   public void assertThatObjectIsNotEqualToObjectThrowsAssertionException() {
 
-    TestUtils.doAssertionExceptionThrowingOperation(() -> assertThat("test").isNotEqualTo("test"),
-      () -> "[test] is equal to [test]");
+    assertThatExceptionOfType(AssertionException.class)
+      .isThrownBy(() -> assertThat("test").isNotEqualTo("test"))
+      .withMessage("[test] is equal to [test]")
+      .withNoCause();
   }
 
   @Test
@@ -329,32 +354,44 @@ public class LangExtensionsUnitTests {
     assertThat(Boolean.TRUE).not().isFalse();
   }
 
-  @Test(expected = AssertionException.class)
+  @Test
   public void assertThatTrueIsFalseThrowsAssertionException() {
-    TestUtils.doAssertionExceptionThrowingOperation(() -> assertThat(true).isFalse(), () -> "[true] is not false");
+
+    assertThatExceptionOfType(AssertionException.class)
+      .isThrownBy(() -> assertThat(true).isFalse())
+      .withMessage("[true] is not false")
+      .withNoCause();
   }
 
-  @Test(expected = AssertionException.class)
+  @Test
   public void assertThatTrueIsFalseThrowsAssertionExceptionWithCustomMessage() {
 
-    TestUtils.doAssertionExceptionThrowingOperation(
-      () -> assertThat(true).describedAs("This is a %1$s{1}", "test", "!").isFalse(),
-        () -> "This is a test!");
+    assertThatExceptionOfType(AssertionException.class)
+      .isThrownBy(() -> assertThat(true)
+        .describedAs("This is a %1$s{1}", "test", "!")
+        .isFalse())
+      .withMessage("This is a test!")
+      .withNoCause();
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void assertThatTrueIsFalseThrowsIllegalArgumentException() {
 
-    TestUtils.doIllegalArgumentExceptionThrowingOperation(
-      () -> assertThat(true).throwing(new IllegalArgumentException("test")).isFalse(),
-        () -> "test");
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> assertThat(true)
+        .throwing(newIllegalArgumentException("test"))
+        .isFalse())
+      .withMessage("test")
+      .withNoCause();
   }
 
-  @Test(expected = AssertionException.class)
+  @Test
   public void assertThatFalseIsNotFalseThrowsAssertionException() {
 
-    TestUtils.doAssertionExceptionThrowingOperation(() -> assertThat(false).not().isFalse(),
-      () -> "[false] is false");
+    assertThatExceptionOfType(AssertionException.class)
+      .isThrownBy(() -> assertThat(false).not().isFalse())
+      .withMessage("[false] is false")
+      .withNoCause();
   }
 
   @Test
@@ -372,34 +409,44 @@ public class LangExtensionsUnitTests {
     assertThat(-2).not().isGreaterThan(1);
   }
 
-  @Test(expected = AssertionException.class)
+  @Test
   public void assertThatIsGreaterThanThrowsAssertionException() {
 
-    TestUtils.doAssertionExceptionThrowingOperation(() -> assertThat(2).isGreaterThan(2),
-      () -> "[2] is not greater than [2]");
+    assertThatExceptionOfType(AssertionException.class)
+      .isThrownBy(() -> assertThat(2).isGreaterThan(2))
+      .withMessage("[2] is not greater than [2]")
+      .withNoCause();
   }
 
-  @Test(expected = AssertionException.class)
+  @Test
   public void assertThatIsGreaterThanThrowsAssertionExceptionWithCustomMessage() {
 
-    TestUtils.doAssertionExceptionThrowingOperation(
-      () -> assertThat(2).describedAs("This is a %1$s{1}", "test", "!").isGreaterThan(3),
-        () -> "This is a test!");
+    assertThatExceptionOfType(AssertionException.class)
+      .isThrownBy(() -> assertThat(2)
+        .describedAs("This is a %1$s{1}", "test", "!")
+        .isGreaterThan(3))
+      .withMessage("This is a test!")
+      .withNoCause();
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void assertThatIsGreaterThanThrowsIllegalArgumentException() {
 
-    TestUtils.doIllegalArgumentExceptionThrowingOperation(
-      () -> assertThat(2).throwing(new IllegalArgumentException("test")).isGreaterThan(3),
-        () -> "test");
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> assertThat(2)
+        .throwing(newIllegalArgumentException("test"))
+        .isGreaterThan(3))
+      .withMessage("test")
+      .withNoCause();
   }
 
-  @Test(expected = AssertionException.class)
+  @Test
   public void assertThatIsNotGreaterThanThrowsAssertionException() {
 
-    TestUtils.doAssertionExceptionThrowingOperation(() -> assertThat(2).not().isGreaterThan(1),
-      () -> "[2] is greater than [1]");
+    assertThatExceptionOfType(AssertionException.class)
+      .isThrownBy(() -> assertThat(2).not().isGreaterThan(1))
+      .withMessage("[2] is greater than [1]")
+      .withNoCause();
   }
 
   @Test
@@ -420,40 +467,44 @@ public class LangExtensionsUnitTests {
     assertThat(2).not().isGreaterThanAndLessThan(3, 2);
   }
 
-  @Test(expected = AssertionException.class)
+  @Test
   public void assertThatIsGreaterThanAndLessThanThrowsAssertionException() {
 
-    TestUtils.doAssertionExceptionThrowingOperation(
-      () -> assertThat(2).isGreaterThanAndLessThan(2, 2),
-        () -> "[2] is not greater than [2] and less than [2]");
+    assertThatExceptionOfType(AssertionException.class)
+      .isThrownBy(() -> assertThat(2).isGreaterThanAndLessThan(2, 2))
+      .withMessage("[2] is not greater than [2] and less than [2]")
+      .withNoCause();
   }
 
-  @Test(expected = AssertionException.class)
+  @Test
   public void assertThatIsGreaterThanAndLessThanThrowsAssertionExceptionWithCustomMessage() {
 
-    TestUtils.doAssertionExceptionThrowingOperation(
-      () -> assertThat(2)
+    assertThatExceptionOfType(AssertionException.class)
+      .isThrownBy(() -> assertThat(2)
         .describedAs("This is a %1$s{1}", "test", "!")
-        .isGreaterThanAndLessThan(2, 2),
-        () -> "This is a test!");
+        .isGreaterThanAndLessThan(2, 2))
+      .withMessage("This is a test!")
+      .withNoCause();
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void assertThatIsGreaterThanAndLessThanThrowsIllegalArgumentException() {
 
-    TestUtils.doIllegalArgumentExceptionThrowingOperation(
-      () -> assertThat(2)
-        .throwing(new IllegalArgumentException("test"))
-        .isGreaterThanAndLessThan(2, 2),
-        () -> "test");
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> assertThat(2)
+        .throwing(newIllegalArgumentException("test"))
+        .isGreaterThanAndLessThan(2, 2))
+      .withMessage("test")
+      .withNoCause();
   }
 
-  @Test(expected = AssertionException.class)
+  @Test
   public void assertThatIsNotGreaterThanAndLessThanThrowsAssertionException() {
 
-    TestUtils.doAssertionExceptionThrowingOperation(
-      () -> assertThat(2).not().isGreaterThanAndLessThan(1, 3),
-        () -> "[2] is greater than [1] and less than [3]");
+    assertThatExceptionOfType(AssertionException.class)
+      .isThrownBy(() -> assertThat(2).not().isGreaterThanAndLessThan(1, 3))
+      .withMessage("[2] is greater than [1] and less than [3]")
+      .withNoCause();
   }
 
   @Test
@@ -474,40 +525,44 @@ public class LangExtensionsUnitTests {
     assertThat(2).not().isGreaterThanAndLessThanEqualTo(3, 4);
   }
 
-  @Test(expected = AssertionException.class)
+  @Test
   public void assertThatIsGreaterThanAndLessThanEqualToThrowsAssertionException() {
 
-    TestUtils.doAssertionExceptionThrowingOperation(
-      () -> assertThat(2).isGreaterThanAndLessThanEqualTo(2, 2),
-        () -> "[2] is not greater than [2] and less than equal to [2]");
+    assertThatExceptionOfType(AssertionException.class)
+      .isThrownBy(() -> assertThat(2).isGreaterThanAndLessThanEqualTo(2, 2))
+      .withMessage("[2] is not greater than [2] and less than equal to [2]")
+      .withNoCause();
   }
 
-  @Test(expected = AssertionException.class)
+  @Test
   public void assertThatIsGreaterThanAndLessThanEqualToThrowsAssertionExceptionWithCustomMessage() {
 
-    TestUtils.doAssertionExceptionThrowingOperation(
-      () -> assertThat(2)
+    assertThatExceptionOfType(AssertionException.class)
+      .isThrownBy(() -> assertThat(2)
         .describedAs("This is a %1$s{1}", "test", "!")
-        .isGreaterThanAndLessThanEqualTo(2, 2),
-        () -> "This is a test!");
+        .isGreaterThanAndLessThanEqualTo(2, 2))
+      .withMessage("This is a test!")
+      .withNoCause();
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void assertThatIsGreaterThanAndLessThanEqualToThrowsIllegalArgumentException() {
 
-    TestUtils.doIllegalArgumentExceptionThrowingOperation(
-      () -> assertThat(2)
-        .throwing(new IllegalArgumentException("test"))
-        .isGreaterThanAndLessThanEqualTo(2, 2),
-      () -> "test");
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> assertThat(2)
+        .throwing(newIllegalArgumentException("test"))
+        .isGreaterThanAndLessThanEqualTo(2, 2))
+      .withMessage("test")
+      .withNoCause();
   }
 
-  @Test(expected = AssertionException.class)
+  @Test
   public void assertThatIsNotGreaterThanAndLessThanEqualToThrowsAssertionException() {
 
-    TestUtils.doAssertionExceptionThrowingOperation(
-      () -> assertThat(2).not().isGreaterThanAndLessThanEqualTo(1, 2),
-        () -> "[2] is greater than [1] and less than equal to [2]");
+    assertThatExceptionOfType(AssertionException.class)
+      .isThrownBy(() -> assertThat(2).not().isGreaterThanAndLessThanEqualTo(1, 2))
+      .withMessage("[2] is greater than [1] and less than equal to [2]")
+      .withNoCause();
   }
 
   @Test
@@ -528,34 +583,44 @@ public class LangExtensionsUnitTests {
     assertThat(-2).not().isGreaterThanEqualTo(2);
   }
 
-  @Test(expected = AssertionException.class)
+  @Test
   public void assertThatIsGreaterThanEqualToThrowsAssertionException() {
 
-    TestUtils.doAssertionExceptionThrowingOperation(() -> assertThat(2).isGreaterThanEqualTo(3),
-      () -> "[2] is not greater than equal to [3]");
+    assertThatExceptionOfType(AssertionException.class)
+      .isThrownBy(() -> assertThat(2).isGreaterThanEqualTo(3))
+      .withMessage("[2] is not greater than equal to [3]")
+      .withNoCause();
   }
 
-  @Test(expected = AssertionException.class)
+  @Test
   public void assertThatIsGreaterThanEqualToThrowsAssertionExceptionWithCustomMessage() {
 
-    TestUtils.doAssertionExceptionThrowingOperation(
-      () -> assertThat(2).describedAs("This is a %1$s{1}", "test", "!").isGreaterThanEqualTo(3),
-        () -> "This is a test!");
+    assertThatExceptionOfType(AssertionException.class)
+      .isThrownBy(() -> assertThat(2)
+        .describedAs("This is a %1$s{1}", "test", "!")
+        .isGreaterThanEqualTo(3))
+      .withMessage("This is a test!")
+      .withNoCause();
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void assertThatIsGreaterThanEqualToThrowsIllegalArgumentException() {
 
-    TestUtils.doIllegalArgumentExceptionThrowingOperation(
-      () -> assertThat(2).throwing(new IllegalArgumentException("test")).isGreaterThanEqualTo(3),
-        () -> "test");
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> assertThat(2)
+        .throwing(newIllegalArgumentException("test"))
+        .isGreaterThanEqualTo(3))
+      .withMessage("test")
+      .withNoCause();
   }
 
-  @Test(expected = AssertionException.class)
+  @Test
   public void assertThatIsNotGreaterThanEqualToThrowsAssertionException() {
 
-    TestUtils.doAssertionExceptionThrowingOperation(() -> assertThat(2).not().isGreaterThanEqualTo(1),
-      () -> "[2] is greater than equal to [1]");
+    assertThatExceptionOfType(AssertionException.class)
+      .isThrownBy(() -> assertThat(2).not().isGreaterThanEqualTo(1))
+      .withMessage("[2] is greater than equal to [1]")
+      .withNoCause();
   }
 
   @Test
@@ -576,40 +641,44 @@ public class LangExtensionsUnitTests {
     assertThat(-2).not().isGreaterThanEqualToAndLessThan(1, -3);
   }
 
-  @Test(expected = AssertionException.class)
+  @Test
   public void assertThatIsGreaterThanEqualToAndLessThanThrowsAssertionException() {
 
-    TestUtils.doAssertionExceptionThrowingOperation(
-      () -> assertThat(2).isGreaterThanEqualToAndLessThan(3, 1),
-        () -> "[2] is not greater than equal to [3] and less than [1]");
+    assertThatExceptionOfType(AssertionException.class)
+      .isThrownBy(() -> assertThat(2).isGreaterThanEqualToAndLessThan(3, 1))
+      .withMessage("[2] is not greater than equal to [3] and less than [1]")
+      .withNoCause();
   }
 
-  @Test(expected = AssertionException.class)
+  @Test
   public void assertThatIsGreaterThanEqualToAndLessThanThrowsAssertionExceptionWithCustomMessage() {
 
-    TestUtils.doAssertionExceptionThrowingOperation(
-      () -> assertThat(2)
+    assertThatExceptionOfType(AssertionException.class)
+      .isThrownBy(() -> assertThat(2)
         .describedAs("This is a %1s{1}", "test", "!")
-        .isGreaterThanEqualToAndLessThan(3, 1),
-        () -> "This is a test!");
+        .isGreaterThanEqualToAndLessThan(3, 1))
+      .withMessage("This is a test!")
+      .withNoCause();
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void assertThatIsGreaterThanEqualToAndLessThanThrowsIllegalArgumentException() {
 
-    TestUtils.doIllegalArgumentExceptionThrowingOperation(
-      () -> assertThat(2)
-        .throwing(new IllegalArgumentException("test"))
-        .isGreaterThanEqualToAndLessThan(3, 1),
-        () -> "test");
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> assertThat(2)
+        .throwing(newIllegalArgumentException("test"))
+        .isGreaterThanEqualToAndLessThan(3, 1))
+      .withMessage("test")
+      .withNoCause();
   }
 
-  @Test(expected = AssertionException.class)
+  @Test
   public void assertThatIsNotGreaterThanEqualToAndLessThanThrowsAssertionException() {
 
-    TestUtils.doAssertionExceptionThrowingOperation(
-      () -> assertThat(2).not().isGreaterThanEqualToAndLessThan(1, 3),
-        () -> "[2] is greater than equal to [1] and less than [3]");
+    assertThatExceptionOfType(AssertionException.class)
+      .isThrownBy(() -> assertThat(2).not().isGreaterThanEqualToAndLessThan(1, 3))
+      .withMessage("[2] is greater than equal to [1] and less than [3]")
+      .withNoCause();
   }
 
   @Test
@@ -629,40 +698,44 @@ public class LangExtensionsUnitTests {
     assertThat(-2).not().isGreaterThanEqualToAndLessThanEqualTo(1, -3);
   }
 
-  @Test(expected = AssertionException.class)
+  @Test
   public void assertThatIsGreaterThanEqualToAndLessThanEqualToThrowsAssertionException() {
 
-    TestUtils.doAssertionExceptionThrowingOperation(
-      () -> assertThat(2).isGreaterThanEqualToAndLessThanEqualTo(3, 1),
-        () -> "[2] is not greater than equal to [3] and less than equal to [1]");
+    assertThatExceptionOfType(AssertionException.class)
+      .isThrownBy(() -> assertThat(2).isGreaterThanEqualToAndLessThanEqualTo(3, 1))
+      .withMessage("[2] is not greater than equal to [3] and less than equal to [1]")
+      .withNoCause();
   }
 
-  @Test(expected = AssertionException.class)
+  @Test
   public void assertThatIsGreaterThanEqualToAndLessThanEqualToThrowsAssertionExceptionWithCustomMessage() {
 
-    TestUtils.doAssertionExceptionThrowingOperation(
-      () -> assertThat(2)
+    assertThatExceptionOfType(AssertionException.class)
+      .isThrownBy(() -> assertThat(2)
         .describedAs("This is a %1$s{1}", "test", "!")
-        .isGreaterThanEqualToAndLessThanEqualTo(3, 1),
-        () -> "This is a test!");
+        .isGreaterThanEqualToAndLessThanEqualTo(3, 1))
+      .withMessage("This is a test!")
+      .withNoCause();
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void assertThatIsGreaterThanEqualToAndLessThanEqualToThrowsIllegalArgumentException() {
 
-    TestUtils.doIllegalArgumentExceptionThrowingOperation(
-      () -> assertThat(2)
-        .throwing(new IllegalArgumentException("test"))
-        .isGreaterThanEqualToAndLessThanEqualTo(3, 1),
-        () -> "test");
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> assertThat(2)
+        .throwing(newIllegalArgumentException("test"))
+        .isGreaterThanEqualToAndLessThanEqualTo(3, 1))
+      .withMessage("test")
+      .withNoCause();
   }
 
-  @Test(expected = AssertionException.class)
+  @Test
   public void assertThatIsNotGreaterThanEqualToAndLessThanEqualToThrowsAssertionException() {
 
-    TestUtils.doAssertionExceptionThrowingOperation(
-      () -> assertThat(2).not().isGreaterThanEqualToAndLessThanEqualTo(1, 3),
-        () -> "[2] is greater than equal to [1] and less than equal to [3]");
+    assertThatExceptionOfType(AssertionException.class)
+      .isThrownBy(() -> assertThat(2).not().isGreaterThanEqualToAndLessThanEqualTo(1, 3))
+      .withMessage("[2] is greater than equal to [1] and less than equal to [3]")
+      .withNoCause();
   }
 
   @Test
@@ -678,41 +751,54 @@ public class LangExtensionsUnitTests {
   }
 
   @Test
-  public void assertThatStringsDoNotHaveText() {
+  public void sassertThatStringsDoNotHaveText() {
 
     assertThat(null).not().hasText();
     assertThat("").not().isNotBlank();
+    assertThat(" ").not().hasText();
     assertThat("  ").not().hasText();
     assertThat("\t").not().hasText();
     assertThat("\n").not().hasText();
   }
 
-  @Test(expected = AssertionException.class)
+  @Test
   public void assertThatBlankStringHasTextThrowsAssertionException() {
-    TestUtils.doAssertionExceptionThrowingOperation(() -> assertThat(" ").hasText(), () -> "[ ] is blank");
+
+    assertThatExceptionOfType(AssertionException.class)
+      .isThrownBy(() -> assertThat(" ").hasText())
+      .withMessage("[ ] is blank")
+      .withNoCause();
   }
 
-  @Test(expected = AssertionException.class)
+  @Test
   public void assertThatEmptyStringHasTextThrowsAssertionExceptionWithCustomMessage() {
 
-    TestUtils.doAssertionExceptionThrowingOperation(
-      () -> assertThat("").describedAs("This is a %1$s{1}", "test", "!").isNotBlank(),
-        () -> "This is a test!");
+    assertThatExceptionOfType(AssertionException.class)
+      .isThrownBy(() -> assertThat("")
+        .describedAs("This is a %1$s{1}", "test", "!")
+        .isNotBlank())
+      .withMessage("This is a test!")
+      .withNoCause();
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void assertThatNullStringHasTextThrowsIllegalArgumentException() {
 
-    TestUtils.doIllegalArgumentExceptionThrowingOperation(
-      () -> assertThat(null).throwing(new IllegalArgumentException("test")).hasText(),
-        () -> "test");
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> assertThat(null)
+        .throwing(newIllegalArgumentException("test"))
+        .hasText())
+      .withMessage("test")
+      .withNoCause();
   }
 
-  @Test(expected = AssertionException.class)
+  @Test
   public void assertThatStringDoesNotHaveTextThrowsAssertionException() {
 
-    TestUtils.doAssertionExceptionThrowingOperation(() -> assertThat("test").not().hasText(),
-      () -> "[test] is not blank");
+    assertThatExceptionOfType(AssertionException.class)
+      .isThrownBy(() -> assertThat("test").not().hasText())
+      .withMessage("[test] is not blank")
+      .withNoCause();
   }
 
   @Test
@@ -728,41 +814,48 @@ public class LangExtensionsUnitTests {
     assertThat(Thread.currentThread()).not().holdsLock(lock);
   }
 
-  @Test(expected = AssertionException.class)
+  @Test
   public void assertThatCurrentThreadHoldsLockThrowsAssertionException() {
 
-    TestUtils.doAssertionExceptionThrowingOperation(() -> assertThat(Thread.currentThread()).holdsLock(lock),
-      () -> String.format("[%1$s] does not hold lock [%2$s]", Thread.currentThread(), lock));
+    assertThatExceptionOfType(AssertionException.class)
+      .isThrownBy(() -> assertThat(Thread.currentThread()).holdsLock(lock))
+      .withMessage("[%1$s] does not hold lock [%2$s]", Thread.currentThread(), lock)
+      .withNoCause();
   }
 
-  @Test(expected = AssertionException.class)
+  @Test
   public void assertThatCurrentThreadHoldsLockThrowsAssertionExceptionWithCustomMessage() {
 
-    TestUtils.doAssertionExceptionThrowingOperation(
-      () -> assertThat(Thread.currentThread())
+    assertThatExceptionOfType(AssertionException.class)
+      .isThrownBy(() -> assertThat(Thread.currentThread())
         .describedAs("This is a %1$s{1}", "test", "!")
-        .holdsLock(lock),
-        () -> "This is a test!");
+        .holdsLock(lock))
+      .withMessage("This is a test!")
+      .withNoCause();
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void assertThatCurrentThreadHoldsLockThrowsIllegalArgumentException() {
 
-    TestUtils.doIllegalArgumentExceptionThrowingOperation(
-      () -> assertThat(Thread.currentThread())
-        .throwing(new IllegalArgumentException("test"))
-        .holdsLock(lock),
-        () -> "test");
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> assertThat(Thread.currentThread())
+        .throwing(newIllegalArgumentException("test"))
+        .holdsLock(lock))
+      .withMessage("test")
+      .withNoCause();
   }
 
-  @Test(expected = AssertionException.class)
+  @Test
   public void assertThatCurrentThreadDoesNotHoldLockThrowsAssertionException() {
 
-    TestUtils.doAssertionExceptionThrowingOperation(() -> {
-      synchronized (lock) {
-        assertThat(Thread.currentThread()).not().holdsLock(lock);
-      }
-    }, () -> String.format("[%1$s] holds lock [%2$s]", Thread.currentThread(), lock));
+    assertThatExceptionOfType(AssertionException.class)
+      .isThrownBy(() -> {
+        synchronized (lock) {
+          assertThat(Thread.currentThread()).not().holdsLock(lock);
+        }
+      })
+      .withMessage("[%1$s] holds lock [%2$s]", Thread.currentThread(), lock)
+      .withNoCause();
   }
 
   @Test
@@ -790,38 +883,44 @@ public class LangExtensionsUnitTests {
     assertThat(null).not().isInstanceOf(Object.class);
   }
 
-  @Test(expected = AssertionException.class)
+  @Test
   public void assertThatStringIsInstanceOfCharacterThrowsAssertionException() {
 
-    TestUtils.doAssertionExceptionThrowingOperation(() -> assertThat("test").isInstanceOf(Character.class),
-      () -> "[test] is not an instance of [java.lang.Character]");
+    assertThatExceptionOfType(AssertionException.class)
+      .isThrownBy(() -> assertThat("test").isInstanceOf(Character.class))
+      .withMessage("[test] is not an instance of [java.lang.Character]")
+      .withNoCause();
   }
 
-  @Test(expected = AssertionException.class)
+  @Test
   public void assertThatStringIsInstanceOfCharacterThrowsAssertionExceptionWithCustomMessage() {
 
-    TestUtils.doAssertionExceptionThrowingOperation(
-      () -> assertThat("test")
+    assertThatExceptionOfType(AssertionException.class)
+      .isThrownBy(() -> assertThat("test")
         .describedAs("This is a %1$s{1}", "test", "!")
-        .isInstanceOf(Character.class),
-        () -> "This is a test!");
+        .isInstanceOf(Character.class))
+      .withMessage("This is a test!")
+      .withNoCause();
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void assertThatStringIsInstanceOfCharacterThrowsIllegalArgumentException() {
 
-    TestUtils.doIllegalArgumentExceptionThrowingOperation(
-      () -> assertThat("test")
-        .throwing(new IllegalArgumentException("test"))
-        .isInstanceOf(Character.class),
-        () -> "test");
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> assertThat("test")
+        .throwing(newIllegalArgumentException("test"))
+        .isInstanceOf(Character.class))
+      .withMessage("test")
+      .withNoCause();
   }
 
-  @Test(expected = AssertionException.class)
+  @Test
   public void assertThatStringIsNotInstanceOfStringThrowsAssertionException() {
 
-    TestUtils.doAssertionExceptionThrowingOperation(() -> assertThat("test").not().isInstanceOf(String.class),
-      () -> "[test] is an instance of [java.lang.String]");
+    assertThatExceptionOfType(AssertionException.class)
+      .isThrownBy(() -> assertThat("test").not().isInstanceOf(String.class))
+      .withMessage("[test] is an instance of [java.lang.String]")
+      .withNoCause();
   }
 
   @Test
@@ -842,34 +941,44 @@ public class LangExtensionsUnitTests {
     assertThat(2).not().isLessThan(-3);
   }
 
-  @Test(expected = AssertionException.class)
+  @Test
   public void assertThatIsLessThanThrowsAssertionException() {
 
-    TestUtils.doAssertionExceptionThrowingOperation(() -> assertThat(2).isLessThan(1),
-      () -> "[2] is not less than [1]");
+    assertThatExceptionOfType(AssertionException.class)
+      .isThrownBy(() -> assertThat(2).isLessThan(1))
+      .withMessage("[2] is not less than [1]")
+      .withNoCause();
   }
 
-  @Test(expected = AssertionException.class)
+  @Test
   public void assertThatIsLessThanThrowsAssertionExceptionWithCustomMessage() {
 
-    TestUtils.doAssertionExceptionThrowingOperation(
-      () -> assertThat(2).describedAs("This is a %1$s{1}", "test", "!").isLessThan(1),
-        () -> "This is a test!");
+    assertThatExceptionOfType(AssertionException.class)
+      .isThrownBy(() -> assertThat(2)
+        .describedAs("This is a %1$s{1}", "test", "!")
+        .isLessThan(1))
+      .withMessage("This is a test!")
+      .withNoCause();
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void assertThatIsLessThanThrowsIllegalArgumentException() {
 
-    TestUtils.doIllegalArgumentExceptionThrowingOperation(
-      () -> assertThat(2).throwing(new IllegalArgumentException("test")).isLessThan(1),
-        () -> "test");
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> assertThat(2)
+        .throwing(newIllegalArgumentException("test"))
+        .isLessThan(1))
+      .withMessage("test")
+      .withNoCause();
   }
 
-  @Test(expected = AssertionException.class)
+  @Test
   public void assertThatIsNotLessThanThrowsAssertionException() {
 
-    TestUtils.doAssertionExceptionThrowingOperation(() -> assertThat(1).not().isLessThan(2),
-      () -> "[1] is less than [2]");
+    assertThatExceptionOfType(AssertionException.class)
+      .isThrownBy(() -> assertThat(1).not().isLessThan(2))
+      .withMessage("[1] is less than [2]")
+      .withNoCause();
   }
 
   @Test
@@ -887,40 +996,44 @@ public class LangExtensionsUnitTests {
     assertThat(1).not().isLessThanOrGreaterThan(-1, 1);
   }
 
-  @Test(expected = AssertionException.class)
+  @Test
   public void assertThatIsLessThanOrGreaterThanThrowsAssertionException() {
 
-    TestUtils.doAssertionExceptionThrowingOperation(
-      () -> assertThat(0).isLessThanOrGreaterThan(-1, 1),
-        () -> "[0] is not less than [-1] or greater than [1]");
+    assertThatExceptionOfType(AssertionException.class)
+      .isThrownBy(() -> assertThat(0).isLessThanOrGreaterThan(-1, 1))
+      .withMessage("[0] is not less than [-1] or greater than [1]")
+      .withNoCause();
   }
 
-  @Test(expected = AssertionException.class)
+  @Test
   public void assertThatIsLessThanOrGreaterThanThrowsAssertionExceptionWithCustomMessage() {
 
-    TestUtils.doAssertionExceptionThrowingOperation(
-      () -> assertThat(0)
+    assertThatExceptionOfType(AssertionException.class)
+      .isThrownBy(() -> assertThat(0)
         .describedAs("This is a %1$s{1}", "test", "!")
-        .isLessThanOrGreaterThan(-1, 1),
-        ()  -> "This is a test!");
+        .isLessThanOrGreaterThan(-1, 1))
+      .withMessage("This is a test!")
+      .withNoCause();
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void assertThatIsLessThanOrGreaterThanThrowsIllegalArgumentException() {
 
-    TestUtils.doAssertionExceptionThrowingOperation(
-      () -> assertThat(0)
-        .throwing(new IllegalArgumentException("test"))
-        .isLessThanOrGreaterThan(-1, 1),
-        () -> "test");
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> assertThat(0)
+        .throwing(newIllegalArgumentException("test"))
+        .isLessThanOrGreaterThan(-1, 1))
+      .withMessage("test")
+      .withNoCause();
   }
 
-  @Test(expected = AssertionException.class)
+  @Test
   public void assertThatIsNotLessThanOrGreaterThanThrowsAssertionException() {
 
-    TestUtils.doAssertionExceptionThrowingOperation(
-      () -> assertThat(3).not().isLessThanOrGreaterThan(-1, 1),
-        () -> "[3] is less than [-1] or greater than [1]");
+    assertThatExceptionOfType(AssertionException.class)
+      .isThrownBy(() -> assertThat(3).not().isLessThanOrGreaterThan(-1, 1))
+      .withMessage("[3] is less than [-1] or greater than [1]")
+      .withNoCause();
   }
 
   @Test
@@ -938,40 +1051,44 @@ public class LangExtensionsUnitTests {
     assertThat(0).not().isLessThanOrGreaterThanEqualTo(-1, 1);
   }
 
-  @Test(expected = AssertionException.class)
+  @Test
   public void assertThatIsLessThanOrGreaterThanEqualToThrowsAssertionException() {
 
-    TestUtils.doAssertionExceptionThrowingOperation(
-      () ->  assertThat(0).isLessThanOrGreaterThanEqualTo(-1, 1),
-        () -> "[0] is not less than [-1] or greater than equal to [1]");
+    assertThatExceptionOfType(AssertionException.class)
+      .isThrownBy(() -> assertThat(0).isLessThanOrGreaterThanEqualTo(-1, 1))
+      .withMessage("[0] is not less than [-1] or greater than equal to [1]")
+      .withNoCause();
   }
 
-  @Test(expected = AssertionException.class)
+  @Test
   public void assertThatIsLessThanOrGreaterThanEqualToThrowsAssertionExceptionWithCustomMessage() {
 
-    TestUtils.doAssertionExceptionThrowingOperation(
-      () -> assertThat(0)
+    assertThatExceptionOfType(AssertionException.class)
+      .isThrownBy(() -> assertThat(0)
         .describedAs("This is a %1$s{1}", "test", "!")
-        .isLessThanOrGreaterThanEqualTo(-1, 1),
-        () -> "This is a test!");
+        .isLessThanOrGreaterThanEqualTo(-1, 1))
+      .withMessage("This is a test!")
+      .withNoCause();
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void assertThatIsLessThanOrGreaterThanEqualToThrowsIllegalArgumentException() {
 
-    TestUtils.doIllegalArgumentExceptionThrowingOperation(
-      () -> assertThat(0)
-        .throwing(new IllegalArgumentException("test"))
-        .isLessThanOrGreaterThanEqualTo(-1, 1),
-        () -> "test");
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> assertThat(0)
+        .throwing(newIllegalArgumentException("test"))
+        .isLessThanOrGreaterThanEqualTo(-1, 1))
+      .withMessage("test")
+      .withNoCause();
   }
 
-  @Test(expected = AssertionException.class)
+  @Test
   public void assertThatIsNotLessThanOrGreaterThanEqualToThrowsAssertionException() {
 
-    TestUtils.doAssertionExceptionThrowingOperation(
-      () -> assertThat(1).not().isLessThanOrGreaterThanEqualTo(-1, 1),
-        () -> "[1] is less than [-1] or greater than equal to [1]");
+    assertThatExceptionOfType(AssertionException.class)
+      .isThrownBy(() -> assertThat(1).not().isLessThanOrGreaterThanEqualTo(-1, 1))
+      .withMessage("[1] is less than [-1] or greater than equal to [1]")
+      .withNoCause();
   }
 
   @Test
@@ -991,34 +1108,44 @@ public class LangExtensionsUnitTests {
     assertThat(-2).not().isLessThanEqualTo(-3);
   }
 
-  @Test(expected = AssertionException.class)
+  @Test
   public void assertThatIsLessThanEqualToThrowsAssertionException() {
 
-    TestUtils.doAssertionExceptionThrowingOperation(() -> assertThat(2).isLessThanEqualTo(-3),
-      () -> "[2] is not less than equal to [-3]");
+    assertThatExceptionOfType(AssertionException.class)
+      .isThrownBy(() -> assertThat(2).isLessThanEqualTo(-3))
+      .withMessage("[2] is not less than equal to [-3]")
+      .withNoCause();
   }
 
-  @Test(expected = AssertionException.class)
+  @Test
   public void assertThatIsLessThanEqualToThrowsAssertionExceptionWithCustomMessage() {
 
-    TestUtils.doAssertionExceptionThrowingOperation(
-      () -> assertThat(2).describedAs("This is a %1$s{1}", "test", "!").isLessThanEqualTo(-3),
-        () -> "This is a test!");
+    assertThatExceptionOfType(AssertionException.class)
+      .isThrownBy(() -> assertThat(2)
+        .describedAs("This is a %1$s{1}", "test", "!")
+        .isLessThanEqualTo(-3))
+      .withMessage("This is a test!")
+      .withNoCause();
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void assertThatIsLessThanEqualToThrowsIllegalArgumentException() {
 
-    TestUtils.doIllegalArgumentExceptionThrowingOperation(
-      () -> assertThat(2).throwing(new IllegalArgumentException("test")).isLessThanEqualTo(-3),
-        () -> "test");
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> assertThat(2)
+        .throwing(newIllegalArgumentException("test"))
+        .isLessThanEqualTo(-3))
+      .withMessage("test")
+      .withNoCause();
   }
 
-  @Test(expected = AssertionException.class)
+  @Test
   public void assertThatIsNotLessThanEqualToThrowsAssertionException() {
 
-    TestUtils.doAssertionExceptionThrowingOperation(() -> assertThat(2).not().isLessThanEqualTo(3),
-      () -> "[2] is less than equal to [3]");
+    assertThatExceptionOfType(AssertionException.class)
+      .isThrownBy(() -> assertThat(2).not().isLessThanEqualTo(3))
+      .withMessage("[2] is less than equal to [3]")
+      .withNoCause();
   }
 
   @Test
@@ -1036,40 +1163,44 @@ public class LangExtensionsUnitTests {
     assertThat(1).not().isLessThanEqualToOrGreaterThan(-1, 1);
   }
 
-  @Test(expected = AssertionException.class)
+  @Test
   public void assertThatIsLessThanEqualToOrGreaterThanThrowsAssertionException() {
 
-    TestUtils.doAssertionExceptionThrowingOperation(
-      () -> assertThat(0).isLessThanEqualToOrGreaterThan(-1, 1),
-        () -> "[0] is not less than equal to [-1] or greater than [1]");
+    assertThatExceptionOfType(AssertionException.class)
+      .isThrownBy(() -> assertThat(0).isLessThanEqualToOrGreaterThan(-1, 1))
+      .withMessage("[0] is not less than equal to [-1] or greater than [1]")
+      .withNoCause();
   }
 
-  @Test(expected = AssertionException.class)
+  @Test
   public void assertThatIsLessThanEqualToOrGreaterThanThrowsAssertionExceptionWithCustomMessage() {
 
-    TestUtils.doAssertionExceptionThrowingOperation(
-      () -> assertThat(0)
+    assertThatExceptionOfType(AssertionException.class)
+      .isThrownBy(() -> assertThat(0)
         .describedAs("This is a %1$s{1}", "test", "!")
-        .isLessThanEqualToOrGreaterThan(-1, 1),
-        () -> "This is a test!");
+        .isLessThanEqualToOrGreaterThan(-1, 1))
+      .withMessage("This is a test!")
+      .withNoCause();
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void assertThatIsLessThanEqualToOrGreaterThanThrowsIllegalArgumentException() {
 
-    TestUtils.doIllegalArgumentExceptionThrowingOperation(
-      () -> assertThat(0)
-        .throwing(new IllegalArgumentException("test"))
-        .isLessThanEqualToOrGreaterThan(-1, 1),
-        () -> "test");
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> assertThat(0)
+        .throwing(newIllegalArgumentException("test"))
+        .isLessThanEqualToOrGreaterThan(-1, 1))
+      .withMessage("test")
+      .withNoCause();
   }
 
-  @Test(expected = AssertionException.class)
+  @Test
   public void assertThatIsNotLessThanEqualToOrGreaterThanThrowsAssertionException() {
 
-    TestUtils.doAssertionExceptionThrowingOperation(
-      () -> assertThat(2).not().isLessThanEqualToOrGreaterThan(-1, 1),
-        () -> "[2] is less than equal to [-1] or greater than [1]");
+    assertThatExceptionOfType(AssertionException.class)
+      .isThrownBy(() -> assertThat(2).not().isLessThanEqualToOrGreaterThan(-1, 1))
+      .withMessage("[2] is less than equal to [-1] or greater than [1]")
+      .withNoCause();
   }
 
   @Test
@@ -1086,40 +1217,44 @@ public class LangExtensionsUnitTests {
     assertThat(0).not().isLessThanEqualToOrGreaterThanEqualTo(-1, 1);
   }
 
-  @Test(expected = AssertionException.class)
+  @Test
   public void assertThatIsLessThanEqualToOrGreaterThanEqualToThrowsAssertionException() {
 
-    TestUtils.doAssertionExceptionThrowingOperation(
-      () -> assertThat(0).isLessThanEqualToOrGreaterThanEqualTo(-1, 1),
-        () -> "[0] is not less than equal to [-1] or greater than equal to [1]");
+    assertThatExceptionOfType(AssertionException.class)
+      .isThrownBy(() -> assertThat(0).isLessThanEqualToOrGreaterThanEqualTo(-1, 1))
+      .withMessage("[0] is not less than equal to [-1] or greater than equal to [1]")
+      .withNoCause();
   }
 
-  @Test(expected = AssertionException.class)
+  @Test
   public void assertThatIsLessThanEqualToOrGreaterThanEqualToThrowsAssertionExceptionWithCustomMessage() {
 
-    TestUtils.doAssertionExceptionThrowingOperation(
-      () -> assertThat(0)
+    assertThatExceptionOfType(AssertionException.class)
+      .isThrownBy(() -> assertThat(0)
         .describedAs("This is a %1$s{1}", "test", "!")
-        .isLessThanEqualToOrGreaterThanEqualTo(-1, 1),
-        ()  -> "This is a test!");
+        .isLessThanEqualToOrGreaterThanEqualTo(-1, 1))
+      .withMessage("This is a test!")
+      .withNoCause();
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void assertThatIsLessThanEqualToOrGreaterThanEqualToThrowsIllegalArgumentException() {
 
-    TestUtils.doIllegalArgumentExceptionThrowingOperation(
-      () -> assertThat(0)
-        .throwing(new IllegalArgumentException("test"))
-        .isLessThanEqualToOrGreaterThanEqualTo(-1, 1),
-        () -> "test");
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> assertThat(0)
+        .throwing(newIllegalArgumentException("test"))
+        .isLessThanEqualToOrGreaterThanEqualTo(-1, 1))
+      .withMessage("test")
+      .withNoCause();
   }
 
-  @Test(expected = AssertionException.class)
+  @Test
   public void assertThatIsNotLessThanEqualToOrGreaterThanEqualToThrowsAssertionException() {
 
-    TestUtils.doAssertionExceptionThrowingOperation(
-      () -> assertThat(2).not().isLessThanEqualToOrGreaterThanEqualTo(-1, 1),
-        () -> "[2] is less than equal to [-1] or greater than equal to [1]");
+    assertThatExceptionOfType(AssertionException.class)
+      .isThrownBy(() -> assertThat(2).not().isLessThanEqualToOrGreaterThanEqualTo(-1, 1))
+      .withMessage("[2] is less than equal to [-1] or greater than equal to [1]")
+      .withNoCause();
   }
 
   @Test
@@ -1136,31 +1271,44 @@ public class LangExtensionsUnitTests {
     assertThat("test").not().isNull();
   }
 
-  @Test(expected = AssertionException.class)
+  @Test
   public void assertThatNonNullObjectIsNullThrowsAssertionException() {
 
-    TestUtils.doAssertionExceptionThrowingOperation(() -> assertThat("test").isNull(), () -> "[test] is not null");
+    assertThatExceptionOfType(AssertionException.class)
+      .isThrownBy(() -> assertThat("test").isNull())
+      .withMessage("[test] is not null")
+      .withNoCause();
   }
 
-  @Test(expected = AssertionException.class)
+  @Test
   public void assertThatNonNullObjectIsNullThrowsAssertionExceptionWithCustomMessage() {
 
-    TestUtils.doAssertionExceptionThrowingOperation(
-      () -> assertThat("test").describedAs("This is a %1$s{1}", "test", "!").isNull(),
-        () -> "This is a test!");
+    assertThatExceptionOfType(AssertionException.class)
+      .isThrownBy(() -> assertThat("test")
+        .describedAs("This is a %1$s{1}", "test", "!")
+        .isNull())
+      .withMessage("This is a test!")
+      .withNoCause();
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void assertThatNonNullObjectIsNullThrowsIllegalArgumentException() {
 
-    TestUtils.doIllegalArgumentExceptionThrowingOperation(
-      () -> assertThat("test").throwing(new IllegalArgumentException("test")).isNull(),
-        () -> "test");
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> assertThat("test")
+        .throwing(newIllegalArgumentException("test"))
+        .isNull())
+      .withMessage("test")
+      .withNoCause();
   }
 
-  @Test(expected = AssertionException.class)
+  @Test
   public void assertThatNullObjectIsNotNullThrowsAssertionException() {
-    TestUtils.doAssertionExceptionThrowingOperation(() -> assertThat(null).isNotNull(), () -> "[null] is null");
+
+    assertThatExceptionOfType(AssertionException.class)
+      .isThrownBy(() -> assertThat(null).isNotNull())
+      .withMessage("[null] is null")
+      .withNoCause();
   }
 
   @Test
@@ -1186,32 +1334,44 @@ public class LangExtensionsUnitTests {
     assertThat("").not().isNotEmpty();
   }
 
-  @Test(expected = AssertionException.class)
+  @Test
   public void assertThatEmptyStringIsNotEmptyThrowsAssertionException() {
-    TestUtils.doAssertionExceptionThrowingOperation(() -> assertThat("").isNotEmpty(), () -> "[] is empty");
+
+    assertThatExceptionOfType(AssertionException.class)
+      .isThrownBy(() -> assertThat("").isNotEmpty())
+      .withMessage("[] is empty")
+      .withNoCause();
   }
 
-  @Test(expected = AssertionException.class)
+  @Test
   public void assertThatEmptyStringIsNotEmptyThrowsAssertionExceptionWithCustomMessage() {
 
-    TestUtils.doAssertionExceptionThrowingOperation(
-      () -> assertThat("").describedAs("This is a %1$s{1}", "test", "!").isNotBlank(),
-        () -> "This is a test!");
+    assertThatExceptionOfType(AssertionException.class)
+      .isThrownBy(() -> assertThat("")
+        .describedAs("This is a %1$s{1}", "test", "!")
+        .isNotEmpty())
+      .withMessage("This is a test!")
+      .withNoCause();
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void assertThatEmptyStringIsNotEmptyThrowsIllegalArgumentException() {
 
-    TestUtils.doIllegalArgumentExceptionThrowingOperation(
-      () -> assertThat("").throwing(new IllegalArgumentException("test")).isNotBlank(),
-        () -> "test");
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> assertThat("")
+        .throwing(newIllegalArgumentException("test"))
+        .isNotEmpty())
+      .withMessage("test")
+      .withNoCause();
   }
 
-  @Test(expected = AssertionException.class)
+  @Test
   public void assertThatNonEmptyStringIsEmptyThrowsAssertionException() {
 
-    TestUtils.doAssertionExceptionThrowingOperation(() -> assertThat(" ").not().isNotEmpty(),
-      () -> "[ ] is not empty");
+    assertThatExceptionOfType(AssertionException.class)
+      .isThrownBy(() -> assertThat(" ").not().isNotEmpty())
+      .withMessage("[ ] is not empty")
+      .withNoCause();
   }
 
   @Test
@@ -1238,33 +1398,44 @@ public class LangExtensionsUnitTests {
     assertThat("\0").not().isNotBlank();
   }
 
-  @Test(expected = AssertionException.class)
+  @Test
   public void assertThatBlankStringThrowsAssertionException() {
-    TestUtils.doAssertionExceptionThrowingOperation(() -> assertThat("  ").isNotBlank(), () -> "[  ] is blank");
+
+    assertThatExceptionOfType(AssertionException.class)
+      .isThrownBy(() -> assertThat("  ").isNotBlank())
+      .withMessage("[  ] is blank")
+      .withNoCause();
   }
 
-  @Test(expected = AssertionException.class)
+  @Test
   public void assertThatBlankStringThrowsAssertionExceptionWithCustomMessage() {
 
-    TestUtils.doAssertionExceptionThrowingOperation(() -> assertThat("  ")
-      .describedAs("This is a %1$s{1}", "test", "!")
-      .isNotBlank(),
-      () -> "This is a test!");
+    assertThatExceptionOfType(AssertionException.class)
+      .isThrownBy(() -> assertThat("  ")
+        .describedAs("This is a %1$s{1}", "test", "!")
+        .isNotBlank())
+      .withMessage("This is a test!")
+      .withNoCause();
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void assertThatBlankStringThrowsIllegalArgumentException() {
 
-    TestUtils.doIllegalArgumentExceptionThrowingOperation(() -> assertThat("  ")
-      .throwing(new IllegalArgumentException("test"))
-      .isNotBlank(), () -> "test");
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> assertThat("  ")
+        .throwing(newIllegalArgumentException("test"))
+        .isNotBlank())
+      .withMessage("test")
+      .withNoCause();
   }
 
-  @Test(expected = AssertionException.class)
+  @Test
   public void assertThatNonBlankStringIsBlankThrowsAssertionException() {
 
-    TestUtils.doAssertionExceptionThrowingOperation(() -> assertThat("nonBlank").not().isNotBlank(),
-      () -> "[nonBlank] is not blank");
+    assertThatExceptionOfType(AssertionException.class)
+      .isThrownBy(() -> assertThat("nonBlank").not().isNotBlank())
+      .withMessage("[nonBlank] is not blank")
+      .withNoCause();
   }
 
   @Test
@@ -1289,34 +1460,44 @@ public class LangExtensionsUnitTests {
     assertThat("test").isNotSameAs("TEST");
   }
 
-  @Test(expected = AssertionException.class)
+  @Test
   public void assertThatNonIdenticalObjectsAreTheSameThrowsAssertionException() {
 
-    TestUtils.doAssertionExceptionThrowingOperation(() -> assertThat("test").isSameAs("TEST"),
-      () -> "[test] is not the same as [TEST]");
+    assertThatExceptionOfType(AssertionException.class)
+      .isThrownBy(() -> assertThat("test").isSameAs("TEST"))
+      .withMessage("[test] is not the same as [TEST]")
+      .withNoCause();
   }
 
-  @Test(expected = AssertionException.class)
+  @Test
   public void assertThatNonIdenticalObjectsAreTheSameThrowsAssertionExceptionWithCustomMessage() {
 
-    TestUtils.doAssertionExceptionThrowingOperation(
-      () -> assertThat("test").describedAs("This is a %1$s{1}", "test", "!").isSameAs("TEST"),
-        () -> "This is a test!");
+    assertThatExceptionOfType(AssertionException.class)
+      .isThrownBy(() -> assertThat("test")
+        .describedAs("This is a %1$s{1}", "test", "!")
+        .isSameAs("TEST"))
+      .withMessage("This is a test!")
+      .withNoCause();
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void assertThatNonIdenticalObjectsAreTheSameThrowsIllegalArgumentException() {
 
-    TestUtils.doIllegalArgumentExceptionThrowingOperation(
-      () -> assertThat("test").throwing(new IllegalArgumentException("test")).isSameAs("TEST"),
-        () -> "test");
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> assertThat("test")
+        .throwing(new IllegalArgumentException("test"))
+        .isSameAs("TEST"))
+      .withMessage("test")
+      .withNoCause();
   }
 
-  @Test(expected = AssertionException.class)
+  @Test
   public void assertThatIdenticalObjectsAreNotTheSameThrowsAssertionException() {
 
-    TestUtils.doAssertionExceptionThrowingOperation(() -> assertThat("test").isNotSameAs("test"),
-      () -> "[test] is the same as [test]");
+    assertThatExceptionOfType(AssertionException.class)
+      .isThrownBy(() -> assertThat("test").isNotSameAs("test"))
+      .withMessage("[test] is the same as [test]")
+      .withNoCause();
   }
 
   @Test
@@ -1333,30 +1514,44 @@ public class LangExtensionsUnitTests {
     assertThat(Boolean.FALSE).not().isTrue();
   }
 
-  @Test(expected = AssertionException.class)
+  @Test
   public void assertThatFalseIsTrueThrowsAssertionException() {
-    TestUtils.doAssertionExceptionThrowingOperation(() -> assertThat(false).isTrue(), () -> "[false] is not true");
+
+    assertThatExceptionOfType(AssertionException.class)
+      .isThrownBy(() -> assertThat(false).isTrue())
+      .withMessage("[false] is not true")
+      .withNoCause();
   }
 
-  @Test(expected = AssertionException.class)
+  @Test
   public void assertThatFalseIsTrueThrowsAssertionExceptionWithCustomMessage() {
 
-    TestUtils.doAssertionExceptionThrowingOperation(
-      () -> assertThat(false).describedAs("This is a %1$s{1}", "test", "!").isTrue(),
-        () -> "This is a test!");
+    assertThatExceptionOfType(AssertionException.class)
+      .isThrownBy(() -> assertThat(false)
+        .describedAs("This is a %1$s{1}", "test", "!")
+        .isTrue())
+      .withMessage("This is a test!")
+      .withNoCause();
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void assertThatFalseIsTrueThrowsIllegalArgumentException() {
 
-    TestUtils.doIllegalArgumentExceptionThrowingOperation(
-      () -> assertThat(false).throwing(new IllegalArgumentException("test")).isTrue(),
-        () -> "test");
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> assertThat(false)
+        .throwing(newIllegalArgumentException("test"))
+        .isTrue())
+      .withMessage("test")
+      .withNoCause();
   }
 
-  @Test(expected = AssertionException.class)
+  @Test
   public void assertThatTrueIsNotTrueThrowsAssertionException() {
-    TestUtils.doAssertionExceptionThrowingOperation(() -> assertThat(true).not().isTrue(), () -> "[true] is true");
+
+    assertThatExceptionOfType(AssertionException.class)
+      .isThrownBy(() -> assertThat(true).not().isTrue())
+      .withMessage("[true] is true")
+      .withNoCause();
   }
 
   @Test
@@ -1364,68 +1559,44 @@ public class LangExtensionsUnitTests {
     assertThat("test").isValid(argument -> true);
   }
 
-  @Test(expected = AssertionException.class)
+  @Test
   public void assertThatIsValidIsNotValid() {
 
-    try {
-      assertThat("test").isValid(argument -> false);
-    }
-    catch (AssertionException expected) {
-
-      Assertions.assertThat(expected).hasMessage("[test] is not valid");
-      Assertions.assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
+    assertThatExceptionOfType(AssertionException.class)
+      .isThrownBy(() -> assertThat("test").isValid(argument -> false))
+      .withMessage("[test] is not valid")
+      .withNoCause();
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void assertThatIsValidWithNullPredicate() {
 
-    try {
-      assertThat("test").isValid(null);
-    }
-    catch (IllegalArgumentException expected) {
-
-      Assertions.assertThat(expected).hasMessage("Predicate is required");
-      Assertions.assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> assertThat("test").isValid(null))
+      .withMessage("Predicate is required")
+      .withNoCause();
   }
 
-  @Test(expected = AssertionException.class)
+  @Test
   public void assertThatIsValidUsingCustomMessage() {
 
-    try {
-      assertThat("test")
+    assertThatExceptionOfType(AssertionException.class)
+      .isThrownBy(() -> assertThat("test")
         .describedAs("[%s] is invalid", "test")
-        .isValid(argument -> false);
-    }
-    catch (AssertionException expected) {
-
-      Assertions.assertThat(expected).hasMessage("[test] is invalid");
-      Assertions.assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
+        .isValid(argument -> false))
+      .withMessage("[test] is invalid")
+      .withNoCause();
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void assertThatIsValidThrowingIllegalArgumentException() {
 
-    try {
-      assertThat("test")
-        .throwing(new IllegalArgumentException("[test] is invalid"))
-        .isValid(argument -> false);
-    }
-    catch (IllegalArgumentException expected) {
-
-      Assertions.assertThat(expected).hasMessage("[test] is invalid");
-      Assertions.assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> assertThat("test")
+        .throwing(newIllegalArgumentException("[test] is invalid"))
+        .isValid(argument -> false))
+      .withMessage("[test] is invalid")
+      .withNoCause();
   }
 
   @Test
@@ -1441,42 +1612,60 @@ public class LangExtensionsUnitTests {
     assertThat("test").not().isValid(argument -> false);
   }
 
-  @Test(expected = AssertionException.class)
+  @Test
   public void assertThatIsNotValidWithValidValueThrowsAssertionException() {
 
-    TestUtils.doAssertionExceptionThrowingOperation(() -> assertThat("test").not().isValid(argument -> true),
-      () -> "[test] is valid");
+    assertThatExceptionOfType(AssertionException.class)
+      .isThrownBy(() -> assertThat("test").not().isValid(argument -> true))
+      .withMessage("[test] is valid")
+      .withNoCause();
   }
 
-  @Test(expected = AssertionException.class)
+  @Test
   public void assertionTransformationIgnoresCondition() {
 
-    TestUtils.doAssertionExceptionThrowingOperation(() ->
-      assertThat(false).transform(new Transformer<AssertThat<Boolean>>() {
-        @Override public AssertThat<Boolean> transform(final AssertThat<Boolean> assertion) {
-          return new AssertThatWrapper<Boolean>(assertion) {
-            @Override public AssertThat<Boolean> when(final Condition condition) {
-              assertion.when(Condition.TRUE_CONDITION);
-              return this;
-            }
-          };
-        }
-      }).when(ENABLE_DISABLE_CONDITION).isTrue(), () -> "[false] is not true");
+    assertThatExceptionOfType(AssertionException.class)
+      .isThrownBy(() -> assertThat(false)
+        .transform(new Transformer<>() {
+
+          @Override
+          public AssertThat<Boolean> transform(AssertThat<Boolean> assertion) {
+
+            return new AssertThatWrapper<>(assertion) {
+
+              @Override
+              public AssertThat<Boolean> when(final Condition condition) {
+                assertion.when(Condition.TRUE_CONDITION);
+                return this;
+              }
+            };
+          }
+        })
+        .when(ENABLE_DISABLE_CONDITION).isTrue())
+      .withMessage("[false] is not true")
+      .withNoCause();
   }
 
-  @Test(expected = AssertionException.class)
+  @Test
   public void assertionDescribeAsUsingStringAndArgumentsIsCorrect() {
 
-    TestUtils.doAssertionExceptionThrowingOperation(
-      () -> assertThat(true).describedAs("This is a %s {1}!", "boolean", "test").isFalse(),
-        () -> "This is a boolean test!");
+    assertThatExceptionOfType(AssertionException.class)
+      .isThrownBy(() -> assertThat(true)
+        .describedAs("This is a %s {1}!", "boolean", "test")
+        .isFalse())
+      .withMessage("This is a boolean test!")
+      .withNoCause();
   }
 
-  @Test(expected = AssertionException.class)
+  @Test
   public void assertionDescribeAsUsingSupplierIsCorrect() {
 
-    TestUtils.doAssertionExceptionThrowingOperation(() -> assertThat(true).describedAs(() -> "test").isFalse(),
-      () -> "test");
+    assertThatExceptionOfType(AssertionException.class)
+      .isThrownBy(() -> assertThat(true)
+        .describedAs(() -> "test")
+        .isFalse())
+      .withMessage("test")
+      .withNoCause();
   }
 
   @Test
@@ -1624,12 +1813,13 @@ public class LangExtensionsUnitTests {
     assertThat("test").when(ENABLE_DISABLE_CONDITION).isValid(argument -> false);
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void negatedAssertThatRetainsThrowable() {
 
-    TestUtils.doIllegalArgumentExceptionThrowingOperation(
-      () -> assertThat(true).throwing(new IllegalArgumentException("test")).not().isTrue(),
-        () -> "test");
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> assertThat(true).throwing(newIllegalArgumentException("test")).not().isTrue())
+      .withMessage("test")
+      .withNoCause();
   }
 
   @Test
@@ -1640,8 +1830,11 @@ public class LangExtensionsUnitTests {
     Object lock = new Object();
 
     Transformer<AssertThat<Thread>> assertThatTransformer = (AssertThat<Thread> assertion) ->
-      new AssertThatWrapper<Thread>(assertion) {
-        @Override public AssertThat<Thread> holdsLock(final Object lock) {
+
+      new AssertThatWrapper<>(assertion) {
+
+        @Override
+        public AssertThat<Thread> holdsLock(final Object lock) {
           holdsLockCallCount.incrementAndGet();
           assertion.holdsLock(lock);
           return this;
@@ -1653,12 +1846,15 @@ public class LangExtensionsUnitTests {
     Assertions.assertThat(holdsLockCallCount.get()).isOne();
   }
 
-  @Test(expected = AssertionException.class)
+  @Test
   public void negatedAssertThatRetainsExceptionMessageAndArgs() {
 
-    TestUtils.doAssertionExceptionThrowingOperation(
-      () -> assertThat(null).describedAs("%1$s cannot be {1}", "Object", "null").isNotNull(),
-        () -> "Object cannot be null");
+    assertThatExceptionOfType(AssertionException.class)
+      .isThrownBy(() -> assertThat(null)
+        .describedAs("%1$s cannot be {1}", "Object", "null")
+        .isNotNull())
+      .withMessage("Object cannot be null")
+      .withNoCause();
   }
 
   @Test
@@ -2079,8 +2275,7 @@ public class LangExtensionsUnitTests {
     AssertThat wrappedAssertion = AssertThatWrapper.wrap(mockAssertion).not();
 
     Assertions.assertThat(wrappedAssertion).isNotSameAs(mockAssertion);
-
-    assertTrue(wrappedAssertion instanceof AssertThatWrapper);
+    Assertions.assertThat(wrappedAssertion).isInstanceOf(AssertThatWrapper.class);
 
     verify(mockAssertion, times(1)).not();
   }
@@ -2095,7 +2290,7 @@ public class LangExtensionsUnitTests {
     AssertThat wrappedAssertion = AssertThatWrapper.wrap(mockAssertion).throwing(illegalArgument);
 
     Assertions.assertThat(wrappedAssertion).isNotSameAs(mockAssertion);
-    assertTrue(wrappedAssertion instanceof AssertThatWrapper);
+    Assertions.assertThat(wrappedAssertion).isInstanceOf(AssertThatWrapper.class);
 
     verify(mockAssertion, times(1)).throwing(eq(illegalArgument));
   }
@@ -2114,7 +2309,7 @@ public class LangExtensionsUnitTests {
     wrappedAssertion = wrappedAssertion.transform(mockTransformer);
 
     Assertions.assertThat(wrappedAssertion).isNotSameAs(mockAssertion);
-    assertTrue(wrappedAssertion instanceof AssertThatWrapper);
+    Assertions.assertThat(wrappedAssertion).isInstanceOf(AssertThatWrapper.class);
 
     verify(mockTransformer, times(1)).transform(eq(mockAssertion));
   }
@@ -2127,7 +2322,7 @@ public class LangExtensionsUnitTests {
     AssertThat wrappedAssertion = AssertThatWrapper.wrap(mockAssertion).describedAs("message", "args");
 
     Assertions.assertThat(wrappedAssertion).isNotSameAs(mockAssertion);
-    assertTrue(wrappedAssertion instanceof AssertThatWrapper);
+    Assertions.assertThat(wrappedAssertion).isInstanceOf(AssertThatWrapper.class);
 
     verify(mockAssertion, times(1)).stating(eq("message"), eq("args"));
   }
@@ -2140,7 +2335,7 @@ public class LangExtensionsUnitTests {
     AssertThat wrappedAssertion = AssertThatWrapper.wrap(mockAssertion).when(ENABLE_DISABLE_CONDITION);
 
     Assertions.assertThat(wrappedAssertion).isNotSameAs(mockAssertion);
-    assertTrue(wrappedAssertion instanceof AssertThatWrapper);
+    Assertions.assertThat(wrappedAssertion).isInstanceOf(AssertThatWrapper.class);
 
     verify(mockAssertion, times(1)).when(eq(ENABLE_DISABLE_CONDITION));
   }
@@ -2155,36 +2350,28 @@ public class LangExtensionsUnitTests {
       .isNotNull();
   }
 
-  @Test(expected = AssertionException.class)
+  @Test
   public void assertThatWithCompoundActionsShortCircuitsAndThrowsAssertionException() {
 
     AssertThat<Integer> assertThat = spy(assertThat(2));
 
-    try {
+    Assertions.assertThat(assertThat).isNotNull();
+    Assertions.assertThat(ObjectUtils.invoke(assertThat, "getTarget", Integer.class)).isEqualTo(2);
 
-      Assertions.assertThat(assertThat).isNotNull();
-      Assertions.assertThat(ObjectUtils.invoke(assertThat, "getTarget", Integer.class)).isEqualTo(2);
-
-      assertThat
+    assertThatExceptionOfType(AssertionException.class)
+      .isThrownBy(() -> assertThat
         .isInstanceOf(Integer.class)
         .isGreaterThanAndLessThan(1, 3)
         .isValid(argument -> false)
-        .isLessThanOrGreaterThan(3, 1);
-    }
-    catch (AssertionException expected) {
+        .isLessThanOrGreaterThan(3, 1))
+      .withMessage("[2] is not valid")
+      .withNoCause();
 
-      Assertions.assertThat(expected).hasMessage("[2] is not valid");
-      Assertions.assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
-    finally {
-      verify(assertThat, times(1)).isInstanceOf(eq(Integer.class));
-      verify(assertThat, times(1)).isGreaterThanAndLessThan(eq(1), eq(3));
-      verify(assertThat, times(1)).isValid(any());
-      verify(assertThat, never()).isLessThanOrGreaterThan(eq(3), eq(1));
-      verifyNoMoreInteractions(assertThat);
-    }
+    verify(assertThat, times(1)).isInstanceOf(eq(Integer.class));
+    verify(assertThat, times(1)).isGreaterThanAndLessThan(eq(1), eq(3));
+    verify(assertThat, times(1)).isValid(any());
+    verify(assertThat, never()).isLessThanOrGreaterThan(eq(3), eq(1));
+    verifyNoMoreInteractions(assertThat);
   }
 
   @Test
@@ -2226,7 +2413,7 @@ public class LangExtensionsUnitTests {
   @Test
   public void fromNullConvertToNumberType() {
 
-    assertThatThrowableOfType(ConversionException.class)
+    ThrowableAssertions.assertThatThrowableOfType(ConversionException.class)
       .isThrownBy(args -> from(null).convertTo(Byte.class))
       .havingMessage("Cannot convert [null] into a Byte")
       .causedBy(NumberFormatException.class)
@@ -2258,7 +2445,7 @@ public class LangExtensionsUnitTests {
   @Test
   public void fromObjectConvertToIncompatibleType() {
 
-    assertThatThrowableOfType(ConversionException.class)
+    ThrowableAssertions.assertThatThrowableOfType(ConversionException.class)
       .isThrownBy(args -> from("test").convertTo(Integer.class))
       .havingMessage("Cannot convert [test] into an Integer")
       .causedBy(NumberFormatException.class)
@@ -2269,18 +2456,18 @@ public class LangExtensionsUnitTests {
   @Test
   public void fromObjectConvertToNullType() {
 
-    assertThatThrowableOfType(IllegalArgumentException.class)
-      .isThrownBy(args -> from("MockUser").convertTo(null))
-      .havingMessage("No SimpleTypeConversion exists for target type [null]")
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> from("MockUser").convertTo(null))
+      .withMessage("No SimpleTypeConversion exists for target type [null]")
       .withNoCause();
   }
 
   @Test
   public void fromStringConvertToUser() {
 
-    assertThatThrowableOfType(IllegalArgumentException.class)
-      .isThrownBy(args -> from("TestUser").convertTo(User.class))
-      .havingMessage("No SimpleTypeConversion exists for target type [%s]", User.class.getName())
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> from("TestUser").convertTo(User.class))
+      .withMessage("No SimpleTypeConversion exists for target type [%s]", User.class.getName())
       .withNoCause();
   }
 
@@ -2342,9 +2529,9 @@ public class LangExtensionsUnitTests {
   @Test
   public void givenNullObjectTestUsingThrowOnFailedExpectations() {
 
-    assertThatThrowableOfType(ExpectationException.class)
-      .isThrownBy(args -> assertThat(given(null).throwOnFailedExpectations().result()).isTrue())
-      .havingMessage("Target [null] has failed expectation(s)")
+    assertThatExceptionOfType(ExpectationException.class)
+      .isThrownBy(() -> assertThat(given(null).throwOnFailedExpectations().result()).isTrue())
+      .withMessage("Target [null] has failed expectation(s)")
       .withNoCause();
   }
 
@@ -2410,8 +2597,8 @@ public class LangExtensionsUnitTests {
       TestLineItem.newLineItem(TestProduct.newProduct("ProductTwo", BigDecimal.valueOf(10.0d)), 1)
     ));
 
-    assertThatThrowableOfType(ExpectationException.class)
-      .isThrownBy(args -> given(invoice)
+    assertThatExceptionOfType(ExpectationException.class)
+      .isThrownBy(() -> given(invoice)
         .expectThat(it -> BigDecimal.valueOf(100.0d).compareTo(it.getTotal()) > 0)
         .throwOnFailedExpectations()
         .thenGiven(it -> it.findBy("ProductOne"))
@@ -2421,45 +2608,45 @@ public class LangExtensionsUnitTests {
         .thenGiven(LineItem::getProduct)
         .expectThat(product -> BigDecimal.valueOf(10.0d).equals(product.getPrice()))
         .throwOnFailedExpectations())
-      .havingMessage("Target [ProductOne(20.0)|2] has failed expectation(s)")
+      .withMessage("Target [ProductOne(20.0)|2] has failed expectation(s)")
       .withNoCause();
   }
 
   @Test
   public void isAssignableTo() {
 
-    assertTrue(is(Object.class).assignableTo(Object.class));
-    assertTrue(is(Boolean.class).assignableTo(Object.class));
-    assertTrue(is(Character.class).assignableTo(Object.class));
-    assertTrue(is(Number.class).assignableTo(Object.class));
-    assertTrue(is(String.class).assignableTo(Object.class));
-    assertTrue(is(Double.class).assignableTo(Number.class));
-    assertTrue(is(Integer.class).assignableTo(Number.class));
-    assertTrue(is(java.sql.Date.class).assignableTo(java.util.Date.class));
+    Assertions.assertThat(is(Object.class).assignableTo(Object.class)).isTrue();
+    Assertions.assertThat(is(Boolean.class).assignableTo(Object.class)).isTrue();
+    Assertions.assertThat(is(Character.class).assignableTo(Object.class)).isTrue();
+    Assertions.assertThat(is(Number.class).assignableTo(Object.class)).isTrue();
+    Assertions.assertThat(is(String.class).assignableTo(Object.class)).isTrue();
+    Assertions.assertThat(is(Double.class).assignableTo(Number.class)).isTrue();
+    Assertions.assertThat(is(Integer.class).assignableTo(Number.class)).isTrue();
+    Assertions.assertThat(is(java.sql.Date.class).assignableTo(java.util.Date.class)).isTrue();
   }
 
   @Test
   public void isAssignableToIsFalse() {
 
-    assertFalse(is(Object.class).assignableTo(String.class));
-    assertFalse(is(Boolean.TYPE).assignableTo(Boolean.class));
-    assertFalse(is(Character.class).assignableTo(String.class));
-    assertFalse(is(Double.class).assignableTo(BigDecimal.class));
-    assertFalse(is(Float.class).assignableTo(Double.class));
-    assertFalse(is(Integer.class).assignableTo(BigInteger.class));
-    assertFalse(is(Integer.class).assignableTo(Long.class));
-    assertFalse(is(String.class).assignableTo(BigDecimal.class));
-    assertFalse(is(String.class).assignableTo(Character.class));
+    Assertions.assertThat(is(Object.class).assignableTo(String.class)).isFalse();
+    Assertions.assertThat(is(Boolean.TYPE).assignableTo(Boolean.class)).isFalse();
+    Assertions.assertThat(is(Character.class).assignableTo(String.class)).isFalse();
+    Assertions.assertThat(is(Double.class).assignableTo(BigDecimal.class)).isFalse();
+    Assertions.assertThat(is(Float.class).assignableTo(Double.class)).isFalse();
+    Assertions.assertThat(is(Integer.class).assignableTo(BigInteger.class)).isFalse();
+    Assertions.assertThat(is(Integer.class).assignableTo(Long.class)).isFalse();
+    Assertions.assertThat(is(String.class).assignableTo(BigDecimal.class)).isFalse();
+    Assertions.assertThat(is(String.class).assignableTo(Character.class)).isFalse();
   }
 
   @Test
   public void isNotAssignableTo() {
 
-    assertTrue(is(Boolean.TYPE).not().assignableTo(Boolean.class));
-    assertTrue(is(Character.class).not().assignableTo(String.class));
-    assertTrue(is(Double.TYPE).not().assignableTo(Double.class));
-    assertTrue(is(Integer.TYPE).not().assignableTo(Integer.class));
-    assertTrue(is(Object.class).not().assignableTo(String.class));
+    Assertions.assertThat(is(Boolean.TYPE).not().assignableTo(Boolean.class)).isTrue();
+    Assertions.assertThat(is(Character.class).not().assignableTo(String.class)).isTrue();
+    Assertions.assertThat(is(Double.TYPE).not().assignableTo(Double.class)).isTrue();
+    Assertions.assertThat(is(Integer.TYPE).not().assignableTo(Integer.class)).isTrue();
+    Assertions.assertThat(is(Object.class).not().assignableTo(String.class)).isTrue();
   }
 
   @Test
@@ -2468,9 +2655,9 @@ public class LangExtensionsUnitTests {
     Person jonDoe1 = new Person(1L, "Jon", "Doe");
     Person jonDoe2 = new Person(2L, "Jon", "Doe");
 
-    assertTrue(is(jonDoe1).comparableTo(jonDoe2));
-    assertFalse(is(jonDoe1).not().comparableTo(jonDoe2));
-    assertFalse(is(jonDoe1).equalTo(jonDoe2));
+    Assertions.assertThat(is(jonDoe1).comparableTo(jonDoe2)).isTrue();
+    Assertions.assertThat(is(jonDoe1).not().comparableTo(jonDoe2)).isFalse();
+    Assertions.assertThat(is(jonDoe1).equalTo(jonDoe2)).isFalse();
   }
 
   @Test
@@ -2479,431 +2666,425 @@ public class LangExtensionsUnitTests {
     Person johnBlum = new Person(1L, "John", "Blum");
     Person jonBloom = new Person(1L, "Jon", "Bloom");
 
-    assertFalse(is(johnBlum).comparableTo(jonBloom));
-    assertTrue(is(johnBlum).not().comparableTo(jonBloom));
-    assertTrue(is(johnBlum).notComparableTo(jonBloom));
-    assertTrue(is(johnBlum).equalTo(jonBloom));
+    Assertions.assertThat(is(johnBlum).comparableTo(jonBloom)).isFalse();
+    Assertions.assertThat(is(johnBlum).not().comparableTo(jonBloom)).isTrue();
+    Assertions.assertThat(is(johnBlum).notComparableTo(jonBloom)).isTrue();
+    Assertions.assertThat(is(johnBlum).equalTo(jonBloom)).isTrue();
   }
 
   @Test
   public void isEqualTo() {
 
-    assertTrue(is(true).equalTo(Boolean.TRUE));
-    assertTrue(is('c').equalTo('c'));
-    assertTrue(is(2).equalTo(2));
-    assertTrue(is(Math.PI).equalTo(Math.PI));
-    assertTrue(is("test").equalTo("test"));
+    Assertions.assertThat(is(true).equalTo(Boolean.TRUE)).isTrue();
+    Assertions.assertThat(is('c').equalTo('c')).isTrue();
+    Assertions.assertThat(is(2).equalTo(2)).isTrue();
+    Assertions.assertThat(is(Math.PI).equalTo(Math.PI)).isTrue();
+    Assertions.assertThat(is("test").equalTo("test")).isTrue();
   }
 
   @Test
   @SuppressWarnings("rawtypes")
   public void isEqualToWithUnequalValues() {
 
-    assertFalse(is(NULL).equalTo(NULL));
-    assertFalse(is("null").equalTo(null));
-    assertFalse(is("null").equalTo("nil"));
-    assertFalse(is(Boolean.FALSE).equalTo(Boolean.TRUE));
-    assertFalse(is((Comparable) 'c').equalTo("c"));
-    assertFalse(is(-2).equalTo(2));
-    assertFalse(is(3.14159d).equalTo(Math.PI));
-    assertFalse(is("test").equalTo("TEST"));
+    Assertions.assertThat(is(NULL).equalTo(NULL)).isFalse();
+    Assertions.assertThat(is("null").equalTo(null)).isFalse();
+    Assertions.assertThat(is("null").equalTo("nil")).isFalse();
+    Assertions.assertThat(is(Boolean.FALSE).equalTo(Boolean.TRUE)).isFalse();
+    Assertions.assertThat(is((Comparable) 'c').equalTo("c")).isFalse();
+    Assertions.assertThat(is(-2).equalTo(2)).isFalse();
+    Assertions.assertThat(is(3.14159d).equalTo(Math.PI)).isFalse();
+    Assertions.assertThat(is("test").equalTo("TEST")).isFalse();
   }
 
   @Test
   @SuppressWarnings("rawtypes")
   public void isNotEqualTo() {
 
-    assertTrue(is(NULL).not().equalTo(NULL));
-    assertTrue(is((String) null).not().equalTo("null"));
-    assertTrue(is("null").not().equalTo(null));
-    assertTrue(is("null").not().equalTo("nil"));
-    assertTrue(is(Boolean.FALSE).not().equalTo(Boolean.TRUE));
-    assertTrue(is((Comparable) 'c').not().equalTo("c"));
-    assertTrue(is(-2).not().equalTo(2));
-    assertTrue(is(3.14159d).not().equalTo(Math.PI));
-    assertTrue(is("test").not().equalTo("TEST"));
-    assertTrue(is(TestUtils.createCalendar(2011, Calendar.OCTOBER, 13))
-      .not().equalTo(Calendar.getInstance()));
+    Assertions.assertThat(is(NULL).not().equalTo(NULL)).isTrue();
+    Assertions.assertThat(is((String) null).not().equalTo("null")).isTrue();
+    Assertions.assertThat(is("null").not().equalTo(null)).isTrue();
+    Assertions.assertThat(is("null").not().equalTo("nil")).isTrue();
+    Assertions.assertThat(is(Boolean.FALSE).not().equalTo(Boolean.TRUE)).isTrue();
+    Assertions.assertThat(is((Comparable) 'c').not().equalTo("c")).isTrue();
+    Assertions.assertThat(is(-2).not().equalTo(2)).isTrue();
+    Assertions.assertThat(is(3.14159d).not().equalTo(Math.PI)).isTrue();
+    Assertions.assertThat(is("test").not().equalTo("TEST")).isTrue();
+    Assertions.assertThat(is(TestUtils.createCalendar(2011, Calendar.OCTOBER, 13))
+      .not().equalTo(Calendar.getInstance())).isTrue();
   }
 
   @Test
   @SuppressWarnings("all")
   public void isFalse() {
 
-    assertTrue(is(false).False());
-    assertTrue(is(Boolean.FALSE).False());
-    assertTrue(is(!Boolean.TRUE).False());
+    Assertions.assertThat(is(false).False()).isTrue();
+    Assertions.assertThat(is(Boolean.FALSE).False()).isTrue();
+    Assertions.assertThat(is(!Boolean.TRUE).False()).isTrue();
   }
 
   @Test
   @SuppressWarnings("all")
   public void isNotFalse() {
 
-    assertTrue(is(true).not().False());
-    assertTrue(is(Boolean.TRUE).not().False());
-    assertTrue(is(!Boolean.FALSE).not().False());
-    assertTrue(is((Boolean) null).not().False());
+    Assertions.assertThat(is(true).not().False()).isTrue();
+    Assertions.assertThat(is(Boolean.TRUE).not().False()).isTrue();
+    Assertions.assertThat(is(!Boolean.FALSE).not().False()).isTrue();
+    Assertions.assertThat(is((Boolean) null).not().False()).isTrue();
   }
 
   @Test
   public void isGreaterThan() {
 
-    assertTrue(is(3).greaterThan(1));
-    assertTrue(is(3).greaterThan(2));
-    assertFalse(is(3).greaterThan(3));
-    assertFalse(is(3).greaterThan(4));
-    assertFalse(is(3).greaterThan(5));
+    Assertions.assertThat(is(3).greaterThan(1)).isTrue();
+    Assertions.assertThat(is(3).greaterThan(2)).isTrue();
+    Assertions.assertThat(is(3).greaterThan(3)).isFalse();
+    Assertions.assertThat(is(3).greaterThan(4)).isFalse();
+    Assertions.assertThat(is(3).greaterThan(5)).isFalse();
   }
 
   @Test
   public void isNotGreaterThan() {
 
-    assertFalse(is(3).not().greaterThan(1));
-    assertFalse(is(3).not().greaterThan(2));
-    assertTrue(is(3).not().greaterThan(3));
-    assertTrue(is(3).not().greaterThan(4));
-    assertTrue(is(3).not().greaterThan(5));
+    Assertions.assertThat(is(3).not().greaterThan(1)).isFalse();
+    Assertions.assertThat(is(3).not().greaterThan(2)).isFalse();
+    Assertions.assertThat(is(3).not().greaterThan(3)).isTrue();
+    Assertions.assertThat(is(3).not().greaterThan(4)).isTrue();
+    Assertions.assertThat(is(3).not().greaterThan(5)).isTrue();
   }
 
   @Test
   public void isGreaterThanAndLessThan() {
 
-    assertFalse(is(1).greaterThanAndLessThan(2, 4));
-    assertFalse(is(2).greaterThanAndLessThan(2, 4));
-    assertTrue(is(3).greaterThanAndLessThan(2, 4));
-    assertFalse(is(4).greaterThanAndLessThan(2, 4));
-    assertFalse(is(5).greaterThanAndLessThan(2, 4));
+    Assertions.assertThat(is(1).greaterThanAndLessThan(2, 4)).isFalse();
+    Assertions.assertThat(is(2).greaterThanAndLessThan(2, 4)).isFalse();
+    Assertions.assertThat(is(3).greaterThanAndLessThan(2, 4)).isTrue();
+    Assertions.assertThat(is(4).greaterThanAndLessThan(2, 4)).isFalse();
+    Assertions.assertThat(is(5).greaterThanAndLessThan(2, 4)).isFalse();
   }
 
   @Test
   public void isNotGreaterThanAndLessThan() {
 
-    assertTrue(is(1).not().greaterThanAndLessThan(2, 4));
-    assertTrue(is(2).not().greaterThanAndLessThan(2, 4));
-    assertFalse(is(3).not().greaterThanAndLessThan(2, 4));
-    assertTrue(is(4).not().greaterThanAndLessThan(2, 4));
-    assertTrue(is(5).not().greaterThanAndLessThan(2, 4));
+    Assertions.assertThat(is(1).not().greaterThanAndLessThan(2, 4)).isTrue();
+    Assertions.assertThat(is(2).not().greaterThanAndLessThan(2, 4)).isTrue();
+    Assertions.assertThat(is(3).not().greaterThanAndLessThan(2, 4)).isFalse();
+    Assertions.assertThat(is(4).not().greaterThanAndLessThan(2, 4)).isTrue();
+    Assertions.assertThat(is(5).not().greaterThanAndLessThan(2, 4)).isTrue();
   }
 
   @Test
   public void isGreaterThanAndLessThanEqualTo() {
 
-    assertFalse(is(1).greaterThanAndLessThanEqualTo(2, 4));
-    assertFalse(is(2).greaterThanAndLessThanEqualTo(2, 4));
-    assertTrue(is(3).greaterThanAndLessThanEqualTo(2, 4));
-    assertTrue(is(4).greaterThanAndLessThanEqualTo(2, 4));
-    assertFalse(is(5).greaterThanAndLessThanEqualTo(2, 4));
+    Assertions.assertThat(is(1).greaterThanAndLessThanEqualTo(2, 4)).isFalse();
+    Assertions.assertThat(is(2).greaterThanAndLessThanEqualTo(2, 4)).isFalse();
+    Assertions.assertThat(is(3).greaterThanAndLessThanEqualTo(2, 4)).isTrue();
+    Assertions.assertThat(is(4).greaterThanAndLessThanEqualTo(2, 4)).isTrue();
+    Assertions.assertThat(is(5).greaterThanAndLessThanEqualTo(2, 4)).isFalse();
   }
 
   @Test
   public void isNotGreaterThanAndLessThanEqualTo() {
 
-    assertTrue(is(1).not().greaterThanAndLessThanEqualTo(2, 4));
-    assertTrue(is(2).not().greaterThanAndLessThanEqualTo(2, 4));
-    assertFalse(is(3).not().greaterThanAndLessThanEqualTo(2, 4));
-    assertFalse(is(4).not().greaterThanAndLessThanEqualTo(2, 4));
-    assertTrue(is(5).not().greaterThanAndLessThanEqualTo(2, 4));
+    Assertions.assertThat(is(1).not().greaterThanAndLessThanEqualTo(2, 4)).isTrue();
+    Assertions.assertThat(is(2).not().greaterThanAndLessThanEqualTo(2, 4)).isTrue();
+    Assertions.assertThat(is(3).not().greaterThanAndLessThanEqualTo(2, 4)).isFalse();
+    Assertions.assertThat(is(4).not().greaterThanAndLessThanEqualTo(2, 4)).isFalse();
+    Assertions.assertThat(is(5).not().greaterThanAndLessThanEqualTo(2, 4)).isTrue();
   }
 
   @Test
   public void isGreaterThanEqualTo() {
 
-    assertTrue(is(3).greaterThanEqualTo(1));
-    assertTrue(is(3).greaterThanEqualTo(2));
-    assertTrue(is(3).greaterThanEqualTo(3));
-    assertFalse(is(3).greaterThanEqualTo(4));
-    assertFalse(is(3).greaterThanEqualTo(5));
+    Assertions.assertThat(is(3).greaterThanEqualTo(1)).isTrue();
+    Assertions.assertThat(is(3).greaterThanEqualTo(2)).isTrue();
+    Assertions.assertThat(is(3).greaterThanEqualTo(3)).isTrue();
+    Assertions.assertThat(is(3).greaterThanEqualTo(4)).isFalse();
+    Assertions.assertThat(is(3).greaterThanEqualTo(5)).isFalse();
   }
 
   @Test
   public void isNotGreaterThanEqualTo() {
 
-    assertFalse(is(3).not().greaterThanEqualTo(1));
-    assertFalse(is(3).not().greaterThanEqualTo(2));
-    assertFalse(is(3).not().greaterThanEqualTo(3));
-    assertTrue(is(3).not().greaterThanEqualTo(4));
-    assertTrue(is(3).not().greaterThanEqualTo(5));
+    Assertions.assertThat(is(3).not().greaterThanEqualTo(1)).isFalse();
+    Assertions.assertThat(is(3).not().greaterThanEqualTo(2)).isFalse();
+    Assertions.assertThat(is(3).not().greaterThanEqualTo(3)).isFalse();
+    Assertions.assertThat(is(3).not().greaterThanEqualTo(4)).isTrue();
+    Assertions.assertThat(is(3).not().greaterThanEqualTo(5)).isTrue();
   }
 
   @Test
   public void isGreaterThanEqualToAndLessThan() {
 
-    assertFalse(is(1).greaterThanEqualToAndLessThan(2, 4));
-    assertTrue(is(2).greaterThanEqualToAndLessThan(2, 4));
-    assertTrue(is(3).greaterThanEqualToAndLessThan(2, 4));
-    assertFalse(is(4).greaterThanEqualToAndLessThan(2, 4));
-    assertFalse(is(5).greaterThanEqualToAndLessThan(2, 4));
+    Assertions.assertThat(is(1).greaterThanEqualToAndLessThan(2, 4)).isFalse();
+    Assertions.assertThat(is(2).greaterThanEqualToAndLessThan(2, 4)).isTrue();
+    Assertions.assertThat(is(3).greaterThanEqualToAndLessThan(2, 4)).isTrue();
+    Assertions.assertThat(is(4).greaterThanEqualToAndLessThan(2, 4)).isFalse();
+    Assertions.assertThat(is(5).greaterThanEqualToAndLessThan(2, 4)).isFalse();
   }
 
   @Test
   public void isNotGreaterThanEqualToAndLessThan() {
 
-    assertTrue(is(1).not().greaterThanEqualToAndLessThan(2, 4));
-    assertFalse(is(2).not().greaterThanEqualToAndLessThan(2, 4));
-    assertFalse(is(3).not().greaterThanEqualToAndLessThan(2, 4));
-    assertTrue(is(4).not().greaterThanEqualToAndLessThan(2, 4));
-    assertTrue(is(5).not().greaterThanEqualToAndLessThan(2, 4));
+    Assertions.assertThat(is(1).not().greaterThanEqualToAndLessThan(2, 4)).isTrue();
+    Assertions.assertThat(is(2).not().greaterThanEqualToAndLessThan(2, 4)).isFalse();
+    Assertions.assertThat(is(3).not().greaterThanEqualToAndLessThan(2, 4)).isFalse();
+    Assertions.assertThat(is(4).not().greaterThanEqualToAndLessThan(2, 4)).isTrue();
+    Assertions.assertThat(is(5).not().greaterThanEqualToAndLessThan(2, 4)).isTrue();
   }
 
   @Test
   public void isGreaterThanEqualToAndLessThanEqualTo() {
 
-    assertFalse(is(1).greaterThanEqualToAndLessThanEqualTo(2, 4));
-    assertTrue(is(2).greaterThanEqualToAndLessThanEqualTo(2, 4));
-    assertTrue(is(3).greaterThanEqualToAndLessThanEqualTo(2, 4));
-    assertTrue(is(4).greaterThanEqualToAndLessThanEqualTo(2, 4));
-    assertFalse(is(5).greaterThanEqualToAndLessThanEqualTo(2, 4));
+    Assertions.assertThat(is(1).greaterThanEqualToAndLessThanEqualTo(2, 4)).isFalse();
+    Assertions.assertThat(is(2).greaterThanEqualToAndLessThanEqualTo(2, 4)).isTrue();
+    Assertions.assertThat(is(3).greaterThanEqualToAndLessThanEqualTo(2, 4)).isTrue();
+    Assertions.assertThat(is(4).greaterThanEqualToAndLessThanEqualTo(2, 4)).isTrue();
+    Assertions.assertThat(is(5).greaterThanEqualToAndLessThanEqualTo(2, 4)).isFalse();
   }
 
   @Test
   public void isNotGreaterThanEqualToAndLessThanEqualTo() {
 
-    assertTrue(is(1).not().greaterThanEqualToAndLessThanEqualTo(2, 4));
-    assertFalse(is(2).not().greaterThanEqualToAndLessThanEqualTo(2, 4));
-    assertFalse(is(3).not().greaterThanEqualToAndLessThanEqualTo(2, 4));
-    assertFalse(is(4).not().greaterThanEqualToAndLessThanEqualTo(2, 4));
-    assertTrue(is(5).not().greaterThanEqualToAndLessThanEqualTo(2, 4));
+    Assertions.assertThat(is(1).not().greaterThanEqualToAndLessThanEqualTo(2, 4)).isTrue();
+    Assertions.assertThat(is(2).not().greaterThanEqualToAndLessThanEqualTo(2, 4)).isFalse();
+    Assertions.assertThat(is(3).not().greaterThanEqualToAndLessThanEqualTo(2, 4)).isFalse();
+    Assertions.assertThat(is(4).not().greaterThanEqualToAndLessThanEqualTo(2, 4)).isFalse();
+    Assertions.assertThat(is(5).not().greaterThanEqualToAndLessThanEqualTo(2, 4)).isTrue();
   }
 
   @Test
   public void isInstanceOf() {
 
-    assertTrue(is(false).instanceOf(Boolean.class));
-    assertTrue(is(Boolean.TRUE).instanceOf(Boolean.class));
-    assertTrue(is(Calendar.getInstance()).instanceOf(Calendar.class));
-    assertTrue(is('c').instanceOf(Character.class));
-    assertTrue(is('0').instanceOf(Character.class));
-    assertTrue(is(2).instanceOf(Number.class));
-    assertTrue(is(0).instanceOf(Integer.class));
-    assertTrue(is(Math.PI).instanceOf(Number.class));
-    assertTrue(is(0.0d).instanceOf(Double.class));
-    assertTrue(is("null").instanceOf(String.class));
-    assertTrue(is("test").instanceOf(Object.class));
+    Assertions.assertThat(is(false).instanceOf(Boolean.class)).isTrue();
+    Assertions.assertThat(is(Boolean.TRUE).instanceOf(Boolean.class)).isTrue();
+    Assertions.assertThat(is(Calendar.getInstance()).instanceOf(Calendar.class)).isTrue();
+    Assertions.assertThat(is('c').instanceOf(Character.class)).isTrue();
+    Assertions.assertThat(is('0').instanceOf(Character.class)).isTrue();
+    Assertions.assertThat(is(2).instanceOf(Number.class)).isTrue();
+    Assertions.assertThat(is(0).instanceOf(Integer.class)).isTrue();
+    Assertions.assertThat(is(Math.PI).instanceOf(Number.class)).isTrue();
+    Assertions.assertThat(is(0.0d).instanceOf(Double.class)).isTrue();
+    Assertions.assertThat(is("null").instanceOf(String.class)).isTrue();
+    Assertions.assertThat(is("test").instanceOf(Object.class)).isTrue();
   }
 
   @Test
   public void isNotInstanceOf() {
 
-    assertTrue(is("false").not().instanceOf(Boolean.class));
-    assertTrue(is(Calendar.getInstance()).not().instanceOf(Date.class));
-    assertTrue(is("c").not().instanceOf(Character.class));
-    assertTrue(is(Math.PI).not().instanceOf(Integer.class));
-    assertTrue(is(2).not().instanceOf(Double.class));
-    assertTrue(is('c').not().instanceOf(String.class));
-    assertTrue(is(NULL).not().instanceOf(Object.class));
-    assertTrue(is("test").not().instanceOf(null));
+    Assertions.assertThat(is("false").not().instanceOf(Boolean.class)).isTrue();
+    Assertions.assertThat(is(Calendar.getInstance()).not().instanceOf(Date.class)).isTrue();
+    Assertions.assertThat(is("c").not().instanceOf(Character.class)).isTrue();
+    Assertions.assertThat(is(Math.PI).not().instanceOf(Integer.class)).isTrue();
+    Assertions.assertThat(is(2).not().instanceOf(Double.class)).isTrue();
+    Assertions.assertThat(is('c').not().instanceOf(String.class)).isTrue();
+    Assertions.assertThat(is(NULL).not().instanceOf(Object.class)).isTrue();
+    Assertions.assertThat(is("test").not().instanceOf(null)).isTrue();
   }
 
   @Test
   public void isLessThan() {
 
-    assertFalse(is(3).lessThan(1));
-    assertFalse(is(3).lessThan(2));
-    assertFalse(is(3).lessThan(3));
-    assertTrue(is(3).lessThan(4));
-    assertTrue(is(3).lessThan(5));
+    Assertions.assertThat(is(3).lessThan(1)).isFalse();
+    Assertions.assertThat(is(3).lessThan(2)).isFalse();
+    Assertions.assertThat(is(3).lessThan(3)).isFalse();
+    Assertions.assertThat(is(3).lessThan(4)).isTrue();
+    Assertions.assertThat(is(3).lessThan(5)).isTrue();
   }
 
   @Test
   public void isNotLessThan() {
 
-    assertTrue(is(3).not().lessThan(1));
-    assertTrue(is(3).not().lessThan(2));
-    assertTrue(is(3).not().lessThan(3));
-    assertFalse(is(3).not().lessThan(4));
-    assertFalse(is(3).not().lessThan(5));
+    Assertions.assertThat(is(3).not().lessThan(1)).isTrue();
+    Assertions.assertThat(is(3).not().lessThan(2)).isTrue();
+    Assertions.assertThat(is(3).not().lessThan(3)).isTrue();
+    Assertions.assertThat(is(3).not().lessThan(4)).isFalse();
+    Assertions.assertThat(is(3).not().lessThan(5)).isFalse();
   }
 
   @Test
   public void isLessThanOrGreaterThan() {
 
-    assertTrue(is(1).lessThanOrGreaterThan(2, 4));
-    assertFalse(is(2).lessThanOrGreaterThan(2, 4));
-    assertFalse(is(3).lessThanOrGreaterThan(2, 4));
-    assertFalse(is(4).lessThanOrGreaterThan(2, 4));
-    assertTrue(is(5).lessThanOrGreaterThan(2, 4));
+    Assertions.assertThat(is(1).lessThanOrGreaterThan(2, 4)).isTrue();
+    Assertions.assertThat(is(2).lessThanOrGreaterThan(2, 4)).isFalse();
+    Assertions.assertThat(is(3).lessThanOrGreaterThan(2, 4)).isFalse();
+    Assertions.assertThat(is(4).lessThanOrGreaterThan(2, 4)).isFalse();
+    Assertions.assertThat(is(5).lessThanOrGreaterThan(2, 4)).isTrue();
   }
 
   @Test
   public void isNotLessThanOrGreaterThan() {
 
-    assertFalse(is(1).not().lessThanOrGreaterThan(2, 4));
-    assertTrue(is(2).not().lessThanOrGreaterThan(2, 4));
-    assertTrue(is(3).not().lessThanOrGreaterThan(2, 4));
-    assertTrue(is(4).not().lessThanOrGreaterThan(2, 4));
-    assertFalse(is(5).not().lessThanOrGreaterThan(2, 4));
+    Assertions.assertThat(is(1).not().lessThanOrGreaterThan(2, 4)).isFalse();
+    Assertions.assertThat(is(2).not().lessThanOrGreaterThan(2, 4)).isTrue();
+    Assertions.assertThat(is(3).not().lessThanOrGreaterThan(2, 4)).isTrue();
+    Assertions.assertThat(is(4).not().lessThanOrGreaterThan(2, 4)).isTrue();
+    Assertions.assertThat(is(5).not().lessThanOrGreaterThan(2, 4)).isFalse();
   }
 
   @Test
   public void isLessThanOrGreaterThanEqualTo() {
 
-    assertTrue(is(1).lessThanOrGreaterThanEqualTo(2, 4));
-    assertFalse(is(2).lessThanOrGreaterThanEqualTo(2, 4));
-    assertFalse(is(3).lessThanOrGreaterThanEqualTo(2, 4));
-    assertTrue(is(4).lessThanOrGreaterThanEqualTo(2, 4));
-    assertTrue(is(5).lessThanOrGreaterThanEqualTo(2, 4));
+    Assertions.assertThat(is(1).lessThanOrGreaterThanEqualTo(2, 4)).isTrue();
+    Assertions.assertThat(is(2).lessThanOrGreaterThanEqualTo(2, 4)).isFalse();
+    Assertions.assertThat(is(3).lessThanOrGreaterThanEqualTo(2, 4)).isFalse();
+    Assertions.assertThat(is(4).lessThanOrGreaterThanEqualTo(2, 4)).isTrue();
+    Assertions.assertThat(is(5).lessThanOrGreaterThanEqualTo(2, 4)).isTrue();
   }
 
   @Test
   public void isNotLessThanOrGreaterThanEqualTo() {
 
-    assertFalse(is(1).not().lessThanOrGreaterThanEqualTo(2, 4));
-    assertTrue(is(2).not().lessThanOrGreaterThanEqualTo(2, 4));
-    assertTrue(is(3).not().lessThanOrGreaterThanEqualTo(2, 4));
-    assertFalse(is(4).not().lessThanOrGreaterThanEqualTo(2, 4));
-    assertFalse(is(5).not().lessThanOrGreaterThanEqualTo(2, 4));
+    Assertions.assertThat(is(1).not().lessThanOrGreaterThanEqualTo(2, 4)).isFalse();
+    Assertions.assertThat(is(2).not().lessThanOrGreaterThanEqualTo(2, 4)).isTrue();
+    Assertions.assertThat(is(3).not().lessThanOrGreaterThanEqualTo(2, 4)).isTrue();
+    Assertions.assertThat(is(4).not().lessThanOrGreaterThanEqualTo(2, 4)).isFalse();
+    Assertions.assertThat(is(5).not().lessThanOrGreaterThanEqualTo(2, 4)).isFalse();
   }
 
   @Test
   public void isLessThanEqualTo() {
 
-    assertFalse(is(3).lessThanEqualTo(1));
-    assertFalse(is(3).lessThanEqualTo(2));
-    assertTrue(is(3).lessThanEqualTo(3));
-    assertTrue(is(3).lessThanEqualTo(4));
-    assertTrue(is(3).lessThanEqualTo(5));
+    Assertions.assertThat(is(3).lessThanEqualTo(1)).isFalse();
+    Assertions.assertThat(is(3).lessThanEqualTo(2)).isFalse();
+    Assertions.assertThat(is(3).lessThanEqualTo(3)).isTrue();
+    Assertions.assertThat(is(3).lessThanEqualTo(4)).isTrue();
+    Assertions.assertThat(is(3).lessThanEqualTo(5)).isTrue();
   }
 
   @Test
   public void isNotLessThanEqualTo() {
 
-    assertTrue(is(3).not().lessThanEqualTo(1));
-    assertTrue(is(3).not().lessThanEqualTo(2));
-    assertFalse(is(3).not().lessThanEqualTo(3));
-    assertFalse(is(3).not().lessThanEqualTo(4));
-    assertFalse(is(3).not().lessThanEqualTo(5));
+    Assertions.assertThat(is(3).not().lessThanEqualTo(1)).isTrue();
+    Assertions.assertThat(is(3).not().lessThanEqualTo(2)).isTrue();
+    Assertions.assertThat(is(3).not().lessThanEqualTo(3)).isFalse();
+    Assertions.assertThat(is(3).not().lessThanEqualTo(4)).isFalse();
+    Assertions.assertThat(is(3).not().lessThanEqualTo(5)).isFalse();
   }
 
   @Test
   public void isLessThanEqualToOrGreaterThan() {
 
-    assertTrue(is(1).lessThanEqualToOrGreaterThan(2, 4));
-    assertTrue(is(2).lessThanEqualToOrGreaterThan(2, 4));
-    assertFalse(is(3).lessThanEqualToOrGreaterThan(2, 4));
-    assertFalse(is(4).lessThanEqualToOrGreaterThan(2, 4));
-    assertTrue(is(5).lessThanEqualToOrGreaterThan(2, 4));
+    Assertions.assertThat(is(1).lessThanEqualToOrGreaterThan(2, 4)).isTrue();
+    Assertions.assertThat(is(2).lessThanEqualToOrGreaterThan(2, 4)).isTrue();
+    Assertions.assertThat(is(3).lessThanEqualToOrGreaterThan(2, 4)).isFalse();
+    Assertions.assertThat(is(4).lessThanEqualToOrGreaterThan(2, 4)).isFalse();
+    Assertions.assertThat(is(5).lessThanEqualToOrGreaterThan(2, 4)).isTrue();
   }
 
   @Test
   public void isNotLessThanEqualToOrGreaterThan() {
 
-    assertFalse(is(1).not().lessThanEqualToOrGreaterThan(2, 4));
-    assertFalse(is(2).not().lessThanEqualToOrGreaterThan(2, 4));
-    assertTrue(is(3).not().lessThanEqualToOrGreaterThan(2, 4));
-    assertTrue(is(4).not().lessThanEqualToOrGreaterThan(2, 4));
-    assertFalse(is(5).not().lessThanEqualToOrGreaterThan(2, 4));
+    Assertions.assertThat(is(1).not().lessThanEqualToOrGreaterThan(2, 4)).isFalse();
+    Assertions.assertThat(is(2).not().lessThanEqualToOrGreaterThan(2, 4)).isFalse();
+    Assertions.assertThat(is(3).not().lessThanEqualToOrGreaterThan(2, 4)).isTrue();
+    Assertions.assertThat(is(4).not().lessThanEqualToOrGreaterThan(2, 4)).isTrue();
+    Assertions.assertThat(is(5).not().lessThanEqualToOrGreaterThan(2, 4)).isFalse();
   }
 
   @Test
   public void isLessThanEqualToOrGreaterThanEqualTo() {
 
-    assertTrue(is(1).lessThanEqualToOrGreaterThanEqualTo(2, 4));
-    assertTrue(is(2).lessThanEqualToOrGreaterThanEqualTo(2, 4));
-    assertFalse(is(3).lessThanEqualToOrGreaterThanEqualTo(2, 4));
-    assertTrue(is(4).lessThanEqualToOrGreaterThanEqualTo(2, 4));
-    assertTrue(is(5).lessThanEqualToOrGreaterThanEqualTo(2, 4));
+    Assertions.assertThat(is(1).lessThanEqualToOrGreaterThanEqualTo(2, 4)).isTrue();
+    Assertions.assertThat(is(2).lessThanEqualToOrGreaterThanEqualTo(2, 4)).isTrue();
+    Assertions.assertThat(is(3).lessThanEqualToOrGreaterThanEqualTo(2, 4)).isFalse();
+    Assertions.assertThat(is(4).lessThanEqualToOrGreaterThanEqualTo(2, 4)).isTrue();
+    Assertions.assertThat(is(5).lessThanEqualToOrGreaterThanEqualTo(2, 4)).isTrue();
   }
 
   @Test
   public void isNotLessThanEqualToOrGreaterThanEqualTo() {
 
-    assertFalse(is(1).not().lessThanEqualToOrGreaterThanEqualTo(2, 4));
-    assertFalse(is(2).not().lessThanEqualToOrGreaterThanEqualTo(2, 4));
-    assertTrue(is(3).not().lessThanEqualToOrGreaterThanEqualTo(2, 4));
-    assertFalse(is(4).not().lessThanEqualToOrGreaterThanEqualTo(2, 4));
-    assertFalse(is(5).not().lessThanEqualToOrGreaterThanEqualTo(2, 4));
+    Assertions.assertThat(is(1).not().lessThanEqualToOrGreaterThanEqualTo(2, 4)).isFalse();
+    Assertions.assertThat(is(2).not().lessThanEqualToOrGreaterThanEqualTo(2, 4)).isFalse();
+    Assertions.assertThat(is(3).not().lessThanEqualToOrGreaterThanEqualTo(2, 4)).isTrue();
+    Assertions.assertThat(is(4).not().lessThanEqualToOrGreaterThanEqualTo(2, 4)).isFalse();
+    Assertions.assertThat(is(5).not().lessThanEqualToOrGreaterThanEqualTo(2, 4)).isFalse();
   }
 
   @Test
   public void isNotNull() {
 
-    assertTrue(is(Boolean.FALSE).notNull());
-    assertTrue(is(Calendar.getInstance()).notNull());
-    assertTrue(is('\0').notNull());
-    assertTrue(is(Integer.MIN_VALUE).notNull());
-    assertTrue(is(Double.MAX_VALUE).notNull());
-    assertTrue(is("null").notNull());
+    Assertions.assertThat(is(Boolean.FALSE).notNull()).isTrue();
+    Assertions.assertThat(is(Calendar.getInstance()).notNull()).isTrue();
+    Assertions.assertThat(is('\0').notNull()).isTrue();
+    Assertions.assertThat(is(Integer.MIN_VALUE).notNull()).isTrue();
+    Assertions.assertThat(is(Double.MAX_VALUE).notNull()).isTrue();
+    Assertions.assertThat(is("null").notNull()).isTrue();
   }
 
   @Test
   public void isNull() {
-    assertTrue(is(NULL).Null());
+    Assertions.assertThat(is(NULL).Null()).isTrue();
   }
 
   @Test
   public void isSameAs() {
 
-    assertTrue(is(NULL).sameAs(NULL));
-    assertTrue(is(Boolean.TRUE).sameAs(Boolean.TRUE));
-    assertTrue(is("test").sameAs("test"));
+    Assertions.assertThat((is(NULL).sameAs(NULL))).isTrue();
+    Assertions.assertThat(is(Boolean.TRUE).sameAs(Boolean.TRUE)).isTrue();
+    Assertions.assertThat(is("test").sameAs("test")).isTrue();
   }
 
   @Test
   @SuppressWarnings("all")
   public void isNotSameAs() {
 
-    assertTrue(is(NULL).notSameAs("null"));
-    assertTrue(is(Boolean.TRUE).notSameAs(Boolean.FALSE));
-    assertTrue(is("test").notSameAs(new String("test")));
+    Assertions.assertThat(is(NULL).notSameAs("null")).isTrue();
+    Assertions.assertThat(is(Boolean.TRUE).notSameAs(Boolean.FALSE)).isTrue();
+    Assertions.assertThat(is("test").notSameAs(new String("test"))).isTrue();
   }
 
   @Test
   @SuppressWarnings("all")
   public void isTrue() {
 
-    assertTrue(is(true).True());
-    assertTrue(is(Boolean.TRUE).True());
-    assertTrue(is(!Boolean.FALSE).True());
+    Assertions.assertThat(is(true).True()).isTrue();
+    Assertions.assertThat(is(Boolean.TRUE).True()).isTrue();
+    Assertions.assertThat(is(!Boolean.FALSE).True()).isTrue();
   }
 
   @Test
   @SuppressWarnings("all")
   public void isNotTrue() {
 
-    assertTrue(is(false).not().True());
-    assertTrue(is(Boolean.FALSE).not().True());
-    assertTrue(is(!Boolean.TRUE).not().True());
-    assertTrue(is((Boolean) null).not().True());
+    Assertions.assertThat(is(false).not().True()).isTrue();
+    Assertions.assertThat(is(Boolean.FALSE).not().True()).isTrue();
+    Assertions.assertThat(is(!Boolean.TRUE).not().True()).isTrue();
+    Assertions.assertThat(is((Boolean) null).not().True()).isTrue();
   }
 
   @Test
   public void isValid() {
-    assertTrue(is("test").valid(argument -> true));
+    Assertions.assertThat(is("test").valid(argument -> true)).isTrue();
   }
 
   @Test
   public void isInvalid() {
-    assertFalse(is("test").valid(argument -> false));
+    Assertions.assertThat(is("test").valid(argument -> false)).isFalse();
   }
 
   @Test
   public void isNotValid() {
-    assertTrue(is("test").not().valid(argument -> false));
+    Assertions.assertThat(is("test").not().valid(argument -> false)).isTrue();
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void isValidWithNullPredicateThrowsIllegalArgumentException() {
 
-    try {
-      is("test").valid(null);
-    }
-    catch (IllegalArgumentException expected) {
-
-      Assertions.assertThat(expected).hasMessage("Predicate is required");
-      Assertions.assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> is("test").valid(null))
+      .withMessage("Predicate is required")
+      .withNoCause();
   }
 
   @Test
   public void isNotEmptyWithNull() {
-    assertFalse(is(null).notEmpty());
+    assertThat(is(null).notEmpty()).isFalse();
   }
 
   @Test
   public void isNotNotEmptyWithNull() {
-    assertTrue(is(null).not().notEmpty());
+    Assertions.assertThat(is(null).not().notEmpty()).isTrue();
   }
 
   @Test
@@ -2911,19 +3092,19 @@ public class LangExtensionsUnitTests {
 
     Object[] array = { "one", "two" };
 
-    assertTrue(is(array).notEmpty());
-    assertTrue(is(new Object[] { "test" }).notEmpty());
-    assertTrue(is(new Object[1]).notEmpty());
+    Assertions.assertThat(is(array).notEmpty()).isTrue();
+    Assertions.assertThat(is(new Object[] { "test" }).notEmpty()).isTrue();
+    Assertions.assertThat(is(new Object[1]).notEmpty()).isTrue();
   }
 
   @Test
   public void isNotEmptyArrayWithEmptyArray() {
-    assertFalse(is(new Object[0]).notEmpty());
+    Assertions.assertThat(is(new Object[0]).notEmpty()).isFalse();
   }
 
   @Test
   public void isNotNotEmptyArrayWithEmptyArray() {
-    assertTrue(is(new Object[0]).not().notEmpty());
+    Assertions.assertThat(is(new Object[0]).not().notEmpty()).isTrue();
   }
 
   @Test
@@ -2931,23 +3112,23 @@ public class LangExtensionsUnitTests {
 
     List<?> list = Arrays.asList("one", "two");
 
-    assertTrue(is(list).notEmpty());
-    assertTrue(is(Collections.singleton("test")).notEmpty());
-    assertTrue(is(Collections.singletonList("mock")).notEmpty());
+    Assertions.assertThat(is(list).notEmpty()).isTrue();
+    Assertions.assertThat(is(Collections.singleton("test")).notEmpty()).isTrue();
+    Assertions.assertThat(is(Collections.singletonList("mock")).notEmpty()).isTrue();
   }
 
   @Test
   public void isNotEmptyCollectionWithEmptyCollection() {
 
-    assertFalse(is(Collections.emptyList()).notEmpty());
-    assertFalse(is(Collections.emptySet()).notEmpty());
+    Assertions.assertThat(is(Collections.emptyList()).notEmpty()).isFalse();
+    Assertions.assertThat(is(Collections.emptySet()).notEmpty()).isFalse();
   }
 
   @Test
   public void isNotNotEmptyCollectionWithEmptyCollection() {
 
-    assertTrue(is(Collections.emptyList()).not().notEmpty());
-    assertTrue(is(Collections.emptySet()).not().notEmpty());
+    Assertions.assertThat(is(Collections.emptyList()).not().notEmpty()).isTrue();
+    Assertions.assertThat(is(Collections.emptySet()).not().notEmpty()).isTrue();
   }
 
   @Test
@@ -2959,7 +3140,7 @@ public class LangExtensionsUnitTests {
     doReturn(mockIterator).when(mockIterable).iterator();
     doReturn(true).when(mockIterator).hasNext();
 
-    assertTrue(is(mockIterable).notEmpty());
+    Assertions.assertThat(is(mockIterable).notEmpty()).isTrue();
 
     verify(mockIterable, times(1)).iterator();
     verify(mockIterator, times(1)).hasNext();
@@ -2975,7 +3156,7 @@ public class LangExtensionsUnitTests {
     doReturn(mockIterator).when(mockIterable).iterator();
     doReturn(false).when(mockIterator).hasNext();
 
-    assertFalse(is(mockIterable).notEmpty());
+    Assertions.assertThat(is(mockIterable).notEmpty()).isFalse();
 
     verify(mockIterable, times(1)).iterator();
     verify(mockIterator, times(1)).hasNext();
@@ -2989,7 +3170,7 @@ public class LangExtensionsUnitTests {
 
     doReturn(null).when(mockIterable).iterator();
 
-    assertFalse(is(mockIterable).notEmpty());
+    Assertions.assertThat(is(mockIterable).notEmpty()).isFalse();
 
     verify(mockIterable, times(1)).iterator();
     verifyNoMoreInteractions(mockIterable);
@@ -3004,7 +3185,7 @@ public class LangExtensionsUnitTests {
     doReturn(mockIterator).when(mockIterable).iterator();
     doReturn(false).when(mockIterator).hasNext();
 
-    assertTrue(is(mockIterable).not().notEmpty());
+    Assertions.assertThat(is(mockIterable).not().notEmpty()).isTrue();
 
     verify(mockIterable, times(1)).iterator();
     verify(mockIterator, times(1)).hasNext();
@@ -3013,43 +3194,43 @@ public class LangExtensionsUnitTests {
 
   @Test
   public void isNotEmptyMapWithNonEmptyMap() {
-    assertTrue(is(Collections.singletonMap(1, "one")).notEmpty());
+    Assertions.assertThat(is(Collections.singletonMap(1, "one")).notEmpty()).isTrue();
   }
 
   @Test
   public void isNotEmptyMapWithEmptyMap() {
-    assertFalse(is(Collections.emptyMap()).notEmpty());
+    Assertions.assertThat(is(Collections.emptyMap()).notEmpty()).isFalse();
   }
 
   @Test
   public void isNotNotEmptyMapWithEmptyMap() {
-    assertTrue(is(Collections.emptyMap()).not().notEmpty());
+    Assertions.assertThat(is(Collections.emptyMap()).not().notEmpty()).isTrue();
   }
 
   @Test
   public void isNotEmptyStringWithNonEmptyStrings() {
 
-    assertTrue(is("test").notEmpty());
-    assertTrue(is("empty").notEmpty());
-    assertTrue(is("blank").notEmpty());
-    assertTrue(is("null").notEmpty());
-    assertTrue(is("nil").notEmpty());
-    assertTrue(is("_").notEmpty());
-    assertTrue(is(" ").notEmpty());
-    assertTrue(is("  ").notEmpty());
-    assertTrue(is("\0").notEmpty());
-    assertTrue(is("\t").notEmpty());
-    assertTrue(is("\n").notEmpty());
+    Assertions.assertThat(is("test").notEmpty()).isTrue();
+    Assertions.assertThat(is("empty").notEmpty()).isTrue();
+    Assertions.assertThat(is("blank").notEmpty()).isTrue();
+    Assertions.assertThat(is("null").notEmpty()).isTrue();
+    Assertions.assertThat(is("nil").notEmpty()).isTrue();
+    Assertions.assertThat(is("_").notEmpty()).isTrue();
+    Assertions.assertThat(is(" ").notEmpty()).isTrue();
+    Assertions.assertThat(is("  ").notEmpty()).isTrue();
+    Assertions.assertThat(is("\0").notEmpty()).isTrue();
+    Assertions.assertThat(is("\t").notEmpty()).isTrue();
+    Assertions.assertThat(is("\n").notEmpty()).isTrue();
   }
 
   @Test
   public void isNotEmptyWithEmptyStrings() {
-    assertFalse(is("").notEmpty());
+    Assertions.assertThat(is("").notEmpty()).isFalse();
   }
 
   @Test
   public void isNotNotEmptyStringWithEmptyString() {
-    assertTrue(is("").not().notEmpty());
+    Assertions.assertThat(is("").not().notEmpty()).isTrue();
   }
 
   @Test
@@ -3058,20 +3239,20 @@ public class LangExtensionsUnitTests {
     Is<String> isOperator = is("test");
 
     Assertions.assertThat(isOperator).isNotNull();
-    assertTrue(isOperator.equalTo("test"));
-    assertFalse(isOperator.equalTo("testing"));
-    assertTrue(isOperator.not().equalTo("testing"));
-    assertTrue(isOperator.equalTo("test"));
-    assertFalse(isOperator.equalTo("TEST"));
-    assertTrue(isOperator.not().equalTo("TEST"));
-    assertTrue(isOperator.equalTo("test"));
+    Assertions.assertThat(isOperator.equalTo("test")).isTrue();
+    Assertions.assertThat(isOperator.equalTo("testing")).isFalse();
+    Assertions.assertThat(isOperator.not().equalTo("testing")).isTrue();
+    Assertions.assertThat(isOperator.equalTo("test")).isTrue();
+    Assertions.assertThat(isOperator.equalTo("TEST")).isFalse();
+    Assertions.assertThat(isOperator.not().equalTo("TEST")).isTrue();
+    Assertions.assertThat(isOperator.equalTo("test")).isTrue();
   }
 
   @Test
   public void isDoubleNegative() {
 
-    assertTrue(is(true).not().not().True());
-    assertTrue(is(false).not().not().False());
+    Assertions.assertThat(is(true).not().not().True()).isTrue();
+    Assertions.assertThat(is(false).not().not().False()).isTrue();
   }
 
   @Test
@@ -3139,11 +3320,9 @@ public class LangExtensionsUnitTests {
         return true;
       }
 
-      if (!(obj instanceof Person)) {
+      if (!(obj instanceof Person that)) {
         return false;
       }
-
-      Person that = (Person) obj;
 
       return ObjectUtils.equalsIgnoreNull(this.getId(), that.getId());
     }

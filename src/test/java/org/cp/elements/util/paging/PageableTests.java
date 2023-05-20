@@ -13,10 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.util.paging;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.cp.elements.util.ArrayUtils.asIterator;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.eq;
@@ -30,8 +31,10 @@ import java.util.Collections;
 
 import org.junit.jupiter.api.Test;
 
+import org.cp.elements.lang.ThrowableAssertions;
+
 /**
- * Unit tests for {@link Pageable}.
+ * Unit Tests for {@link Pageable}.
  *
  * @author John Blum
  * @see org.junit.jupiter.api.Test
@@ -147,7 +150,7 @@ public class PageableTests {
     verify(mockPageable, times(2)).iterator();
   }
 
-  @Test(expected = PageNotFoundException.class)
+  @Test
   @SuppressWarnings("unchecked")
   public void firstPageWithNoPagesThrowsException() {
 
@@ -157,22 +160,15 @@ public class PageableTests {
     when(mockPageable.getPage(anyInt())).thenCallRealMethod();
     when(mockPageable.firstPage()).thenCallRealMethod();
 
-    try {
-      mockPageable.firstPage();
-    }
-    catch (PageNotFoundException expected) {
+    ThrowableAssertions.assertThatThrowableOfType(PageNotFoundException.class)
+      .isThrownBy(args -> mockPageable.firstPage())
+      .havingMessage("No first page")
+      .causedBy(PageNotFoundException.class)
+      .havingMessage("Page with number [1] not found")
+      .withNoCause();
 
-      assertThat(expected).hasMessage("No first page");
-      assertThat(expected).hasCauseInstanceOf(PageNotFoundException.class);
-      assertThat(expected.getCause()).hasMessage("Page with number [1] not found");
-      assertThat(expected.getCause()).hasNoCause();
-
-      throw expected;
-    }
-    finally {
-      verify(mockPageable, times(1)).getPage(eq(1));
-      verify(mockPageable, times(1)).iterator();
-    }
+    verify(mockPageable, times(1)).getPage(eq(1));
+    verify(mockPageable, times(1)).iterator();
   }
 
   @Test
@@ -214,7 +210,7 @@ public class PageableTests {
     verify(mockPageable, times(3)).iterator();
   }
 
-  @Test(expected = PageNotFoundException.class)
+  @Test
   @SuppressWarnings("unchecked")
   public void getPageWhenPageDoesNotExistThrowsException() {
 
@@ -223,22 +219,15 @@ public class PageableTests {
     when(mockPageable.iterator()).thenReturn(Collections.emptyIterator());
     when(mockPageable.getPage(anyInt())).thenCallRealMethod();
 
-    try {
-      mockPageable.getPage(1);
-    }
-    catch (PageNotFoundException expected) {
+    assertThatExceptionOfType(PageNotFoundException.class)
+      .isThrownBy(() -> mockPageable.getPage(1))
+      .withMessage("Page with number [1] not found")
+      .withNoCause();
 
-      assertThat(expected).hasMessage("Page with number [1] not found");
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
-    finally {
-      verify(mockPageable, times(1)).iterator();
-    }
+    verify(mockPageable, times(1)).iterator();
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   @SuppressWarnings("unchecked")
   public void getPageWithInvalidPageNumberThrowsException() {
 
@@ -246,19 +235,12 @@ public class PageableTests {
 
     when(mockPageable.getPage(anyInt())).thenCallRealMethod();
 
-    try {
-      mockPageable.getPage(-1);
-    }
-    catch (IllegalArgumentException expected) {
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> mockPageable.getPage(-1))
+      .withMessage("Page number [-1] must be greater than 0")
+      .withNoCause();
 
-      assertThat(expected).hasMessage("Page number [-1] must be greater than 0");
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
-    finally {
-      verify(mockPageable, never()).iterator();
-    }
+    verify(mockPageable, never()).iterator();
   }
 
   @Test
@@ -285,7 +267,7 @@ public class PageableTests {
     verify(mockPageable, times(4)).iterator();
   }
 
-  @Test(expected = PageNotFoundException.class)
+  @Test
   @SuppressWarnings("unchecked")
   public void lastPageWithNoPagesThrowsException() {
 
@@ -297,23 +279,16 @@ public class PageableTests {
     when(mockPageable.lastPage()).thenCallRealMethod();
     when(mockPageable.spliterator()).thenCallRealMethod();
 
-    try {
-      mockPageable.lastPage();
-    }
-    catch (PageNotFoundException expected) {
+    ThrowableAssertions.assertThatThrowableOfType(PageNotFoundException.class)
+      .isThrownBy(args -> mockPageable.lastPage())
+      .havingMessage("No last page")
+      .causedBy(IllegalArgumentException.class)
+      .havingMessage("Page number [0] must be greater than 0")
+      .withNoCause();
 
-      assertThat(expected).hasMessage("No last page");
-      assertThat(expected).hasCauseInstanceOf(IllegalArgumentException.class);
-      assertThat(expected.getCause()).hasMessage("Page number [0] must be greater than 0");
-      assertThat(expected.getCause()).hasNoCause();
-
-      throw expected;
-    }
-    finally {
-      verify(mockPageable, times(1)).count();
-      verify(mockPageable, times(1)).getPage(eq(0));
-      verify(mockPageable, times(1)).iterator();
-    }
+    verify(mockPageable, times(1)).count();
+    verify(mockPageable, times(1)).getPage(eq(0));
+    verify(mockPageable, times(1)).iterator();
   }
 
   @Test

@@ -16,7 +16,6 @@
 package org.cp.elements.context.configure;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.cp.elements.lang.ThrowableAssertions.assertThatUnsupportedOperationException;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anyInt;
@@ -42,6 +41,7 @@ import org.junit.runner.RunWith;
 
 import org.cp.elements.context.annotation.Profile;
 import org.cp.elements.lang.Constants;
+import org.cp.elements.lang.ThrowableAssertions;
 import org.cp.elements.security.model.User;
 import org.cp.elements.test.annotation.SubjectUnderTest;
 import org.cp.elements.util.ArrayUtils;
@@ -407,7 +407,7 @@ public class ConfigurationUnitTests {
 
     doCallRealMethod().when(this.mockConfiguration).iterator();
 
-    assertThatUnsupportedOperationException()
+    ThrowableAssertions.assertThatUnsupportedOperationException()
       .isThrownBy(args -> this.mockConfiguration.iterator())
       .havingMessage(Constants.NOT_IMPLEMENTED)
       .withNoCause();

@@ -13,21 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.data.conversion.converters;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
 import static org.mockito.Mockito.mock;
+
+import org.junit.jupiter.api.Test;
 
 import org.cp.elements.data.conversion.ConversionException;
 import org.cp.elements.lang.Identifiable;
 import org.cp.elements.lang.ObjectUtils;
+import org.cp.elements.lang.ThrowableAssertions;
 import org.cp.elements.lang.factory.ObjectFactory;
 import org.cp.elements.lang.factory.provider.PrototypeObjectFactory;
-import org.junit.jupiter.api.Test;
 
 /**
- * Unit tests for {@link IdentifiableConverter}.
+ * Unit Tests for {@link IdentifiableConverter}.
  *
  * @author John J. Blum
  * @see java.lang.Long
@@ -38,7 +40,7 @@ import org.junit.jupiter.api.Test;
  */
 public class IdentifiableConverterTests {
 
-  private IdentifiableConverter converter = new IdentifiableConverter(new PrototypeObjectFactory());
+  private final IdentifiableConverter converter = new IdentifiableConverter(new PrototypeObjectFactory());
 
   @Test
   public void setAndGetObjectFactory() {
@@ -50,20 +52,16 @@ public class IdentifiableConverterTests {
     assertThat(this.converter.getObjectFactory()).isEqualTo(mockObjectFactory);
   }
 
-  @Test(expected = IllegalStateException.class)
+  @Test
   public void getObjectFactoryWhenNotConfiguredThrowsException() {
 
-    try {
-      this.converter.setObjectFactory(null);
-      this.converter.getObjectFactory();
-    }
-    catch (IllegalStateException expected) {
-
-      assertThat(expected).hasMessage("No ObjectFactory was configured");
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
+    assertThatIllegalStateException()
+      .isThrownBy(() -> {
+        this.converter.setObjectFactory(null);
+        this.converter.getObjectFactory();
+      })
+      .withMessage("No ObjectFactory was configured")
+      .withNoCause();
   }
 
   @Test
@@ -107,22 +105,14 @@ public class IdentifiableConverterTests {
     assertThat(idHolder.getId()).isEqualTo(2L);
   }
 
-  @Test(expected = ConversionException.class)
+  @Test
   public void convertAnonymousTypeToIdentifiableThrowsException() {
 
-    try {
-      this.converter.convert(4L, AnonymousType.class);
-    }
-    catch (ConversionException expected) {
-
-      assertThat(expected).hasMessage("Cannot convert Long [4] into an Object of type [%s]",
-        AnonymousType.class);
-
-      assertThat(expected).hasCauseInstanceOf(IllegalAccessError.class);
-      assertThat(expected.getCause()).hasNoCause();
-
-      throw expected;
-    }
+    ThrowableAssertions.assertThatThrowableOfType(ConversionException.class)
+      .isThrownBy(args -> this.converter.convert(4L, AnonymousType.class))
+      .havingMessage("Cannot convert Long [4] into an Object of type [%s]", AnonymousType.class)
+      .causedBy(IllegalAccessError.class)
+      .withNoCause();
   }
 
   @SuppressWarnings("unused")
@@ -145,23 +135,16 @@ public class IdentifiableConverterTests {
         return true;
       }
 
-      if (!(obj instanceof IdHolder)) {
+      if (!(obj instanceof IdHolder that)) {
         return false;
       }
-
-      IdHolder that = (IdHolder) obj;
 
       return ObjectUtils.equals(this.getId(), that.getId());
     }
 
     @Override
     public int hashCode() {
-
-      int hashValue = 17;
-
-      hashValue = 37 * hashValue + ObjectUtils.hashCode(getId());
-
-      return hashValue;
+      return ObjectUtils.hashCodeOf(getId());
     }
 
     @Override
@@ -220,11 +203,9 @@ public class IdentifiableConverterTests {
         return true;
       }
 
-      if (!(obj instanceof Person)) {
+      if (!(obj instanceof Person that)) {
         return false;
       }
-
-      Person that = (Person) obj;
 
       return (ObjectUtils.equalsIgnoreNull(this.getId(), that.getId())
         && ObjectUtils.equals(this.getFirstName(), that.getFirstName())
@@ -233,14 +214,7 @@ public class IdentifiableConverterTests {
 
     @Override
     public int hashCode() {
-
-      int hashValue = 17;
-
-      hashValue = 37 * hashValue + ObjectUtils.hashCode(getId());
-      hashValue = 37 * hashValue + ObjectUtils.hashCode(getFirstName());
-      hashValue = 37 * hashValue + ObjectUtils.hashCode(getLastName());
-
-      return hashValue;
+      return ObjectUtils.hashCodeOf(getId(), getFirstName(), getLastName());
     }
 
     @Override

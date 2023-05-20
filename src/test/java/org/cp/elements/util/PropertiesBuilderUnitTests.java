@@ -16,8 +16,6 @@
 package org.cp.elements.util;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.cp.elements.lang.ThrowableAssertions.assertThatIllegalArgumentException;
-import static org.cp.elements.lang.ThrowableAssertions.assertThatThrowableOfType;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.doThrow;
@@ -43,6 +41,7 @@ import org.junit.jupiter.api.Test;
 
 import org.cp.elements.io.NoSuchFileException;
 import org.cp.elements.lang.StringUtils;
+import org.cp.elements.lang.ThrowableAssertions;
 import org.cp.elements.test.annotation.IntegrationTest;
 
 import lombok.EqualsAndHashCode;
@@ -90,7 +89,7 @@ public class PropertiesBuilderUnitTests {
 
     File nonExistingFile = new File("/absolute/path/to/non/existing/file.properties");
 
-    assertThatThrowableOfType(NoSuchFileException.class)
+    ThrowableAssertions.assertThatThrowableOfType(NoSuchFileException.class)
       .isThrownBy(args -> PropertiesBuilder.from(nonExistingFile))
       .havingMessage("[%s] not found", nonExistingFile)
       .causedBy(FileNotFoundException.class)
@@ -100,7 +99,7 @@ public class PropertiesBuilderUnitTests {
   @Test
   public void fromNullFile() {
 
-    assertThatIllegalArgumentException()
+    ThrowableAssertions.assertThatIllegalArgumentException()
       .isThrownBy(args -> PropertiesBuilder.from((File) null))
       .havingMessage("Properties file is required")
       .withNoCause();
@@ -142,7 +141,7 @@ public class PropertiesBuilderUnitTests {
     doThrow(ioException).when(mockInputStream).read(any(byte[].class));
     doThrow(ioException).when(mockInputStream).read(any(byte[].class), anyInt(), anyInt());
 
-    assertThatThrowableOfType(SystemException.class)
+    ThrowableAssertions.assertThatThrowableOfType(SystemException.class)
       .isThrownBy(args -> PropertiesBuilder.from(mockInputStream))
       .havingMessage("Failed to load properties from input stream [%s]", mockInputStream)
       .causedBy(IOException.class)
@@ -153,7 +152,7 @@ public class PropertiesBuilderUnitTests {
   @Test
   public void fromNullInputStream() {
 
-    assertThatIllegalArgumentException()
+    ThrowableAssertions.assertThatIllegalArgumentException()
       .isThrownBy(args -> PropertiesBuilder.from((InputStream) null))
       .havingMessage("InputStream is required")
       .withNoCause();
@@ -190,7 +189,7 @@ public class PropertiesBuilderUnitTests {
       .put(null, "testValue")
       .build();
 
-    assertThatIllegalArgumentException()
+    ThrowableAssertions.assertThatIllegalArgumentException()
       .isThrownBy(args -> PropertiesBuilder.from(map))
       .havingMessage("Map must not contain null keys")
       .withNoCause();
@@ -199,7 +198,7 @@ public class PropertiesBuilderUnitTests {
   @Test
   public void fromNullMap() {
 
-    assertThatIllegalArgumentException()
+    ThrowableAssertions.assertThatIllegalArgumentException()
       .isThrownBy(args -> PropertiesBuilder.from((Map<String, ?>) null))
       .havingMessage("Map is required")
       .withNoCause();
@@ -258,7 +257,7 @@ public class PropertiesBuilderUnitTests {
   @Test
   public void fromNullReader() {
 
-    assertThatIllegalArgumentException()
+    ThrowableAssertions.assertThatIllegalArgumentException()
       .isThrownBy(args -> PropertiesBuilder.from((Reader) null))
       .havingMessage("Reader is required")
       .withNoCause();
@@ -276,7 +275,7 @@ public class PropertiesBuilderUnitTests {
     doThrow(ioException).when(mockReader).read(any(char[].class), anyInt(), anyInt());
     doThrow(ioException).when(mockReader).read(any(CharBuffer.class));
 
-    assertThatThrowableOfType(SystemException.class)
+    ThrowableAssertions.assertThatThrowableOfType(SystemException.class)
       .isThrownBy(args -> PropertiesBuilder.from(mockReader))
       .havingMessage("Failed to load properties from reader [%s]", mockReader)
       .causedBy(IOException.class)
@@ -382,7 +381,7 @@ public class PropertiesBuilderUnitTests {
     doThrow(ioException).when(mockInputStream).read(any(byte[].class));
     doThrow(ioException).when(mockInputStream).read(any(byte[].class), anyInt(), anyInt());
 
-    assertThatThrowableOfType(SystemException.class)
+    ThrowableAssertions.assertThatThrowableOfType(SystemException.class)
       .isThrownBy(args -> PropertiesBuilder.fromXml(mockInputStream))
       .havingMessage("Failed to load properties from input stream [%s]", mockInputStream)
       .causedBy(IOException.class)
@@ -393,7 +392,7 @@ public class PropertiesBuilderUnitTests {
   @Test
   public void fromXmlWithNullInputStream() {
 
-    assertThatIllegalArgumentException()
+    ThrowableAssertions.assertThatIllegalArgumentException()
       .isThrownBy(args -> PropertiesBuilder.fromXml(null))
       .havingMessage("InputStream is required")
       .withNoCause();

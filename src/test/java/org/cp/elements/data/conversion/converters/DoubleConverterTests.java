@@ -13,19 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.data.conversion.converters;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
-import org.cp.elements.data.conversion.ConversionException;
 import org.junit.jupiter.api.Test;
 
+import org.cp.elements.data.conversion.ConversionException;
+import org.cp.elements.lang.ThrowableAssertions;
+
 /**
- * Unit tests for {@link DoubleConverter}.
+ * Unit Tests for {@link DoubleConverter}.
  *
  * @author John J. Blum
  * @see java.lang.Double
@@ -115,35 +117,23 @@ public class DoubleConverterTests {
     assertThat(this.converter.convert(Math.PI)).isEqualTo(Math.PI);
   }
 
-  @Test(expected = ConversionException.class)
+  @Test
   public void convertInvalidDoubleStringThrowException() {
 
-    try {
-      this.converter.convert("oneTwentyThreePointFortyFive");
-    }
-    catch (ConversionException expected) {
-
-      assertThat(expected).hasMessage("Cannot convert [oneTwentyThreePointFortyFive] to [java.lang.Double]");
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
+    assertThatExceptionOfType(ConversionException.class)
+      .isThrownBy(() -> this.converter.convert("oneTwentyThreePointFortyFive"))
+      .withMessage("Cannot convert [oneTwentyThreePointFortyFive] to [java.lang.Double]")
+      .withNoCause();
   }
 
-  @Test(expected = ConversionException.class)
+  @Test
   public void convertInvalidNumericStringThrowException() {
 
-    try {
-      this.converter.convert("$100 & 51/100 cents");
-    }
-    catch (ConversionException expected) {
-
-      assertThat(expected).hasMessage("[$100 & 51/100 cents] is not a valid double");
-      assertThat(expected).hasCauseInstanceOf(NumberFormatException.class);
-      assertThat(expected.getCause()).hasNoCause();
-
-      throw expected;
-    }
+    ThrowableAssertions.assertThatThrowableOfType(ConversionException.class)
+      .isThrownBy(args -> this.converter.convert("$100 & 51/100 cents"))
+      .havingMessage("[$100 & 51/100 cents] is not a valid double")
+      .causedBy(NumberFormatException.class)
+      .withNoCause();
   }
 
   @Test
@@ -151,19 +141,13 @@ public class DoubleConverterTests {
     assertThat(this.converter.withDefaultValue(1.21d).convert(null)).isEqualTo(1.21d);
   }
 
-  @Test(expected = ConversionException.class)
+  @Test
   public void convertNullToDoubleWithNoDefaultValueThrowsException() {
 
-    try {
-      this.converter.convert(null);
-    }
-    catch (ConversionException expected) {
-
-      assertThat(expected).hasMessage("Cannot convert [null] to [java.lang.Double]");
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
+    assertThatExceptionOfType(ConversionException.class)
+      .isThrownBy(() -> this.converter.convert(null))
+      .withMessage("Cannot convert [null] to [java.lang.Double]")
+      .withNoCause();
   }
 
   @Test

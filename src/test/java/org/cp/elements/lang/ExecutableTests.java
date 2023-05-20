@@ -13,23 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.lang;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doCallRealMethod;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
+
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
 /**
- * Unit tests for {@link Executable}.
+ * Unit Tests for {@link Executable}.
  *
  * @author John Blum
  * @see org.junit.jupiter.api.Test
@@ -42,13 +43,14 @@ import org.mockito.junit.MockitoJUnitRunner;
 public class ExecutableTests {
 
   @Mock
+  @SuppressWarnings("rawtypes")
   private Executable mockExecutable;
 
   @Test
-  public void callInvokesExecuteWithNoArgumentsAndReturnsValue() throws Exception {
+  public void callInvokesExecuteWithNoArgumentsAndReturnsValue() {
 
-    when(this.mockExecutable.call()).thenCallRealMethod();
-    when(this.mockExecutable.execute(any())).thenReturn("test");
+    doCallRealMethod().when(this.mockExecutable).call();
+    doReturn("test").when(this.mockExecutable).execute(any());
 
     assertThat(this.mockExecutable.call()).isEqualTo("test");
 
@@ -67,20 +69,15 @@ public class ExecutableTests {
     verify(this.mockExecutable, times(1)).execute();
   }
 
-  @Test(expected = IllegalStateException.class)
+  @Test
   public void isRunningThrowsIllegalStateException() {
 
-    try {
-      when(this.mockExecutable.isRunning()).thenCallRealMethod();
-
-      this.mockExecutable.isRunning();
-    }
-    catch (IllegalStateException expected) {
-
-      assertThat(expected).hasMessage("The runnable state of this object cannot be determined");
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
+    assertThatIllegalStateException()
+      .isThrownBy(() -> {
+        doCallRealMethod().when(this.mockExecutable).isRunning();
+        this.mockExecutable.isRunning();
+      })
+      .withMessage("The runnable state of this object cannot be determined")
+      .withNoCause();
   }
 }

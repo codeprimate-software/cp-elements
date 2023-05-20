@@ -20,7 +20,6 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
 import static org.cp.elements.lang.ElementsExceptionsFactory.newConversionException;
-import static org.cp.elements.lang.ThrowableAssertions.assertThatThrowableOfType;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
@@ -60,6 +59,7 @@ import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.Nameable;
 import org.cp.elements.lang.ObjectUtils;
 import org.cp.elements.lang.StringUtils;
+import org.cp.elements.lang.ThrowableAssertions;
 import org.cp.elements.test.annotation.IntegrationTest;
 import org.cp.elements.util.ArrayUtils;
 
@@ -509,7 +509,7 @@ public class AbstractConfigurationUnitTests {
 
     assertThat(configuration.getConversionService()).isNotNull();
 
-    assertThatThrowableOfType(ConfigurationException.class)
+    ThrowableAssertions.assertThatThrowableOfType(ConfigurationException.class)
       .isThrownBy(args -> configuration.getPropertyValueAs("jdbc.connection.max", Integer.class, false))
       .causedBy(ConversionException.class)
       .havingMessage("Cannot convert [ten] to [java.lang.Integer]")
@@ -546,7 +546,7 @@ public class AbstractConfigurationUnitTests {
 
     assertThat(configuration.getConversionService()).isInstanceOf(TestConversionService.class);
 
-    assertThatThrowableOfType(ConfigurationException.class)
+    ThrowableAssertions.assertThatThrowableOfType(ConfigurationException.class)
       .isThrownBy(args -> configuration.getPropertyValueAs("jdbc.username", User.class, true))
       .havingMessage("Failed to get value [hacker3000] of configuration property [jdbc.username] as an instance of type [%s]",
         User.class.getName())

@@ -16,6 +16,7 @@
 package org.cp.elements.process.support;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.cp.elements.io.FileUtils.newFile;
 import static org.cp.elements.lang.CheckedExceptionsFactory.newIOException;
 import static org.cp.elements.process.support.ProcessBuilderProcessExecutor.newProcessBuilderProcessExecutor;
@@ -38,14 +39,14 @@ import org.junit.runner.RunWith;
 import org.cp.elements.context.env.Environment;
 import org.cp.elements.io.FileSystemUtils;
 import org.cp.elements.lang.SystemUtils;
+import org.cp.elements.lang.ThrowableAssertions;
 import org.cp.elements.process.ProcessAdapter;
 import org.cp.elements.process.ProcessExecutionException;
-
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
 /**
- * Unit tests for {@link ProcessBuilderProcessExecutor}.
+ * Unit Tests for {@link ProcessBuilderProcessExecutor}.
  *
  * @author John Blum
  * @see org.junit.jupiter.api.Test
@@ -101,35 +102,28 @@ public class ProcessBuilderProcessExecutorTests {
     verify(processExecutor, times(1)).doExecute(isA(ProcessBuilder.class));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void executeWithInvalidDirectoryThrowsIllegalArgumentException() {
-    try {
-      newProcessBuilderProcessExecutor().execute(newFile("/path/to/non/existing/directory"),
-        "java", "-server", "-ea", "-classpath", "/class/path/to/application.jar", "test.Application");
-    }
-    catch (IllegalArgumentException expected) {
-      assertThat(expected).hasMessage("[/path/to/non/existing/directory] is not a valid directory");
-      assertThat(expected).hasNoCause();
 
-      throw expected;
-    }
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> newProcessBuilderProcessExecutor().execute(newFile("/path/to/non/existing/directory"),
+        "java", "-server", "-ea", "-classpath", "/class/path/to/application.jar", "test.Application"))
+      .withMessage("[/path/to/non/existing/directory] is not a valid directory")
+      .withNoCause();
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void executeWithNoCommandThrowsIllegalArgumentException() {
-    try {
-      newProcessBuilderProcessExecutor().execute(FileSystemUtils.WORKING_DIRECTORY);
-    }
-    catch (IllegalArgumentException expected) {
-      assertThat(expected).hasMessage("The command-line [] must contain at least 1 command");
-      assertThat(expected).hasNoCause();
 
-      throw expected;
-    }
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> newProcessBuilderProcessExecutor().execute(FileSystemUtils.WORKING_DIRECTORY))
+      .withMessage("The command-line [] must contain at least 1 command")
+      .withNoCause();
   }
 
-  @Test(expected = ProcessExecutionException.class)
+  @Test
   public void executeFailedProcessHandlesIOException() throws IOException {
+
     ProcessBuilderProcessExecutor processExecutor = spy(new ProcessBuilderProcessExecutor());
 
     doThrow(newIOException("test")).when(processExecutor).doExecute(any(ProcessBuilder.class));
@@ -138,21 +132,15 @@ public class ProcessBuilderProcessExecutorTests {
       "java", "-server", "-ea", "-classpath", "/class/path/to/application.jar", "test.Application"
     };
 
-    try {
-      processExecutor.execute(FileSystemUtils.WORKING_DIRECTORY, expectedCommandLine);
-    }
-    catch (ProcessExecutionException expected) {
-      assertThat(expected).hasMessage("Failed to execute program %1$s in directory [%2$s]",
-        Arrays.toString(expectedCommandLine), FileSystemUtils.WORKING_DIRECTORY);
-      assertThat(expected).hasCauseInstanceOf(IOException.class);
-      assertThat(expected.getCause()).hasMessage("test");
-      assertThat(expected.getCause()).hasNoCause();
+    ThrowableAssertions.assertThatThrowableOfType(ProcessExecutionException.class)
+      .isThrownBy(args -> processExecutor.execute(FileSystemUtils.WORKING_DIRECTORY, expectedCommandLine))
+      .havingMessage("Failed to execute program %1$s in directory [%2$s]",
+        Arrays.toString(expectedCommandLine), FileSystemUtils.WORKING_DIRECTORY)
+      .causedBy(IOException.class)
+      .havingMessage("test")
+      .withNoCause();
 
-      throw expected;
-    }
-    finally {
-      verify(processExecutor, times(1)).doExecute(isA(ProcessBuilder.class));
-    }
+    verify(processExecutor, times(1)).doExecute(isA(ProcessBuilder.class));
   }
 
   @Test

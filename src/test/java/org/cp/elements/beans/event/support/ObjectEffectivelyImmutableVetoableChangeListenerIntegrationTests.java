@@ -16,7 +16,6 @@
 package org.cp.elements.beans.event.support;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.cp.elements.lang.ThrowableAssertions.assertThatThrowableOfType;
 
 import java.beans.VetoableChangeListener;
 
@@ -25,6 +24,7 @@ import org.junit.jupiter.api.Test;
 import org.cp.elements.beans.AbstractBean;
 import org.cp.elements.lang.ImmutableObjectException;
 import org.cp.elements.lang.Nameable;
+import org.cp.elements.lang.ThrowableAssertions;
 import org.cp.elements.lang.ThrowableOperation;
 import org.cp.elements.lang.annotation.NotNull;
 import org.cp.elements.security.model.User;
@@ -64,12 +64,12 @@ public class ObjectEffectivelyImmutableVetoableChangeListenerIntegrationTests {
 
     bean.register(ObjectEffectivelyImmutableVetoableChangeListener.INSTANCE);
 
-    assertThatThrowableOfType(ImmutableObjectException.class)
+    ThrowableAssertions.assertThatThrowableOfType(ImmutableObjectException.class)
       .isThrownBy(ThrowableOperation.fromConsumer(args -> bean.setId(2)))
       .havingMessage("Cannot change property [id]; Object [%s] is immutable", bean)
       .withNoCause();
 
-    assertThatThrowableOfType(ImmutableObjectException.class)
+    ThrowableAssertions.assertThatThrowableOfType(ImmutableObjectException.class)
       .isThrownBy(ThrowableOperation.fromConsumer(args -> bean.setName(null)))
       .havingMessage("Cannot change property [name]; Object [%s] is immutable", bean)
       .withNoCause();

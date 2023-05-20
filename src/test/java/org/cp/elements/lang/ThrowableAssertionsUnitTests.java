@@ -237,81 +237,55 @@ public class ThrowableAssertionsUnitTests {
       .withNoCause();
   }
 
-  @Test(expected = AssertionException.class)
+  @Test
   public void assertRuntimeExceptionWithNoCauseThrowsAssertionException() {
 
-    try {
-      assertThatRuntimeException()
+    Assertions.assertThatExceptionOfType(AssertionException.class)
+      .isThrownBy(() -> assertThatRuntimeException()
         .isThrownBy(args -> codeThrowingRuntimeException("test message"))
         .causedBy(IllegalAccessException.class)
         .havingMessage("mock message")
-        .withNoCause();
-    }
-    catch (AssertionException expected) {
-
-      assertThat(expected).hasMessage("Expected Throwable [%s] to have a cause of type [%s]; but was [null]",
-        RuntimeException.class.getName(), IllegalAccessException.class.getName());
-
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
+        .withNoCause())
+      .withMessage("Expected Throwable [%s] to have a cause of type [%s]; but was [null]",
+        RuntimeException.class.getName(), IllegalAccessException.class.getName())
+      .withNoCause();
   }
 
-  @Test(expected = AssertionException.class)
+  @Test
   public void assertRuntimeExceptionWithUnexpectedCauseThrowsAssertionException() {
 
-    try {
-      assertThatRuntimeException()
+    Assertions.assertThatExceptionOfType(AssertionException.class)
+      .isThrownBy(() -> assertThatRuntimeException()
         .isThrownBy(args -> codeThrowingRuntimeException("test message", new IllegalStateException("mock message")))
         .havingMessage("test message")
-        .withNoCause();
-    }
-    catch (AssertionException expected) {
-
-      assertThat(expected).hasMessage("Expected Throwable [%s] to have no cause; but was caused by [%s]",
-        RuntimeException.class.getName(), IllegalStateException.class.getName());
-
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
+        .withNoCause())
+      .withMessage("Expected Throwable [%s] to have no cause; but was caused by [%s]",
+        RuntimeException.class.getName(), IllegalStateException.class.getName())
+      .withNoCause();
   }
 
-  @Test(expected = AssertionException.class)
+  @Test
   public void assertRuntimeExceptionWithNoMessageThrowsAssertionException() {
 
-    try {
-      assertThatRuntimeException()
+    Assertions.assertThatExceptionOfType(AssertionException.class)
+      .isThrownBy(() -> assertThatRuntimeException()
         .isThrownBy(args -> codeThrowingRuntimeException(null))
         .havingMessage("expected message")
-        .withNoCause();
-    }
-    catch (AssertionException expected) {
-
-      assertThat(expected).hasMessage("Expected message [expected message]; but was [null]");
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
+        .withNoCause())
+      .withMessage("Expected message [expected message]; but was [null]")
+      .withNoCause();
   }
 
-  @Test(expected = AssertionException.class)
+  @Test
   public void assertRuntimeExceptionHavingUnexpectedMessageThrowsAssertionException() {
 
-    try {
-      assertThatRuntimeException()
+    Assertions.assertThatExceptionOfType(AssertionException.class)
+      .isThrownBy(() -> assertThatRuntimeException()
         .isThrownBy(args -> codeThrowingRuntimeException("actual message"))
         .havingMessage("expected message")
-        .withNoCause();
-    }
-    catch (AssertionException expected) {
-
-      assertThat(expected).hasMessage("Expected message [expected message]; but was [actual message]");
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
+        .withNoCause())
+      .withMessage("Expected message [expected message]; but was [actual message]")
+      .withNoCause();
   }
 
   @Test
@@ -323,26 +297,18 @@ public class ThrowableAssertionsUnitTests {
       .withNoCause();
   }
 
-  @Test(expected = AssertionException.class)
+  @Test
   public void assertRuntimeExceptionHavingMessageContainingUnexpectedTextThrowsAssertionException() {
 
     String message = "An error occurred on line 987 in file junk.txt";
 
-    try {
-      assertThatIllegalStateException()
+    Assertions.assertThatExceptionOfType(AssertionException.class)
+      .isThrownBy(() -> assertThatIllegalStateException()
         .isThrownBy(args -> codeThrowingIllegalStateException(message))
         .havingMessageContaining("error occurred on line 123")
-        .withNoCause();
-    }
-    catch (AssertionException expected) {
-
-      assertThat(expected).hasMessage("Expected message containing [error occurred on line 123] in [%s]",
-        message);
-
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
+        .withNoCause())
+      .withMessage("Expected message containing [error occurred on line 123] in [%s]", message)
+      .withNoCause();
   }
 
   @Test
@@ -355,26 +321,19 @@ public class ThrowableAssertionsUnitTests {
   }
 
   // java.lang.InterruptedException
-  @Test(expected = AssertionException.class)
+
+  @Test
   public void assertCheckedExceptionHavingMessageEndingWithUnexpectedTextThrowsAssertionException() {
 
     String message = "Beginning of the message and then the end of the message";
 
-    try {
-      assertThatInterruptedException()
+    Assertions.assertThatExceptionOfType(AssertionException.class)
+      .isThrownBy(() -> assertThatInterruptedException()
         .isThrownBy(args -> codeThrowingInterruptedException(message))
         .havingMessageEndingWith("Beginning of the message")
-        .withNoCause();
-    }
-    catch (AssertionException expected) {
-
-      assertThat(expected)
-        .hasMessage("Expected message ending with [Beginning of the message] in [%s]",message);
-
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
+        .withNoCause())
+      .withMessage("Expected message ending with [Beginning of the message] in [%s]", message)
+      .withNoCause();
   }
 
   @Test
@@ -386,126 +345,85 @@ public class ThrowableAssertionsUnitTests {
       .withNoCause();
   }
 
-  @Test(expected = AssertionException.class)
+  @Test
   public void assertNonCheckedExceptionHavingMessageStartingWithUnexpectedTextThrowsAssertionException() {
 
     String message = "Beginning of the message and then the end of the message";
 
-    try {
-      assertThatUnsupportedOperationException()
+    Assertions.assertThatExceptionOfType(AssertionException.class)
+      .isThrownBy(() -> assertThatUnsupportedOperationException()
         .isThrownBy(args -> codeThrowingUnsupportedOperationException(message))
         .havingMessageStartingWith("and then the end of the message")
-        .withNoCause();
-    }
-    catch (AssertionException expected) {
-
-      assertThat(expected)
-        .hasMessage("Expected message starting with [and then the end of the message] in [%s]", message);
-
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
+        .withNoCause())
+      .withMessage("Expected message starting with [and then the end of the message] in [%s]", message)
+      .withNoCause();
   }
 
-  @Test(expected = AssertionException.class)
+  @Test
   public void assertRuntimeExceptionWithNonThrowingCodeThrowsAssertionException() {
 
-    try {
-      assertThatRuntimeException()
-        .isThrownBy(args -> codeReturningValue());
-    }
-    catch (AssertionException expected) {
-
-      assertThat(expected).hasMessage("Expected Throwable of type [%s] to be thrown by operation",
-        RuntimeException.class.getName());
-
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
+    Assertions.assertThatExceptionOfType(AssertionException.class)
+      .isThrownBy(() -> assertThatRuntimeException()
+        .isThrownBy(args -> codeReturningValue()))
+      .withMessage("Expected Throwable of type [%s] to be thrown by operation",
+        RuntimeException.class.getName())
+      .withNoCause();
   }
 
-  @Test(expected = AssertionException.class)
+  @Test
   public void assertRuntimeExceptionWithNonThrowingCodeThrowsAssertionExceptionUsingDescription() {
 
-    try {
-      assertThatRuntimeException()
+    Assertions.assertThatExceptionOfType(AssertionException.class)
+      .isThrownBy(() -> assertThatRuntimeException()
         .describedAs("Test %1$s %2$s Message", "Assertion", "Error")
-        .isThrownBy(args -> codeReturningValue());
-    }
-    catch (AssertionException expected) {
-
-      assertThat(expected).hasMessage("Test Assertion Error Message");
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
+        .isThrownBy(args -> codeReturningValue()))
+      .withMessage("Test Assertion Error Message")
+      .withNoCause();
   }
 
   // DUPLICATE
   // @see assertRuntimeExceptionWithNoCauseThrowsAssertionException();
-  @Test(expected = AssertionException.class)
+  @Test
   public void assertSecurityExceptionWithNoCauseThrowsAssertionException() {
 
-    try {
-      assertThatSecurityException()
+    Assertions.assertThatExceptionOfType(AssertionException.class)
+      .isThrownBy(() -> assertThatSecurityException()
         .isThrownBy(args -> codeThrowingSecurityException("Unauthorized user"))
         .causedBy(AuthorizationException.class)
         .havingMessage("[jonDoe] is not authorized to perform action [save]")
-        .withNoCause();
-    }
-    catch (AssertionException expected) {
-
-      assertThat(expected).hasMessage("Expected Throwable [%s] to have a cause of type [%s]; but was [null]",
-        SecurityException.class.getName(), AuthorizationException.class.getName());
-
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
+        .withNoCause())
+      .withMessage("Expected Throwable [%s] to have a cause of type [%s]; but was [null]",
+        SecurityException.class.getName(), AuthorizationException.class.getName())
+      .withNoCause();
   }
 
-  @Test(expected = AssertionException.class)
+  @Test
   public void assertSecurityExceptionWithExpectedButUnexpectedCauseThrowsAssertionException() {
 
-    try {
-      assertThatSecurityException()
+    Assertions.assertThatExceptionOfType(AssertionException.class)
+      .isThrownBy(() -> assertThatSecurityException()
         .isThrownBy(args -> codeThrowingSecurityException("Unauthorized user",
           new AuthenticationException("Unauthenticated user")))
         .causedBy(AuthorizationException.class)
         .havingMessage("[janeDoe] is not authorized to perform action [delete]")
-        .withNoCause();
-    }
-    catch (AssertionException expected) {
-
-      assertThat(expected).hasMessage("Expected Throwable [%s] to have a cause of type [%s]; but was [%s]",
-        SecurityException.class.getName(), AuthorizationException.class.getName(), AuthenticationException.class.getName());
-
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
+        .withNoCause())
+      .withMessage("Expected Throwable [%s] to have a cause of type [%s]; but was [%s]",
+        SecurityException.class.getName(), AuthorizationException.class.getName(),
+        AuthenticationException.class.getName())
+      .withNoCause();
   }
 
-  @Test(expected = AssertionException.class)
+  @Test
   public void assertSecurityExceptionWithExpectedButUnexpectedMessageThrowsAssertionException() {
 
-    try {
-      assertThatSecurityException()
+    Assertions.assertThatExceptionOfType(AssertionException.class)
+      .isThrownBy(() -> assertThatSecurityException()
         .isThrownBy(args -> codeThrowingSecurityException("User [rogueOne] is not authorized to execute operation [findAll]"))
         .havingMessage("User [%1$s] is unauthorized to execute [%2$s]", "rogueOne", "findAll")
-        .withNoCause();
-    }
-    catch (AssertionException expected) {
-
-      assertThat(expected).hasMessage("Expected message [User [rogueOne] is unauthorized to execute [findAll]];"
-        + " but was [User [rogueOne] is not authorized to execute operation [findAll]]");
-
-        assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
+        .withNoCause())
+      .withMessage("Expected message [User [rogueOne] is unauthorized to execute [findAll]];"
+        + " but was [User [rogueOne] is not authorized to execute operation [findAll]]")
+      .withNoCause();
   }
 
   @Test
@@ -572,50 +490,36 @@ public class ThrowableAssertionsUnitTests {
       .withNoCause();
   }
 
-  @Test(expected = AssertionException.class)
+  @Test
   public void assertIndexOutOfBoundsExceptionHavingNonRegularExpressionMatchingMessage() {
 
     ObjectOperationThrowingRuntimeException operation =
       new ObjectOperationThrowingRuntimeException(IndexOutOfBoundsException::new);
 
-    try {
-      assertThatIndexOutOfBoundsException()
+    Assertions.assertThatExceptionOfType(AssertionException.class)
+      .isThrownBy(() -> assertThatIndexOutOfBoundsException()
         .usingArguments(10)
         .isThrownBy(args -> operation.atIndex(Integer.parseInt(String.valueOf(ArrayUtils.getFirstElement(args)))))
         .havingMessageMatching("Index \\[\\d] is not valid")
-        .withNoCause();
-    }
-    catch (AssertionException expected) {
-
-      assertThat(expected)
-        .hasMessage("The Throwable [%s] message [Index [10] is not valid] does not match the pattern [Index \\[\\d] is not valid]",
-          IndexOutOfBoundsException.class.getName());
-
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
+        .withNoCause())
+      .withMessage("The Throwable [%s] message [Index [10] is not valid] does not match the pattern [Index \\[\\d] is not valid]",
+          IndexOutOfBoundsException.class.getName())
+      .withNoCause();
   }
 
-  @Test(expected = PatternSyntaxException.class)
+  @Test
   public void assertThatNullPointerExceptionWithInvalidRegularExpressionPattern() {
 
     ObjectOperationThrowingRuntimeException operation =
       new ObjectOperationThrowingRuntimeException(NullPointerException::new);
 
-    try {
-      assertThatNullPointerException()
+    Assertions.assertThatExceptionOfType(PatternSyntaxException.class)
+      .isThrownBy(() -> assertThatNullPointerException()
         .isThrownBy(args -> operation.usingNullReference())
         .havingMessageMatching("\\(.*)")
-        .withNoCause();
-    }
-    catch (PatternSyntaxException expected) {
-
-      assertThat(expected).hasMessageStartingWith("Unmatched closing ')'");
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
+        .withNoCause())
+      .withMessage("Unmatched closing ')'")
+      .withNoCause();
   }
 
   @Test

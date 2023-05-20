@@ -17,7 +17,6 @@ package org.cp.elements.service.loader;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
-import static org.cp.elements.lang.ThrowableAssertions.assertThatThrowableOfType;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.Mockito.doCallRealMethod;
@@ -34,6 +33,7 @@ import java.util.function.Predicate;
 
 import org.junit.jupiter.api.Test;
 
+import org.cp.elements.lang.ThrowableAssertions;
 import org.cp.elements.lang.annotation.NotNull;
 import org.cp.elements.service.ServiceUnavailableException;
 import org.cp.elements.service.annotation.Service;
@@ -172,7 +172,7 @@ public class ServiceLoaderSupportUnitTests {
   @Test
   public void getUnavailableServiceInstanceThrowsServiceUnavailableException() {
 
-    assertThatThrowableOfType(ServiceUnavailableException.class)
+    ThrowableAssertions.assertThatThrowableOfType(ServiceUnavailableException.class)
       .isThrownBy(args -> new UnavailableService().getServiceInstance())
       .havingMessageMatching("Failed to find a service instance matching Predicate \\[.*]")
       .withNoCause();
@@ -181,7 +181,7 @@ public class ServiceLoaderSupportUnitTests {
   @Test
   public void getUnavailableServiceInstanceWithQualifierThrowsUnavailableServiceException() {
 
-    assertThatThrowableOfType(ServiceUnavailableException.class)
+    ThrowableAssertions.assertThatThrowableOfType(ServiceUnavailableException.class)
       .isThrownBy(args -> MockGeocodingService.getLoader().getServiceInstance("testQualifier"))
       .havingMessageContaining("Failed to find a service instance with the declared name [testQualifier]")
       .causedBy(ServiceUnavailableException.class)

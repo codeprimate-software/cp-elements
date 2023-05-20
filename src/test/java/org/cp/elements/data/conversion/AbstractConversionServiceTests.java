@@ -13,16 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.data.conversion;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.cp.elements.lang.RuntimeExceptionsFactory.newIllegalArgumentException;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 import java.util.HashSet;
 import java.util.Set;
+
+import org.junit.jupiter.api.Test;
 
 import org.cp.elements.data.conversion.converters.BooleanConverter;
 import org.cp.elements.data.conversion.converters.CharacterConverter;
@@ -33,10 +33,9 @@ import org.cp.elements.data.conversion.converters.NumberConverter;
 import org.cp.elements.data.conversion.converters.StringConverter;
 import org.cp.elements.enums.Gender;
 import org.cp.elements.enums.Race;
-import org.junit.jupiter.api.Test;
 
 /**
- * Unit tests for {@link AbstractConversionService}.
+ * Unit Tests for {@link AbstractConversionService}.
  *
  * @author John J. Blum
  * @see org.junit.jupiter.api.Test
@@ -60,7 +59,6 @@ public class AbstractConversionServiceTests {
   }
 
   @Test
-  @SuppressWarnings("unchecked")
   public void convert() {
 
     AbstractConversionService conversionService = newConversionService();
@@ -76,7 +74,6 @@ public class AbstractConversionServiceTests {
   }
 
   @Test
-  @SuppressWarnings("unchecked")
   public void convertExact() {
 
     AbstractConversionService conversionService = newConversionService();
@@ -118,28 +115,20 @@ public class AbstractConversionServiceTests {
     assertThat(conversionService.convert("1", Long.class)).isEqualTo(1L);
   }
 
-  @Test(expected = ConversionException.class)
+  @Test
   public void convertThrowsExceptionDuringConversion() {
 
     AbstractConversionService conversionService = newConversionService();
 
     assertThat(conversionService.canConvert(Object.class, String.class)).isFalse();
 
-    try {
-      conversionService.convert("test", String.class);
-    }
-    catch (ConversionException expected) {
-
-      assertThat(expected).hasMessage("Cannot convert [test] into Object of type [%s]",
-        String.class.getName());
-
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
+    assertThatExceptionOfType(ConversionException.class)
+      .isThrownBy(() -> conversionService.convert("test", String.class))
+      .withMessage("Cannot convert [test] into Object of type [%s]")
+      .withNoCause();
   }
 
-  @Test(expected = ConversionException.class)
+  @Test
   public void convertThrowsExceptionForUnsupportedConversion() {
 
     AbstractConversionService conversionService = newConversionService();
@@ -149,21 +138,14 @@ public class AbstractConversionServiceTests {
     assertThat(conversionService.canConvert(null, String.class)).isTrue();
     assertThat(conversionService.canConvert(null, Character.class)).isFalse();
 
-    try {
-      conversionService.convert("X", Character.class);
-    }
-    catch (ConversionException expected) {
-
-      assertThat(expected).hasMessage("Cannot convert [X] into Object of type [%s]",
-        Character.class.getName());
-
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
+    assertThatExceptionOfType(ConversionException.class)
+      .isThrownBy(() -> conversionService.convert("X", Character.class))
+      .withMessage("Cannot convert [X] into Object of type [%s]", Character.class.getName())
+      .withNoCause();
   }
 
   @Test
+  @SuppressWarnings("rawtypes")
   public void iteration() {
 
     AbstractConversionService conversionService = newConversionService();
@@ -176,14 +158,14 @@ public class AbstractConversionServiceTests {
     conversionService.register(add(expectedConverters, new IntegerConverter()));
     conversionService.register(add(expectedConverters, new StringConverter()));
 
-    assertEquals(5, expectedConverters.size());
-    assertEquals(expectedConverters.size(), conversionService.getRegistry().size());
+    assertThat(expectedConverters.size()).isEqualTo(5);
+    assertThat(conversionService.getRegistry().size()).isEqualTo(expectedConverters.size());
 
     for (Converter converter : conversionService) {
-      assertTrue(expectedConverters.remove(converter));
+      assertThat(expectedConverters.remove(converter)).isTrue();
     }
 
-    assertTrue(expectedConverters.isEmpty());
+    assertThat(expectedConverters.isEmpty()).isTrue();
   }
 
   static class GenderConverter extends AbstractConverter<String, Gender> {

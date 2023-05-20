@@ -16,6 +16,7 @@
 package org.cp.elements.util;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
@@ -277,7 +278,8 @@ public class MapUtilsTests {
     map.put("three", 3);
 
     Map<String, Integer> resultMap = MapUtils.filterAndTransform(map,
-      new FilteringTransformer<Map.Entry<String, Integer>>() {
+      new FilteringTransformer<>() {
+
         @Override
         public boolean accept(Map.Entry<String, Integer> entry) {
           return NumberUtils.isEven(entry.getValue());
@@ -298,7 +300,8 @@ public class MapUtilsTests {
     assertThat(resultMap.containsKey("three")).isFalse();
     assertThat(resultMap.get("two")).isEqualTo(4);
 
-    resultMap = MapUtils.filterAndTransform(map, new FilteringTransformer<Map.Entry<String, Integer>>() {
+    resultMap = MapUtils.filterAndTransform(map, new FilteringTransformer<>() {
+
       @Override
       public boolean accept(Map.Entry<String, Integer> entry) {
         return NumberUtils.isOdd(entry.getValue());
@@ -327,7 +330,8 @@ public class MapUtilsTests {
     Map<String, String> map = Collections.singletonMap("key", "test");
 
     Map<String, String> resultMap = MapUtils.filterAndTransform(map,
-      new FilteringTransformer<Map.Entry<String, String>>() {
+      new FilteringTransformer<>() {
+
         @Override
         public boolean accept(Map.Entry<String, String> entry) {
           return true;
@@ -335,7 +339,9 @@ public class MapUtilsTests {
 
         @Override
         public Map.Entry<String, String> transform(Map.Entry<String, String> entry) {
-          return new Map.Entry<String, String>() {
+
+          return new Map.Entry<>() {
+
             @Override
             public String getKey() {
               return entry.getKey();
@@ -367,7 +373,8 @@ public class MapUtilsTests {
     Map<String, String> map = Collections.singletonMap("key", "test");
 
     Map<String, String> resultMap = MapUtils.filterAndTransform(map,
-      new FilteringTransformer<Map.Entry<String, String>>() {
+      new FilteringTransformer<>() {
+
         @Override
         public boolean accept(Map.Entry<String, String> entry) {
           return false;
@@ -389,7 +396,8 @@ public class MapUtilsTests {
 
     Map<Object, Object> emptyMap = Collections.emptyMap();
 
-    Map<Object, Object> resultMap = MapUtils.filterAndTransform(emptyMap, new FilteringTransformer<Map.Entry<Object, Object>>() {
+    Map<Object, Object> resultMap = MapUtils.filterAndTransform(emptyMap, new FilteringTransformer<>() {
+
       @Override
       public boolean accept(Map.Entry<Object, Object> entry) {
         return true;
@@ -544,38 +552,26 @@ public class MapUtilsTests {
     assertThat(map.get("key")).isEqualTo("value");
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void fromInvalidAssociateArray() {
 
     String[] associativeArray = { "keyOne=valueOne", "", "keyThree" };
 
-    try {
-      MapUtils.fromAssociativeArray(associativeArray);
-    }
-    catch (IllegalArgumentException expected) {
-
-      assertThat(expected).hasMessage("Entry [] at index [1] must be specified");
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> MapUtils.fromAssociativeArray(associativeArray))
+      .withMessage("Entry [] at index [1] must be specified")
+      .withNoCause();
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void fromInvalidEntryInAssociateArray() {
 
     String[] associativeArray = { "keyOne=valueOne", "keyTwo=valueTwo", "keyThree" };
 
-    try {
-      MapUtils.fromAssociativeArray(associativeArray);
-    }
-    catch (IllegalArgumentException expected) {
-
-      assertThat(expected).hasMessage("Entry [keyThree] at index [2] must have both a key and a value");
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> MapUtils.fromAssociativeArray(associativeArray))
+      .withMessage("Entry [keyThree] at index [2] must have both a key and a value")
+      .withNoCause();
   }
 
   @Test
@@ -695,7 +691,7 @@ public class MapUtilsTests {
     assertThat(mapEntry.getValue()).isEqualTo("TestValue");
   }
 
-  @Test(expected = UnsupportedOperationException.class)
+  @Test
   public void newMapEntryIsImmutable() {
 
     Map.Entry<Object, Object> mapEntry = MapUtils.newMapEntry("aKey", "aValue");
@@ -704,16 +700,10 @@ public class MapUtilsTests {
     assertThat(mapEntry.getKey()).isEqualTo("aKey");
     assertThat(mapEntry.getValue()).isEqualTo("aValue");
 
-    try {
-      mapEntry.setValue("junk");
-    }
-    catch (UnsupportedOperationException expected) {
-
-      assertThat(expected.getMessage()).isEqualTo(Constants.OPERATION_NOT_SUPPORTED);
-      assertThat(expected.getCause()).isNull();
-
-      throw expected;
-    }
+    assertThatExceptionOfType(UnsupportedOperationException.class)
+      .isThrownBy(() -> mapEntry.setValue("junk"))
+      .withMessage(Constants.OPERATION_NOT_SUPPORTED)
+      .withNoCause();
   }
 
   @Test

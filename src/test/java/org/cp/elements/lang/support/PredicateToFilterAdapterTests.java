@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.lang.support;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
@@ -51,19 +51,13 @@ public class PredicateToFilterAdapterTests {
     assertThat(filter.getPredicate()).isEqualTo(mockPredicate);
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void constructWithNullPredicateThrowsIllegalArgumentException() {
 
-    try {
-      new PredicateToFilterAdapter<>(null);
-    }
-    catch (IllegalArgumentException expected) {
-
-      assertThat(expected).hasMessage("Predicate is required");
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> new PredicateToFilterAdapter<>(null))
+      .withMessage("Predicate is required")
+      .withNoCause();
   }
 
   @Test
@@ -77,19 +71,13 @@ public class PredicateToFilterAdapterTests {
     assertThat(filter.getPredicate()).isEqualTo(mockPredicate);
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void ofNullPredicateThrowsIllegalArgumentException() {
 
-    try {
-      PredicateToFilterAdapter.of(null);
-    }
-    catch (IllegalArgumentException expected) {
-
-      assertThat(expected).hasMessage("Predicate is required");
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> PredicateToFilterAdapter.of(null))
+      .withMessage("Predicate is required")
+      .withNoCause();
   }
 
   @Test

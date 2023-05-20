@@ -13,19 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.lang.support;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.mockito.Mockito.mock;
 
 import java.util.function.Function;
 
-import org.cp.elements.lang.Transformer;
 import org.junit.jupiter.api.Test;
 
+import org.cp.elements.lang.Transformer;
+
 /**
- * Unit tests for {@link FunctionToTransformerAdapter}.
+ * Unit Tests for {@link FunctionToTransformerAdapter}.
  *
  * @author John Blum
  * @see java.util.function.Function
@@ -49,19 +50,13 @@ public class FunctionToTransformerAdapterTests {
     assertThat(transformer.getFunction()).isEqualTo(mockFunction);
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void constructTransformerWithNullThrowsIllegalArgumentException() {
 
-    try {
-      new FunctionToTransformerAdapter<>(null);
-    }
-    catch (IllegalArgumentException expected) {
-
-      assertThat(expected).hasMessage("Function is required");
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> new FunctionToTransformerAdapter<>(null))
+      .withMessage("Function is required")
+      .withNoCause();
   }
 
   @Test
@@ -76,19 +71,13 @@ public class FunctionToTransformerAdapterTests {
     assertThat(transformer.getFunction()).isEqualTo(mockFunction);
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void ofNullFunctionThrowsIllegalArgumentException() {
 
-    try {
-      FunctionToTransformerAdapter.of(null);
-    }
-    catch (IllegalArgumentException expected) {
-
-      assertThat(expected).hasMessage("Function is required");
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> FunctionToTransformerAdapter.of(null))
+      .withMessage("Function is required")
+      .withNoCause();
   }
 
   @Test

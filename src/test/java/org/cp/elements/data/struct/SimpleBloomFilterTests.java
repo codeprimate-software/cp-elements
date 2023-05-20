@@ -13,18 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.data.struct;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 
 import java.util.Random;
 
-import org.cp.elements.lang.NumberUtils;
 import org.junit.jupiter.api.Test;
 
+import org.cp.elements.lang.NumberUtils;
+
 /**
- * Unit tests for {@link SimpleBloomFilter}.
+ * Unit Tests for {@link SimpleBloomFilter}.
  *
  * @author John J. Blum
  * @see org.junit.jupiter.api.Test
@@ -95,34 +96,22 @@ public class SimpleBloomFilterTests {
     assertThat(count).isEqualTo(2);
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void constructBloomFilterWithIllegalNumberOfBits() {
 
-    try {
-      new SimpleBloomFilter<>(-1, SimpleBloomFilter.DEFAULT_NUMBER_OF_HASH_FUNCTIONS);
-    }
-    catch (IllegalArgumentException expected) {
-
-      assertThat(expected).hasMessage("Number of bits [-1] must be greater than 0");
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> new SimpleBloomFilter<>(-1, SimpleBloomFilter.DEFAULT_NUMBER_OF_HASH_FUNCTIONS))
+      .withMessage("Number of bits [-1] must be greater than 0")
+      .withNoCause();
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void constructBloomFilterWithIllegalNumberOfHashFunctions() {
 
-    try {
-      new SimpleBloomFilter<>(SimpleBloomFilter.DEFAULT_NUMBER_OF_BITS, -1);
-    }
-    catch (IllegalArgumentException expected) {
-
-      assertThat(expected).hasMessage("Number of hash functions [-1] must be greater than 0");
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> new SimpleBloomFilter<>(SimpleBloomFilter.DEFAULT_NUMBER_OF_BITS, -1))
+      .withMessage("Number of hash functions [-1] must be greater than 0")
+      .withNoCause();
   }
 
   @Test
@@ -172,68 +161,59 @@ public class SimpleBloomFilterTests {
     assertThat(bloomFilter.size()).isZero();
   }
 
-  private void testSimpleBloomFilterWithIllegalApproximateNumberOfElements(int approximateNumberOfElements) {
-
-    try {
-      SimpleBloomFilter.of(approximateNumberOfElements);
-    }
-    catch (IllegalArgumentException expected) {
-
-      assertThat(expected).hasMessage(
-        "The approximate number of elements [%d] to add to the filter must be greater than 0",
-          approximateNumberOfElements);
-
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
-  }
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void simpleBloomFilterOfZeroNumberOfElements() {
-    testSimpleBloomFilterWithIllegalApproximateNumberOfElements(0);
+
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> SimpleBloomFilter.of(1, 0))
+      .withMessage("The approximate number of elements [0] to add to the filter must be greater than 0")
+      .withNoCause();
 
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void simpleBloomFilterOfMinusOneHundredNumberOfElements() {
-    testSimpleBloomFilterWithIllegalApproximateNumberOfElements(-100);
+
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> SimpleBloomFilter.of(1, -100))
+      .withMessage("The approximate number of elements [-100] to add to the filter must be greater than 0")
+      .withNoCause();
   }
 
-  private void testSimpleBloomFilterWithIllegalAcceptableFalsePositiveRate(float acceptableFalsePositiveRate) {
-
-    try {
-      SimpleBloomFilter.of(1, acceptableFalsePositiveRate);
-    }
-    catch (IllegalArgumentException expected) {
-
-      assertThat(expected).hasMessage(
-        "The acceptable false positive rate [%s] must be greater than 0.0 and less than 1.0",
-          acceptableFalsePositiveRate);
-
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
-  }
-
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void simpleBloomFilterOfMinusFiftyPercentAcceptableFalsePositiveRate() {
-    testSimpleBloomFilterWithIllegalAcceptableFalsePositiveRate(-0.5f);
+
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> SimpleBloomFilter.of(1, -0.5f))
+      .withMessage("The acceptable false positive rate [-0.5] must be greater than 0.0 and less than 1.0")
+      .withNoCause();
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void simpleBloomFilterOfZeroPercentAcceptableFalsePositiveRate() {
-    testSimpleBloomFilterWithIllegalAcceptableFalsePositiveRate(0.0f);
+
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> SimpleBloomFilter.of(1, 0.0f))
+      .withMessage("The acceptable false positive rate [0.0] must be greater than 0.0 and less than 1.0")
+      .withNoCause();
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void simpleBloomFilterOfOneHundredPercentAcceptableFalsePositiveRate() {
-    testSimpleBloomFilterWithIllegalAcceptableFalsePositiveRate(1.0f);
+
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> SimpleBloomFilter.of(1, 1.0f))
+      .withMessage("The acceptable false positive rate [1.0] must be greater than 0.0 and less than 1.0")
+      .withNoCause();
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void simpleBloomFilterOfFiveHundredPercentAcceptableFalsePositiveRate() {
-    testSimpleBloomFilterWithIllegalAcceptableFalsePositiveRate(5.0f);
+
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> SimpleBloomFilter.of(1, 5.0f))
+      .withMessage("The acceptable false positive rate [5.0] must be greater than 0.0 and less than 1.0")
+      .withNoCause();
   }
 
   @Test
@@ -308,6 +288,7 @@ public class SimpleBloomFilterTests {
   }
 
   @Test
+  @SuppressWarnings("all")
   public void evenNumbersAreAcceptedOddNumbersRejected() {
 
     SimpleBloomFilter<Integer> bloomFilter = SimpleBloomFilter.of(100);
@@ -336,6 +317,7 @@ public class SimpleBloomFilterTests {
   }
 
   @Test
+  @SuppressWarnings("all")
   public void oddNumbersAreAcceptedEvenNumbersRejected() {
 
     SimpleBloomFilter<Integer> bloomFilter = SimpleBloomFilter.of(100);
@@ -364,6 +346,7 @@ public class SimpleBloomFilterTests {
   }
 
   @Test
+  @SuppressWarnings("all")
   public void randomNumbersAreAccepted() {
 
     SimpleBloomFilter<Integer> bloomFilter = SimpleBloomFilter.of(100);
