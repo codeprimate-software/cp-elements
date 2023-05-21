@@ -25,6 +25,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -34,6 +35,7 @@ import org.junit.jupiter.api.Test;
 
 import org.cp.elements.lang.NumberUtils;
 import org.cp.elements.lang.ThrowableAssertions;
+import org.cp.elements.lang.factory.ObjectInstantiationException;
 import org.cp.elements.lang.reflect.MethodNotFoundException;
 
 import edu.umd.cs.mtc.MultithreadedTestCase;
@@ -680,8 +682,10 @@ public class AbstractSearcherTests {
       .havingMessage("Error occurred creating an instance of Matcher class (%1$s) to be used by this Searcher (%2$s)!"
           + " The Matcher class (%1$s) must have a public no-arg constructor!", TestProblemMatcher.class.getName(),
             TestSearcher.class.getName())
+      .causedBy(ObjectInstantiationException.class)
+      .havingMessage("Failed to construct object of type [%s]", TestProblemMatcher.class.getName())
+      .causedBy(InvocationTargetException.class)
       .causedBy(IllegalStateException.class)
-      .havingMessage("Construction Failed!")
       .withNoCause();
   }
 

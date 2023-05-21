@@ -346,10 +346,10 @@ public abstract class AbstractSearcher implements Searcher {
     try {
       if (isCustomMatcherAllowed()) {
 
-        Class<? extends Matcher> matcherClass = searchableAnnotation.matcher();
+        Class<? extends Matcher> matcherType = searchableAnnotation.matcher();
 
-        if (!Matcher.class.equals(matcherClass)) {
-          MatcherHolder.set(matcherClass.newInstance());
+        if (!Matcher.class.equals(matcherType)) {
+          MatcherHolder.set(ObjectUtils.construct(matcherType));
         }
       }
 
