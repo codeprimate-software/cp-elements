@@ -31,6 +31,7 @@ import java.time.Period;
 import org.junit.jupiter.api.Test;
 
 import org.cp.elements.lang.ThrowableAssertions;
+import org.cp.elements.lang.reflect.test.ObjectWithInAccessibleMethod;
 
 /**
  * Unit Tests for {@link MethodInvocation}.
@@ -298,15 +299,20 @@ public class MethodInvocationTests {
   }
 
   @Test
+  @SuppressWarnings("all")
   public void makeAccessibleIsSuccessful() throws NoSuchMethodException {
 
-    Method getName = Contact.class.getMethod("getName");
+    ObjectWithInAccessibleMethod target = new ObjectWithInAccessibleMethod();
 
-    MethodInvocation methodInvocation = newMethodInvocation(target, getName);
+    Method getValue = ObjectWithInAccessibleMethod.class.getDeclaredMethod("getValue");
 
-    assertThat(getName.isAccessible()).isFalse();
+    getValue.setAccessible(false);
+
+    MethodInvocation methodInvocation = newMethodInvocation(target, getValue);
+
+    assertThat(getValue.canAccess(target)).isFalse();
     assertThat(methodInvocation.makeAccessible()).isSameAs(methodInvocation);
-    assertThat(getName.isAccessible()).isTrue();
+    assertThat(getValue.canAccess(target)).isTrue();
   }
 
   @Test

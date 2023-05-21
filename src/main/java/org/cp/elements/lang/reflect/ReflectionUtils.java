@@ -335,7 +335,7 @@ public abstract class ReflectionUtils extends ClassUtils {
     Assert.notNull(fieldType, "Field type is required");
 
     try {
-      boolean currentAccessible = field.isAccessible();
+      boolean currentAccessible = field.canAccess(target);
       field.setAccessible(true);
       Object value = field.get(target);
       field.setAccessible(currentAccessible);
@@ -744,7 +744,7 @@ public abstract class ReflectionUtils extends ClassUtils {
     Assert.notNull(returnType, "Return type is required");
 
     try {
-      boolean currentAccessible = method.isAccessible();
+      boolean currentAccessible = method.canAccess(target);
       method.setAccessible(true);
       Object returnValue = method.invoke(target, arguments);
       method.setAccessible(currentAccessible);
