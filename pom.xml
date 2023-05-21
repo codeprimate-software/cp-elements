@@ -8,7 +8,7 @@
   <parent>
     <groupId>org.codeprimate</groupId>
     <artifactId>cp-core</artifactId>
-    <version>1.16.0-SNAPSHOT</version>
+    <version>2.0.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>cp-elements</artifactId>
