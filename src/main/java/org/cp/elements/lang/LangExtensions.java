@@ -39,9 +39,9 @@ import org.cp.elements.lang.reflect.ProxyFactory;
 import org.cp.elements.text.FormatUtils;
 
 /**
- * The {@link LangExtensions} class provides methods to write natural language expressions for various conditions,
- * such as equality comparisons, identity checks, null checks, negation along with operations such as conversion,
- * and so on.
+ * The {@link LangExtensions} class provides methods modeling {@literal operators} used to write natural language
+ * expressions for various conditions, such as equality comparisons, identity checks, null checks, negation
+ * along with operations such as conversion, and so on.
  *
  * @author John J. Blum
  * @see java.lang.reflect.InvocationHandler
@@ -65,17 +65,17 @@ import org.cp.elements.text.FormatUtils;
 public abstract class LangExtensions {
 
   /**
-   * Safe-navigation operator used to safely navigate the sequence of {@link Object} {@link Method} invocations
-   * in a call chain, for example...
+   * Safe-navigation operator used to safely navigate a sequence of {@link Object} {@link Method} invocations
+   * in a call chain, for example:
    *
    * <code>
    *   obj.getX().getY().getZ()...
    * </code>
    *
-   * @param <T> {@link Class} type of given {@link Object} to Proxy.
+   * @param <T> {@link Class type} of {@link Object} to Proxy.
    * @param obj {@link Object} to Proxy and on which the {@link Method} invocation, call chain begins.
-   * @param interfaces array of {@link Class interfaces} for the Proxy {@link Class} to implement.
-   * @return a Proxy for the given {@link Object} implement the provided {@link Class interfaces}.
+   * @param interfaces array of {@link Class interfaces} to be implemented by the Proxy {@link Class type}.
+   * @return a Proxy for the given {@link Object} implementing the provided {@link Class interfaces}.
    * @see org.cp.elements.lang.reflect.ProxyFactory#newProxyFactory(Object, Class[])
    * @see org.cp.elements.lang.reflect.ProxyFactory#adviseWith(MethodInterceptor[])
    * @see SafeNavigationHandler#newSafeNavigationHandler(ProxyFactory)
@@ -95,8 +95,8 @@ public abstract class LangExtensions {
   }
 
   /**
-   * The {@link SafeNavigationHandler} class is a Java {@link InvocationHandler} and Elements {@link MethodInterceptor}
-   * used to handle safe object navigation through method chaining.
+   * Java {@link InvocationHandler} and Elements {@link MethodInterceptor} used to handle safe object navigation
+   * through method chaining.
    *
    * @param <T> {@link Class type} of {@link Object} to navigate safely.
    * @see java.lang.reflect.InvocationHandler
@@ -199,7 +199,7 @@ public abstract class LangExtensions {
      *
      * @param proxy {@link Object Proxy} on which the {@link Method} was invoked,
      * thereby intercepting the {@link Method} call.
-     * @param method {@link Method} to invoke.
+     * @param method {@link Method} to invoke; must not be {@literal null}.
      * @param arguments array of {@link Object arguments} to pass to the {@link Method} invocation.
      * @return the {@link Object return value} of the {@link Method} invocation, or {@literal null}
      * if the {@link Method} does not return a value.
@@ -264,7 +264,7 @@ public abstract class LangExtensions {
    * The {@link AssertThat} interface is a contract for implementing objects that assert the state of an {@link Object}
    * or component of the application or system.
    *
-   * @param <T> {@link Class type} of the {@link Object} to evaluate and assert.
+   * @param <T> {@link Class type} of {@link Object} to evaluate and assert.
    * @see org.cp.elements.lang.LangExtensions.AssertThatExpression
    * @see org.cp.elements.lang.LangExtensions.AssertThatWrapper
    * @see org.cp.elements.lang.annotation.FluentApi
@@ -1495,11 +1495,11 @@ public abstract class LangExtensions {
   }
 
   /**
-   * The {@literal from} operator can be used to adapt, transform or transition an {@link Object}
-   * into another type of {@link Object}.
+   * The {@literal from} operator can be used to adapt, cast, convert or transform an {@link Object}
+   * into another {@link Class type} of {@link Object}.
    *
    * @param target {@link Object} to adapt or transform.
-   * @return a new instance of the {@link From} operator.
+   * @return a new instance of {@link From} operator.
    * @see org.cp.elements.lang.LangExtensions.From
    * @see org.cp.elements.lang.annotation.Dsl
    */
@@ -1582,10 +1582,10 @@ public abstract class LangExtensions {
   }
 
   /**
-   * The {@literal given} operator is used to perform multiple test evaluations a given {@link Object target}
+   * The {@literal given} operator is used to perform multiple test evaluations on a given {@link Object target}
    * and its composition structure.
    *
-   * @param <T> {@link Class type} of the {@link Object} to evaluate.
+   * @param <T> {@link Class type} of {@link Object} to evaluate.
    * @param target {@link Object} to evaluate.
    * @return a new {@link Given} operator instance.
    * @see org.cp.elements.lang.LangExtensions.Given
@@ -1597,10 +1597,10 @@ public abstract class LangExtensions {
   }
 
   /**
-   * The {@link Given} interface define a contract for evaluating a given {@link Object target} testing whether it
-   * satisfies certain pre-conditions.
+   * The {@link Given} interface define a contract for evaluating a given {@link Object target} to test
+   * whether it satisfies certain pre-conditions.
    *
-   * @param <T> {@link Class type} of the {@link Object target} to evaluate.
+   * @param <T> {@link Class type} of {@link Object target} to evaluate.
    * @see org.cp.elements.lang.LangExtensions.GivenExpression
    * @see org.cp.elements.lang.annotation.FluentApi
    * @see org.cp.elements.lang.FluentApiExtension
@@ -1740,7 +1740,7 @@ public abstract class LangExtensions {
   }
 
   /**
-   * The {@literal is} operator can be used to make logical determinations about an {@link Object} such as boolean,
+   * The {@literal is} operator can be used to make logical deductions about an {@link Object} such as boolean,
    * equality, identity, relational or type comparisons with other {@link Object Objects}, and so on.
    *
    * @param <T> {@link Class type} of {@link Object} as the {@literal subject} of the {@literal is} operator.
