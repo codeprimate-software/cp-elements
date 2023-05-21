@@ -42,6 +42,7 @@ import org.cp.elements.data.mapping.MappingException;
 import org.cp.elements.enums.Gender;
 import org.cp.elements.lang.Constants;
 import org.cp.elements.lang.ThrowableAssertions;
+import org.cp.elements.lang.factory.ObjectInstantiationException;
 import org.cp.elements.lang.reflect.MethodInvocationException;
 
 import lombok.Data;
@@ -214,6 +215,8 @@ public class AbstractRowUnitTests {
       .isThrownBy(args -> row.map(NonInstantiableType.class))
       .havingMessage("Failed to map object of type [%s] with values from this Row [4]",
         NonInstantiableType.class.getName())
+      .causedBy(ObjectInstantiationException.class)
+      .havingMessage("Failed to construct object of type [%s]", NonInstantiableType.class.getName())
       .causedBy(IllegalAccessException.class)
       .withNoCause();
 
@@ -460,7 +463,7 @@ public class AbstractRowUnitTests {
 
   @NoArgsConstructor
   @SuppressWarnings("unused")
-  private static final class ExplodingType {
+  public static final class ExplodingType {
 
     @Getter
     private Object value;
@@ -477,7 +480,7 @@ public class AbstractRowUnitTests {
   }
 
   @NoArgsConstructor
-  private static class FemalePerson {
+  public static class FemalePerson {
 
     @Getter
     private final Gender gender = Gender.FEMALE;
@@ -492,7 +495,7 @@ public class AbstractRowUnitTests {
 
   @Data
   @NoArgsConstructor
-  private static class Person {
+  public static class Person {
 
     private Gender gender;
     private String name;

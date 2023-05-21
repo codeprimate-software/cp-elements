@@ -135,7 +135,7 @@ public abstract class AbstractRow implements Row {
 
         try {
 
-          T instance = type.newInstance();
+          T instance = ObjectUtils.construct(type);
 
           BeanAdapter instanceBean = BeanAdapter.from(instance);
           BeanModel instanceModel = instanceBean.getModel();
