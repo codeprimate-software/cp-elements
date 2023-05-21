@@ -31,7 +31,7 @@ import org.cp.elements.lang.annotation.Nullable;
 import org.cp.elements.util.ArrayUtils;
 
 /**
- * {@link StringUtils} is an abstract utility class used to perform operations on {@link String Strings}.
+ * Abstract utility class used to perform operations on {@link String Strings}.
  *
  * @author John J. Blum
  * @see java.lang.String
