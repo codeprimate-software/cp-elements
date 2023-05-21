@@ -40,13 +40,12 @@ import java.net.Socket;
 import java.net.SocketAddress;
 
 import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import org.cp.elements.lang.ThrowableAssertions;
 import org.cp.elements.test.annotation.SubjectUnderTest;
-
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 /**
  * Unit Tests for {@link AbstractClientServerSupport}.
@@ -57,15 +56,13 @@ import org.mockito.junit.MockitoJUnitRunner;
  * @see java.net.ServerSocket
  * @see java.net.Socket
  * @see org.junit.jupiter.api.Test
- * @see org.junit.runner.RunWith
  * @see org.mockito.Mock
  * @see org.mockito.Mockito
  * @see org.mockito.Spy
- * @see org.mockito.junit.MockitoJUnitRunner
  * @see org.cp.elements.tools.net.support.AbstractClientServerSupport
  * @since 1.0.0
  */
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class AbstractClientServerSupportTests {
 
   @SubjectUnderTest

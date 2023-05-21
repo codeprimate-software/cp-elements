@@ -165,7 +165,7 @@ public class SimpleBloomFilterTests {
   public void simpleBloomFilterOfZeroNumberOfElements() {
 
     assertThatIllegalArgumentException()
-      .isThrownBy(() -> SimpleBloomFilter.of(1, 0))
+      .isThrownBy(() -> SimpleBloomFilter.of(0))
       .withMessage("The approximate number of elements [0] to add to the filter must be greater than 0")
       .withNoCause();
 
@@ -175,7 +175,7 @@ public class SimpleBloomFilterTests {
   public void simpleBloomFilterOfMinusOneHundredNumberOfElements() {
 
     assertThatIllegalArgumentException()
-      .isThrownBy(() -> SimpleBloomFilter.of(1, -100))
+      .isThrownBy(() -> SimpleBloomFilter.of(-100))
       .withMessage("The approximate number of elements [-100] to add to the filter must be greater than 0")
       .withNoCause();
   }

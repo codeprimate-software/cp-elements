@@ -304,9 +304,9 @@ public class MethodInvocationTests {
 
     MethodInvocation methodInvocation = newMethodInvocation(target, getName);
 
-    assertThat(getName.canAccess(getName)).isFalse();
+    assertThat(getName.isAccessible()).isFalse();
     assertThat(methodInvocation.makeAccessible()).isSameAs(methodInvocation);
-    assertThat(getName.canAccess(getName)).isTrue();
+    assertThat(getName.isAccessible()).isTrue();
   }
 
   @Test

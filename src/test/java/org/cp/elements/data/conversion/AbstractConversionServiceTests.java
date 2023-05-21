@@ -124,7 +124,7 @@ public class AbstractConversionServiceTests {
 
     assertThatExceptionOfType(ConversionException.class)
       .isThrownBy(() -> conversionService.convert("test", String.class))
-      .withMessage("Cannot convert [test] into Object of type [%s]")
+      .withMessage("Cannot convert [test] into Object of type [%s]", String.class.getName())
       .withNoCause();
   }
 

@@ -27,15 +27,15 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 import java.io.File;
 import java.io.FileFilter;
 
-import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
-
-import org.cp.elements.lang.LogicalOperator;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import org.assertj.core.api.InstanceOfAssertFactories;
+import org.cp.elements.lang.LogicalOperator;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.Mock.Strictness;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 /**
  * Unit Tests for {@link ComposableFileFilter}.
@@ -46,23 +46,22 @@ import org.mockito.junit.MockitoJUnitRunner;
  * @see org.junit.jupiter.api.Test
  * @see org.mockito.Mock
  * @see org.mockito.Mockito
- * @see org.mockito.junit.MockitoJUnitRunner
  * @see org.cp.elements.io.ComposableFileFilter
  * @since 1.0.0
  */
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class ComposableFileFilterUnitTests {
 
-  @Mock
+  @Mock(strictness = Strictness.LENIENT)
   private File mockFile;
 
-  @Mock
+  @Mock(strictness = Strictness.LENIENT)
   private FileFilter mockFileFilterOne;
 
-  @Mock
+  @Mock(strictness = Strictness.LENIENT)
   private FileFilter mockFileFilterTwo;
 
-  @Before
+  @BeforeEach
   public void setup() {
     doReturn(true).when(this.mockFileFilterOne).accept(any(File.class));
     doReturn(false).when(this.mockFileFilterTwo).accept(any(File.class));

@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.process.java;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -31,6 +30,10 @@ import java.util.jar.Attributes;
 import java.util.jar.JarOutputStream;
 import java.util.jar.Manifest;
 
+import org.junit.After;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
 import org.cp.elements.io.FileSystemUtils;
 import org.cp.elements.lang.StringUtils;
 import org.cp.elements.net.NetworkUtils;
@@ -38,12 +41,9 @@ import org.cp.elements.process.ProcessAdapter;
 import org.cp.elements.test.AbstractBaseTestSuite;
 import org.cp.elements.tools.net.EchoClient;
 import org.cp.elements.tools.net.EchoServer;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.jupiter.api.Test;
 
 /**
- * Integration tests for {@link JavaProcessExecutor} testing the JAR execution functionality.
+ * Integration Tests for {@link JavaProcessExecutor} testing the JAR execution functionality.
  *
  * @author John Blum
  * @see org.junit.jupiter.api.Test
@@ -66,7 +66,7 @@ public class JarFileProcessExecutorIntegrationTests extends AbstractBaseTestSuit
 
   private final TimeUnit TIMEOUT_TIME_UNIT = TimeUnit.SECONDS;
 
-  @Before
+  @BeforeEach
   public void setup() {
 
     availablePort = NetworkUtils.availablePort();

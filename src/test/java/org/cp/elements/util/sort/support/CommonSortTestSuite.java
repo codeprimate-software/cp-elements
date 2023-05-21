@@ -17,18 +17,19 @@ package org.cp.elements.util.sort.support;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.cp.elements.util.ArrayUtils.asIterable;
-import static org.junit.Assert.fail;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
+import org.junit.After;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
 import org.cp.elements.lang.Constants;
 import org.cp.elements.util.sort.AbstractSorter;
 import org.cp.elements.util.sort.Sorter;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.jupiter.api.Test;
 
 /**
  * The {@link CommonSortTestSuite} class is an abstract base class encapsulating test functionality and logic
@@ -53,6 +54,7 @@ public abstract class CommonSortTestSuite {
   protected Integer[] numbers;
 
   protected void assertShuffled(Iterable<Integer> numbers) {
+
     Integer previousNumber = Integer.MAX_VALUE;
 
     for (Integer currentNumber : numbers) {
@@ -63,7 +65,7 @@ public abstract class CommonSortTestSuite {
       previousNumber = currentNumber;
     }
 
-    fail("The array of numbers is not shuffled!");
+    Assertions.fail("The array of numbers is not shuffled!");
   }
 
   protected void assertSorted(Iterable<Integer> numbers) {
@@ -93,9 +95,11 @@ public abstract class CommonSortTestSuite {
     return true;
   }
 
-  @Before
+  @BeforeEach
   public void setup() {
+
     if (runSetup()) {
+
       Random numberGenerator = new Random(System.currentTimeMillis());
 
       numbers = new Integer[getNumberOfElementsToSort()];
@@ -125,6 +129,7 @@ public abstract class CommonSortTestSuite {
 
   @Test
   public void sort() {
+
     Sorter sorter = getSorter();
 
     assertThat(sorter).as("The Sorter implementation was not configured and initialized properly!").isNotNull();

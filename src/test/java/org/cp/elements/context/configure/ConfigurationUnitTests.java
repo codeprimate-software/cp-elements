@@ -37,7 +37,7 @@ import java.util.function.Supplier;
 
 import org.junit.After;
 import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import org.cp.elements.context.annotation.Profile;
 import org.cp.elements.lang.Constants;
@@ -45,11 +45,10 @@ import org.cp.elements.lang.ThrowableAssertions;
 import org.cp.elements.security.model.User;
 import org.cp.elements.test.annotation.SubjectUnderTest;
 import org.cp.elements.util.ArrayUtils;
-
 import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 /**
  * Unit Tests for {@link Configuration}.
@@ -58,11 +57,10 @@ import org.mockito.junit.MockitoJUnitRunner;
  * @see org.junit.jupiter.api.Test
  * @see org.mockito.Mock
  * @see org.mockito.Mockito
- * @see org.mockito.junit.MockitoJUnitRunner
  * @see org.cp.elements.context.configure.Configuration
  * @since 1.0.0
  */
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class ConfigurationUnitTests {
 
   @Mock

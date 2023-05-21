@@ -26,24 +26,22 @@ import java.io.IOException;
 import java.util.concurrent.TimeoutException;
 
 import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 /**
  * Unit Tests for {@link CheckedExceptionsFactory}.
  *
  * @author John Blum
  * @see org.junit.jupiter.api.Test
- * @see org.junit.runner.RunWith
  * @see org.mockito.Mock
  * @see org.mockito.Mockito
- * @see org.mockito.junit.MockitoJUnitRunner
  * @see org.cp.elements.lang.CheckedExceptionsFactory
  * @since 1.0.0
  */
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class CheckedExceptionsFactoryUnitTests {
 
   @Mock

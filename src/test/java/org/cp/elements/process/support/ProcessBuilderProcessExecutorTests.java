@@ -34,7 +34,7 @@ import java.util.Arrays;
 import java.util.Collections;
 
 import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import org.cp.elements.context.env.Environment;
 import org.cp.elements.io.FileSystemUtils;
@@ -43,22 +43,20 @@ import org.cp.elements.lang.ThrowableAssertions;
 import org.cp.elements.process.ProcessAdapter;
 import org.cp.elements.process.ProcessExecutionException;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 /**
  * Unit Tests for {@link ProcessBuilderProcessExecutor}.
  *
  * @author John Blum
  * @see org.junit.jupiter.api.Test
- * @see org.junit.runner.RunWith
  * @see org.mockito.Mock
  * @see org.mockito.Mockito
  * @see org.mockito.Spy
- * @see org.mockito.junit.MockitoJUnitRunner
  * @see org.cp.elements.process.support.ProcessBuilderProcessExecutor
  * @since 1.0.0
  */
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class ProcessBuilderProcessExecutorTests {
 
   @Mock

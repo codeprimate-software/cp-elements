@@ -26,10 +26,10 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 
 import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 /**
  * Unit Tests for the {@link Identifiable} interface.
@@ -41,7 +41,7 @@ import org.mockito.junit.MockitoJUnitRunner;
  * @see org.mockito.junit.MockitoJUnitRunner
  * @see org.cp.elements.lang.Identifiable
  */
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class IdentifiableUnitTests {
 
   @Mock

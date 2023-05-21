@@ -40,17 +40,18 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.function.Supplier;
 
+import javax.annotation.processing.SupportedOptions;
+
 import org.junit.Before;
-import org.junit.BeforeClass;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import org.cp.elements.data.conversion.ConversionException;
 import org.cp.elements.data.conversion.ConversionService;
 import org.cp.elements.test.annotation.SubjectUnderTest;
-
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 /**
  * Unit Tests for {@link PropertiesAdapter}.
@@ -61,11 +62,10 @@ import org.mockito.junit.MockitoJUnitRunner;
  * @see org.junit.jupiter.api.Test
  * @see org.mockito.Mock
  * @see org.mockito.Mockito
- * @see org.mockito.junit.MockitoJUnitRunner
  * @see org.cp.elements.util.PropertiesAdapter
  * @since 1.0.0
  */
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class PropertiesAdapterUnitTests {
 
   @SubjectUnderTest
@@ -74,7 +74,7 @@ public class PropertiesAdapterUnitTests {
   @Mock
   private Properties mockProperties;
 
-  @BeforeClass
+  @BeforeAll
   public static void setupPropertiesAdapter() {
 
     Properties properties = new Properties();
@@ -659,6 +659,7 @@ public class PropertiesAdapterUnitTests {
   }
 
   @Test
+  @SuppressWarnings("all")
   public void toStringIsCorrect() {
 
     String actualPropertiesString = propertiesAdapter.toString();

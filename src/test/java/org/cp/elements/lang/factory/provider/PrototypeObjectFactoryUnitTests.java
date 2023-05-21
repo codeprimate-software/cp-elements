@@ -29,7 +29,7 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 import java.util.Collections;
 import java.util.Map;
 
-import org.junit.After;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 
 import org.cp.elements.context.configure.Configuration;
@@ -51,7 +51,7 @@ import org.cp.elements.lang.factory.ObjectFactoryReferenceHolder;
 @SuppressWarnings("unused")
 public class PrototypeObjectFactoryUnitTests {
 
-  @After
+  @AfterEach
   public void tearDown() {
 
     ObjectFactoryReferenceHolder.clear();

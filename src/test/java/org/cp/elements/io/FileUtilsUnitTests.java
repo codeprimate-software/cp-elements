@@ -43,7 +43,7 @@ import java.time.ZonedDateTime;
 
 import org.junit.BeforeClass;
 import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import org.cp.elements.lang.StringUtils;
 import org.cp.elements.lang.annotation.NotNull;
@@ -51,9 +51,8 @@ import org.cp.elements.lang.annotation.Nullable;
 import org.cp.elements.test.AbstractBaseTestSuite;
 import org.cp.elements.test.annotation.IntegrationTest;
 import org.cp.elements.time.Month;
-
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 /**
  * Unit Tests for {@link FileUtils}.
@@ -63,16 +62,14 @@ import org.mockito.junit.MockitoJUnitRunner;
  * @see java.io.InputStream
  * @see java.net.URL
  * @see org.junit.jupiter.api.Test
- * @see org.junit.runner.RunWith
  * @see org.mockito.Mock
  * @see org.mockito.Mockito
- * @see org.mockito.junit.MockitoJUnitRunner
  * @see org.cp.elements.io.FileUtils
  * @see org.cp.elements.test.AbstractBaseTestSuite
  * @see org.cp.elements.test.annotation.IntegrationTest
  * @since 1.0.0
  */
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class FileUtilsUnitTests extends AbstractBaseTestSuite {
 
   @Mock

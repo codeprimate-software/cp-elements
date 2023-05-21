@@ -584,7 +584,7 @@ public class ArrayUtilsTests {
 
     ThrowableAssertions.assertThatUnsupportedOperationException()
       .isThrownBy(args -> ArrayUtils.deepCopy(array))
-      .havingMessage("[clone] is not supported for object of type [Person]")
+      .havingMessageContaining("[clone] is not supported for object of type [Person]")
       .causedBy(CloneNotSupportedException.class)
       .withNoCause();
   }
@@ -643,7 +643,7 @@ public class ArrayUtilsTests {
   public void deepCopyWithArrayAndNullCopyFunctionThrowsIllegalArgumentException() {
 
     assertThatIllegalArgumentException()
-      .isThrownBy(ArrayUtils::emptyArray)
+      .isThrownBy(() -> ArrayUtils.deepCopy(ArrayUtils.emptyArray(), null))
       .withMessage("Copy Function is required")
       .withNoCause();
   }

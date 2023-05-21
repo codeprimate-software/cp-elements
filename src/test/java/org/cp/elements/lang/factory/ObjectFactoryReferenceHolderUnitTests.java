@@ -20,7 +20,7 @@ import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verifyNoInteractions;
 
-import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import edu.umd.cs.mtc.MultithreadedTestCase;
@@ -33,14 +33,13 @@ import edu.umd.cs.mtc.TestFramework;
  * @see org.junit.jupiter.api.Test
  * @see org.mockito.Mockito
  * @see org.cp.elements.lang.factory.ObjectFactoryReferenceHolder
- * @see org.cp.elements.test.TestUtils
  * @see edu.umd.cs.mtc.MultithreadedTestCase
  * @see edu.umd.cs.mtc.TestFramework
  * @since 1.0.0
  */
 public class ObjectFactoryReferenceHolderUnitTests {
 
-  @Before
+  @BeforeEach
   public void setup() {
 
     ObjectFactoryReferenceHolder.clear();

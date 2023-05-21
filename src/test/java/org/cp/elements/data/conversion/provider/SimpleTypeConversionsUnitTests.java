@@ -73,55 +73,55 @@ public class SimpleTypeConversionsUnitTests {
 
   @Test
   public void convertsStringToBigInteger() {
-    assertThat(SimpleTypeConversions.BIG_INTEGER_CONVERTER.convert("123456789"))
+    assertThat(SimpleTypeConversions.BIG_INTEGER_CONVERTER.<BigInteger>convert("123456789"))
       .isEqualTo(new BigInteger("123456789"));
   }
 
   @Test
   public void convertsStringToBooleanTrue() {
 
-    assertThat(SimpleTypeConversions.BOOLEAN_CONVERTER.convert("true")).isTrue();
-    assertThat(SimpleTypeConversions.BOOLEAN_CONVERTER.convert("True")).isTrue();
-    assertThat(SimpleTypeConversions.BOOLEAN_CONVERTER.convert("TRUE")).isTrue();
-    assertThat(SimpleTypeConversions.BOOLEAN_CONVERTER.convert(" TrUe  ")).isTrue();
+    assertThat(SimpleTypeConversions.BOOLEAN_CONVERTER.<Boolean>convert("true")).isTrue();
+    assertThat(SimpleTypeConversions.BOOLEAN_CONVERTER.<Boolean>convert("True")).isTrue();
+    assertThat(SimpleTypeConversions.BOOLEAN_CONVERTER.<Boolean>convert("TRUE")).isTrue();
+    assertThat(SimpleTypeConversions.BOOLEAN_CONVERTER.<Boolean>convert(" TrUe  ")).isTrue();
   }
 
   @Test
   public void convertsStringToBooleanFalse() {
 
-    assertThat(SimpleTypeConversions.BOOLEAN_CONVERTER.convert("false")).isFalse();
-    assertThat(SimpleTypeConversions.BOOLEAN_CONVERTER.convert("!true")).isFalse();
-    assertThat(SimpleTypeConversions.BOOLEAN_CONVERTER.convert("yes")).isFalse();
-    assertThat(SimpleTypeConversions.BOOLEAN_CONVERTER.convert("no")).isFalse();
-    assertThat(SimpleTypeConversions.BOOLEAN_CONVERTER.convert("1")).isFalse();
-    assertThat(SimpleTypeConversions.BOOLEAN_CONVERTER.convert("0")).isFalse();
-    assertThat(SimpleTypeConversions.BOOLEAN_CONVERTER.convert(" ")).isFalse();
-    assertThat(SimpleTypeConversions.BOOLEAN_CONVERTER.convert("")).isFalse();
-    assertThat(SimpleTypeConversions.BOOLEAN_CONVERTER.convert("null")).isFalse();
-    assertThat(SimpleTypeConversions.BOOLEAN_CONVERTER.convert("nil")).isFalse();
-    assertThat(SimpleTypeConversions.BOOLEAN_CONVERTER.convert(null)).isFalse();
+    assertThat(SimpleTypeConversions.BOOLEAN_CONVERTER.<Boolean>convert("false")).isFalse();
+    assertThat(SimpleTypeConversions.BOOLEAN_CONVERTER.<Boolean>convert("!true")).isFalse();
+    assertThat(SimpleTypeConversions.BOOLEAN_CONVERTER.<Boolean>convert("yes")).isFalse();
+    assertThat(SimpleTypeConversions.BOOLEAN_CONVERTER.<Boolean>convert("no")).isFalse();
+    assertThat(SimpleTypeConversions.BOOLEAN_CONVERTER.<Boolean>convert("1")).isFalse();
+    assertThat(SimpleTypeConversions.BOOLEAN_CONVERTER.<Boolean>convert("0")).isFalse();
+    assertThat(SimpleTypeConversions.BOOLEAN_CONVERTER.<Boolean>convert(" ")).isFalse();
+    assertThat(SimpleTypeConversions.BOOLEAN_CONVERTER.<Boolean>convert("")).isFalse();
+    assertThat(SimpleTypeConversions.BOOLEAN_CONVERTER.<Boolean>convert("null")).isFalse();
+    assertThat(SimpleTypeConversions.BOOLEAN_CONVERTER.<Boolean>convert("nil")).isFalse();
+    assertThat(SimpleTypeConversions.BOOLEAN_CONVERTER.<Boolean>convert(null)).isFalse();
   }
 
   @Test
   public void convertsBinaryStringToByte() {
 
-    assertThat(SimpleTypeConversions.BYTE_CONVERTER.convert("b10")).isEqualTo((byte) 2);
-    assertThat(SimpleTypeConversions.BYTE_CONVERTER.convert("b1010")).isEqualTo((byte) 10);
+    assertThat(SimpleTypeConversions.BYTE_CONVERTER.<Byte>convert("b10")).isEqualTo((byte) 2);
+    assertThat(SimpleTypeConversions.BYTE_CONVERTER.<Byte>convert("b1010")).isEqualTo((byte) 10);
   }
 
   @Test
   public void convertsDecimalStringToByte() {
 
-    assertThat(SimpleTypeConversions.BYTE_CONVERTER.convert("10")).isEqualTo((byte) 10);
-    assertThat(SimpleTypeConversions.BYTE_CONVERTER.convert("45")).isEqualTo((byte) 45);
-    assertThat(SimpleTypeConversions.BYTE_CONVERTER.convert("64")).isEqualTo((byte) 64);
+    assertThat(SimpleTypeConversions.BYTE_CONVERTER.<Byte>convert("10")).isEqualTo((byte) 10);
+    assertThat(SimpleTypeConversions.BYTE_CONVERTER.<Byte>convert("45")).isEqualTo((byte) 45);
+    assertThat(SimpleTypeConversions.BYTE_CONVERTER.<Byte>convert("64")).isEqualTo((byte) 64);
   }
 
   @Test
   public void convertsHexStringToByte() {
 
-    assertThat(SimpleTypeConversions.BYTE_CONVERTER.convert("0x45")).isEqualTo((byte) 69);
-    assertThat(SimpleTypeConversions.BYTE_CONVERTER.convert("0x63")).isEqualTo((byte) 99);
+    assertThat(SimpleTypeConversions.BYTE_CONVERTER.<Byte>convert("0x45")).isEqualTo((byte) 69);
+    assertThat(SimpleTypeConversions.BYTE_CONVERTER.<Byte>convert("0x63")).isEqualTo((byte) 99);
   }
 
   @Test
@@ -151,40 +151,40 @@ public class SimpleTypeConversionsUnitTests {
 
   @Test
   public void convertsBinaryStringToShort() {
-    assertThat(SimpleTypeConversions.SHORT_CONVERTER.convert("b0101001001111000")).isEqualTo((short) 21112);
+    assertThat(SimpleTypeConversions.SHORT_CONVERTER.<Short>convert("b0101001001111000")).isEqualTo((short) 21112);
   }
 
   @Test
   public void convertsDecimalStringToShort() {
 
-    assertThat(SimpleTypeConversions.SHORT_CONVERTER.convert("8192")).isEqualTo((short) 8192);
-    assertThat(SimpleTypeConversions.SHORT_CONVERTER.convert("16_384")).isEqualTo((short) 16384);
+    assertThat(SimpleTypeConversions.SHORT_CONVERTER.<Short>convert("8192")).isEqualTo((short) 8192);
+    assertThat(SimpleTypeConversions.SHORT_CONVERTER.<Short>convert("16_384")).isEqualTo((short) 16384);
   }
 
   @Test
   public void convertHexStringToShort() {
-    assertThat(SimpleTypeConversions.SHORT_CONVERTER.convert("0x5E4e")).isEqualTo((short) 24142);
+    assertThat(SimpleTypeConversions.SHORT_CONVERTER.<Short>convert("0x5E4e")).isEqualTo((short) 24142);
   }
 
   @Test
   public void convertBinaryStringToInteger() {
-    assertThat(SimpleTypeConversions.INTEGER_CONVERTER.convert("b111101100000101110101010")).isEqualTo(16_124_842);
+    assertThat(SimpleTypeConversions.INTEGER_CONVERTER.<Integer>convert("b111101100000101110101010")).isEqualTo(16_124_842);
   }
 
   @Test
   public void convertsDecimalStringToInteger() {
 
-    assertThat(SimpleTypeConversions.INTEGER_CONVERTER.convert("1024000")).isEqualTo(1024000);
-    assertThat(SimpleTypeConversions.INTEGER_CONVERTER.convert("2_048_000")).isEqualTo(2048000);
-    assertThat(SimpleTypeConversions.INTEGER_CONVERTER.convert("4_096000")).isEqualTo(4096000);
-    assertThat(SimpleTypeConversions.INTEGER_CONVERTER.convert("-100")).isEqualTo(-100);
-    assertThat(SimpleTypeConversions.INTEGER_CONVERTER.convert("-200_000")).isEqualTo(-200_000);
-    assertThat(SimpleTypeConversions.INTEGER_CONVERTER.convert("+1")).isEqualTo(1);
+    assertThat(SimpleTypeConversions.INTEGER_CONVERTER.<Integer>convert("1024000")).isEqualTo(1024000);
+    assertThat(SimpleTypeConversions.INTEGER_CONVERTER.<Integer>convert("2_048_000")).isEqualTo(2048000);
+    assertThat(SimpleTypeConversions.INTEGER_CONVERTER.<Integer>convert("4_096000")).isEqualTo(4096000);
+    assertThat(SimpleTypeConversions.INTEGER_CONVERTER.<Integer>convert("-100")).isEqualTo(-100);
+    assertThat(SimpleTypeConversions.INTEGER_CONVERTER.<Integer>convert("-200_000")).isEqualTo(-200_000);
+    assertThat(SimpleTypeConversions.INTEGER_CONVERTER.<Integer>convert("+1")).isEqualTo(1);
   }
 
   @Test
   public void convertHexStringToInteger() {
-    assertThat(SimpleTypeConversions.INTEGER_CONVERTER.convert("0x311D4E0")).isEqualTo(51_500_256);
+    assertThat(SimpleTypeConversions.INTEGER_CONVERTER.<Integer>convert("0x311D4E0")).isEqualTo(51_500_256);
   }
 
   @Test
@@ -200,17 +200,17 @@ public class SimpleTypeConversionsUnitTests {
 
   @Test
   public void convertsStringToLong() {
-    assertThat(SimpleTypeConversions.LONG_CONVERTER.convert("8192000000")).isEqualTo(8_192_000_000L);
+    assertThat(SimpleTypeConversions.LONG_CONVERTER.<Long>convert("8192000000")).isEqualTo(8_192_000_000L);
   }
 
   @Test
   public void convertsStringToFloat() {
-    assertThat(SimpleTypeConversions.FLOAT_CONVERTER.convert("3.14159")).isEqualTo(3.14159f);
+    assertThat(SimpleTypeConversions.FLOAT_CONVERTER.<Float>convert("3.14159")).isEqualTo(3.14159f);
   }
 
   @Test
   public void convertsStringToDouble() {
-    assertThat(SimpleTypeConversions.DOUBLE_CONVERTER.convert(String.valueOf(Math.PI))).isEqualTo(Math.PI);
+    assertThat(SimpleTypeConversions.DOUBLE_CONVERTER.<Double>convert(String.valueOf(Math.PI))).isEqualTo(Math.PI);
   }
 
   @Test
@@ -227,9 +227,9 @@ public class SimpleTypeConversionsUnitTests {
   @Test
   public void convertsStringToString() {
 
-    assertThat(SimpleTypeConversions.STRING_CONVERTER.convert("test")).isEqualTo("test");
-    assertThat(SimpleTypeConversions.STRING_CONVERTER.convert("mock")).isEqualTo("mock");
-    assertThat(SimpleTypeConversions.STRING_CONVERTER.convert("null")).isEqualTo("null");
+    assertThat(SimpleTypeConversions.STRING_CONVERTER.<String>convert("test")).isEqualTo("test");
+    assertThat(SimpleTypeConversions.STRING_CONVERTER.<String>convert("mock")).isEqualTo("mock");
+    assertThat(SimpleTypeConversions.STRING_CONVERTER.<String>convert("null")).isEqualTo("null");
   }
 
   @Test
@@ -237,25 +237,25 @@ public class SimpleTypeConversionsUnitTests {
 
     User<Integer> jonDoe = TestUser.as("jonDoe");
 
-    assertThat(SimpleTypeConversions.STRING_CONVERTER.convert(jonDoe)).isEqualTo(String.format("%s.%s(jonDoe)",
+    assertThat(SimpleTypeConversions.STRING_CONVERTER.<String>convert(jonDoe)).isEqualTo(String.format("%s.%s(jonDoe)",
       this.getClass().getSimpleName(), jonDoe.getClass().getSimpleName()));
   }
 
   @Test
   public void convertsCharacterToString() {
-    assertThat(SimpleTypeConversions.STRING_CONVERTER.convert('X')).isEqualTo("X");
+    assertThat(SimpleTypeConversions.STRING_CONVERTER.<String>convert('X')).isEqualTo("X");
   }
 
   @Test
   public void convertsBooleanToString() {
 
-    assertThat(SimpleTypeConversions.STRING_CONVERTER.convert(true)).isEqualTo("true");
-    assertThat(SimpleTypeConversions.STRING_CONVERTER.convert(Boolean.FALSE)).isEqualTo("false");
+    assertThat(SimpleTypeConversions.STRING_CONVERTER.<String>convert(true)).isEqualTo("true");
+    assertThat(SimpleTypeConversions.STRING_CONVERTER.<String>convert(Boolean.FALSE)).isEqualTo("false");
   }
 
   @Test
   public void convertsNullToString() {
-    assertThat(SimpleTypeConversions.STRING_CONVERTER.convert(null)).isEqualTo("null");
+    assertThat(SimpleTypeConversions.STRING_CONVERTER.<String>convert(null)).isEqualTo("null");
   }
 
   @Getter

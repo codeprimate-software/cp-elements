@@ -57,11 +57,12 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
-import org.junit.AfterClass;
 import org.junit.Before;
-import org.junit.BeforeClass;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import org.cp.elements.context.env.Environment;
 import org.cp.elements.io.FileExtensionFilter;
@@ -73,9 +74,8 @@ import org.cp.elements.lang.ThrowableAssertions;
 import org.cp.elements.process.event.ProcessStreamListener;
 import org.cp.elements.process.support.RuntimeProcessExecutor;
 import org.cp.elements.util.ArrayUtils;
-
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import edu.umd.cs.mtc.MultithreadedTestCase;
 import edu.umd.cs.mtc.TestFramework;
@@ -86,16 +86,14 @@ import edu.umd.cs.mtc.TestFramework;
  * @author John Blum
  * @see java.lang.Process
  * @see org.junit.jupiter.api.Test
- * @see org.junit.runner.RunWith
  * @see org.mockito.Mock
  * @see org.mockito.Mockito
- * @see org.mockito.junit.MockitoJUnitRunner
  * @see edu.umd.cs.mtc.MultithreadedTestCase
  * @see edu.umd.cs.mtc.TestFramework
  * @see org.cp.elements.process.ProcessAdapter
  * @since 1.0.0
  */
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class ProcessAdapterTests {
 
   private static final FileFilter PID_FILE_EXTENSION_FILTER = new FileExtensionFilter(".pid");
@@ -105,12 +103,12 @@ public class ProcessAdapterTests {
 
   private ProcessContext processContext;
 
-  @BeforeClass
+  @BeforeAll
   public static void setupBeforeTests() {
     FileSystemUtils.deleteRecursive(FileSystemUtils.TEMPORARY_DIRECTORY, PID_FILE_EXTENSION_FILTER);
   }
 
-  @AfterClass
+  @AfterAll
   @SuppressWarnings("all")
   public static void tearDownAfterTests() {
 
@@ -119,7 +117,7 @@ public class ProcessAdapterTests {
     Thread.interrupted();
   }
 
-  @Before
+  @BeforeEach
   public void setup() {
 
     this.processContext = newProcessContext(this.mockProcess)

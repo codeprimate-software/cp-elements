@@ -18,9 +18,11 @@ package org.cp.elements.lang.support;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 
 import org.junit.jupiter.api.Test;
 
@@ -47,8 +49,8 @@ public class SetIdentityVisitorTest {
   @Test
   public void constructDefaultSetIdentifyVisitor() {
 
-    assertThat(visitor).isNotNull();
-    assertThat(visitor.getIdentifierSequence()).isInstanceOf(UUIDIdentifierSequence.class);
+    assertThat(this.visitor).isNotNull();
+    assertThat(this.visitor.getIdentifierSequence()).isInstanceOf(UUIDIdentifierSequence.class);
   }
 
   @Test
@@ -73,15 +75,22 @@ public class SetIdentityVisitorTest {
   }
 
   @Test
+  @SuppressWarnings("unchecked")
   public void visitIdentifiableVisitable() {
 
     IdentifiableVisitable mockIdentifiableVisitable = mock(IdentifiableVisitable.class);
 
-    SetIdentityVisitor<Long> visitor = new SetIdentityVisitor<>(new SimpleIdentifierSequence());
+    IdentifierSequence<Integer> mockIdentifierSequence = mock(IdentifierSequence.class);
+
+    doReturn(1).when(mockIdentifierSequence).nextId();
+
+    SetIdentityVisitor<Long> visitor = new SetIdentityVisitor<>(mockIdentifierSequence);
 
     visitor.visit(mockIdentifiableVisitable);
 
-    verify(mockIdentifiableVisitable, times(1)).setId(eq(1L));
+    verify(mockIdentifiableVisitable, times(1)).setId(eq(1));
+    verify(mockIdentifierSequence, times(1)).nextId();
+    verifyNoMoreInteractions(mockIdentifiableVisitable, mockIdentifierSequence);
   }
 
   @Test
@@ -99,6 +108,6 @@ public class SetIdentityVisitorTest {
     this.visitor.visit(null);
   }
 
-  protected interface IdentifiableVisitable extends Identifiable<Long>, Visitable { }
+  protected interface IdentifiableVisitable extends Identifiable<Integer>, Visitable { }
 
 }

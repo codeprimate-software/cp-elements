@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.process.java;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -29,40 +28,40 @@ import static org.mockito.Mockito.verify;
 import java.io.File;
 import java.io.IOException;
 
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+
 import org.cp.elements.io.FileSystemUtils;
 import org.cp.elements.process.ProcessAdapter;
-import org.junit.Before;
-import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.Mock.Strictness;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 /**
- * Unit tests for {@link JavaProcessExecutor}.
+ * Unit Tests for {@link JavaProcessExecutor}.
  *
  * @author John Blum
  * @see java.io.File
  * @see org.junit.jupiter.api.Test
- * @see org.junit.runner.RunWith
  * @see org.mockito.Mock
  * @see org.mockito.Mockito
  * @see org.mockito.Spy
- * @see org.mockito.junit.MockitoJUnitRunner
  * @see org.cp.elements.process.java.JavaProcessExecutor
  * @since 1.0.0
  */
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class JavaProcessExecutorTests {
 
-  @Mock
+  @Mock(strictness = Strictness.LENIENT)
   private File mockFile;
 
-  @Mock
+  @Mock(strictness = Strictness.LENIENT)
   private Process mockProcess;
 
   private ProcessAdapter processAdapter;
 
-  @Before
+  @BeforeEach
   @SuppressWarnings("all")
   public void setup() throws IOException {
     processAdapter = newProcessAdapter(mockProcess);
@@ -76,9 +75,10 @@ public class JavaProcessExecutorTests {
 
   @Test
   public void executeWithClassAndArgumentsCallsExecuteWithDirectoryClassAndArguments() {
+
     JavaProcessExecutor processExecutor = spy(newJavaProcessExecutor());
 
-    doReturn(processAdapter).when(processExecutor).execute(any(File.class), any(Class.class), any());
+    doReturn(processAdapter).when(processExecutor).execute(any(File.class), any(Class.class), any(String[].class));
 
     assertThat(processExecutor.execute(TestApplication.class, "argOne", "argTwo")).isEqualTo(processAdapter);
 
@@ -88,9 +88,10 @@ public class JavaProcessExecutorTests {
 
   @Test
   public void executeWithJarFileAndArgumentsCallsExecuteWithDirectoryJarFileAndArguments() {
+
     JavaProcessExecutor processExecutor = spy(newJavaProcessExecutor());
 
-    doReturn(processAdapter).when(processExecutor).execute(any(File.class), any(File.class), any());
+    doReturn(processAdapter).when(processExecutor).execute(any(File.class), any(File.class), any(String[].class));
 
     assertThat(processExecutor.execute(mockFile, "argOne", "argTwo")).isEqualTo(processAdapter);
 
@@ -100,6 +101,7 @@ public class JavaProcessExecutorTests {
 
   @Test
   public void toJavaCommandLineWithClass() {
+
     String[] javaCommandLine = newJavaProcessExecutor().toJavaCommandLine(TestApplication.class);
 
     assertThat(javaCommandLine).isNotNull();
@@ -109,6 +111,7 @@ public class JavaProcessExecutorTests {
 
   @Test
   public void toJavaCommandLineWithClassAndArguments() {
+
     String[] javaCommandLine = newJavaProcessExecutor().toJavaCommandLine(TestApplication.class,
       "argOne", "argTwo");
 
@@ -120,6 +123,7 @@ public class JavaProcessExecutorTests {
 
   @Test
   public void toJavaCommandLineWithJarFile() {
+
     String[] javaCommandLine = newJavaProcessExecutor().toJavaCommandLine(mockFile);
 
     assertThat(javaCommandLine).isNotNull();
@@ -129,6 +133,7 @@ public class JavaProcessExecutorTests {
 
   @Test
   public void toJavaCommandLineWithJarFileAndArguments() {
+
     String[] javaCommandLine = newJavaProcessExecutor().toJavaCommandLine(mockFile, "argOne", "argTwo");
 
     assertThat(javaCommandLine).isNotNull();
@@ -137,6 +142,6 @@ public class JavaProcessExecutorTests {
       "argOne", "argTwo");
   }
 
-  private class TestApplication { }
+  private static class TestApplication { }
 
 }

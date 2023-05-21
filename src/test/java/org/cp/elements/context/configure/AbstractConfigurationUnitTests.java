@@ -40,8 +40,8 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.function.Supplier;
 
-import org.junit.After;
-import org.junit.Before;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import org.cp.elements.context.annotation.Profile;
@@ -82,7 +82,7 @@ public class AbstractConfigurationUnitTests {
 
   private Properties configurationProperties = new Properties();
 
-  @Before
+  @BeforeEach
   public void setup() {
 
     this.configurationProperties.setProperty("jdbc.driverClassName", "com.mysql.jdbc.Driver");
@@ -91,7 +91,7 @@ public class AbstractConfigurationUnitTests {
     this.configurationProperties.setProperty("jdbc.password", "");
   }
 
-  @After
+  @AfterEach
   public void tearDown() {
 
     this.configurationProperties.clear();

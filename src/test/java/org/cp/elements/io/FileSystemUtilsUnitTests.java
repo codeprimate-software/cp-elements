@@ -29,6 +29,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.withSettings;
 
 import java.io.File;
 import java.io.FileFilter;
@@ -37,17 +38,17 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import org.cp.elements.lang.SystemUtils;
 import org.cp.elements.lang.annotation.NotNull;
 import org.cp.elements.test.AbstractBaseTestSuite;
 import org.cp.elements.test.annotation.IntegrationTest;
-
 import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
+import org.mockito.Mock.Strictness;
 import org.mockito.invocation.InvocationOnMock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.stubbing.Answer;
 
 /**
@@ -58,27 +59,25 @@ import org.mockito.stubbing.Answer;
  * @see java.io.FileFilter
  * @see java.io.FilenameFilter
  * @see org.junit.jupiter.api.Test
- * @see org.junit.runner.RunWith
  * @see org.mockito.Mock
  * @see org.mockito.Mockito
- * @see org.mockito.junit.MockitoJUnitRunner
  * @see org.cp.elements.io.FileSystemUtils
  * @see org.cp.elements.test.AbstractBaseTestSuite
  * @see org.cp.elements.test.TestUtils
  * @see org.cp.elements.test.annotation.IntegrationTest
  * @since 1.0.0
  */
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class FileSystemUtilsUnitTests extends AbstractBaseTestSuite {
 
-  @Mock
+  @Mock(strictness = Strictness.LENIENT)
   private File mockFile;
 
-  @Mock
+  @Mock(strictness = Strictness.LENIENT)
   private FileFilter mockFileFilter;
 
   private @NotNull File mockFile(String name) {
-    return mock(File.class, name);
+    return mock(File.class, withSettings().name(name).strictness(org.mockito.quality.Strictness.LENIENT));
   }
 
   private @NotNull File newFile(File parent, File child) {

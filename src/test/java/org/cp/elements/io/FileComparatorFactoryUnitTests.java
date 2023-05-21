@@ -28,12 +28,13 @@ import java.io.IOException;
 import java.util.Comparator;
 
 import org.junit.After;
-import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.Mock.Strictness;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 /**
  * Unit Tests for {@link FileComparatorFactory}.
@@ -44,22 +45,22 @@ import org.mockito.junit.MockitoJUnitRunner;
  * @see org.junit.jupiter.api.Test
  * @see org.mockito.Mock
  * @see org.mockito.Mockito
- * @see org.mockito.junit.MockitoJUnitRunner
  * @see org.cp.elements.io.FileComparatorFactory
  * @since 1.0.0
  */
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 @SuppressWarnings("all")
 public class FileComparatorFactoryUnitTests {
 
-  @Mock
+  @Mock(strictness = Strictness.LENIENT)
   private File mockFileOne;
 
-  @Mock
+  @Mock(strictness = Strictness.LENIENT)
   private File mockFileTwo;
 
-  @Before
+  @BeforeEach
   public void setupMockFiles() throws IOException {
+
     doThrow(newIOException("TEST")).when(this.mockFileOne).getCanonicalPath();
     doThrow(newIOException("TEST")).when(this.mockFileTwo).getCanonicalPath();
   }

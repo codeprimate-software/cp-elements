@@ -43,6 +43,7 @@ import org.cp.elements.util.ArrayUtils;
  * Unit Tests for {@link StringUtils}.
  *
  * @author John J. Blum
+ * @see java.lang.String
  * @see org.junit.jupiter.api.Test
  * @see org.mockito.Mockito
  * @see org.cp.elements.lang.StringUtils
@@ -76,7 +77,7 @@ public class StringUtilsTests {
 
     Arrays.asList("  ", "", null).forEach(invalidString ->
       assertThatIllegalArgumentException()
-        .isThrownBy(() -> StringUtils.capitalize("  "))
+        .isThrownBy(() -> StringUtils.capitalize(invalidString))
         .withMessage("Value [%s] is required", invalidString)
         .withNoCause());
   }

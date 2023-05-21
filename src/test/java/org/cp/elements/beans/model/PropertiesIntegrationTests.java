@@ -23,13 +23,14 @@ import java.util.TreeSet;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+
 import org.cp.elements.beans.model.support.ArrayProperty;
 import org.cp.elements.beans.model.support.ListProperty;
 import org.cp.elements.beans.model.support.MapProperty;
 import org.cp.elements.beans.model.support.SortedSetProperty;
 import org.cp.elements.security.model.User;
-import org.junit.BeforeClass;
-import org.junit.jupiter.api.Test;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -46,7 +47,7 @@ public class PropertiesIntegrationTests {
 
   private static BeanAdapter bean;
 
-  @BeforeClass
+  @BeforeAll
   public static void setup() {
     bean = BeanAdapter.from(new TypeWithProperties());
   }

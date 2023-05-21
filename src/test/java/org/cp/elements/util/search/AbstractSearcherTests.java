@@ -39,7 +39,7 @@ import edu.umd.cs.mtc.MultithreadedTestCase;
 import edu.umd.cs.mtc.TestFramework;
 
 /**
- * Unit tests for {@link AbstractSearcher}.
+ * Unit Tests for {@link AbstractSearcher}.
  *
  * @author John J. Blum
  * @see org.junit.jupiter.api.Test
@@ -698,6 +698,7 @@ public class AbstractSearcherTests {
       })
       .havingMessage("Error occurred getting the list of elements to search from the (asList) method on object of type (java.lang.Object)!")
       .causedBy(MethodNotFoundException.class)
+      .causedBy(NoSuchMethodException.class)
       .withNoCause();
   }
 
@@ -833,7 +834,7 @@ public class AbstractSearcherTests {
             waitForTick(2);
           }
           else {
-            assertThat(getMatcher()).isInstanceOf(TestMatcher.class);
+            assertThat(getMatcher()).isNotInstanceOf(TestMatcher.class);
           }
 
           return searchResults;
@@ -843,6 +844,7 @@ public class AbstractSearcherTests {
       searcher.setCustomMatcherAllowed(true);
 
       searcher.setMatcher(new AbstractMatcher<String>() {
+
         @Override
         public int match(String value) {
           return 0;

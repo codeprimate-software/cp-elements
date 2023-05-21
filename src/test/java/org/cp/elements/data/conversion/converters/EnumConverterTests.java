@@ -16,7 +16,6 @@
 package org.cp.elements.data.conversion.converters;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import org.junit.jupiter.api.Test;
 
@@ -79,9 +78,10 @@ public class EnumConverterTests {
   @Test
   public void convertInvalidEnumeratedValueOfEnum() {
 
-    assertThatExceptionOfType(ConversionException.class)
-      .isThrownBy(() -> this.converter.convert("IT", Gender.class))
-      .withMessage("[IT] is not a valid enumerated value of Enum [%s]", Gender.class.getName())
+    ThrowableAssertions.assertThatThrowableOfType(ConversionException.class)
+      .isThrownBy(args -> this.converter.convert("IT", Gender.class))
+      .havingMessage("[IT] is not a valid enumerated value of Enum [%s]", Gender.class.getName())
+      .causedBy(IllegalArgumentException.class)
       .withNoCause();
 
   }
@@ -91,7 +91,7 @@ public class EnumConverterTests {
 
     ThrowableAssertions.assertThatThrowableOfType(ConversionException.class)
       .isThrownBy(args -> this.converter.convert("BLACK", Gender.class))
-      .havingMessage("[BLACK] is not a valid enumerated value of Enum [%s]")
+      .havingMessage("[BLACK] is not a valid enumerated value of Enum [%s]", Gender.class.getName())
       .causedBy(IllegalArgumentException.class)
       .withNoCause();
   }

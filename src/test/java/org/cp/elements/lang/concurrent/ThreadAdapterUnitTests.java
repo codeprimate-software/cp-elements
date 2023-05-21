@@ -42,45 +42,36 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.jupiter.api.Test;
-import org.junit.rules.Timeout;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import org.cp.elements.function.FunctionUtils;
 import org.cp.elements.lang.annotation.NotNull;
 import org.cp.elements.lang.annotation.Nullable;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import edu.umd.cs.mtc.MultithreadedTestCase;
 import edu.umd.cs.mtc.TestFramework;
 
 /**
- * Unit Tests for {@link ThreadAdapter}.
+ * Unit Tests for {@link org.cp.elements.lang.concurrent.ThreadAdapter}.
  *
  * @author John J. Blum
  * @see java.lang.Thread
- * @see org.junit.Rule
  * @see org.junit.jupiter.api.Test
- * @see org.junit.rules.Timeout
- * @see org.junit.runner.RunWith
  * @see org.mockito.Mock
  * @see org.mockito.Mockito
  * @see org.mockito.Spy
- * @see org.mockito.junit.MockitoJUnitRunner
  * @see edu.umd.cs.mtc.MultithreadedTestCase
  * @see edu.umd.cs.mtc.TestFramework
  * @see org.cp.elements.lang.concurrent.ThreadAdapter
  * @since 1.0.0
  */
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 @SuppressWarnings("unused")
 public class ThreadAdapterUnitTests {
-
-  @Rule
-  public Timeout globalTimeout = Timeout.seconds(5);
 
   @Mock
   private Runnable mockRunnable;
@@ -609,10 +600,10 @@ public class ThreadAdapterUnitTests {
   @Test
   public void setNameToBlank() {
 
-    Arrays.asList("", "  ", null).forEach(name ->
+    Arrays.asList("  ", "", null).forEach(name ->
       assertThatIllegalArgumentException()
         .isThrownBy(() -> new ThreadAdapter(mockThread()).setName(name))
-        .withMessage("Name [%s] is required")
+        .withMessage("Name [%s] is required", name)
         .withNoCause());
   }
 

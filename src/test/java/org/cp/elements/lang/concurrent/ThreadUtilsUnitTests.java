@@ -34,11 +34,11 @@ import java.util.function.Supplier;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import org.cp.elements.lang.Condition;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import edu.umd.cs.mtc.MultithreadedTestCase;
 import edu.umd.cs.mtc.TestFramework;
@@ -48,10 +48,10 @@ import edu.umd.cs.mtc.TestFramework;
  *
  * @author John J. Blum
  * @see org.junit.jupiter.api.Test
- * @see org.junit.runner.RunWith
+ * @see org.junit.jupiter.api.extension.ExtendWith
  * @see org.mockito.Mock
  * @see org.mockito.Mockito
- * @see org.mockito.junit.MockitoJUnitRunner
+ * @see org.mockito.junit.jupiter.MockitoExtension
  * @see edu.umd.cs.mtc.MultithreadedTestCase
  * @see edu.umd.cs.mtc.TestFramework
  * @see org.cp.elements.lang.concurrent.ThreadUtils
@@ -59,7 +59,7 @@ import edu.umd.cs.mtc.TestFramework;
  * @since 1.0.0
  */
 @SuppressWarnings("all")
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class ThreadUtilsUnitTests {
 
   @Mock

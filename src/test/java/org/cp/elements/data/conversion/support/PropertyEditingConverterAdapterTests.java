@@ -29,14 +29,13 @@ import static org.mockito.Mockito.when;
 import java.beans.PropertyEditor;
 
 import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import org.cp.elements.data.conversion.ConversionException;
 import org.cp.elements.enums.Gender;
 import org.cp.elements.lang.ThrowableAssertions;
-
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 /**
  * Unit Tests for {@link PropertyEditingConverterAdapter}.
@@ -50,7 +49,7 @@ import org.mockito.junit.MockitoJUnitRunner;
  * @see org.cp.elements.data.conversion.support.PropertyEditingConverterAdapter
  * @since 1.0.0
  */
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class PropertyEditingConverterAdapterTests {
 
   @Mock

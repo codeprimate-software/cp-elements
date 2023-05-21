@@ -41,7 +41,6 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyVetoException;
 import java.beans.VetoableChangeListener;
-import java.io.FileNotFoundException;
 import java.time.Instant;
 import java.util.Arrays;
 
@@ -302,7 +301,7 @@ public class AbstractBeanUnitTests {
     assertThat(valueHolder.getValue()).isEqualTo("test");
     assertThat(valueHolder.getFieldName("nonExistingProperty")).isEqualTo("nonExistingProperty");
 
-    ThrowableAssertions.assertThatThrowableOfType(FileNotFoundException.class)
+    ThrowableAssertions.assertThatThrowableOfType(FieldNotFoundException.class)
       .isThrownBy(ThrowableOperation.fromRunnable(() ->
         valueHolder.changeState("nonExistingProperty", "mock")))
       .havingMessage("No field [nonExistingProperty] for property [nonExistingProperty] was found on this Bean [%s]",
@@ -438,11 +437,13 @@ public class AbstractBeanUnitTests {
     assertThat(valueHolder).isNotNull();
     assertThat(valueHolder.getValue()).isEqualTo("test");
 
-    ThrowableAssertions.assertThatThrowableOfType(FileNotFoundException.class)
+    ThrowableAssertions.assertThatThrowableOfType(FieldNotFoundException.class)
       .isThrownBy(ThrowableOperation.fromRunnable(() -> valueHolder.setAlias("mock")))
       .havingMessage("No field [alias] for property [alias] was found on this Bean [%s]",
         valueHolder.getClass().getName())
       .causedBy(IllegalArgumentException.class)
+      .causedBy(FieldNotFoundException.class)
+      .causedBy(NoSuchFieldException.class)
       .withNoCause();
 
     assertThat(valueHolder.getValue()).isEqualTo("test");

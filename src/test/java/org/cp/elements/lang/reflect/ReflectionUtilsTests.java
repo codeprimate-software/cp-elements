@@ -40,9 +40,9 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.logging.Level;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.BeforeClass;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import org.cp.elements.io.FileSystemUtils;
@@ -76,7 +76,7 @@ public class ReflectionUtilsTests extends AbstractBaseTestSuite {
 
   private static final List<Line> reflectionUtilsLines = new ArrayList<>();
 
-  @BeforeClass
+  @BeforeAll
   public static void setupBeforeTests() {
 
     try (LineNumberReader reader = new LineNumberReader(new InputStreamReader(newInputStream(ReflectionUtils.class)))) {
@@ -111,12 +111,12 @@ public class ReflectionUtilsTests extends AbstractBaseTestSuite {
     System.err.println("*****");
   }
 
-  @Before
+  @BeforeEach
   public void setup() {
     setLogLevel(Level.INFO);
   }
 
-  @After
+  @AfterEach
   public void tearDown() {
     METHOD_NAME.set(null);
     SuperType.stringField = null;

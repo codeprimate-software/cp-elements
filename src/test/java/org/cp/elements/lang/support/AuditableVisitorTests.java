@@ -33,13 +33,13 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 
 import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import org.cp.elements.lang.Auditable;
 import org.cp.elements.lang.Visitable;
 import org.cp.elements.lang.annotation.NotNull;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 /**
  * Unit Tests for {@link AuditableVisitor}.
@@ -54,7 +54,7 @@ import org.mockito.junit.MockitoJUnitRunner;
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class AuditableVisitorTests {
 
   @Mock

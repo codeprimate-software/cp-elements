@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.process.java;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -24,16 +23,17 @@ import static org.cp.elements.tools.net.EchoClient.newEchoClient;
 
 import java.util.concurrent.TimeUnit;
 
+import org.junit.AfterClass;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+
 import org.cp.elements.net.NetworkUtils;
 import org.cp.elements.process.ProcessAdapter;
 import org.cp.elements.tools.net.EchoClient;
 import org.cp.elements.tools.net.EchoServer;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.jupiter.api.Test;
 
 /**
- * Integration tests for {@link JavaProcessExecutor} testing the Java Class execution functionality.
+ * Integration Tests for {@link JavaProcessExecutor} testing the Java Class execution functionality.
  *
  * @author John Blum
  * @see org.junit.jupiter.api.Test
@@ -53,8 +53,9 @@ public class JavaClassProcessExecutorIntegrationTests {
 
   private static final TimeUnit TIMEOUT_TIME_UNIT = TimeUnit.SECONDS;
 
-  @BeforeClass
+  @BeforeAll
   public static void setup() {
+
     availablePort = NetworkUtils.availablePort();
     process = newJavaProcessExecutor().execute(EchoServer.class, String.valueOf(availablePort));
 
@@ -75,6 +76,7 @@ public class JavaClassProcessExecutorIntegrationTests {
 
   @Test
   public void forkedJavaClassProcessIsRunning() {
+
     EchoClient echoClient = newEchoClient(availablePort);
 
     assertThat(echoClient.sendMessage("hello")).isEqualTo("hello");

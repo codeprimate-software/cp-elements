@@ -13,40 +13,42 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.lang;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.cp.elements.lang.RuntimeExceptionsFactory.newIllegalStateException;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doCallRealMethod;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.extension.ExtendWith;
+
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 /**
- * Unit tests for {@link Verifiable}
+ * Unit Tests for {@link Verifiable}
  *
  * @author John Blum
  * @see org.junit.jupiter.api.Test
- * @see org.junit.runner.RunWith
+ * @see org.junit.jupiter.api.extension.ExtendWith
  * @see org.mockito.Mock
  * @see org.mockito.Mockito
- * @see org.mockito.junit.MockitoJUnitRunner
+ * @see org.mockito.junit.jupiter.MockitoExtension
  * @see org.cp.elements.lang.Verifiable
  * @see org.cp.elements.lang.Verifier
  * @since 1.0.0
  */
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class VerifiableTests {
 
   @Mock
+  @SuppressWarnings("rawtypes")
   private Verifiable<Verifiable> mockVerifiable;
 
   @Test
@@ -76,7 +78,7 @@ public class VerifiableTests {
 
     Verifier mockVerifier = mock(Verifier.class);
 
-    when(this.mockVerifiable.verify(any(Verifier.class))).thenCallRealMethod();
+    doCallRealMethod().when(this.mockVerifiable).verify(any(Verifier.class));
 
     assertThat(this.mockVerifiable.verify(mockVerifier)).isSameAs(this.mockVerifiable);
 

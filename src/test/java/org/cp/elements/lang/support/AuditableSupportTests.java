@@ -24,7 +24,7 @@ import java.time.Month;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 
-import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import org.cp.elements.lang.Constants;
@@ -50,7 +50,7 @@ public class AuditableSupportTests {
     return dateTime.toInstant();
   }
 
-  @Before
+  @BeforeEach
   public void setup() {
     this.auditableSupport = new TestAuditableSupport();
   }

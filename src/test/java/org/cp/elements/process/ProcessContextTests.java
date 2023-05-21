@@ -17,7 +17,6 @@ package org.cp.elements.process;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
-import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
 import static org.cp.elements.io.FileUtils.newFile;
 import static org.cp.elements.process.ProcessContext.newProcessContext;
 
@@ -26,29 +25,26 @@ import java.util.Arrays;
 import java.util.Collections;
 
 import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import org.cp.elements.context.env.Environment;
 import org.cp.elements.io.FileSystemUtils;
 import org.cp.elements.lang.SystemUtils;
 import org.cp.elements.test.AbstractBaseTestSuite;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 /**
  * Unit Tests for {@link ProcessContext}.
  *
  * @author John Blum
  * @see org.junit.jupiter.api.Test
- * @see org.junit.runner.RunWith
  * @see org.mockito.Mock
  * @see org.mockito.Mockito
- * @see org.mockito.junit.MockitoJUnitRunner
  * @see org.cp.elements.test.AbstractBaseTestSuite
- * @see org.cp.elements.test.TestUtils
  * @since 1.0.0
  */
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class ProcessContextTests extends AbstractBaseTestSuite {
 
   @Mock
@@ -78,7 +74,7 @@ public class ProcessContextTests extends AbstractBaseTestSuite {
   @Test
   public void newProcessContextWithNullProcessThrowsIllegalArgumentException() {
 
-    assertThatIllegalStateException()
+    assertThatIllegalArgumentException()
       .isThrownBy(() -> newProcessContext(null))
       .withMessage("Process cannot be null")
       .withNoCause();

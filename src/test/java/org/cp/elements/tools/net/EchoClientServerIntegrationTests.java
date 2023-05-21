@@ -20,11 +20,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.cp.elements.net.NetworkUtils;
-
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+
+import org.cp.elements.net.NetworkUtils;
 
 /**
  * Integration tests for {@link EchoClient} and {@link EchoServer}.
@@ -41,11 +41,13 @@ public class EchoClientServerIntegrationTests {
   private static EchoClient echoClient;
   private static EchoServer echoServer;
 
-  @BeforeClass
+  @BeforeAll
   public static void setup() {
 
     echoServer = new EchoServer(NetworkUtils.availablePort()) {
-      @Override protected Logger getLogger() {
+
+      @Override
+      protected Logger getLogger() {
         Logger logger = super.getLogger();
         logger.setLevel(Level.OFF);
         return logger;
@@ -58,7 +60,7 @@ public class EchoClientServerIntegrationTests {
     echoClient = EchoClient.newEchoClient(echoServer.getPort());
   }
 
-  @AfterClass
+  @AfterAll
   public static void tearDown() {
     echoServer.shutdown();
     assertThat(echoServer.isRunning()).isFalse();
@@ -66,6 +68,7 @@ public class EchoClientServerIntegrationTests {
 
   @Test
   public void sendReceiveMessagesIsSuccessful() {
+
     assertThat(echoClient.sendMessage("Hello")).isEqualTo("Hello");
     assertThat(echoClient.sendMessage("Test")).isEqualTo("Test");
     assertThat(echoClient.sendMessage("Good-bye")).isEqualTo("Good-bye");

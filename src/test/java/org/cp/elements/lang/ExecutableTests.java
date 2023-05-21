@@ -24,10 +24,10 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 /**
  * Unit Tests for {@link Executable}.
@@ -39,7 +39,7 @@ import org.mockito.junit.MockitoJUnitRunner;
  * @see org.cp.elements.lang.Executable
  * @since 1.0.0
  */
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class ExecutableTests {
 
   @Mock
@@ -50,7 +50,7 @@ public class ExecutableTests {
   public void callInvokesExecuteWithNoArgumentsAndReturnsValue() {
 
     doCallRealMethod().when(this.mockExecutable).call();
-    doReturn("test").when(this.mockExecutable).execute(any());
+    doReturn("test").when(this.mockExecutable).execute(any(Object[].class));
 
     assertThat(this.mockExecutable.call()).isEqualTo("test");
 

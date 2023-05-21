@@ -27,9 +27,10 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 
 import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.extension.ExtendWith;
+
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 /**
  * Unit Tests for {@link ModifierUtils}.
@@ -42,14 +43,12 @@ import org.mockito.junit.MockitoJUnitRunner;
  * @see java.lang.reflect.Method
  * @see java.lang.reflect.Modifier
  * @see org.junit.jupiter.api.Test
- * @see org.junit.runner.RunWith
  * @see org.mockito.Mock
  * @see org.mockito.Mockito
- * @see org.mockito.junit.MockitoJUnitRunner
  * @see org.cp.elements.lang.reflect.ModifierUtils
  * @since 1.0.0
  */
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class ModifierUtilsUnitTests {
 
   @Mock

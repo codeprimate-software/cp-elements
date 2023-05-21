@@ -31,11 +31,11 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 
 import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import org.cp.elements.lang.reflect.UnhandledMethodInvocationException;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import lombok.Data;
 import lombok.NonNull;
@@ -45,17 +45,14 @@ import lombok.RequiredArgsConstructor;
  * Unit Tests for {@link ComposableInvocationHandler}.
  *
  * @author John Blum
- * @see org.junit.Rule
  * @see org.junit.jupiter.api.Test
- * @see org.junit.runner.RunWith
- * @see lombok
  * @see org.mockito.Mock
  * @see org.mockito.Mockito
- * @see org.mockito.junit.MockitoJUnitRunner
  * @see org.cp.elements.lang.reflect.support.ComposableInvocationHandler
+ * @see lombok
  * @since 1.0.0
  */
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class ComposableInvocationHandlerTests {
 
   @Mock

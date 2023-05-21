@@ -83,6 +83,7 @@ public class BigIntegerConverterTests {
     ThrowableAssertions.assertThatThrowableOfType(ConversionException.class)
       .isThrownBy(args -> this.converter.convert("test"))
       .havingMessage("[test] is not a valid BigInteger")
+      .causedBy(NumberFormatException.class)
       .withNoCause();
   }
 }

@@ -40,14 +40,13 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 
 import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import org.cp.elements.lang.Identifiable;
 import org.cp.elements.util.CollectionUtils;
-
 import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -61,11 +60,10 @@ import lombok.ToString;
  * @author John Blum
  * @see org.junit.jupiter.api.Test
  * @see org.mockito.Mockito
- * @see org.mockito.junit.MockitoJUnitRunner
  * @see org.cp.elements.dao.DaoTemplate
  * @since 1.0.0
  */
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class DaoTemplateUnitTests {
 
   @Mock

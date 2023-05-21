@@ -24,7 +24,7 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.stream.StreamSupport;
 
-import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import org.cp.elements.context.configure.AbstractConfiguration;
@@ -48,7 +48,7 @@ public class PropertiesConfigurationUnitTests {
 
   private PropertiesConfiguration configuration;
 
-  @Before
+  @BeforeEach
   public void setup() {
 
     this.properties = new Properties();

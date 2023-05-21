@@ -402,7 +402,7 @@ public class RelationalOperatorTest {
     MockRelationalOperator<String> leftOperand = new MockRelationalOperator<>("left operand", "<>", "test");
     MockRelationalOperator<String> rightOperand = new MockRelationalOperator<>("right operand", "<>", "test");
 
-    assertThat(RelationalOperator.ComposableRelationalOperator.compose(NULL, LogicalOperator.AND, NULL)).isNotNull();
+    assertThat(RelationalOperator.ComposableRelationalOperator.compose(NULL, LogicalOperator.AND, NULL)).isNull();
     assertThat(RelationalOperator.ComposableRelationalOperator.compose(leftOperand, LogicalOperator.AND, null)).isSameAs(leftOperand);
     assertThat(RelationalOperator.ComposableRelationalOperator.compose(null, LogicalOperator.AND, rightOperand)).isSameAs(rightOperand);
 

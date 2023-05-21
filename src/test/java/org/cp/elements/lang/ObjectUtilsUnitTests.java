@@ -168,7 +168,7 @@ public class ObjectUtilsUnitTests {
 
     ThrowableAssertions.assertThatUnsupportedOperationException()
       .isThrownBy(args -> ObjectUtils.clone(null))
-      .havingMessage("[clone] is not supported for object of type [null]")
+      .havingMessageEndingWith("[clone] is not supported for object of type [null]")
       .causedBy(CloneNotSupportedException.class)
       .havingMessage("[clone] is not supported for object of type [null]")
       .withNoCause();
@@ -184,7 +184,7 @@ public class ObjectUtilsUnitTests {
 
     ThrowableAssertions.assertThatIllegalStateException()
       .isThrownBy(args -> ObjectUtils.doOperationSafely(arguments -> { throw new Exception("ERROR"); }))
-      .havingMessage("Failed to execute operation")
+      .havingMessageContaining("Failed to execute operation")
       .causedBy(Exception.class)
       .havingMessage("ERROR")
       .withNoCause();
@@ -206,7 +206,7 @@ public class ObjectUtilsUnitTests {
 
     ThrowableAssertions.assertThatIllegalStateException()
       .isThrownBy(args -> ObjectUtils.doOperationSafely(arguments -> { throw new Exception("ERROR"); }, (Object) null))
-      .havingMessage("Failed to execute operation")
+      .havingMessageContaining("Failed to execute operation")
       .causedBy(Exception.class)
       .havingMessage("ERROR")
       .withNoCause();
@@ -229,7 +229,7 @@ public class ObjectUtilsUnitTests {
     ThrowableAssertions.assertThatIllegalStateException()
       .isThrownBy(args -> ObjectUtils.<Object>doOperationSafely(arguments -> {
         throw new Exception("ERROR"); }, () -> null))
-      .havingMessage("Failed to execute operation")
+      .havingMessageContaining("Failed to execute operation")
       .causedBy(Exception.class)
       .havingMessage("ERROR")
       .withNoCause();

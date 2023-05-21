@@ -38,7 +38,7 @@ import edu.umd.cs.mtc.TestFramework;
  */
 public class SimpleIdentifierSequenceTest {
 
-  protected static final int COUNT = 100000;
+  protected static final int COUNT = 100_000;
 
   @Test
   public void nextIdGeneratesUniqueIdentifiers() {
@@ -89,7 +89,7 @@ public class SimpleIdentifierSequenceTest {
       Thread.currentThread().setName("Simple Identifier Sequence Thread 1");
 
       for (int index = COUNT; index > 0; --index) {
-        identifiersOne.add(identifierSequence.nextId());
+        this.identifiersOne.add(this.identifierSequence.nextId());
       }
     }
 
@@ -100,17 +100,17 @@ public class SimpleIdentifierSequenceTest {
       Thread.currentThread().setName("Simple Identifier Sequence Thread 2");
 
       for (int index = COUNT; index > 0; --index) {
-        identifiersTwo.add(identifierSequence.nextId());
+        this.identifiersTwo.add(this.identifierSequence.nextId());
       }
     }
 
     @Override
     public void finish() {
 
-      assertThat(identifiersOne.size()).isEqualTo(COUNT);
-      assertThat(identifiersTwo.size()).isEqualTo(COUNT);
-      assertThat(identifiersOne.removeAll(identifiersTwo)).isFalse();
-      assertThat(identifiersOne.size()).isEqualTo(COUNT);
+      assertThat(this.identifiersOne.size()).isEqualTo(COUNT);
+      assertThat(this.identifiersTwo.size()).isEqualTo(COUNT);
+      assertThat(this.identifiersOne.removeAll(identifiersTwo)).isFalse();
+      assertThat(this.identifiersOne.size()).isEqualTo(COUNT);
     }
   }
 }

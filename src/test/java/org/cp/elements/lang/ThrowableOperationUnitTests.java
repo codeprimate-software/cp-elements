@@ -39,7 +39,6 @@ import java.util.function.Supplier;
 import org.junit.jupiter.api.Test;
 
 import org.cp.elements.test.CheckedTestException;
-
 import org.mockito.InOrder;
 
 /**
@@ -229,7 +228,7 @@ public class ThrowableOperationUnitTests {
 
     ThrowableOperation<Object> operation = mock(ThrowableOperation.class);
 
-    doReturn("test").when(operation).safeRun(any());
+    doReturn("test").when(operation).safeRun(any(Object[].class));
     doCallRealMethod().when(operation).asCallable();
 
     Callable<Object> callable = operation.asCallable();
@@ -247,8 +246,8 @@ public class ThrowableOperationUnitTests {
 
     ThrowableOperation<Object> operation = mock(ThrowableOperation.class);
 
-    doThrow(new CheckedTestException("TEST")).when(operation).run(any());
-    doCallRealMethod().when(operation).safeRun(any());
+    doThrow(new CheckedTestException("TEST")).when(operation).run(any(Object[].class));
+    doCallRealMethod().when(operation).safeRun(any(Object[].class));
     doCallRealMethod().when(operation).asCallable();
 
     Callable<Object> callable = operation.asCallable();
@@ -427,8 +426,8 @@ public class ThrowableOperationUnitTests {
 
     ThrowableOperation<Object> operation = mock(ThrowableOperation.class);
 
-    doThrow(new CheckedTestException("TEST")).when(operation).run(any());
-    doCallRealMethod().when(operation).safeRun(any());
+    doThrow(new CheckedTestException("TEST")).when(operation).run(any(Object[].class));
+    doCallRealMethod().when(operation).safeRun(any(Object[].class));
     doCallRealMethod().when(operation).asRunnable();
 
     Runnable runnable = operation.asRunnable();
@@ -451,7 +450,7 @@ public class ThrowableOperationUnitTests {
 
     ThrowableOperation<Object> operation = mock(ThrowableOperation.class);
 
-    doReturn("test").when(operation).safeRun(any());
+    doReturn("test").when(operation).safeRun(any(Object[].class));
     doCallRealMethod().when(operation).asSupplier();
 
     Supplier<Object> supplier = operation.asSupplier();
@@ -469,8 +468,8 @@ public class ThrowableOperationUnitTests {
 
     ThrowableOperation<Object> operation = mock(ThrowableOperation.class);
 
-    doThrow(new CheckedTestException("TEST")).when(operation).run(any());
-    doCallRealMethod().when(operation).safeRun(any());
+    doThrow(new CheckedTestException("TEST")).when(operation).run(any(Object[].class));
+    doCallRealMethod().when(operation).safeRun(any(Object[].class));
     doCallRealMethod().when(operation).asSupplier();
 
     Supplier<Object> supplier = operation.asSupplier();
@@ -493,8 +492,8 @@ public class ThrowableOperationUnitTests {
 
     ThrowableOperation<Object> operation = mock(ThrowableOperation.class);
 
-    doReturn("test").when(operation).run(any());
-    doCallRealMethod().when(operation).safeRun(any());
+    doReturn("test").when(operation).run(any(Object[].class));
+    doCallRealMethod().when(operation).safeRun(any(Object[].class));
 
     assertThat(operation.safeRun("mockOne", "mockTwo")).isEqualTo("test");
 

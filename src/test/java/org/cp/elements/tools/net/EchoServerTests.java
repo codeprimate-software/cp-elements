@@ -29,6 +29,7 @@ import static org.mockito.Mockito.atLeast;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
@@ -46,14 +47,14 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import org.cp.elements.test.annotation.SubjectUnderTest;
-
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.Mock.Strictness;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import edu.umd.cs.mtc.MultithreadedTestCase;
 import edu.umd.cs.mtc.TestFramework;
@@ -68,49 +69,49 @@ import edu.umd.cs.mtc.TestFramework;
  * @see org.cp.elements.test.annotation.SubjectUnderTest
  * @see org.cp.elements.tools.net.EchoServer
  * @see org.junit.jupiter.api.Test
- * @see org.junit.runner.RunWith
  * @see org.mockito.Mock
  * @see org.mockito.Mockito
  * @see org.mockito.Spy
- * @see org.mockito.junit.MockitoJUnitRunner
  * @see edu.umd.cs.mtc.MultithreadedTestCase
  * @see edu.umd.cs.mtc.TestFramework
  * @since 1.0.0
  */
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class EchoServerTests {
 
-  @Mock
+  @Mock(strictness = Strictness.LENIENT)
   private ExecutorService mockExecutorService;
 
   @SubjectUnderTest
   private EchoServer testEchoServer;
 
-  @Mock
+  @Mock(strictness = Strictness.LENIENT)
   private ServerSocket mockServerSocket;
 
-  @Mock
+  @Mock(strictness = Strictness.LENIENT)
   private Socket mockSocket;
 
-  @Before
+  @BeforeEach
   public void setup() {
 
     this.testEchoServer = spy(new TestEchoServer(1234));
 
-    doReturn(mockExecutorService).when(testEchoServer).newExecutorService();
+    lenient().doReturn(this.mockExecutorService).when(this.testEchoServer).newExecutorService();
 
-    when(mockExecutorService.submit(any(Runnable.class))).thenAnswer(invocationOnMock -> {
+    lenient().doAnswer(invocationOnMock -> {
       Runnable runnable = invocationOnMock.getArgument(0);
       runnable.run();
       return null;
-    });
+    }).when(this.mockExecutorService).submit(any(Runnable.class));
   }
 
   @Test
   public void constructServerSocketIsSuccessful() {
 
     EchoServer echoServer = new EchoServer(1234) {
-      @Override public ServerSocket newServerSocket(int port) {
+
+      @Override
+      public ServerSocket newServerSocket(int port) {
         when(mockServerSocket.getLocalPort()).thenReturn(port);
         return mockServerSocket;
       }
@@ -452,7 +453,7 @@ public class EchoServerTests {
     }
 
     @Override
-    protected ServerSocket newServerSocket() throws IOException {
+    protected ServerSocket newServerSocket() {
       return mockServerSocket;
     }
   }

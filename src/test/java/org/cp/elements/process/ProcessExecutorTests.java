@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.process;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -26,12 +25,13 @@ import static org.mockito.Mockito.when;
 
 import java.io.File;
 
-import org.cp.elements.io.FileSystemUtils;
 import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
-import org.mockito.ArgumentMatchers;
+import org.junit.jupiter.api.extension.ExtendWith;
+
+import org.cp.elements.io.FileSystemUtils;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.Mock.Strictness;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 /**
  * Unit tests for {@link ProcessExecutor}.
@@ -39,30 +39,28 @@ import org.mockito.junit.MockitoJUnitRunner;
  * @author John J. Blum
  * @see java.lang.Process
  * @see org.junit.jupiter.api.Test
- * @see org.junit.runner.RunWith
  * @see org.mockito.Mock
  * @see org.mockito.Mockito
- * @see org.mockito.junit.MockitoJUnitRunner
  * @see org.cp.elements.process.ProcessExecutor
  * @since 1.0.0
  */
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class ProcessExecutorTests {
 
-  @Mock
+  @Mock(strictness = Strictness.LENIENT)
   private File mockDirectory;
 
-  @Mock
+  @Mock(strictness = Strictness.LENIENT)
   private Process mockProcess;
 
-  @Mock
+  @Mock(strictness = Strictness.LENIENT)
   private TestProcessExecutor processExecutor;
 
   @Test
   public void executeWithVarargs() {
 
-    when(processExecutor.execute(ArgumentMatchers.<String[]>any())).thenCallRealMethod();
-    when(processExecutor.execute(any(File.class), ArgumentMatchers.<String[]>any())).thenReturn(mockProcess);
+    when(processExecutor.execute(any(String[].class))).thenCallRealMethod();
+    when(processExecutor.execute(any(File.class), any(String[].class))).thenReturn(mockProcess);
 
     assertThat(processExecutor.execute("java", "example.App", "arg")).isEqualTo(mockProcess);
 
@@ -75,7 +73,7 @@ public class ProcessExecutorTests {
   public void executeWithIterable() {
 
     when(processExecutor.execute(any(Iterable.class))).thenCallRealMethod();
-    when(processExecutor.execute(any(File.class), ArgumentMatchers.<String[]>any())).thenReturn(mockProcess);
+    when(processExecutor.execute(any(File.class), any(String[].class))).thenReturn(mockProcess);
 
     assertThat(processExecutor.execute(asIterable("java", "example.App", "arg"))).isEqualTo(mockProcess);
 
@@ -88,14 +86,15 @@ public class ProcessExecutorTests {
   public void executeWithDirectoryAndIterable() {
 
     when(processExecutor.execute(any(File.class), any(Iterable.class))).thenCallRealMethod();
-    when(processExecutor.execute(any(File.class), ArgumentMatchers.<String[]>any())).thenReturn(mockProcess);
+    when(processExecutor.execute(any(File.class), any(String[].class))).thenReturn(mockProcess);
 
-    assertThat(processExecutor.execute(mockDirectory, asIterable("java", "example.App", "arg"))).isEqualTo(mockProcess);
+    assertThat(processExecutor.execute(mockDirectory, asIterable("java", "example.App", "arg")))
+      .isEqualTo(mockProcess);
 
     verify(processExecutor, times(1)).execute(eq(mockDirectory),
       eq("java"), eq("example.App"), eq("arg"));
   }
 
-  abstract class TestProcessExecutor implements ProcessExecutor { }
+  abstract static class TestProcessExecutor implements ProcessExecutor<Object> { }
 
 }

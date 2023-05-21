@@ -33,14 +33,13 @@ import java.util.Map;
 import java.util.function.BiFunction;
 
 import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import org.cp.elements.test.annotation.IntegrationTest;
 import org.cp.elements.util.CollectionUtils;
 import org.cp.elements.util.MapBuilder;
-
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 /**
  * Unit Tests for {@link MapToCacheAdapter}.
@@ -50,13 +49,12 @@ import org.mockito.junit.MockitoJUnitRunner;
  * @see org.junit.jupiter.api.Test
  * @see org.mockito.Mock
  * @see org.mockito.Mockito
- * @see org.mockito.junit.MockitoJUnitRunner
  * @see org.cp.elements.data.caching.support.MapToCacheAdapter
  * @see org.cp.elements.test.annotation.IntegrationTest
  * @see org.cp.elements.util.MapBuilder
  * @since 1.0.0
  */
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 @SuppressWarnings({ "rawtypes", "unchecked" })
 public class MapToCacheAdapterUnitTests {
 

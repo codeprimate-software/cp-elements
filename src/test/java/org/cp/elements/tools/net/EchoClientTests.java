@@ -38,14 +38,13 @@ import java.net.SocketAddress;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import org.cp.elements.test.annotation.SubjectUnderTest;
-
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 /**
  * Unit Tests for {@link EchoClient}.
@@ -54,15 +53,13 @@ import org.mockito.junit.MockitoJUnitRunner;
  * @see java.net.ServerSocket
  * @see java.net.Socket
  * @see org.junit.jupiter.api.Test
- * @see org.junit.runner.RunWith
  * @see org.mockito.Mock
  * @see org.mockito.Mockito
  * @see org.mockito.Spy
- * @see org.mockito.junit.MockitoJUnitRunner
  * @see org.cp.elements.tools.net.EchoClient
  * @since 1.0.0
  */
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class EchoClientTests {
 
   @Mock
@@ -74,7 +71,7 @@ public class EchoClientTests {
   @SubjectUnderTest
   private EchoClient testEchoClient;
 
-  @Before
+  @BeforeEach
   public void setup() {
     this.testEchoClient = spy(new TestEchoClient(1234));
   }

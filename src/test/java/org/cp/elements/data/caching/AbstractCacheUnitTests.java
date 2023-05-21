@@ -19,7 +19,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Set;
 
-import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import org.cp.elements.lang.ThrowableAssertions;
@@ -37,7 +37,7 @@ public class AbstractCacheUnitTests {
 
   private AbstractCache<Integer, Object> cache;
 
-  @Before
+  @BeforeEach
   public void constructNewAbstractCache() {
     this.cache = new TestCache<>();
   }

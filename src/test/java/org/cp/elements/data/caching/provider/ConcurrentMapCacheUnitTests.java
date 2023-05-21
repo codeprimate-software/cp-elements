@@ -29,6 +29,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.withSettings;
 
 import java.util.Arrays;
 import java.util.Map;
@@ -36,18 +37,16 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentMap;
 import java.util.function.BiFunction;
 
-import org.junit.Before;
 import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import org.cp.elements.test.annotation.SubjectUnderTest;
 import org.cp.elements.util.CollectionUtils;
 import org.cp.elements.util.MapBuilder;
-
 import org.mockito.Mock;
 import org.mockito.Mock.Strictness;
 import org.mockito.Spy;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import edu.umd.cs.mtc.MultithreadedTestCase;
 import edu.umd.cs.mtc.TestFramework;
@@ -62,14 +61,13 @@ import edu.umd.cs.mtc.TestFramework;
  * @see org.mockito.Mock
  * @see org.mockito.Mockito
  * @see org.mockito.Spy
- * @see org.mockito.junit.MockitoJUnitRunner
  * @see edu.umd.cs.mtc.MultithreadedTestCase
  * @see edu.umd.cs.mtc.TestFramework
  * @see org.cp.elements.data.caching.provider.ConcurrentMapCache
  * @since 1.0.0
  */
 @SuppressWarnings({ "rawtypes", "unchecked" })
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class ConcurrentMapCacheUnitTests {
 
   @Mock(strictness = Strictness.LENIENT)
@@ -79,15 +77,11 @@ public class ConcurrentMapCacheUnitTests {
   @SubjectUnderTest
   private ConcurrentMapCache concurrentMapCache;
 
-  @Before
-  public void newConcurrentMapCache() {
-    doReturn(this.mockMap).when(this.concurrentMapCache).getConcurrentMap();
-  }
-
   @SuppressWarnings("unchecked")
   private <K extends Comparable<K>, V> Map.Entry<K, V> mockMapEntry(K key, V value) {
 
-    Map.Entry<K, V> mockMapEntry = mock(Map.Entry.class);
+    Map.Entry<K, V> mockMapEntry =
+      mock(Map.Entry.class, withSettings().strictness(org.mockito.quality.Strictness.LENIENT));
 
     doReturn(key).when(mockMapEntry).getKey();
     doReturn(value).when(mockMapEntry).getValue();
@@ -123,6 +117,8 @@ public class ConcurrentMapCacheUnitTests {
   @Test
   public void clearCallsMapClear() {
 
+    doReturn(this.mockMap).when(this.concurrentMapCache).getConcurrentMap();
+
     this.concurrentMapCache.clear();
 
     verify(this.concurrentMapCache, times(1)).getConcurrentMap();
@@ -133,6 +129,7 @@ public class ConcurrentMapCacheUnitTests {
   @Test
   public void containsCallsMapContainsKey() {
 
+    doReturn(this.mockMap).when(this.concurrentMapCache).getConcurrentMap();
     doReturn(true).when(this.mockMap).containsKey(isNotNull());
 
     assertThat(this.concurrentMapCache.contains(1)).isTrue();
@@ -149,6 +146,7 @@ public class ConcurrentMapCacheUnitTests {
   @Test
   public void containsNonExistingKeyReturnsFalse() {
 
+    doReturn(this.mockMap).when(this.concurrentMapCache).getConcurrentMap();
     doReturn(false).when(this.mockMap).containsKey(any());
 
     assertThat(this.concurrentMapCache.contains(0)).isFalse();
@@ -171,6 +169,8 @@ public class ConcurrentMapCacheUnitTests {
   @Test
   public void evictCallsMapRemove() {
 
+    doReturn(this.mockMap).when(this.concurrentMapCache).getConcurrentMap();
+
     this.concurrentMapCache.evict("testKey");
 
     verify(this.concurrentMapCache, times(1)).getConcurrentMap();
@@ -191,9 +191,9 @@ public class ConcurrentMapCacheUnitTests {
 
     Map mockMap = mock(Map.class);
 
+    doReturn(this.mockMap).when(this.concurrentMapCache).getConcurrentMap();
     doReturn(false).when(mockMap).isEmpty();
-    doReturn(CollectionUtils.asSet(mockMapEntry(1, "A"), mockMapEntry(2, "B")))
-      .when(mockMap).entrySet();
+    doReturn(CollectionUtils.asSet(mockMapEntry(1, "A"), mockMapEntry(2, "B"))).when(mockMap).entrySet();
 
     this.concurrentMapCache.from(mockMap);
 
@@ -211,6 +211,7 @@ public class ConcurrentMapCacheUnitTests {
 
     Map mockMap = mock(Map.class);
 
+    doReturn(this.mockMap).when(this.concurrentMapCache).getConcurrentMap();
     doReturn(false).when(mockMap).isEmpty();
     doReturn(CollectionUtils.asSet(mockMapEntry(1, "A"), null, mockMapEntry(null, "B"), null, null,
       mockMapEntry(3, null))).when(mockMap).entrySet();
@@ -250,6 +251,7 @@ public class ConcurrentMapCacheUnitTests {
   @Test
   public void getCallsMapGet() {
 
+    doReturn(this.mockMap).when(this.concurrentMapCache).getConcurrentMap();
     doReturn("A").when(this.mockMap).get(any());
 
     assertThat(this.concurrentMapCache.get("testKey")).isEqualTo("A");
@@ -262,6 +264,7 @@ public class ConcurrentMapCacheUnitTests {
   @Test
   public void getCallsMapGetWithNonExistingKeyIsSafeReturnsNull() {
 
+    doReturn(this.mockMap).when(this.concurrentMapCache).getConcurrentMap();
     doReturn("A").when(this.mockMap).get(eq("testKey"));
 
     assertThat(this.concurrentMapCache.get("mockKey")).isNull();
@@ -302,6 +305,8 @@ public class ConcurrentMapCacheUnitTests {
   @Test
   public void keysFromEmptyCacheCallsMapKeySet() {
 
+    doReturn(this.mockMap).when(this.concurrentMapCache).getConcurrentMap();
+
     Set<Comparable<?>> keys = this.concurrentMapCache.keys();
 
     assertThat(keys).isNotNull();
@@ -315,6 +320,7 @@ public class ConcurrentMapCacheUnitTests {
   @Test
   public void keysFromNonEmptyCacheCallsMapKeySet() {
 
+    doReturn(this.mockMap).when(this.concurrentMapCache).getConcurrentMap();
     doReturn(CollectionUtils.asSet(1, 2)).when(this.mockMap).keySet();
 
     assertThat(this.concurrentMapCache.keys()).containsExactlyInAnyOrder(1, 2);
@@ -326,6 +332,8 @@ public class ConcurrentMapCacheUnitTests {
 
   @Test
   public void putCallsMapPut() {
+
+    doReturn(this.mockMap).when(this.concurrentMapCache).getConcurrentMap();
 
     this.concurrentMapCache.put(1, "A");
     this.concurrentMapCache.put(2, "B");
@@ -361,6 +369,8 @@ public class ConcurrentMapCacheUnitTests {
   @Test
   public void putIfAbsentCallsMapPutIfAbsent() {
 
+    doReturn(this.mockMap).when(this.concurrentMapCache).getConcurrentMap();
+
     this.concurrentMapCache.putIfAbsent(1, "A");
 
     verify(this.concurrentMapCache, times(1)).getConcurrentMap();
@@ -392,6 +402,8 @@ public class ConcurrentMapCacheUnitTests {
 
   @Test
   public void putIfPresentCallsMapComputeIfPresent() {
+
+    doReturn(this.mockMap).when(this.concurrentMapCache).getConcurrentMap();
 
     doAnswer(invocation -> {
 
@@ -430,6 +442,7 @@ public class ConcurrentMapCacheUnitTests {
   @Test
   public void sizeCallsMapSize() {
 
+    doReturn(this.mockMap).when(this.concurrentMapCache).getConcurrentMap();
     doReturn(69).when(this.mockMap).size();
 
     assertThat(this.concurrentMapCache.size()).isEqualTo(69L);

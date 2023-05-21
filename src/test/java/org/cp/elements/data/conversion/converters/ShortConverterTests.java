@@ -142,6 +142,7 @@ public class ShortConverterTests {
     ThrowableAssertions.assertThatThrowableOfType(ConversionException.class)
       .isThrownBy(args -> this.converter.convert("12.34"))
       .havingMessage("[12.34] is not a valid Short")
+      .causedBy(NumberFormatException.class)
       .withNoCause();
   }
 

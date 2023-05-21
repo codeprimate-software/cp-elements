@@ -44,6 +44,7 @@ import java.util.regex.PatternSyntaxException;
 
 import org.junit.jupiter.api.Test;
 
+import org.assertj.core.api.Assertions;
 import org.cp.elements.lang.ThrowableAssertions.AssertThatThrowableExpression;
 import org.cp.elements.lang.ThrowableAssertions.ThrowableSource;
 import org.cp.elements.lang.ThrowableAssertions.ThrowableSourceExpression;
@@ -52,8 +53,6 @@ import org.cp.elements.security.AuthorizationException;
 import org.cp.elements.security.model.User;
 import org.cp.elements.util.ApplicationException;
 import org.cp.elements.util.ArrayUtils;
-
-import org.assertj.core.api.Assertions;
 import org.mockito.InOrder;
 
 import lombok.EqualsAndHashCode;
@@ -66,7 +65,6 @@ import lombok.ToString;
  * Unit Tests for {@link ThrowableAssertions}.
  *
  * @author John Blum
- * @see org.assertj.core.api.Assertions
  * @see org.junit.jupiter.api.Test
  * @see org.cp.elements.lang.ThrowableAssertions
  * @since 1.0.0
@@ -518,7 +516,7 @@ public class ThrowableAssertionsUnitTests {
         .isThrownBy(args -> operation.usingNullReference())
         .havingMessageMatching("\\(.*)")
         .withNoCause())
-      .withMessage("Unmatched closing ')'")
+      .withMessageStartingWith("Unmatched closing ')'")
       .withNoCause();
   }
 

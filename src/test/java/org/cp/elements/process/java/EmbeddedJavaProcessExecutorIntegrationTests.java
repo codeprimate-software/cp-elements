@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.process.java;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -26,17 +25,18 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.junit.AfterClass;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+
 import org.cp.elements.io.FileSystemUtils;
 import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.Executable;
 import org.cp.elements.tools.net.EchoClient;
 import org.cp.elements.tools.net.EchoServer;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.jupiter.api.Test;
 
 /**
- * Integration tests for the {@link EmbeddedJavaProcessExecutor}.
+ * Integration Tests for the {@link EmbeddedJavaProcessExecutor}.
  *
  * @author John Blum
  * @see org.junit.jupiter.api.Test
@@ -45,7 +45,7 @@ import org.junit.jupiter.api.Test;
  */
 public class EmbeddedJavaProcessExecutorIntegrationTests {
 
-  @BeforeClass
+  @BeforeAll
   public static void setup() {
 
     String[] commandLine = {

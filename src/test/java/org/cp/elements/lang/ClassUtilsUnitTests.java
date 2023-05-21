@@ -351,7 +351,7 @@ public class ClassUtilsUnitTests extends AbstractBaseTestSuite {
 
     ThrowableAssertions.assertThatThrowableOfType(ConstructorNotFoundException.class)
       .isThrownBy(args -> ClassUtils.resolveConstructor(SubType.class, new Class<?>[] { Integer.class }, 2))
-      .havingMessage("Failed to resolve constructor with signature")
+      .havingMessageStartingWith("Failed to resolve constructor with signature")
       .causedBy(NoSuchMethodException.class)
       .withNoCause();
   }
@@ -428,16 +428,18 @@ public class ClassUtilsUnitTests extends AbstractBaseTestSuite {
   @Test
   public void getFieldOnSubClassFromSuperClass() {
 
-    assertThatExceptionOfType(FieldNotFoundException.class)
-      .isThrownBy(() -> ClassUtils.getField(SuperType.class, "charValue"))
+    ThrowableAssertions.assertThatThrowableOfType(FieldNotFoundException.class)
+      .isThrownBy(args -> ClassUtils.getField(SuperType.class, "charValue"))
+      .causedBy(NoSuchFieldException.class)
       .withNoCause();
   }
 
   @Test
   public void getNonExistingField() {
 
-    assertThatExceptionOfType(FieldNotFoundException.class)
-      .isThrownBy(() -> ClassUtils.getField(SubType.class, "nonExistingField"))
+    ThrowableAssertions.assertThatThrowableOfType(FieldNotFoundException.class)
+      .isThrownBy(args -> ClassUtils.getField(SubType.class, "nonExistingField"))
+      .causedBy(NoSuchFieldException.class)
       .withNoCause();
   }
 
@@ -515,16 +517,18 @@ public class ClassUtilsUnitTests extends AbstractBaseTestSuite {
   @Test
   public void getMethodOnSubClassFromSuperClass() {
 
-    assertThatExceptionOfType(MethodNotFoundException.class)
-      .isThrownBy(() -> ClassUtils.getMethod(SuperType.class, "getCharacterValue"))
+    ThrowableAssertions.assertThatThrowableOfType(MethodNotFoundException.class)
+      .isThrownBy(args -> ClassUtils.getMethod(SuperType.class, "getCharacterValue"))
+      .causedBy(NoSuchMethodException.class)
       .withNoCause();
   }
 
   @Test
   public void getNonExistingMethod() {
 
-    assertThatExceptionOfType(MethodNotFoundException.class)
-      .isThrownBy(() -> ClassUtils.getMethod(SubType.class, "nonExistingMethod"))
+    ThrowableAssertions.assertThatThrowableOfType(MethodNotFoundException.class)
+      .isThrownBy(args -> ClassUtils.getMethod(SubType.class, "nonExistingMethod"))
+      .causedBy(NoSuchMethodException.class)
       .withNoCause();
   }
 
@@ -571,8 +575,9 @@ public class ClassUtilsUnitTests extends AbstractBaseTestSuite {
   @Test
   public void getOverriddenMethodOnSubClassFromSuperClass() {
 
-    assertThatExceptionOfType(MethodNotFoundException.class)
-      .isThrownBy(() -> ClassUtils.getMethod(SuperType.class, "methodOne", Boolean.class))
+    ThrowableAssertions.assertThatThrowableOfType(MethodNotFoundException.class)
+      .isThrownBy(args -> ClassUtils.getMethod(SuperType.class, "methodOne", Boolean.class))
+      .causedBy(NoSuchMethodException.class)
       .withNoCause();
   }
 
@@ -658,12 +663,13 @@ public class ClassUtilsUnitTests extends AbstractBaseTestSuite {
   @Test
   public void unresolvableMethod() {
 
-    assertThatExceptionOfType(MethodNotFoundException.class)
-      .isThrownBy(() -> ClassUtils.resolveMethod(SubType.class, "methodTwo",
+    ThrowableAssertions.assertThatThrowableOfType(MethodNotFoundException.class)
+      .isThrownBy(args -> ClassUtils.resolveMethod(SubType.class, "methodTwo",
         ArrayUtils.<Class<?>>asArray(Boolean.class, Character.class, Integer.class, Double.class, String.class),
           ArrayUtils.asArray(false, 'c', 1, Math.PI, "test"), Void.class))
-      .withMessage("Failed to resolve method with signature [methodTwo(:Boolean, :Character, :Integer, :Double, :String):void] on class type [%s]",
+      .havingMessage("Failed to resolve method with signature [methodTwo(:Boolean, :Character, :Integer, :Double, :String):void] on class type [%s]",
         SubType.class.getName())
+      .causedBy(NoSuchMethodException.class)
       .withNoCause();
   }
 

@@ -86,7 +86,7 @@ import static org.cp.elements.lang.ElementsExceptionsFactory.newUserException;
 import static org.cp.elements.lang.ElementsExceptionsFactory.newWriteOnlyException;
 
 import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import org.cp.elements.beans.BeansException;
 import org.cp.elements.beans.IllegalPropertyValueException;
@@ -143,23 +143,20 @@ import org.cp.elements.util.WriteOnlyException;
 import org.cp.elements.util.paging.PageNotFoundException;
 import org.cp.elements.util.search.SearchException;
 import org.cp.elements.util.sort.SortException;
-
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 /**
  * Unit Tests for {@link ElementsExceptionsFactory}.
  *
  * @author John Blum
  * @see org.junit.jupiter.api.Test
- * @see org.junit.runner.RunWith
  * @see org.mockito.Mock
  * @see org.mockito.Mockito
- * @see org.mockito.junit.MockitoJUnitRunner
  * @see org.cp.elements.lang.ElementsExceptionsFactory
  * @since 1.0.0
  */
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class ElementsExceptionsFactoryUnitTests {
 
   @Mock

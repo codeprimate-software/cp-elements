@@ -13,27 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.service.support;
 
 import static org.cp.elements.lang.LangExtensions.assertThat;
 
-import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 /**
- * Unit tests for {@link AbstractCacheableService}.
+ * Unit Tests for {@link AbstractCacheableService}.
  *
  * @author John Blum
  * @see org.junit.jupiter.api.Test
  * @see org.cp.elements.service.support.AbstractCacheableService
  * @since 1.0.0
  */
+@SuppressWarnings("rawtypes")
 public class AbstractCacheableServiceTests {
 
   private AbstractCacheableService cacheableService;
 
-  @Before
+  @BeforeEach
   public void setup() {
     this.cacheableService = new TestCacheableService();
   }
