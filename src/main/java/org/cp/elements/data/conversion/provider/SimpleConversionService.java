@@ -239,11 +239,11 @@ public class SimpleConversionService extends AbstractConversionService {
   @SuppressWarnings("rawtypes")
   private void register(String converterClassName) {
 
-    Class<Converter> converterClass = ObjectUtils.loadClass(converterClassName);
+    Class<Converter> converterType = ObjectUtils.loadClass(converterClassName);
 
-    if (ObjectUtils.assignableTo(converterClass, Converter.class)) {
+    if (ObjectUtils.assignableTo(converterType, Converter.class)) {
       try {
-        Converter<?, ?> converter = (Converter<?, ?>) converterClass.newInstance();
+        Converter<?, ?> converter = ObjectUtils.construct(converterType);
         register(converter);
       }
       catch (Exception ignore) { }
