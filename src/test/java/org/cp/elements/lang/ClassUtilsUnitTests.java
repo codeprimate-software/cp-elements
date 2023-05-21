@@ -36,6 +36,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
@@ -53,9 +54,12 @@ import java.util.stream.Collectors;
 import org.junit.jupiter.api.Test;
 
 import org.cp.elements.lang.annotation.Id;
+import org.cp.elements.lang.annotation.Nullable;
+import org.cp.elements.lang.factory.ObjectInstantiationException;
 import org.cp.elements.lang.reflect.ConstructorNotFoundException;
 import org.cp.elements.lang.reflect.FieldNotFoundException;
 import org.cp.elements.lang.reflect.MethodNotFoundException;
+import org.cp.elements.lang.reflect.ModifierUtils;
 import org.cp.elements.lang.reflect.ReflectionUtils;
 import org.cp.elements.test.AbstractBaseTestSuite;
 import org.cp.elements.test.TestUtils;
@@ -161,6 +165,57 @@ public class ClassUtilsUnitTests extends AbstractBaseTestSuite {
       .isThrownBy(() -> ClassUtils.castTo("test", null))
       .withMessage("The Class type used to cast is required")
       .withNoCause();
+  }
+
+  @Test
+  public void constructObjectWithPublicNoArgumentConstructorIsSuccessful() {
+    assertThat(ClassUtils.construct(ObjectWithPublicNoArgConstructor.class)).isNotNull();
+  }
+
+  @Test
+  public void constructObjectWithPublicNoArgumentConstructorThrowingException() {
+
+    ThrowableAssertions.assertThatThrowableOfType(ObjectInstantiationException.class)
+      .isThrownBy(args -> ClassUtils.construct(ObjectWithPublicNoArgConstructorThrowingException.class))
+      .havingMessage("Failed to construct object of type [%s]",
+        ObjectWithPublicNoArgConstructorThrowingException.class.getName())
+      .causedBy(InvocationTargetException.class)
+      .causedBy(RuntimeException.class)
+      .havingMessage("test")
+      .withNoCause();
+  }
+
+  @Test
+  public void constructObjectWithNonPublicNoArgumentConstructorIsSuccessful() {
+    assertThat(ClassUtils.construct(ObjectWithNonPublicNoArgConstructor.class)).isNotNull();
+  }
+
+  @Test
+  public void constructObjectWithNonPublicNoArgumentConstructorPassingArgumentsThrowsException() {
+
+    ThrowableAssertions.assertThatThrowableOfType(ObjectInstantiationException.class)
+      .isThrownBy(args -> ClassUtils.construct(ObjectWithNonPublicNoArgConstructor.class, "MockValue"))
+      .havingMessage("Failed to construct object of type [%s]",
+        ObjectWithNonPublicNoArgConstructor.class.getName())
+      .causedBy(ConstructorNotFoundException.class)
+      .havingMessage("Failed to find a default, public no-argument constructor for type [%s]",
+        ObjectWithNonPublicNoArgConstructor.class.getName())
+      .withNoCause();
+  }
+
+  @Test
+  public void constructObjectWithNonPublicWithArgumentsConstructorIsSuccessful() {
+
+    ObjectWithNonDefaultConstructor object =
+      ClassUtils.construct(ObjectWithNonDefaultConstructor.class, "test");
+
+    assertThat(object).isNotNull();
+    assertThat(object.getValue()).isEqualTo("test");
+  }
+
+  @Test
+  public void constructObjectWithDefaultConstructorIsSuccessful() {
+    assertThat(ClassUtils.construct(ObjectWithDefaultConstructor.class)).isNotNull();
   }
 
   @Test
@@ -308,6 +363,50 @@ public class ClassUtilsUnitTests extends AbstractBaseTestSuite {
   @Test
   public void findNonExistingNonMatchingConstructor() {
     assertThat(ClassUtils.findConstructor(SubType.class, "test", 1L, false)).isNull();
+  }
+
+  @Test
+  public void findDefaultConstructorWithObjectHavingPublicNoArgConstructorIsSuccessful() {
+
+    Constructor<ObjectWithPublicNoArgConstructor> constructor =
+      ClassUtils.findDefaultConstructor(ObjectWithPublicNoArgConstructor.class);
+
+    assertThat(constructor).isNotNull();
+    assertThat(constructor.getDeclaringClass()).isEqualTo(ObjectWithPublicNoArgConstructor.class);
+    assertThat(constructor.getParameterCount()).isZero();
+    assertThat(ModifierUtils.isPublic(constructor)).isTrue();
+  }
+
+  @Test
+  public void findDefaultConstructorWithObjectHavingDefaultConstructorIsSuccessful() {
+
+    Constructor<ObjectWithDefaultConstructor> constructor =
+      ClassUtils.findDefaultConstructor(ObjectWithDefaultConstructor.class);
+
+    assertThat(constructor).isNotNull();
+    assertThat(constructor.getDeclaringClass()).isEqualTo(ObjectWithDefaultConstructor.class);
+    assertThat(constructor.getParameterCount()).isZero();
+    assertThat(ModifierUtils.isPublic(constructor)).isTrue();
+  }
+
+  @Test
+  public void findDefaultConstructorWithObjectHavingNonPublicNoArgConstructorThrowsException() {
+
+    assertThatExceptionOfType(ConstructorNotFoundException.class)
+      .isThrownBy(() -> ClassUtils.findDefaultConstructor(ObjectWithNonPublicNoArgConstructor.class))
+      .withMessage("Failed to find a default, public no-argument constructor for type [%s]",
+        ObjectWithNonPublicNoArgConstructor.class.getName())
+      .withNoCause();
+  }
+
+  @Test
+  public void findDefaultConstructorWithObjectHavingPublicArgumentConstructorThrowsException() {
+
+    assertThatExceptionOfType(ConstructorNotFoundException.class)
+      .isThrownBy(() -> ClassUtils.findDefaultConstructor(ObjectWithPublicArgumentConstructor.class))
+      .withMessage("Failed to find a default, public no-argument constructor for type [%s]",
+        ObjectWithPublicArgumentConstructor.class.getName())
+      .withNoCause();
   }
 
   @Test
@@ -1495,5 +1594,46 @@ public class ClassUtilsUnitTests extends AbstractBaseTestSuite {
   @Retention(RetentionPolicy.RUNTIME)
   @Target(ElementType.TYPE)
   private @interface Resource { }
+
+  public static class ObjectWithPublicNoArgConstructor {
+
+    public ObjectWithPublicNoArgConstructor() { }
+
+  }
+
+  public static class ObjectWithPublicNoArgConstructorThrowingException {
+
+    public ObjectWithPublicNoArgConstructorThrowingException() {
+      throw new RuntimeException("test");
+    }
+  }
+
+  @Getter
+  public static class ObjectWithPublicArgumentConstructor {
+
+    private final Object value;
+
+    public ObjectWithPublicArgumentConstructor(@Nullable Object value) {
+      this.value = value;
+    }
+  }
+
+  static class ObjectWithNonPublicNoArgConstructor {
+
+    ObjectWithNonPublicNoArgConstructor() { }
+
+  }
+
+  @Getter
+  protected static class ObjectWithNonDefaultConstructor {
+
+    private final Object value;
+
+    protected ObjectWithNonDefaultConstructor(@Nullable Object value) {
+      this.value = value;
+    }
+  }
+
+  public static class ObjectWithDefaultConstructor { }
 
 }

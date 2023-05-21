@@ -15,7 +15,9 @@
  */
 package org.cp.elements.lang;
 
+import static org.cp.elements.lang.ElementsExceptionsFactory.newConstructorNotFoundException;
 import static org.cp.elements.lang.ElementsExceptionsFactory.newIllegalTypeException;
+import static org.cp.elements.lang.ElementsExceptionsFactory.newObjectInstantiationException;
 import static org.cp.elements.lang.ObjectUtils.safeGetValue;
 import static org.cp.elements.lang.RuntimeExceptionsFactory.newIllegalArgumentException;
 import static org.cp.elements.util.stream.StreamUtils.stream;
@@ -122,6 +124,34 @@ public abstract class ClassUtils {
       newIllegalTypeException("Object [%s] is not an instance of Class [%s]", target, getName(type)));
 
     return type.cast(target);
+  }
+
+  /**
+   * Constructs an {@link Object} of the given, required {@link Class type}.
+   *
+   * @param <T> {@link Class type} of {@link Object} to construct.
+   * @param type {@link Class type} to construct (instantiate).
+   * @param arguments array of {@link Object arguments} to the {@link Constructor}.
+   * @return a new instance of {@link Object} of the given {@link Class type}.
+   * @throws org.cp.elements.lang.factory.ObjectInstantiationException if an {@link Object} of {@link Class type}
+   * could not be constructed.
+   * @see #findConstructor(Class, Object...)
+   * @see #findDefaultConstructor(Class)
+   */
+  public static <T> T construct(@NotNull Class<T> type, Object... arguments) {
+
+    try {
+      return Optional.ofNullable(findConstructor(type, arguments))
+        .orElseGet(() -> findDefaultConstructor(type))
+        .newInstance(arguments);
+    }
+    catch (IllegalArgumentException cause) {
+      throw newObjectInstantiationException(cause, "Failed to construct object of type [%1$s] with arguments %2$s",
+        getName(type), Arrays.toString(arguments));
+    }
+    catch (Throwable cause) {
+      throw newObjectInstantiationException(cause, "Failed to construct object of type [%s]", getName(type));
+    }
   }
 
   /**
@@ -268,6 +298,25 @@ public abstract class ClassUtils {
     }
 
     return null;
+  }
+
+  /**
+   * Finds the default, public no-argument {@link Constructor} from the given, required {@link Class type}.
+   *
+   * @param <T> {@link Class type} to evaluate.
+   * @param type {@link Class type} used to find the default, public no-argument {@link Constructor};
+   * must not be {@literal null}.
+   * @return the default, public no-argument {@link Constructor} for the given {@link Class type}.
+   * @throws ConstructorNotFoundException if the given {@link Class type} does not contain a default,
+   * public no-argument {@link Constructor}.
+   * @see java.lang.Class
+   */
+  public static @NotNull <T> Constructor<T> findDefaultConstructor(@NotNull Class<T> type) {
+
+    return Optional.ofNullable(findConstructor(type))
+      .filter(ModifierUtils::isPublic)
+      .orElseThrow(() -> newConstructorNotFoundException(
+        "Failed to find a default, public no-argument constructor for type [%s]", getName(type)));
   }
 
   /**
