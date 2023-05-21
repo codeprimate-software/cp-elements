@@ -38,6 +38,7 @@ import org.cp.elements.util.ArrayUtils;
  * @see java.lang.Exception
  * @see java.lang.RuntimeException
  * @see java.lang.Throwable
+ * @see java.util.function.BiFunction
  * @see java.util.regex.Pattern
  * @see org.cp.elements.lang.annotation.Dsl
  * @see org.cp.elements.lang.annotation.FluentApi
@@ -47,11 +48,27 @@ import org.cp.elements.util.ArrayUtils;
 public abstract class ThrowableAssertions {
 
   /**
+   * Asserts that an {@link ArrayIndexOutOfBoundsException} will be thrown by the invocation of a given code block.
+   *
+   * @return a {@link ThrowableSource} used to reference the code to invoke
+   * throwing the {@link ArrayIndexOutOfBoundsException}.
+   * @see org.cp.elements.lang.ThrowableAssertions.ThrowableSource
+   * @see java.lang.ArrayIndexOutOfBoundsException
+   * @see org.cp.elements.lang.annotation.Dsl
+   * @see #assertThatThrowableOfType(Class)
+   */
+  @Dsl
+  public static @NotNull ThrowableSource assertThatArrayIndexOutOfBoundsException() {
+    return assertThatThrowableOfType(ArrayIndexOutOfBoundsException.class);
+  }
+
+  /**
    * Asserts that an {@link IllegalArgumentException} will be thrown by the invocation of a given code block.
    *
    * @return a {@link ThrowableSource} used to reference the code to invoke
    * throwing the {@link IllegalArgumentException}.
    * @see org.cp.elements.lang.ThrowableAssertions.ThrowableSource
+   * @see org.cp.elements.lang.annotation.Dsl
    * @see java.lang.IllegalArgumentException
    * @see #assertThatThrowableOfType(Class)
    */
@@ -66,6 +83,7 @@ public abstract class ThrowableAssertions {
    * @return a {@link ThrowableSource} used to reference the code to invoke
    * throwing the {@link IllegalStateException}.
    * @see org.cp.elements.lang.ThrowableAssertions.ThrowableSource
+   * @see org.cp.elements.lang.annotation.Dsl
    * @see #assertThatThrowableOfType(Class)
    * @see java.lang.IllegalStateException
    */
@@ -81,6 +99,7 @@ public abstract class ThrowableAssertions {
    * throwing the {@link IndexOutOfBoundsException}.
    * @see org.cp.elements.lang.ThrowableAssertions.ThrowableSource
    * @see java.lang.IndexOutOfBoundsException
+   * @see org.cp.elements.lang.annotation.Dsl
    * @see #assertThatThrowableOfType(Class)
    */
   @Dsl
@@ -94,6 +113,7 @@ public abstract class ThrowableAssertions {
    * @return a {@link ThrowableSource} used to reference the code to invoke
    * throwing the {@link InterruptedException}.
    * @see org.cp.elements.lang.ThrowableAssertions.ThrowableSource
+   * @see org.cp.elements.lang.annotation.Dsl
    * @see #assertThatThrowableOfType(Class)
    * @see java.lang.InterruptedException
    */
@@ -108,6 +128,7 @@ public abstract class ThrowableAssertions {
    * @return a {@link ThrowableSource} used to reference the code to invoke
    * throwing the {@link NullPointerException}.
    * @see org.cp.elements.lang.ThrowableAssertions.ThrowableSource
+   * @see org.cp.elements.lang.annotation.Dsl
    * @see #assertThatThrowableOfType(Class)
    * @see java.lang.NullPointerException
    */
@@ -122,6 +143,7 @@ public abstract class ThrowableAssertions {
    * @return a {@link ThrowableSource} used to reference the code to invoke
    * throwing the {@link RuntimeException}.
    * @see org.cp.elements.lang.ThrowableAssertions.ThrowableSource
+   * @see org.cp.elements.lang.annotation.Dsl
    * @see #assertThatThrowableOfType(Class)
    * @see java.lang.RuntimeException
    */
@@ -136,6 +158,7 @@ public abstract class ThrowableAssertions {
    * @return a {@link ThrowableSource} used to reference the code to invoke
    * throwing the {@link SecurityException}.
    * @see org.cp.elements.lang.ThrowableAssertions.ThrowableSource
+   * @see org.cp.elements.lang.annotation.Dsl
    * @see #assertThatThrowableOfType(Class)
    * @see java.lang.SecurityException
    */
@@ -151,6 +174,7 @@ public abstract class ThrowableAssertions {
    * throwing the {@link UnsupportedOperationException}.
    * @see org.cp.elements.lang.ThrowableAssertions.ThrowableSource
    * @see java.lang.UnsupportedOperationException
+   * @see org.cp.elements.lang.annotation.Dsl
    * @see #assertThatThrowableOfType(Class)
    */
   @Dsl
@@ -165,6 +189,7 @@ public abstract class ThrowableAssertions {
    * @param type {@link Class} of the {@link Throwable} expected to be thrown by the given code block.
    * @return a {@link ThrowableSource} used to reference the code to invoke throwing a {@link Throwable}.
    * @see org.cp.elements.lang.ThrowableAssertions.ThrowableSource
+   * @see org.cp.elements.lang.annotation.Dsl
    * @see java.lang.Throwable
    */
   @Dsl
@@ -175,6 +200,7 @@ public abstract class ThrowableAssertions {
   /**
    * Interface defining a contract for asserting the details of a {@link Throwable}.
    *
+   * @see org.cp.elements.lang.ThrowableAssertions.AssertThatThrowableExpression
    * @see org.cp.elements.lang.annotation.FluentApi
    */
   @FluentApi
@@ -300,7 +326,7 @@ public abstract class ThrowableAssertions {
     protected AssertThatThrowableExpression(@NotNull Class<? extends Throwable> type,
         @NotNull Throwable throwable) {
 
-      Assert.notNull(type, "The type of Throwable is required");
+      Assert.notNull(type, "Type of Throwable is required");
 
       Assert.isInstanceOf(throwable, type, "Expected Throwable [%s] to be an instance of [%s]",
         ObjectUtils.getClassName(throwable), ObjectUtils.getName(type));
@@ -411,6 +437,7 @@ public abstract class ThrowableAssertions {
    * Interface defining a contract for some snippet of source code that can throw a {@link Throwable},
    * such as an {@link Exception} or an {@link Error}.
    *
+   * @see org.cp.elements.lang.ThrowableAssertions.ThrowableSourceExpression
    * @see org.cp.elements.lang.annotation.FluentApi
    */
   @FluentApi
@@ -440,6 +467,16 @@ public abstract class ThrowableAssertions {
     ThrowableSource describedAs(String message, Object... args);
 
     /**
+     * {@link ThrowableOperation Callback} containing snippet of code throwing the {@link Throwable} to invoke
+     * during the assertion.
+     *
+     * @param operation {@link ThrowableOperation} containing the code throwing a {@link Throwable}
+     * that will be invoked during the assertion.
+     * @return this {@link ThrowableSource} instance.
+     */
+    AssertThatThrowable isThrownBy(ThrowableOperation<?> operation);
+
+    /**
      * Configures an array of {@link Object arguments} passed to the {@link ThrowableOperation} when run
      * by the {@link ThrowableAssertions}.
      *
@@ -461,16 +498,6 @@ public abstract class ThrowableAssertions {
      */
     ThrowableSource usingArguments(Supplier<Object[]> arguments);
 
-    /**
-     * {@link ThrowableOperation Callback} containing snippet of code throwing the {@link Throwable} to invoke
-     * during the assertion.
-     *
-     * @param operation {@link ThrowableOperation} containing the code throwing a {@link Throwable}
-     * that will be invoked during the assertion.
-     * @return this {@link ThrowableSource} instance.
-     */
-    AssertThatThrowable isThrownBy(ThrowableOperation<?> operation);
-
   }
 
   protected static class ThrowableSourceExpression implements DslExtension, FluentApiExtension, ThrowableSource {
@@ -486,7 +513,7 @@ public abstract class ThrowableAssertions {
     private Supplier<Object[]> arguments;
 
     protected ThrowableSourceExpression(@NotNull Class<? extends Throwable> type) {
-      this.type = ObjectUtils.requireObject(type, "The type of Throwable is required");
+      this.type = ObjectUtils.requireObject(type, "Type of Throwable is required");
     }
 
     protected @NotNull Supplier<Object[]> getArguments() {

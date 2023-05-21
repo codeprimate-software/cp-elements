@@ -19,6 +19,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.cp.elements.lang.ElementsExceptionsFactory.newTestException;
 import static org.cp.elements.lang.RuntimeExceptionsFactory.newIllegalStateException;
+import static org.cp.elements.lang.ThrowableAssertions.assertThatArrayIndexOutOfBoundsException;
 import static org.cp.elements.lang.ThrowableAssertions.assertThatIllegalArgumentException;
 import static org.cp.elements.lang.ThrowableAssertions.assertThatIllegalStateException;
 import static org.cp.elements.lang.ThrowableAssertions.assertThatIndexOutOfBoundsException;
@@ -38,6 +39,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 
+import java.util.Arrays;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.regex.PatternSyntaxException;
@@ -159,7 +161,7 @@ public class ThrowableAssertionsUnitTests {
 
     Assertions.assertThatIllegalArgumentException()
       .isThrownBy(() -> AssertThatThrowableExpression.from(null, new AuthenticationException("test")))
-      .withMessage("The type of Throwable is required")
+      .withMessage("Type of Throwable is required")
       .withNoCause();
   }
 
@@ -199,12 +201,12 @@ public class ThrowableAssertionsUnitTests {
 
     Assertions.assertThatIllegalArgumentException()
       .isThrownBy(() -> ThrowableSource.from(null))
-      .withMessage("The type of Throwable is required")
+      .withMessage("Type of Throwable is required")
       .withNoCause();
   }
 
   @Test
-  public void assertApplicationExceptionThrowByIsCorrect() {
+  public void assertApplicationExceptionThrownByIsCorrect() {
 
     assertThatApplicationException()
       .isThrownBy(args -> codeThrowingApplicationException("mock", new SecurityException("test security error")))
@@ -443,6 +445,18 @@ public class ThrowableAssertionsUnitTests {
   }
 
   @Test
+  public void assertThatArrayIndexOutOfBoundsExceptionIsThrownByOperation() {
+
+    ObjectOperationThrowingRuntimeException operation =
+      spy(new ObjectOperationThrowingRuntimeException(ArrayIndexOutOfBoundsException::new));
+
+    assertThatArrayIndexOutOfBoundsException()
+      .isThrownBy(args -> operation.atIndex(-1))
+      .havingMessage("Index [-1] is not valid")
+      .withNoCause();
+  }
+
+  @Test
   @SuppressWarnings("unchecked")
   public void assertIllegalArgumentExceptionUsingSupplierOfArguments() {
 
@@ -506,6 +520,18 @@ public class ThrowableAssertionsUnitTests {
   }
 
   @Test
+  public void assertThatInterruptedExceptionIsThrownByOperation() {
+
+    ObjectOperationThrowingCheckedException operation =
+      spy(new ObjectOperationThrowingCheckedException(InterruptedException::new));
+
+    assertThatInterruptedException()
+      .isThrownBy(args -> operation.run("TEST"))
+      .havingMessage("TEST")
+      .withNoCause();
+  }
+
+  @Test
   public void assertThatNullPointerExceptionWithInvalidRegularExpressionPattern() {
 
     ObjectOperationThrowingRuntimeException operation =
@@ -517,6 +543,42 @@ public class ThrowableAssertionsUnitTests {
         .havingMessageMatching("\\(.*)")
         .withNoCause())
       .withMessageStartingWith("Unmatched closing ')'")
+      .withNoCause();
+  }
+
+  @Test
+  public void assertThatRuntimeExceptionIsThrownByOperation() {
+
+    ObjectOperationThrowingRuntimeException operation =
+      spy(new ObjectOperationThrowingRuntimeException(RuntimeException::new));
+
+    assertThatRuntimeException()
+      .isThrownBy(args -> operation.run(ObjectUtils.EMPTY_OBJECT_ARRAY))
+      .havingMessage("TEST")
+      .withNoCause();
+  }
+
+  @Test
+  public void assertThatSecurityExceptionIsThrownByOperation() {
+
+    ObjectOperationThrowingRuntimeException operation =
+      spy(new ObjectOperationThrowingRuntimeException(SecurityException::new));
+
+    assertThatSecurityException()
+      .isThrownBy(args -> operation.secure())
+      .havingMessage("INSECURE")
+      .withNoCause();
+  }
+
+  @Test
+  public void assertThatUnsupportedOperationExceptionIsThrownByOperation() {
+
+    ObjectOperationThrowingRuntimeException operation =
+      spy(new ObjectOperationThrowingRuntimeException(UnsupportedOperationException::new));
+
+    assertThatUnsupportedOperationException()
+      .isThrownBy(args -> operation.notSupported())
+      .havingMessage(Constants.OPERATION_NOT_SUPPORTED)
       .withNoCause();
   }
 
@@ -538,9 +600,29 @@ public class ThrowableAssertionsUnitTests {
     catch (AssertionError ignore) { }
   }
 
+  static class ObjectOperationThrowingCheckedException {
+
+    private final Function<String, Exception> exceptionFunction;
+
+    ObjectOperationThrowingCheckedException(Function<String, Exception> exceptionFunction) {
+      this.exceptionFunction = exceptionFunction;
+    }
+
+    Object run(Object... arguments) throws Exception {
+
+      String argument = Arrays.stream(ArrayUtils.nullSafeArray(arguments))
+        .reduce((one, two) -> String.valueOf(one).concat(String.valueOf(two)))
+        .orElse("NULL")
+        .toString();
+
+      throw this.exceptionFunction.apply(argument);
+    }
+  }
+
   static class ObjectOperationThrowingRuntimeException {
 
     private final Function<String, RuntimeException> runtimeExceptionFunction;
+
 
     ObjectOperationThrowingRuntimeException(Function<String, RuntimeException> runtimeExceptionFunction) {
       this.runtimeExceptionFunction = runtimeExceptionFunction;
@@ -550,12 +632,20 @@ public class ThrowableAssertionsUnitTests {
       throw this.runtimeExceptionFunction.apply(String.format("Index [%d] is not valid", index));
     }
 
-    Object run(Object[] arguments) {
-      throw this.runtimeExceptionFunction.apply("TEST");
+    Object notSupported() {
+      throw this.runtimeExceptionFunction.apply(Constants.OPERATION_NOT_SUPPORTED);
     }
 
     Object process(User<?> user) {
       throw newIllegalStateException("Cannot process User [%s]", user);
+    }
+
+    Object run(Object[] arguments) {
+      throw this.runtimeExceptionFunction.apply("TEST");
+    }
+
+    Object secure() {
+      throw this.runtimeExceptionFunction.apply("INSECURE");
     }
 
     Object usingNullReference() {
