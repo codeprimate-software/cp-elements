@@ -34,6 +34,7 @@ import org.cp.elements.util.search.SearchException;
  * Abstract base class encapsulating functionality common to all {@link Sorter} implementations.
  *
  * @author John J. Blum
+ * @see java.util.Comparator
  * @see org.cp.elements.util.sort.Sorter
  * @since 1.0.0
  */
@@ -217,40 +218,42 @@ public abstract class AbstractSorter implements Sorter {
   }
 
   /**
-   * Configures the Comparator to use during the sort operation by the calling Thread.
+   * Configures the {@link Comparator} to use during the {@literal sort operation} by the calling {@link Thread}.
    *
-   * @param sortableMetaData the @Sortable annotation specifying the Comparator to use to order elements in the list
-   * during the sort operation.
-   * @return the @Sortable annotation to method chaining purposes.
-   * @throws SortException if an instance of the Comparator class type specified in the @Sortable annotation cannot be
-   * constructed.
+   * @param sortableMetadata {@link Sortable} annotation metadata specifying the {@link Comparator} to use to
+   * order elements in the list during the sort operation.
+   * @return {@link Sortable} annotation for method chaining purposes.
+   * @throws SortException if an instance of the {@link Comparator} {@link Class type}
+   * specified in the {@link Sortable} annotation cannot be constructed.
+   * @see org.cp.elements.util.sort.annotation.Sortable#orderBy()
+   * @see ComparatorHolder#set(java.util.Comparator)
    * @see #configureComparator(Sortable)
    * @see #isCustomComparatorAllowed()
-   * @see ComparatorHolder#set(java.util.Comparator)
-   * @see org.cp.elements.util.sort.annotation.Sortable#orderBy()
    * @see java.util.Comparator
    */
-  @SuppressWarnings("rawtypes")
+  @SuppressWarnings({ "unchecked" })
   protected org.cp.elements.util.sort.annotation.Sortable configureComparator(
-      org.cp.elements.util.sort.annotation.Sortable sortableMetaData) {
+      org.cp.elements.util.sort.annotation.Sortable sortableMetadata) {
 
     try {
       if (isCustomComparatorAllowed()) {
 
-        Class<? extends Comparator> comparatorClass = sortableMetaData.orderBy();
+        Class<Comparator<?>> comparatorType = (Class<Comparator<?>>) sortableMetadata.orderBy();
 
-        if (!Comparator.class.equals(comparatorClass)) {
-          ComparatorHolder.set(comparatorClass.newInstance());
+        if (!Comparator.class.equals(comparatorType)) {
+          ComparatorHolder.set(ObjectUtils.construct(comparatorType));
         }
       }
 
-      return sortableMetaData;
+      return sortableMetadata;
     }
     catch (Exception cause) {
-      throw newSortException(cause,
+
+      String message =
         "Error occurred creating an instance of Comparator class (%1$s) to be used by this Sorter (%2$s)!"
-          + " The Comparator class (%1$s) must have a public no-arg constructor!",
-            sortableMetaData.orderBy().getName(), this.getClass().getName());
+        + " The Comparator class (%1$s) must have a public no-arg constructor!";
+
+      throw newSortException(cause, message, sortableMetadata.orderBy().getName(), this.getClass().getName());
     }
   }
 
@@ -260,7 +263,7 @@ public abstract class AbstractSorter implements Sorter {
    *
    * @param <E> the Class type of the elements in the list.
    * @param obj the @Sortable annotated object containing the list of elements to sort.
-   * @param sortableMetaData the @Sortable annotation meta-data indicating the list method return the collection
+   * @param sortableMetadata the @Sortable annotation meta-data indicating the list method return the collection
    * of elements to sort.
    * @return the list of elements to sort.
    * @see org.cp.elements.util.sort.annotation.Sortable#listMethod()
@@ -269,17 +272,17 @@ public abstract class AbstractSorter implements Sorter {
    * @see java.util.Collections#emptyList()
    */
   @SuppressWarnings("unchecked")
-  protected <E> List<E> asList(Object obj, org.cp.elements.util.sort.annotation.Sortable sortableMetaData) {
+  protected <E> List<E> asList(Object obj, org.cp.elements.util.sort.annotation.Sortable sortableMetadata) {
 
     try {
-      Method asList = obj.getClass().getMethod(sortableMetaData.listMethod());
+      Method asList = obj.getClass().getMethod(sortableMetadata.listMethod());
       List<E> list = (List<E>) asList.invoke(obj);
       return ObjectUtils.returnFirstNonNullValue(list, Collections.emptyList());
     }
     catch (Exception cause) {
       throw newSortException(cause,
         "Error occurred getting the list of elements to sort from the (%1$s) method on object of type (%2$s)!",
-          sortableMetaData.listMethod(), obj.getClass().getName());
+          sortableMetadata.listMethod(), obj.getClass().getName());
     }
   }
 
@@ -301,7 +304,7 @@ public abstract class AbstractSorter implements Sorter {
   }
 
   /**
-   * A holder of a {@link Comparable object} used by the calling {@link Thread} during the sort operation.
+   * A holder of a {@link Comparable} object used by the calling {@link Thread} during the {@literal sort operation}.
    *
    * @see java.lang.ThreadLocal
    * @see java.util.Comparator
