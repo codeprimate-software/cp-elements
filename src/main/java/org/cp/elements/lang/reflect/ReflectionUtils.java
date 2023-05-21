@@ -424,7 +424,7 @@ public abstract class ReflectionUtils extends ClassUtils {
           BooleanUtils.toString(target == null, "class", "object of"),
             field.getDeclaringClass().getName()));
 
-      boolean currentAccessible = field.isAccessible();
+      boolean currentAccessible = field.canAccess(target);
 
       field.setAccessible(true);
       field.set(target, value);
