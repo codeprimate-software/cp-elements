@@ -16,6 +16,7 @@
 package org.cp.elements.lang.concurrent;
 
 import org.cp.elements.lang.Assert;
+import org.cp.elements.lang.ObjectUtils;
 import org.cp.elements.lang.annotation.NotNull;
 import org.cp.elements.lang.annotation.Nullable;
 
@@ -66,7 +67,7 @@ public class ThreadAdapter {
   /**
    * Constructs a new instance of {@link ThreadAdapter} initialized with
    * the {@link Thread#currentThread() current Thread} as the {@literal delegate}
-   * for all {@link Thread}-based operations accessible from {@literal this} adapter.
+   * for all {@link Thread}-based operations accessible from {@literal this} Adapter.
    *
    * @see java.lang.Thread#currentThread()
    * @see #ThreadAdapter(Thread)
@@ -93,24 +94,21 @@ public class ThreadAdapter {
    * Constructs a new instance of {@link ThreadAdapter} initialized with the given, required {@link Thread}.
    *
    * The given {@link Thread} will be used as the {@literal delegate} for all {@link Thread}-based operations
-   * accessible from {@literal this} adapter.
+   * accessible from {@literal this} Adapter.
    *
    * @param delegate {@link Thread} to adapt (wrap).
-   * @throws IllegalArgumentException if the {@link Thread} used as the {@literal delegate}
+   * @throws IllegalArgumentException if the given {@link Thread} used as the {@literal delegate}
    * for {@literal this} {@link ThreadAdapter} is {@literal null}.
    * @see java.lang.Thread
    */
   public ThreadAdapter(@NotNull Thread delegate) {
-
-    Assert.notNull(delegate, "Delegate Thread is required");
-
-    this.delegate = delegate;
+    this.delegate = ObjectUtils.requireObject(delegate, "Delegate Thread is required");
   }
 
   /**
-   * Gets the {@literal Thread} adapted ({@literal wrapped}) by {@literal this} {@link ThreadAdapter}.
+   * Gets the configured {@literal Thread} adapted ({@literal wrapped}) by {@literal this} {@link ThreadAdapter}.
    *
-   * All operations accessible from {@literal this} adapter are delegated to the underlying, configured {@link Thread}.
+   * All operations accessible from {@literal this} Adapter are delegated to the underlying, configured {@link Thread}.
    *
    * @return the {@literal Thread} adapted ({@literal wrapped}) by {@literal this} {@link ThreadAdapter};
    * never {@literal null}.
@@ -430,16 +428,6 @@ public class ThreadAdapter {
    */
   public @Nullable Thread.UncaughtExceptionHandler getUncaughtExceptionHandler() {
     return getDelegate().getUncaughtExceptionHandler();
-  }
-
-  /**
-   * Checks the access of the current calling {@link Thread} to determine whether it has permission
-   * to modify {@literal this} {@link Thread}.
-   *
-   * @see java.lang.Thread#checkAccess()
-   */
-  public void checkAccess() {
-    getDelegate().checkAccess();
   }
 
   /**

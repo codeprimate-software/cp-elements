@@ -56,7 +56,7 @@ import edu.umd.cs.mtc.MultithreadedTestCase;
 import edu.umd.cs.mtc.TestFramework;
 
 /**
- * Unit Tests for {@link org.cp.elements.lang.concurrent.ThreadAdapter}.
+ * Unit Tests for {@link ThreadAdapter}.
  *
  * @author John J. Blum
  * @see java.lang.Thread
@@ -731,11 +731,6 @@ public class ThreadAdapterUnitTests {
 
     verify(mockThread, times(1)).getUncaughtExceptionHandler();
     verifyNoMoreInteractions(mockThread);
-  }
-
-  @Test
-  public void checkAccessSucceeds() {
-    new ThreadAdapter(mockThread()).checkAccess();
   }
 
   @Test
