@@ -56,6 +56,7 @@ public abstract class ThrowableAssertions {
    * @see java.lang.ArrayIndexOutOfBoundsException
    * @see org.cp.elements.lang.annotation.Dsl
    * @see #assertThatThrowableOfType(Class)
+   * @since 2.0.0
    */
   @Dsl
   public static @NotNull ThrowableSource assertThatArrayIndexOutOfBoundsException() {

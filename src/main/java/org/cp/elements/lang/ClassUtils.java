@@ -137,6 +137,7 @@ public abstract class ClassUtils {
    * could not be constructed.
    * @see #findConstructor(Class, Object...)
    * @see #findDefaultConstructor(Class)
+   * @since 2.0.0
    */
   public static <T> T construct(@NotNull Class<T> type, Object... arguments) {
 
@@ -310,6 +311,7 @@ public abstract class ClassUtils {
    * @throws ConstructorNotFoundException if the given {@link Class type} does not contain a default,
    * public no-argument {@link Constructor}.
    * @see java.lang.Class
+   * @since 2.0.0
    */
   public static @NotNull <T> Constructor<T> findDefaultConstructor(@NotNull Class<T> type) {
 
