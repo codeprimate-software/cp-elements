@@ -24,6 +24,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -34,6 +35,7 @@ import org.junit.After;
 import org.junit.jupiter.api.Test;
 
 import org.cp.elements.lang.ThrowableAssertions;
+import org.cp.elements.lang.factory.ObjectInstantiationException;
 import org.cp.elements.lang.support.SmartComparator;
 import org.cp.elements.lang.support.SmartComparator.ComparableComparator;
 
@@ -49,7 +51,6 @@ import lombok.ToString;
  * Unit Tests for {@link AbstractSorter}.
  *
  * @author John J. Blum
- * @see java.util.Comparator
  * @see org.junit.jupiter.api.Test
  * @see org.mockito.Mockito
  * @see org.cp.elements.util.sort.AbstractSorter
@@ -327,14 +328,17 @@ public class AbstractSorterTest {
     org.cp.elements.util.sort.annotation.Sortable sortableMetaData =
       sorter.getSortableMetaData(TestSortableWithProblem.INSTANCE);
 
+    String expectedSortExceptionMessage =
+      "Error occurred creating an instance of Comparator class (%1$s) to be used by this Sorter (%2$s)!"
+        + " The Comparator class (%1$s) must have a public no-arg constructor!";
+
     ThrowableAssertions.assertThatThrowableOfType(SortException.class)
       .isThrownBy(args -> sorter.configureComparator(sortableMetaData))
-      .havingMessage(
-        "Error occurred creating an instance of Comparator class (%1$s) to be used by this Sorter (%2$s)!"
-          + " The Comparator class (%1$s) must have a public no-arg constructor!",
-        sortableMetaData.orderBy().getName(), sorter.getClass().getName())
+      .havingMessage(expectedSortExceptionMessage, sortableMetaData.orderBy().getName(), sorter.getClass().getName())
+      .causedBy(ObjectInstantiationException.class)
+      .havingMessage("Failed to construct object of type [%s]", TestProblemComparator.class.getName())
+      .causedBy(InvocationTargetException.class)
       .causedBy(IllegalStateException.class)
-      .havingMessage("Construction Failed")
       .withNoCause();
 
     assertThat(sorter.getOrderBy()).isSameAs(SmartComparator.ComparableComparator.INSTANCE);
@@ -459,10 +463,10 @@ public class AbstractSorterTest {
     assertThat(list.size()).isEqualTo(elements.length);
   }
 
-  protected static class TestComparator implements Comparator<String> {
+  public static class TestComparator implements Comparator<String> {
 
     @Override
-    public int compare(final String value1, final String value2) {
+    public int compare(String value1, String value2) {
       return value1.compareToIgnoreCase(value2);
     }
   }
