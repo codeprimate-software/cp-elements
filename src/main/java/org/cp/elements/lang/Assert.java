@@ -160,12 +160,12 @@ public abstract class Assert {
   }
 
   /**
-   * Null-safe utility method used to determine whether the given {@link Object argument}
-   * tested by the given {@link Predicate argument predicate} evaluates to {@literal true}.
+   * Null-safe utility method used to determine whether the given {@link Object argument},
+   * tested by the given {@link Predicate argument predicate}, evaluates to {@literal truez}.
    *
-   * @param <T> {@link Class type} of the {@link Object} processed by the given {@link Predicate}.
-   * @param argument {@link Object} value to test and validate.
-   * @param argumentPredicate {@link Predicate} used to test and validate the argument;
+   * @param <T> {@link Class type} of {@link Object} processed by the given {@link Predicate}.
+   * @param argument {@link Object value} to test and validate.
+   * @param argumentPredicate {@link Predicate} used to test and validate the {@link Object argument};
    * must not be {@literal null}.
    * @return a boolean value indicating whether the given {@link Object argument}
    * tested by the given {@link Predicate} evaluates to {@literal true}.
@@ -181,13 +181,13 @@ public abstract class Assert {
   /**
    * Utility method used to protect against a {@literal null} {@link Predicate}.
    *
-   * @param <T> {@link Class type} of argument tested by the {@link Predicate}.
+   * @param <T> {@link Class type} of {@link Object argument} tested by the {@link Predicate}.
    * @param predicate {@link Predicate} to evaluate for a {@literal null} reference.
-   * @return the given {@link Predicate} if not {@literal null}
-   * or a {@literal new}, {@literal non-null} {@link Predicate} who's {@literal test}
-   * evaluates to {@literal true}.
+   * @return the given {@link Predicate} if not {@literal null} or a {@literal new},
+   * {@literal non-null} {@link Predicate} who's {@literal test} evaluates to {@literal true}.
    * @see java.util.function.Predicate
    */
+  @NullSafe
   private static @NotNull <T> Predicate<T> nullSafePredicate(@Nullable Predicate<T> predicate) {
     return predicate != null ? predicate : argument -> true;
   }
@@ -1839,13 +1839,14 @@ public abstract class Assert {
   }
 
   /**
-   * Formats the given {@link String message} containing placeholders as defined by
+   * Formats the given {@link String message} containing {@literal placeholders} as defined by
    * the Java {@link MessageFormat} class.
    *
-   * @param message {@link String} containing the message to format.
+   * @param message {@link String} containing the {@literal message} to format.
    * @param arguments array of {@link Object arguments} used to format the {@link String message}.
    * @return the {@link String message} formatted with the array of {@link Object arguments}.
    * @see java.text.MessageFormat#format(String, Object...)
+   * @see java.lang.String#valueOf(Object)
    */
   @NullSafe
   private static @Nullable String messageFormat(@Nullable String message, Object... arguments) {
@@ -1853,13 +1854,14 @@ public abstract class Assert {
   }
 
   /**
-   * Formats the given {@link String message} containing placeholders as defined by
+   * Formats the given {@link String message} containing {@literal placeholders} as defined by
    * the Java {@link String} class.
    *
-   * @param message {@link String} containing the message to format.
+   * @param message {@link String} containing the {@literal message} to format.
    * @param arguments array of {@link Object arguments} used to format the {@link String message}.
    * @return the {@link String message} formatted with the array of {@link Object arguments}.
    * @see java.lang.String#format(String, Object...)
+   * @see java.lang.String#valueOf(Object)
    */
   @NullSafe
   private static @Nullable String stringFormat(@Nullable String message, Object... arguments) {
