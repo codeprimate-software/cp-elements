@@ -451,9 +451,9 @@ public class ObjectUtilsUnitTests {
 
     assertThat(ObjectUtils.equals(testObject, testObject)).isTrue();
     assertThat(ObjectUtils.equals(true, Boolean.TRUE)).isTrue();
-    assertThat(ObjectUtils.equals('c', new Character('c'))).isTrue();
-    assertThat(ObjectUtils.equals(1, new Integer(1))).isTrue();
-    assertThat(ObjectUtils.equals(Math.PI, new Double(Math.PI))).isTrue();
+    assertThat(ObjectUtils.equals('c', Character.valueOf('c'))).isTrue();
+    assertThat(ObjectUtils.equals(1, Integer.valueOf(1))).isTrue();
+    assertThat(ObjectUtils.equals(Math.PI, Double.valueOf(Math.PI))).isTrue();
     assertThat(ObjectUtils.equals("test", "test")).isTrue();
   }
 

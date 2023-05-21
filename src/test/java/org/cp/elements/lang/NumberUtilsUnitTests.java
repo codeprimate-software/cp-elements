@@ -299,22 +299,22 @@ public class NumberUtilsUnitTests {
 
   @Test
   public void isDecimalWithDouble() {
-    assertThat(NumberUtils.isDecimal(new Double(Math.PI))).isTrue();
+    assertThat(NumberUtils.isDecimal(Double.valueOf(Math.PI))).isTrue();
   }
 
   @Test
   public void isDecimalWithFloat() {
-    assertThat(NumberUtils.isDecimal(new Float(3.14159f))).isTrue();
+    assertThat(NumberUtils.isDecimal(Float.valueOf(3.14159f))).isTrue();
   }
 
   @Test
   public void isDecimalWithInteger() {
-    assertThat(NumberUtils.isDecimal(new Integer(1))).isFalse();
+    assertThat(NumberUtils.isDecimal(Integer.valueOf(1))).isFalse();
   }
 
   @Test
   public void isDecimalWithLong() {
-    assertThat(NumberUtils.isDecimal(new Long(9876543210L))).isFalse();
+    assertThat(NumberUtils.isDecimal(Long.valueOf(9876543210L))).isFalse();
   }
 
   @Test
@@ -441,18 +441,18 @@ public class NumberUtilsUnitTests {
   @SuppressWarnings("all")
   public void isWholeWithFloatingPointNumber() {
 
-    assertThat(NumberUtils.isWhole(new Float(3.14159f))).isFalse();
-    assertThat(NumberUtils.isWhole(new Double(Math.PI))).isFalse();
+    assertThat(NumberUtils.isWhole(Float.valueOf(3.14159f))).isFalse();
+    assertThat(NumberUtils.isWhole(Double.valueOf(Math.PI))).isFalse();
     assertThat(NumberUtils.isWhole(new BigDecimal(1.234567890d))).isFalse();
   }
 
   @Test
   public void isWholeWithIntegralNumber() {
 
-    assertThat(NumberUtils.isWhole(new Byte((byte) 0))).isTrue();
-    assertThat(NumberUtils.isWhole(new Short((short) 256))).isTrue();
-    assertThat(NumberUtils.isWhole(new Integer(65536))).isTrue();
-    assertThat(NumberUtils.isWhole(new Long(4294967296L))).isTrue();
+    assertThat(NumberUtils.isWhole(Byte.valueOf((byte) 0))).isTrue();
+    assertThat(NumberUtils.isWhole(Short.valueOf((short) 256))).isTrue();
+    assertThat(NumberUtils.isWhole(Integer.valueOf(65536))).isTrue();
+    assertThat(NumberUtils.isWhole(Long.valueOf(4294967296L))).isTrue();
     assertThat(NumberUtils.isWhole(new BigInteger("1234567890987654321"))).isTrue();
   }
 

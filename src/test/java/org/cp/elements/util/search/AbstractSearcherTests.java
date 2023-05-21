@@ -19,6 +19,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -113,7 +114,9 @@ public class AbstractSearcherTests {
     AbstractSearcher searcher = new TestSearcher();
 
     searcher.setMatcher(new AbstractMatcher<String>() {
-      @Override public int match(final String value) {
+
+      @Override
+      public int match(final String value) {
         return "testing".compareTo(value);
       }
     });
@@ -128,15 +131,17 @@ public class AbstractSearcherTests {
 
     Searchable<Object> mockSearchable = mock(Searchable.class);
 
-    when(mockSearchable.asList()).thenReturn(Arrays.asList(ANIMALS));
-    when(mockSearchable.getMatcher()).thenReturn(null);
+    doReturn(Arrays.asList(ANIMALS)).when(mockSearchable).asList();
+    doReturn(null).when(mockSearchable).getMatcher();
 
     AbstractSearcher searcher = new TestSearcher();
 
     searcher.setCustomMatcherAllowed(true);
 
     searcher.setMatcher(new AbstractMatcher<String>() {
-      @Override public int match(final String value) {
+
+      @Override
+      public int match(final String value) {
         return ANIMALS[12].compareTo(value);
       }
     });
@@ -171,7 +176,9 @@ public class AbstractSearcherTests {
     searcher.setCustomMatcherAllowed(true);
 
     searcher.setMatcher(new AbstractMatcher<String>() {
-      @Override public int match(final String value) {
+
+      @Override
+      public int match(final String value) {
         return ANIMALS[12].compareTo(value);
       }
     });
@@ -237,6 +244,7 @@ public class AbstractSearcherTests {
 
   @Test
   public void searchReturningNoMatch() {
+
     AbstractSearcher searcher = new TestSearcher();
 
     searcher.setMatcher(new AbstractMatcher<>() {
@@ -253,6 +261,7 @@ public class AbstractSearcherTests {
 
   @Test
   public void searchForAllInArray() {
+
     AbstractSearcher searcher = new TestSearcher();
 
     searcher.setMatcher(new AbstractMatcher<>() {
@@ -331,8 +340,8 @@ public class AbstractSearcherTests {
 
     Searchable<Object> mockSearchable = mock(Searchable.class);
 
-    when(mockSearchable.asList()).thenReturn(Arrays.asList(ANIMALS));
-    when(mockSearchable.getMatcher()).thenReturn(null);
+    doReturn(Arrays.asList(ANIMALS)).when(mockSearchable).asList();
+    doReturn(null).when(mockSearchable).getMatcher();
 
     AbstractSearcher searcher = new TestSearcher();
 
@@ -373,8 +382,8 @@ public class AbstractSearcherTests {
 
     Matcher<Object> matcher = new TestMatcher();
 
-    when(mockSearchable.asList()).thenReturn(Arrays.asList(ANIMALS));
-    when(mockSearchable.getMatcher()).thenReturn(matcher);
+    doReturn(Arrays.asList(ANIMALS)).when(mockSearchable).asList();
+    doReturn(matcher).when(mockSearchable).getMatcher();
 
     AbstractSearcher searcher = new TestSearcher();
 
@@ -430,6 +439,7 @@ public class AbstractSearcherTests {
 
   @Test
   public void searchForAllInSearchableAnnotatedObject() {
+
     AbstractSearcher searcher = new TestSearcher();
 
     searcher.setCustomMatcherAllowed(true);
@@ -620,6 +630,7 @@ public class AbstractSearcherTests {
   public void configureMatcherUsingSearchableAnnotatedObject() {
 
     Matcher<?> mockMatcher = mock(Matcher.class);
+
     AbstractSearcher searcher = new TestSearcher();
 
     searcher.setCustomMatcherAllowed(true);
@@ -741,6 +752,7 @@ public class AbstractSearcherTests {
 
     @Override
     public final int match(Object obj) {
+
       if (++count == powersOfTwo) {
         powersOfTwo *= 2;
         return 0;

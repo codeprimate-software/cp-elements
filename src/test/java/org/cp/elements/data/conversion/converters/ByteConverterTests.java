@@ -79,7 +79,7 @@ public class ByteConverterTests {
   @Test
   @SuppressWarnings("all")
   public void convertByte() {
-    assertThat(this.converter.convert(new Byte((byte) 1))).isEqualTo(new Byte((byte) 1));
+    assertThat(this.converter.convert(Byte.valueOf((byte) 1))).isEqualTo(Byte.valueOf((byte) 1));
   }
 
   @Test
