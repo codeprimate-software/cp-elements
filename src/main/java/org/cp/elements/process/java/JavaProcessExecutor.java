@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.process.java;
 
 import java.io.File;
@@ -23,17 +22,19 @@ import java.util.List;
 
 import org.cp.elements.io.FileSystemUtils;
 import org.cp.elements.process.ProcessAdapter;
+import org.cp.elements.process.ProcessExecutor;
 import org.cp.elements.process.support.RuntimeProcessExecutor;
 import org.cp.elements.util.ArrayUtils;
 
 /**
- * The {@link JavaProcessExecutor} class is an implementation of {@link org.cp.elements.process.ProcessExecutor}
+ * The {@link JavaProcessExecutor} class is an implementation of {@link ProcessExecutor} interface
  * and extension of {@link RuntimeProcessExecutor} used to execute and launch Java application processes
  * (i.e. Java classes with a {@literal main} method).
  *
  * @author John J. Blum
  * @see java.io.File
  * @see org.cp.elements.process.ProcessAdapter
+ * @see org.cp.elements.process.ProcessExecutor
  * @see org.cp.elements.process.support.RuntimeProcessExecutor
  * @since 1.0.0
  */
@@ -122,6 +123,7 @@ public class JavaProcessExecutor extends RuntimeProcessExecutor {
    * @see java.lang.Class
    */
   protected String[] toJavaCommandLine(Class<?> type, String... args) {
+
     List<String> javaCommandLine = new ArrayList<>();
 
     javaCommandLine.add(FileSystemUtils.JAVA_EXE.getAbsolutePath());
@@ -131,7 +133,7 @@ public class JavaProcessExecutor extends RuntimeProcessExecutor {
     javaCommandLine.add(type.getName());
     javaCommandLine.addAll(Arrays.asList(ArrayUtils.nullSafeArray(args, String.class)));
 
-    return javaCommandLine.toArray(new String[javaCommandLine.size()]);
+    return javaCommandLine.toArray(new String[0]);
   }
 
   /**
@@ -143,6 +145,7 @@ public class JavaProcessExecutor extends RuntimeProcessExecutor {
    * @see java.io.File
    */
   protected String[] toJavaCommandLine(File jarFile, String... args) {
+
     List<String> javaCommandLine = new ArrayList<>();
 
     javaCommandLine.add(FileSystemUtils.JAVA_EXE.getAbsolutePath());
@@ -150,6 +153,6 @@ public class JavaProcessExecutor extends RuntimeProcessExecutor {
     javaCommandLine.add(FileSystemUtils.tryGetCanonicalPathElseGetAbsolutePath(jarFile));
     javaCommandLine.addAll(Arrays.asList(ArrayUtils.nullSafeArray(args, String.class)));
 
-    return javaCommandLine.toArray(new String[javaCommandLine.size()]);
+    return javaCommandLine.toArray(new String[0]);
   }
 }

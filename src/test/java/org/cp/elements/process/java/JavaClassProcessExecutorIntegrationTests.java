@@ -23,7 +23,7 @@ import static org.cp.elements.tools.net.EchoClient.newEchoClient;
 
 import java.util.concurrent.TimeUnit;
 
-import org.junit.AfterClass;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
@@ -67,8 +67,9 @@ public class JavaClassProcessExecutorIntegrationTests {
       .on(newConnectionTester(availablePort))).isTrue();
   }
 
-  @AfterClass
+  @AfterAll
   public static void tearDown() {
+
     process.stopAndWait(TIMEOUT, TIMEOUT_TIME_UNIT);
 
     assertThat(process.isRunning()).isFalse();

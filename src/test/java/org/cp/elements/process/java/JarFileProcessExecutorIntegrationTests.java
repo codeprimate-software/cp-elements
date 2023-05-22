@@ -30,7 +30,7 @@ import java.util.jar.Attributes;
 import java.util.jar.JarOutputStream;
 import java.util.jar.Manifest;
 
-import org.junit.After;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -56,34 +56,35 @@ import org.cp.elements.tools.net.EchoServer;
  */
 public class JarFileProcessExecutorIntegrationTests extends AbstractBaseTestSuite {
 
+  private static final long TIMEOUT = 5;
+
+  private static final TimeUnit TIMEOUT_TIME_UNIT = TimeUnit.SECONDS;
+
   private int availablePort;
 
-  private final long TIMEOUT = 5;
-
-  private File jarFile;
-
   private ProcessAdapter process;
-
-  private final TimeUnit TIMEOUT_TIME_UNIT = TimeUnit.SECONDS;
 
   @BeforeEach
   public void setup() {
 
-    availablePort = NetworkUtils.availablePort();
-    process = newJavaProcessExecutor().execute(buildJarFile(), String.valueOf(availablePort));
+    this.availablePort = NetworkUtils.availablePort();
+    this.process = newJavaProcessExecutor().execute(buildJarFile(), String.valueOf(this.availablePort));
 
-    assertThat(process).isNotNull();
+    assertThat(this.process).isNotNull();
 
-    waitFor(TIMEOUT, TIMEOUT_TIME_UNIT).checkEvery(500).on(() -> process.isRunning());
+    waitFor(TIMEOUT, TIMEOUT_TIME_UNIT)
+      .checkEvery(500L)
+      .on(() -> this.process.isRunning());
 
-    assertThat(waitFor(TIMEOUT, TIMEOUT_TIME_UNIT).checkEvery(1, TIMEOUT_TIME_UNIT)
-      .on(newConnectionTester(availablePort))).isTrue();
+    assertThat(waitFor(TIMEOUT, TIMEOUT_TIME_UNIT)
+      .checkEvery(1, TIMEOUT_TIME_UNIT)
+      .on(newConnectionTester(this.availablePort))).isTrue();
 
   }
 
   private File buildJarFile() {
 
-    jarFile = newJarFile("echoServer.jar");
+    File jarFile = newJarFile("echoServer.jar");
 
     JarOutputStream jarFileOutputStream = null;
 
@@ -91,7 +92,7 @@ public class JarFileProcessExecutorIntegrationTests extends AbstractBaseTestSuit
       jarFileOutputStream = new JarOutputStream(new FileOutputStream(jarFile), newManifest(jarFile.getParentFile()));
       jarFileOutputStream.flush();
     }
-    catch (IOException e) {
+    catch (IOException cause) {
       fail("Failed to write JAR file [%s] to the file system", jarFile);
     }
     finally {
@@ -130,7 +131,8 @@ public class JarFileProcessExecutorIntegrationTests extends AbstractBaseTestSuit
   private String resolveClassPath(File jarFileDirectory) {
 
     String relativeClassPath = getProjectHomeDirectory().equals(jarFileDirectory)
-      ? getBuildDirectoryName() : "";
+      ? getBuildDirectoryName()
+      : "";
 
     relativeClassPath += relativeClassPath.isEmpty() ? StringUtils.EMPTY_STRING : File.separator;
     relativeClassPath += getClassesDirectoryName();
@@ -139,18 +141,18 @@ public class JarFileProcessExecutorIntegrationTests extends AbstractBaseTestSuit
     return relativeClassPath;
   }
 
-  @After
+  @AfterEach
   public void tearDown() {
 
-    process.stopAndWait();
+    this.process.stopAndWait();
 
-    assertThat(process.isRunning()).isFalse();
+    assertThat(this.process.isRunning()).isFalse();
   }
 
   @Test
   public void forkedJarFileProcessIsRunning() {
 
-    EchoClient echoClient = newEchoClient(availablePort);
+    EchoClient echoClient = newEchoClient(this.availablePort);
 
     assertThat(echoClient.sendMessage("Hello")).isEqualTo("Hello");
     assertThat(echoClient.sendMessage("Whatcha doin?")).isEqualTo("Whatcha doin?");
