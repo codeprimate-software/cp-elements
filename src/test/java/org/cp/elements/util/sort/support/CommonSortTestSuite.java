@@ -22,7 +22,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
-import org.junit.After;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -122,9 +122,9 @@ public abstract class CommonSortTestSuite {
     }
   }
 
-  @After
+  @AfterEach
   public void tearDown() {
-    numbers = null;
+    this.numbers = null;
   }
 
   @Test

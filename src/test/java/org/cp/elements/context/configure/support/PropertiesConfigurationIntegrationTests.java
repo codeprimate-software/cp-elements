@@ -21,7 +21,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.util.Properties;
 
-import org.junit.BeforeClass;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import org.cp.elements.context.configure.AbstractConfiguration;
@@ -42,7 +42,7 @@ import org.cp.elements.io.FileSystemUtils;
  */
 public class PropertiesConfigurationIntegrationTests {
 
-  @BeforeClass
+  @BeforeAll
   public static void beforeTestSuite() {
     FileSystemUtils.deleteRecursive(new File(FileSystemUtils.WORKING_DIRECTORY, "test-jdbc.properties"));
   }

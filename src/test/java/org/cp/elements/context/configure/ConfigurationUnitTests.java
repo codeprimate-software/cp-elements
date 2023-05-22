@@ -35,7 +35,7 @@ import java.util.Arrays;
 import java.util.Properties;
 import java.util.function.Supplier;
 
-import org.junit.After;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -67,7 +67,7 @@ public class ConfigurationUnitTests {
   @SubjectUnderTest
   private Configuration mockConfiguration;
 
-  @After
+  @AfterEach
   public void tearDown() {
     Mockito.reset(this.mockConfiguration);
   }

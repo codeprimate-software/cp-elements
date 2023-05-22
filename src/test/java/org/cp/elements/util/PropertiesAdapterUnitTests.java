@@ -40,10 +40,8 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.function.Supplier;
 
-import javax.annotation.processing.SupportedOptions;
-
-import org.junit.Before;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -89,7 +87,7 @@ public class PropertiesAdapterUnitTests {
     propertiesAdapter = PropertiesAdapter.from(properties);
   }
 
-  @Before
+  @BeforeEach
   public void setup() {
 
     assertThat(propertiesAdapter).isNotNull();

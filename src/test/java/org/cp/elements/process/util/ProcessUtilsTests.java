@@ -32,7 +32,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
-import org.junit.AfterClass;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Test;
 
 import org.cp.elements.io.FileSystemUtils;
@@ -55,7 +55,7 @@ import org.cp.elements.test.annotation.IntegrationTest;
  */
 public class ProcessUtilsTests {
 
-  @AfterClass
+  @AfterAll
   @SuppressWarnings("all")
   public static void tearDown() {
     Thread.interrupted();

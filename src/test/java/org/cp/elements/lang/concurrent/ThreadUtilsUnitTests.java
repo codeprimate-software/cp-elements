@@ -31,8 +31,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import org.junit.AfterClass;
-import org.junit.Before;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -73,12 +73,12 @@ public class ThreadUtilsUnitTests {
     catch (InterruptedException ignore) { }
   }
 
-  @AfterClass
+  @AfterAll
   public static void tearDown() {
     Thread.interrupted();
   }
 
-  @Before
+  @BeforeEach
   public void setup() {
     Thread.interrupted();
   }

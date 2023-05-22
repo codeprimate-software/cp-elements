@@ -41,7 +41,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -79,7 +79,7 @@ public class ThreadAdapterUnitTests {
   @Mock
   private Thread mockThread;
 
-  @Before
+  @BeforeEach
   public void resetMocks() {
     Mockito.reset(this.mockThread, this.mockRunnable);
   }

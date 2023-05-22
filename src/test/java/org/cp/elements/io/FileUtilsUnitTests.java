@@ -41,7 +41,7 @@ import java.net.URL;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 
-import org.junit.BeforeClass;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -75,7 +75,7 @@ public class FileUtilsUnitTests extends AbstractBaseTestSuite {
   @Mock
   private File mockFile;
 
-  @BeforeClass
+  @BeforeAll
   public static void beforeTestSuite() {
     FileSystemUtils.delete(new File(TEMPORARY_DIRECTORY, "writeToFileThenReadFromFileIsSuccessful.txt"));
   }

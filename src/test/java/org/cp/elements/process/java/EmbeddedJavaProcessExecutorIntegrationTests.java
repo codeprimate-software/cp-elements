@@ -25,7 +25,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.junit.AfterClass;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
@@ -58,7 +58,7 @@ public class EmbeddedJavaProcessExecutorIntegrationTests {
     assertThat(EchoServerExecutable.echoServer().isRunning()).isTrue();
   }
 
-  @AfterClass
+  @AfterAll
   public static void tearDown() {
     assertThat(EchoServerExecutable.shutdown()).isTrue();
   }

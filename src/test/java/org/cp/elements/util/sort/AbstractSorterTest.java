@@ -31,7 +31,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import org.junit.After;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 
 import org.cp.elements.lang.ThrowableAssertions;
@@ -63,7 +63,7 @@ public class AbstractSorterTest {
 
   private static final String[] ELEMENTS = { "test", "testing", "tested" };
 
-  @After
+  @AfterEach
   public void tearDown() {
     AbstractSorter.ComparatorHolder.unset();
   }
