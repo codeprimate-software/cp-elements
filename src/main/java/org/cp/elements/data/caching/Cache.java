@@ -503,7 +503,7 @@ public interface Cache<KEY extends Comparable<KEY>, VALUE>
    */
   default @Nullable Cache.Entry<KEY, VALUE> getEntry(KEY key) {
 
-    Supplier<Cache.Entry<KEY, VALUE>> cacheEntrySupplier = () -> new Cache.Entry<KEY, VALUE>() {
+    Supplier<Cache.Entry<KEY, VALUE>> cacheEntrySupplier = () -> new Cache.Entry<>() {
 
       private <T> T assertCacheEntryExists(T returnValue) {
 
