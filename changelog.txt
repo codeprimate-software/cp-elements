@@ -3,6 +3,32 @@ Codeprimate Elements changelog.txt
 https://github.com/codeprimate-software/cp-elements/blob/master/changelog.txt
 
 
+2.0.0-M1 - 2023-May-23
+----------------------
+Release Codeprimate Elements 2.0.0-M1 based on Java 17.
+
+* Built on Oracle Java (JDK) 17.0.7 2023-04-18 LTS
+* Rebases the Elements Java library and APIs on Java 17.
+* Rebases the Elements test suite on JUnit 5 Jupiter.
+* Rebases the Elements test suite on Mockito 5.3.1.
+* Adapts to changes in JUnit 5 Jupiter API.
+* Adapts to changes in Mockito 5 varargs method matchers.
+* Adds assertThatArrayIndexOutOfBoundsException() method to the ThrowableAssertions class.
+* Adds construct(:Class<?>, :Object...) and findDefaultConstructor(:Class<?>) methods to ClassUtils.
+* Archives Apache Ivy XML build file, Gradle build and travis.yml build file.
+* Cleans up all compiler warnings in source and test files.
+* Edits Javadoc across the codebase.
+* Fixes deprecations across the Elements library.
+* Refactors the org.cp.elements.lang.Assert class.
+* Removes deprecated checkAccess() method for java.lang.Thread.checkAccess() in the ThreadAdapter class.
+* Replaces all JUnit 4 @org.junit.Test annotations with the JUnit 5 Jupiter @org.junit.jupiter.api.Test annotation.
+* Replaces all uses of the JUnit 4 @RunWith annotation with the JUnit 5 Jupiter @ExtendsWith annotation.
+* Replaces all uses of JUnit 4 @After, @AfterClass, @Before and @BeforeClass annotations
+with JUnit 5 Jupiter @AfterAll, @AfterEach, @BeforeAll, each @BeforeEach annotations.
+* Replaces all uses of the Mockito 4 MockitoJUnitRunner with Mockito 5's MockitoExtension.
+* Replaces use of Class.newInstance() calls with Elements ObjectUtils.construct(:Class, :Object[]) method.
+* Upgrades to Codeprimate Core 2.0.0.
+
 1.0.2 (SR2) - 2023-May-15
 -------------------------
 Release Codeprimate Elements 1.0.2, second patch (maintenance) release of 1.0 GA!
