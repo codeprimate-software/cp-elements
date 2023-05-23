@@ -140,7 +140,7 @@ public abstract class AbstractCache<KEY extends Comparable<KEY>, VALUE> implemen
   @Override
   public Iterator<Cache.Entry<KEY, VALUE>> iterator() {
 
-    return new Iterator<Cache.Entry<KEY, VALUE>>() {
+    return new Iterator<>() {
 
       private final Iterator<KEY> keys = CollectionUtils.nullSafeSet(keys()).iterator();
 
