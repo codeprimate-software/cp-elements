@@ -1,30 +1,29 @@
 To perform a release of the Codeprimate Elements (cp-elements) project, run the following script:
 
-0. Set the project's 'Major, Minor, Maintenance and Version Qualifier' for the release (e.g. 1.0.0.RELEASE)
-in both pom.xml and gradle.properties.
+0. Set project's Major, Minor, Maintenance [and Version Qualifier] for the release in pom.xml.
 
-Version Qualifier maybe 1 of: M# (Milestone #; e.g. M2), RC# (Release Candidate #; e.g. RC1) or RELEASE.
+Version Qualifier is 1 of: [ SNAPSHOT, M# (Milestone #; e.g. M2), RC# (Release Candidate #; e.g. RC1) ]
 
-1. Build with all supported JDK [LTS] versions from baseline forward, for example: [JDK 8, JDK 11, JDK14, JDK17, JDK18].
+For example: 2.0.0-SNAPSHOT, 2.0.0-M1, 2.0.0-RC1, 2.0.1
+
+1. Build with all supported JDK [LTS] versions from baseline forward, for example: [ JDK17, JDK20 ].
 
 2. `mvn -P code-analysis,prepare-release clean install site`
 
-3. `gradlew [--no-daemon] clean build`
+3. Copy 'changelog.txt' and 'changelog.xml' files to 'cp-core-workspace/etc/releases/cp-elements-<major>.<minor>.<maint>.<version-qualifier>/'.
 
-4. Copy 'cp-elements/target/site' to 'cp-core-workspace/etc/releases/cp-elements-<major>.<minor>.<maint>.<version-qualifier>/'.
+4. Copy 'cp-elements/target/apidocs' to 'cp-core-workspace/etc/releases/cp-elements-<major>.<minor>.<maint>.<version-qualifier>/'.
 
-5. Copy 'cp-elements/build/reports' to 'cp-core-workspace/etc/releases/cp-elements-<major>.<minor>.<maint>.<version-qualifier>/'.
+5. Copy 'cp-elements/target/site' to 'cp-core-workspace/etc/releases/cp-elements-<major>.<minor>.<maint>.<version-qualifier>/'.
 
-6. Copy 'cp-elements/target/apidocs' to 'cp-core-workspace/etc/releases/cp-elements-<major>.<minor>.<maint>.<version-qualifier>/'.
+6. Copy Checkstyle, PMD and SpotsBugs configuration files and results to 'cp-core-workspace/etc/releases/cp-elements-<major>.<minor>.<maint>.<version-qualifier>/Code-verification'.
 
-7. Copy 'changelog.txt' to 'cp-core-workspace/etc/releases/cp-elements-<major>.<minor>.<maint>.<version-qualifier>/'.
+7. `mvn -P release deploy [-DskipTests]`
 
-8. [Optional] Copy Checkstyle, PMD and SpotsBugs configuration files and results to 'cp-core-workspace/etc/releases/cp-elements-<major>.<minor>.<maint>.<version-qualifier>/'.
+8. Copy binary, javadoc and sources JAR files as well as Maven POM to 'cp-core-workspace/etc/releases/cp-elements-<major>.<minor>.<maint>.<version-qualifier>/'.
 
-9. `mvn -P release deploy [-DskipTests]`
+9. Login to Sonatype Nexus Repository Server and "release" artifacts (contained in the staging repository) to Maven Central.
 
-10. Login to Sonatype Nexus Repository Server and "release" artifacts (contained in the staging repository) to Maven Central.
+10. [OPTIONAL] Send / post announcement.
 
-11. Send announcement.
-
-12. ???
+11. ???
