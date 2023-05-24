@@ -27,7 +27,7 @@ Release Codeprimate Elements 2.0.0-M1 based on Java 17.
 with JUnit 5 Jupiter @AfterAll, @AfterEach, @BeforeAll, each @BeforeEach annotations.
 * Replaces all uses of the Mockito 4 MockitoJUnitRunner with Mockito 5's MockitoExtension.
 * Replaces use of Class.newInstance() calls with Elements ObjectUtils.construct(:Class, :Object[]) method.
-* Upgrades to Codeprimate Build 2.0.0-M1.
+* Upgrades to Codeprimate Build 2.0.0-M2.
 
 1.0.2 (SR2) - 2023-May-15
 -------------------------
