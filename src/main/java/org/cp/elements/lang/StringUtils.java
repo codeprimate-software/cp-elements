@@ -48,11 +48,15 @@ public abstract class StringUtils {
   public static final char SINGLE_SPACE_CHAR = ' ';
   public static final char UNDERSCORE_CHAR = '_';
 
+  public static final String COLON_DELIMITER = ":";
+  public static final String COLON_SPACE_DELIMITER = ": ";
   public static final String COMMA_DELIMITER = ",";
   public static final String COMMA_SPACE_DELIMITER = ", ";
   public static final String DOT_SEPARATOR = ".";
   public static final String EMPTY_STRING = "";
   public static final String LINE_SEPARATOR = System.getProperty("line.separator");
+  public static final String SEMICOLON_SEPARATOR = ";";
+  public static final String SEMICOLON_SPACE_SEPARATOR = "; ";
   public static final String SINGLE_SPACE = " ";
   public static final String UNDERSCORE = "_";
   public static final String UTF_8 = "UTF-8";
