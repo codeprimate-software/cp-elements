@@ -7,8 +7,8 @@
 
   <parent>
     <groupId>org.codeprimate</groupId>
-    <artifactId>cp-core</artifactId>
-    <version>2.0.0-SNAPSHOT</version>
+    <artifactId>cp-build</artifactId>
+    <version>2.0.0-M1</version>
   </parent>
 
   <artifactId>cp-elements</artifactId>
