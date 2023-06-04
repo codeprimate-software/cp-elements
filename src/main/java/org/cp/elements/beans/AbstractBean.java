@@ -46,8 +46,8 @@ import org.cp.elements.lang.support.AuditableSupport;
 import org.cp.elements.util.ComparatorUtils;
 
 /**
- * {@link AbstractBean} is an abstract base class for modeling {@literal Abstract Data Types (ADT)} and application data
- * as application domain model objects and entity types.
+ * Abstract base class used to model {@literal Abstract Data Types (ADT)} and data as application domain model objects
+ * and entity types.
  *
  * @author John J. Blum
  * @param <ID> {@link Comparable} type for the identifier uniquely identifying {@literal this} {@link Bean}.
