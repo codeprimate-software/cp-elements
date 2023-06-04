@@ -121,7 +121,7 @@ public class HashCodeBuilder implements Builder<Integer> {
   private final Logger logger = Logger.getLogger(getClass().getName());
 
   /**
-   * Constructs a new instance of {@link HashCodeBuilder} initialized with the default base value and multiplier
+   * Constructs a new {@link HashCodeBuilder} initialized with the default base value and multiplier
    * used to compute the hash code of an {@link Object}.
    *
    * @see #HashCodeBuilder(int, int)
@@ -131,7 +131,7 @@ public class HashCodeBuilder implements Builder<Integer> {
   }
 
   /**
-   * Constructs a new instance of the {@link HashCodeBuilder} initialized with the given {@link Integer#TYPE base value}
+   * Constructs a new the {@link HashCodeBuilder} initialized with the given {@link Integer#TYPE base value}
    * and {@link Integer#TYPE multiplier} used to compute the hash code of an {@link Object}.
    *
    * @param baseValue {@link Integer#TYPE} indicating the starting value of the hash code.

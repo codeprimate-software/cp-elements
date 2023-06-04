@@ -41,7 +41,7 @@ public class WritableFilesFilter implements FileFilter, Filter<File> {
   private final boolean writable;
 
   /**
-   * Constructs a new instance of {@link WritableFilesFilter} initialized with the given boolean value
+   * Constructs a new {@link WritableFilesFilter} initialized with the given boolean value
    * used to indicate whether {@link File#canWrite() writable} {@link File Files} are accepted or rejected
    * by this {@link FileFilter}.
    *

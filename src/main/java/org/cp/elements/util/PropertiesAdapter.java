@@ -77,7 +77,7 @@ public class PropertiesAdapter implements Iterable<String> {
   private final Properties delegate;
 
   /**
-   * Constructs a new instance of {@link PropertiesAdapter} initialized with the given, required {@link Properties}.
+   * Constructs a new {@link PropertiesAdapter} initialized with the given, required {@link Properties}.
    *
    * Additionally, this constructor will load the configured {@link ConversionService}.
    *

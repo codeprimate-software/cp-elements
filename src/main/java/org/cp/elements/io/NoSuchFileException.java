@@ -15,10 +15,13 @@
  */
 package org.cp.elements.io;
 
+import java.io.File;
+
 /**
  * Java {@link RuntimeException} used to indicate a missing {@link java.io.File}.
  *
  * @author John J. Blum
+ * @see java.io.File
  * @see java.io.FileNotFoundException
  * @see java.lang.RuntimeException
  * @since 1.0.0
@@ -27,14 +30,13 @@ package org.cp.elements.io;
 public class NoSuchFileException extends RuntimeException {
 
   /**
-   * Constructs a new instance of {@link NoSuchFileException} having no {@link String message}
-   * and no {@link Throwable cause}.
+   * Constructs a new {@link NoSuchFileException} having no {@link String message} and no {@link Throwable cause}.
    */
   public NoSuchFileException() { }
 
   /**
-   * Constructs a new instance of {@link NoSuchFileException} initialized with the given {@link String message}
-   * describing the missing {@link java.io.File}.
+   * Constructs a new {@link NoSuchFileException} initialized with the given {@link String message}
+   * describing the missing {@link File}.
    *
    * @param message {@link String} containing a description for this {@link RuntimeException}.
    * @see java.lang.String
@@ -44,8 +46,8 @@ public class NoSuchFileException extends RuntimeException {
   }
 
   /**
-   * Constructs a new instance of {@link NoSuchFileException} initialized with the given {@link Throwable}
-   * used as the cause of this {@link RuntimeException}.
+   * Constructs a new {@link NoSuchFileException} initialized with the given {@link Throwable}
+   * used as the {@literal cause} of this {@link RuntimeException}.
    *
    * @param cause {@link Throwable} used as the cause of this {@link RuntimeException}.
    * @see java.lang.Throwable
@@ -55,8 +57,8 @@ public class NoSuchFileException extends RuntimeException {
   }
 
   /**
-   * Constructs a new instance of {@link NoSuchFileException} initialized with the given {@link String message}
-   * describing the missing {@link java.io.File} along with the given {@link Throwable} used as the cause
+   * Constructs a new {@link NoSuchFileException} initialized with the given {@link String message}
+   * describing the missing {@link File} along with the given {@link Throwable} used as the {@literal cause}
    * of this {@link RuntimeException}.
    *
    * @param message {@link String} containing a description for this {@link RuntimeException}.

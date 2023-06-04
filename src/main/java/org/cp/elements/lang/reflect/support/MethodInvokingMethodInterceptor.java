@@ -65,7 +65,7 @@ public class MethodInvokingMethodInterceptor implements MethodInterceptor<Object
   }
 
   /**
-   * Constructs a new instance of {@link MethodInvokingMethodInterceptor} initialized with
+   * Constructs a new {@link MethodInvokingMethodInterceptor} initialized with
    * the given target {@link Object} on which the {@link Method} will be invoked.
    *
    * @param target {@link Object} used as the target of the {@link Method} invocation.

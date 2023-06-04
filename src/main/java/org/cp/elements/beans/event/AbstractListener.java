@@ -46,7 +46,7 @@ public abstract class AbstractListener implements EventListener, Iterable<String
   private final List<String> propertyNames;
 
   /**
-   * Constructs a new instance of {@link AbstractListener} initialized with the array of {@link String property names}.
+   * Constructs a new {@link AbstractListener} initialized with the array of {@link String property names}.
    *
    * @param propertyNames array of {@link String property names} for which this listener is interested and processes
    * {@link PropertyChangeEvent property change events}.
@@ -57,7 +57,7 @@ public abstract class AbstractListener implements EventListener, Iterable<String
   }
 
   /**
-   * Constructs a new instance of {@link AbstractListener} initialized with the {@link Iterable}
+   * Constructs a new {@link AbstractListener} initialized with the {@link Iterable}
    * of {@link String property names}.
    *
    * @param propertyNames {@link Iterable} of {@link String property names} for which this listener

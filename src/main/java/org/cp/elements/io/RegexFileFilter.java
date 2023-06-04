@@ -44,7 +44,7 @@ public class RegexFileFilter implements FileFilter, Filter<File> {
   private final Pattern regularExpression;
 
   /**
-   * Constructs a new instance of {@link RegexFileFilter} initialized with the given {@literal Regular Expression}
+   * Constructs a new {@link RegexFileFilter} initialized with the given {@literal Regular Expression}
    * expressed as a {@literal pattern} contained in the given, required {@link String}.
    *
    * @param regularExpression {@link String} containing the {@literal Regular Expression (REGEX) Pattern} used to
@@ -59,7 +59,7 @@ public class RegexFileFilter implements FileFilter, Filter<File> {
   }
 
   /**
-   * Constructs a new instance of {@link RegexFileFilter} initialized with a compiled {@literal Regular Expression}
+   * Constructs a new {@link RegexFileFilter} initialized with a compiled {@literal Regular Expression}
    * expressed in the given, required {@link Pattern} object.
    *
    * @param regularExpression {@link Pattern} containing the compiled {@literal Regular Expression (REGEX)} used to

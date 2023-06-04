@@ -31,7 +31,7 @@ public class DecompressionException extends RuntimeException {
   public DecompressionException() { }
 
   /**
-   * Constructs a new instance of {@link DecompressionException} initialized with the given {@link String message}
+   * Constructs a new {@link DecompressionException} initialized with the given {@link String message}
    * describing the {@link RuntimeException}.
    *
    * @param message {@link String} containing a description of the {@link RuntimeException}.
@@ -41,7 +41,7 @@ public class DecompressionException extends RuntimeException {
   }
 
   /**
-   * Constructs a new instance of {@link DecompressionException} initialized with the given {@link Throwable}
+   * Constructs a new {@link DecompressionException} initialized with the given {@link Throwable}
    * used as the cause of this {@link RuntimeException}.
    *
    * @param cause {@link Throwable} uses as the reason this {@link RuntimeException} was thrown.
@@ -51,7 +51,7 @@ public class DecompressionException extends RuntimeException {
   }
 
   /**
-   * Constructs a new instance of {@link DecompressionException} initialized with the given {@link String message}
+   * Constructs a new {@link DecompressionException} initialized with the given {@link String message}
    * describing the {@link RuntimeException} along with the given {@link Throwable} used as the cause
    * of this {@link RuntimeException}.
    *

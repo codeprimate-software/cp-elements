@@ -49,8 +49,7 @@ public class ExecutableFileExtensionsFilter extends FileExtensionFilter {
   };
 
   /**
-   * Constructs a new instance of {@link ExecutableFileExtensionsFilter} to filter {@link File Files}
-   * by executable file types.
+   * Constructs a new {@link ExecutableFileExtensionsFilter} to filter {@link File Files} by executable file types.
    *
    * @see org.cp.elements.io.FileExtensionFilter#FileExtensionFilter(String...)
    */

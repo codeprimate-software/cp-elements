@@ -59,8 +59,7 @@ public enum ServicePort {
   private final int portNumber;
 
   /**
-   * Constructs a new instance of {@link ServicePort} initialized with the given
-   * {@link Integer network service port number}.
+   * Constructs a new {@link ServicePort} initialized with the given {@link Integer network service port number}.
    *
    * @param portNumber {@link Integer value} declaring the well-known, network service port number.
    * @throws java.lang.IllegalArgumentException if the {@link Integer port number} is outside the range of

@@ -104,7 +104,7 @@ public class ConnectionTester implements Condition, Tester {
   private final int port;
 
   /**
-   * Constructs a new instance of the {@link ConnectionTester} bound to the given {@link String host}
+   * Constructs a new the {@link ConnectionTester} bound to the given {@link String host}
    * and {@link Integer port}.
    *
    * @param host {@link String name} of the host to which the connection is bound.

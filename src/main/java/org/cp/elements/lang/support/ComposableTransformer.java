@@ -63,7 +63,7 @@ public class ComposableTransformer<T> implements Composite<Transformer<T>>, Tran
   }
 
   /**
-   * Constructs a new instance of the {@link ComposableTransformer} class composed of the given array
+   * Constructs a new the {@link ComposableTransformer} class composed of the given array
    * of {@link Transformer Transformers} delegated to in the transformation operation.
    *
    * @param transformerOne first {@link Transformer} to apply in the transformation.

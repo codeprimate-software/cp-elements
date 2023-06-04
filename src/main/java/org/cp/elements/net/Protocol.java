@@ -47,7 +47,7 @@ public enum Protocol {
   private final String scheme;
 
   /**
-   * Constructs a new instance of {@link Protocol} initialized with the given {@link ServicePort}, {@link String scheme}
+   * Constructs a new {@link Protocol} initialized with the given {@link ServicePort}, {@link String scheme}
    * and {@link String description} of the network protocol.
    *
    * @param servicePort {@link ServicePort} used by the network protocol.

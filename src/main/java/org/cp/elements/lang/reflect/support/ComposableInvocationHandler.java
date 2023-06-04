@@ -77,7 +77,7 @@ public class ComposableInvocationHandler implements InvocationHandler, Iterable<
   private final List<InvocationHandler> invocationHandlers;
 
   /**
-   * Constructs a new instance of {@link ComposableInvocationHandler} initialized with the given
+   * Constructs a new {@link ComposableInvocationHandler} initialized with the given
    * array of {@link InvocationHandler} objects.
    *
    * @param invocationHandlers array of {@link InvocationHandler InvocationHandlers} to compose as a single,

@@ -116,7 +116,7 @@ public class ListProperty extends AbstractIndexedProperty<Integer> {
   }
 
   /**
-   * Constructs a new instance of {@link ListProperty} initialized with the given, required {@link BeanModel}
+   * Constructs a new {@link ListProperty} initialized with the given, required {@link BeanModel}
    * modeling the bean containing the property along with a given, required {@link PropertyDescriptor}
    * describing the property.
    *

@@ -45,8 +45,7 @@ public class DataFileExtensionsFilter extends FileExtensionFilter {
   };
 
   /**
-   * Constructs a new instance of {@link DataFileExtensionsFilter} to filter {@link File Files}
-   * by data file types.
+   * Constructs a new {@link DataFileExtensionsFilter} to filter {@link File Files} by data file types.
    *
    * @see org.cp.elements.io.FileExtensionFilter#FileExtensionFilter(String...)
    */

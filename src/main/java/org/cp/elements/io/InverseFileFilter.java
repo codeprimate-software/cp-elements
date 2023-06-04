@@ -52,7 +52,7 @@ public class InverseFileFilter implements FileFilter, Filter<File> {
   private final FileFilter delegate;
 
   /**
-   * Constructs a new instance of {@link InverseFileFilter} initialized with the given, required {@link FileFilter}
+   * Constructs a new {@link InverseFileFilter} initialized with the given, required {@link FileFilter}
    * used as the delegate to invert and filter {@link File Files}.
    *
    * @param delegate {@link FileFilter} used as the delegate and filter for {@link File} objects;

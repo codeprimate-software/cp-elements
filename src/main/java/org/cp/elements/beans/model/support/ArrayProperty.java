@@ -111,7 +111,7 @@ public class ArrayProperty extends AbstractIndexedProperty<Integer> {
   }
 
   /**
-   * Constructs a new instance of {@link ArrayProperty} initialized with the given, required {@link BeanModel}
+   * Constructs a new {@link ArrayProperty} initialized with the given, required {@link BeanModel}
    * modeling the bean containing this array property along with the given, required {@link PropertyDescriptor}
    * describing this array property.
    *

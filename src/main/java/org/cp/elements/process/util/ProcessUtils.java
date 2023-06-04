@@ -242,7 +242,7 @@ public abstract class ProcessUtils {
   }
 
   /**
-   * Constructs a new instance of {@link Thread} initialized with the given {@link Runnable}.
+   * Constructs a new {@link Thread} initialized with the given {@link Runnable}.
    *
    * @param runnable {@link Runnable} object to execute in a {@link Thread}.
    * @return a new {@link Thread} initialized with the given {@link Runnable}.

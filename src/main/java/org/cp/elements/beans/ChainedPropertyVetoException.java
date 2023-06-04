@@ -32,7 +32,7 @@ import org.cp.elements.lang.annotation.Nullable;
 public class ChainedPropertyVetoException extends PropertyVetoException {
 
   /**
-   * Constructs a new instance of {@link ChainedPropertyVetoException} initialized with
+   * Constructs a new {@link ChainedPropertyVetoException} initialized with
    * the given {@link PropertyChangeEvent} that resulted in this checked {@link Exception}
    * along with a {@link String message} describing the {@link Exception}.
    *
@@ -45,7 +45,7 @@ public class ChainedPropertyVetoException extends PropertyVetoException {
   }
 
   /**
-   * Constructs a new instance of {@link ChainedPropertyVetoException} initialized with
+   * Constructs a new {@link ChainedPropertyVetoException} initialized with
    * the given {@link PropertyChangeEvent} that resulted in this checked {@link Exception}
    * along with a {@link String message} describing the {@link Exception} and a {@link Throwable cause}
    * used as the underlying reason this checked {@link Exception} was thrown.

@@ -45,7 +45,7 @@ public class VideoFileExtensionsFilter extends FileExtensionFilter {
   };
 
   /**
-   * Constructs a new instance of {@link VideoFileExtensionsFilter} to filter {@link File Files} by video file types.
+   * Constructs a new {@link VideoFileExtensionsFilter} to filter {@link File Files} by video file types.
    *
    * @see org.cp.elements.io.FileExtensionFilter#FileExtensionFilter(String...)
    */

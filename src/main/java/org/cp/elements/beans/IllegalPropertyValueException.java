@@ -35,7 +35,7 @@ public class IllegalPropertyValueException extends BeansException {
   public IllegalPropertyValueException() { }
 
   /**
-   * Constructs a new instance of {@link IllegalPropertyValueException} initialized with
+   * Constructs a new {@link IllegalPropertyValueException} initialized with
    * the given {@link String message} to describe this exception.
    *
    * @param message {@link String} describing the illegal bean property value.
@@ -45,7 +45,7 @@ public class IllegalPropertyValueException extends BeansException {
   }
 
   /**
-   * Constructs a new instance of {@link IllegalPropertyValueException} initialized with the given {@link Throwable}
+   * Constructs a new {@link IllegalPropertyValueException} initialized with the given {@link Throwable}
    * used as the cause or reason why this exception was thrown.
    *
    * @param cause {@link Throwable} used as the cause of this exception.
@@ -55,7 +55,7 @@ public class IllegalPropertyValueException extends BeansException {
   }
 
   /**
-   * Constructs a new instance of {@link IllegalPropertyValueException} initialized with
+   * Constructs a new {@link IllegalPropertyValueException} initialized with
    * the given {@link String message} to describe this exception along with the given {@link Throwable}
    * used as the cause and reason this exception was thrown.
    *

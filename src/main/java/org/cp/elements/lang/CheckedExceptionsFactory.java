@@ -38,7 +38,7 @@ public abstract class CheckedExceptionsFactory {
   protected static final Throwable DEFAULT_CAUSE = null;
 
   /**
-   * Constructs a new instance of {@link CloneNotSupportedException} initialized with the given {@link String message}
+   * Constructs a new {@link CloneNotSupportedException} initialized with the given {@link String message}
    * formatted with the given array of {@link Object arguments}.
    *
    * @param message {@link String} describing the {@link CloneNotSupportedException}; must not be {@literal null}.
@@ -55,7 +55,7 @@ public abstract class CheckedExceptionsFactory {
   }
 
   /**
-   * Constructs a new instance of {@link CloneNotSupportedException} initialized with the given {@link Throwable cause}.
+   * Constructs a new {@link CloneNotSupportedException} initialized with the given {@link Throwable cause}.
    *
    * @param cause {@link Throwable} used as the {@literal cause} of the {@link CloneNotSupportedException}.
    * @return a new {@link CloneNotSupportedException} initialized with the given {@link Throwable cause}.
@@ -67,7 +67,7 @@ public abstract class CheckedExceptionsFactory {
   }
 
   /**
-   * Constructs a new instance of {@link CloneNotSupportedException} initialized with the given {@link Throwable cause}
+   * Constructs a new {@link CloneNotSupportedException} initialized with the given {@link Throwable cause}
    * and {@link String message} formatted with the given array of {@link Object arguments}.
    *
    * @param cause {@link Throwable} used as the {@literal cause} of the {@link CloneNotSupportedException}.
@@ -85,7 +85,7 @@ public abstract class CheckedExceptionsFactory {
   }
 
   /**
-   * Constructs a new instance of {@link IOException} initialized with the given {@link String message}
+   * Constructs a new {@link IOException} initialized with the given {@link String message}
    * formatted with the given array of {@link Object arguments}.
    *
    * @param message {@link String} describing the {@link IOException}; must not be {@literal null}.
@@ -100,7 +100,7 @@ public abstract class CheckedExceptionsFactory {
   }
 
   /**
-   * Constructs a new instance of {@link IOException} initialized with the given {@link Throwable cause}.
+   * Constructs a new {@link IOException} initialized with the given {@link Throwable cause}.
    *
    * @param cause {@link Throwable} used as the {@literal cause} of the {@link IOException}.
    * @return a new {@link IOException} initialized with the given {@link Throwable cause}.
@@ -112,7 +112,7 @@ public abstract class CheckedExceptionsFactory {
   }
 
   /**
-   * Constructs a new instance of {@link IOException} initialized with the given {@link Throwable cause}
+   * Constructs a new {@link IOException} initialized with the given {@link Throwable cause}
    * and {@link String message} formatted with the given array of {@link Object arguments}.
    *
    * @param cause {@link Throwable} used as the {@literal cause} of the {@link IOException}.
@@ -129,7 +129,7 @@ public abstract class CheckedExceptionsFactory {
   }
 
   /**
-   * Constructs a new instance of {@link TimeoutException} initialized with the given {@link String message}
+   * Constructs a new {@link TimeoutException} initialized with the given {@link String message}
    * formatted with the given array of {@link Object arguments}.
    *
    * @param message {@link String} describing the {@link TimeoutException}; must not be {@literal null}.
@@ -144,7 +144,7 @@ public abstract class CheckedExceptionsFactory {
   }
 
   /**
-   * Constructs a new instance of {@link TimeoutException} initialized with the given {@link Throwable cause}.
+   * Constructs a new {@link TimeoutException} initialized with the given {@link Throwable cause}.
    *
    * @param cause {@link Throwable} used as the {@literal cause} of the {@link TimeoutException}.
    * @return a new {@link TimeoutException} initialized with the given {@link Throwable cause}.
@@ -156,7 +156,7 @@ public abstract class CheckedExceptionsFactory {
   }
 
   /**
-   * Constructs a new instance of {@link TimeoutException} initialized with the given {@link Throwable cause}
+   * Constructs a new {@link TimeoutException} initialized with the given {@link Throwable cause}
    * and {@link String message} formatted with the given array of {@link Object arguments}.
    *
    * @param cause {@link Throwable} used as the {@literal cause} of the {@link TimeoutException}.

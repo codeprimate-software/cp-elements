@@ -182,7 +182,7 @@ public abstract class NetworkUtils {
   }
 
   /**
-   * Constructs a new instance of {@link SocketAddress} bound to the given {@link Integer port}.
+   * Constructs a new {@link SocketAddress} bound to the given {@link Integer port}.
    *
    * @param port {@link Integer} declaring the network port on which the {@link SocketAddress} will be bound.
    * @return a new {@link SocketAddress} bound to the given {@link Integer port}.
@@ -194,7 +194,7 @@ public abstract class NetworkUtils {
   }
 
   /**
-   * Constructs a new instance of {@link SocketAddress} bound to the given {@link String host} and {@link Integer port}.
+   * Constructs a new {@link SocketAddress} bound to the given {@link String host} and {@link Integer port}.
    *
    * @param host {@link String} containing the name of the host on which the {@link SocketAddress} will be bound.
    * @param port {@link Integer} declaring the network port on which the {@link SocketAddress} will be bound.

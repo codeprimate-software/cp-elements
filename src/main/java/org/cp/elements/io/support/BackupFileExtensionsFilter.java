@@ -38,8 +38,7 @@ public class BackupFileExtensionsFilter extends FileExtensionFilter {
   };
 
   /**
-   * Constructs a new instance of {@link BackupFileExtensionsFilter} to filter {@link File Files}
-   * by backup file types.
+   * Constructs a new {@link BackupFileExtensionsFilter} to filter {@link File Files} by backup file types.
    *
    * @see org.cp.elements.io.FileExtensionFilter#FileExtensionFilter(String...)
    */

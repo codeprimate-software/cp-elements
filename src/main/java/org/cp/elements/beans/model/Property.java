@@ -194,7 +194,7 @@ public class Property implements Comparable<Property>, Describable<PropertyDescr
   private final PropertyDescriptor propertyDescriptor;
 
   /**
-   * Constructs a new instance of {@link Property} initialized with the given, required {@link BeanModel}
+   * Constructs a new {@link Property} initialized with the given, required {@link BeanModel}
    * modeling the bean containing this {@link Property} along with the given, required {@link PropertyDescriptor}
    * describing the bean {@link Property}.
    *

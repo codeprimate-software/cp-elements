@@ -103,7 +103,7 @@ public class EchoClient extends AbstractClientServerSupport {
   private final String host;
 
   /**
-   * Constructs a new instance of {@link EchoClient} connected to the default host (localhost)
+   * Constructs a new {@link EchoClient} connected to the default host (localhost)
    * and given {@link Integer port}.
    *
    * @param port {@link Integer} value indicating the port number on which the {@link EchoServer} is listening
@@ -115,7 +115,7 @@ public class EchoClient extends AbstractClientServerSupport {
   }
 
   /**
-   * Constructs a new instance of {@link EchoClient} connected to the given {@link String host}
+   * Constructs a new {@link EchoClient} connected to the given {@link String host}
    * on the given {@link Integer port}.
    *
    * @param host {@link String} specifying host on which the {@link EchoServer} is running.

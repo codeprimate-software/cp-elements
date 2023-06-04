@@ -54,7 +54,7 @@ public class ExecutableFilesFilter implements FileFilter, Filter<File> {
   private final boolean executable;
 
   /**
-   * Constructs a new instance of {@link ExecutableFilesFilter} initialized with the given boolean value used to
+   * Constructs a new {@link ExecutableFilesFilter} initialized with the given boolean value used to
    * indicate whether {@link File#canExecute() executable} {@link File Files} are accepted or rejected by
    * this {@link FileFilter}.
    *

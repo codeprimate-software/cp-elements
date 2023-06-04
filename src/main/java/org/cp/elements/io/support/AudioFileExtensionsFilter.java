@@ -42,8 +42,7 @@ public class AudioFileExtensionsFilter extends FileExtensionFilter {
   };
 
   /**
-   * Constructs a new instance of {@link AudioFileExtensionsFilter} that filters {@link File Files}
-   * by audio file types.
+   * Constructs a new {@link AudioFileExtensionsFilter} that filters {@link File Files} by audio file types.
    *
    * @see org.cp.elements.io.FileExtensionFilter#FileExtensionFilter(String...)
    */

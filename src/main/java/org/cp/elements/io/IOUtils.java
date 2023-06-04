@@ -246,9 +246,9 @@ public abstract class IOUtils {
     private final ClassLoader classLoader;
 
     /**
-     * Constructs a new instance of {@link ClassLoaderObjectInputStream} initialized with the given,
-     * required {@link InputStream} from which the {@link Object} will be read and deserialized along with
-     * the given {@link ClassLoader} used to resolve the {@link Class type} of the serialized {@link Object}.
+     * Constructs a new {@link ClassLoaderObjectInputStream} initialized with the given, required {@link InputStream}
+     * from which the {@link Object} will be read and deserialized along with the given {@link ClassLoader}
+     * used to resolve the {@link Class type} of the serialized {@link Object}.
      *
      * @param in {@link InputStream} source for the serialized {@link Object} bytes; must not be {@literal null}.
      * @param classLoader {@link ClassLoader} used to resolve the {@link Class type} of the serialized {@link Object}.

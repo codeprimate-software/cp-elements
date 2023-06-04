@@ -32,7 +32,7 @@ public class HungTestException extends TestException {
   public HungTestException() { }
 
   /**
-   * Constructs a new instance of {@link HungTestException} initialized with the given {@link String message}
+   * Constructs a new {@link HungTestException} initialized with the given {@link String message}
    * describing the test error.
    *
    * @param message {@link String} describing the test error.
@@ -42,7 +42,7 @@ public class HungTestException extends TestException {
   }
 
   /**
-   * Constructs a new instance of {@link HungTestException} initialized with the given {@link Throwable cause}
+   * Constructs a new {@link HungTestException} initialized with the given {@link Throwable cause}
    * used and the reason why this test error occurred.
    *
    * @param cause {@link Throwable} used and the reason why this test error occurred.
@@ -52,7 +52,7 @@ public class HungTestException extends TestException {
   }
 
   /**
-   * Constructs a new instance of {@link HungTestException} initialized with the given {@link String message}
+   * Constructs a new {@link HungTestException} initialized with the given {@link String message}
    * describing the test error along with the given {@link Throwable cause} used and the reason
    * why this test error occurred.
    *

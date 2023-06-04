@@ -51,7 +51,7 @@ public abstract class AbstractConverter<S, T> implements Converter<S, T> {
   private Class<?> targetType;
 
   /**
-   * Constructs a new instance of {@link AbstractConverter}.
+   * Constructs a new {@link AbstractConverter}.
    *
    * @see #init(Class)
    */
@@ -60,7 +60,7 @@ public abstract class AbstractConverter<S, T> implements Converter<S, T> {
   }
 
   /**
-   * Constructs a new instance of {@link AbstractConverter} initialized with the given {@link Class type}
+   * Constructs a new {@link AbstractConverter} initialized with the given {@link Class type}
    * to determine the {@link Class source} and {@link Class target} types of the conversion.
    *
    * @param type {@link Class} to evaluate for source and target {@link Class types}.

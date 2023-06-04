@@ -26,13 +26,13 @@ package org.cp.elements.test;
 public class CheckedTestException extends Exception {
 
   /**
-   * Constructs a new instance of {@link CheckedTestException} with no {@link String message}
+   * Constructs a new {@link CheckedTestException} with no {@link String message}
    * and no {@link Throwable cause}.
    */
   public CheckedTestException() { }
 
   /**
-   * Constructs a new instance of {@link CheckedTestException} initialized with the given {@link String message}
+   * Constructs a new {@link CheckedTestException} initialized with the given {@link String message}
    * describing this {@link Exception}.
    *
    * @param message {@link String} containing a {@literal message} describing this {@link Exception}.
@@ -43,7 +43,7 @@ public class CheckedTestException extends Exception {
   }
 
   /**
-   * Constructs a new instance of {@link CheckedTestException} initialized with the given {@link Throwable}
+   * Constructs a new {@link CheckedTestException} initialized with the given {@link Throwable}
    * used as the {@literal cause} of this {@link Exception}.
    *
    * @param cause {@link Throwable} used as the {@literal cause} of this {@link Exception}.
@@ -54,7 +54,7 @@ public class CheckedTestException extends Exception {
   }
 
   /**
-   * Constructs a new instance of {@link CheckedTestException} initialized with the given {@link String message}
+   * Constructs a new {@link CheckedTestException} initialized with the given {@link String message}
    * describing this {@link Exception} along with a {@link Throwable} used as the {@literal cause}
    * of this {@link Exception}.
    *

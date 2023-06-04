@@ -55,8 +55,7 @@ public class PropertyEditingConverterAdapter extends AbstractConverter<String, O
   }
 
   /**
-   * Constructs a new instance of {@link PropertyEditingConverterAdapter} initialized with
-   * the given {@link PropertyEditor}.
+   * Constructs a new {@link PropertyEditingConverterAdapter} initialized with the given {@link PropertyEditor}.
    *
    * @param propertyEditor {@link PropertyEditor} backing this {@link Converter}.
    * @throws IllegalArgumentException if {@link PropertyEditor} is {@literal null}.

@@ -214,7 +214,7 @@ public abstract class AbstractCache<KEY extends Comparable<KEY>, VALUE> implemen
     private final KEY key;
 
     /**
-     * Constructs a new instance of {@link AbstractEntry} initialized with the given, required {@link Cache}
+     * Constructs a new {@link AbstractEntry} initialized with the given, required {@link Cache}
      * used as the {@literal source} of this {@link Cache.Entry} along with the given, required {@link KEY key}.
      *
      * @param cache {@link Cache} used as the {@literal source} of this {@link Cache.Entry};
@@ -274,7 +274,7 @@ public abstract class AbstractCache<KEY extends Comparable<KEY>, VALUE> implemen
     }
 
     /**
-     * Constructs a new instance of {@link AttachedCacheEntry} initialized with the given, required {@link Cache}
+     * Constructs a new {@link AttachedCacheEntry} initialized with the given, required {@link Cache}
      * used as the {@literal source} of this {@link Cache.Entry} along with the given, required {@link KEY key}.
      *
      * @param cache {@link Cache} used as the {@literal source} of this {@link Cache.Entry};
@@ -322,7 +322,7 @@ public abstract class AbstractCache<KEY extends Comparable<KEY>, VALUE> implemen
     private final VALUE value;
 
     /**
-     * Constructs a new instance of {@link SimpleCacheEntry} initialized with the given, required {@link KEY key}
+     * Constructs a new {@link SimpleCacheEntry} initialized with the given, required {@link KEY key}
      * and {@link VALUE value}.
      *
      * @param key {@link KEY key} in this {@link Cache.Entry} mapping; must not be {@literal null}.

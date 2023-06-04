@@ -73,7 +73,7 @@ public class DelegatingMethodInterceptor<T> implements MethodInterceptor<T> {
   public DelegatingMethodInterceptor() { }
 
   /**
-   * Constructs a new instance of {@link DelegatingMethodInterceptor} initialized with
+   * Constructs a new {@link DelegatingMethodInterceptor} initialized with
    * the given {@link MethodInterceptor} serving as the delegate.
    *
    * @param delegate {@link MethodInterceptor} wrapped by this {@link DelegatingMethodInterceptor}.

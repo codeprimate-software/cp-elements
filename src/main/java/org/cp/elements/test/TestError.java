@@ -31,7 +31,7 @@ public class TestError extends Error {
   public TestError() { }
 
   /**
-   * Constructs a new instance of {@link TestError} initialized with the given {@link String message}
+   * Constructs a new {@link TestError} initialized with the given {@link String message}
    * describing the error.
    *
    * @param message {@link String} containing a description of the test error.
@@ -41,7 +41,7 @@ public class TestError extends Error {
   }
 
   /**
-   * Constructs a new instance of {@link TestError} initialized with the given {@link Throwable}
+   * Constructs a new {@link TestError} initialized with the given {@link Throwable}
    * used as the cause of this test error.
    *
    * @param cause {@link Throwable} used as the cause of this test error.
@@ -51,7 +51,7 @@ public class TestError extends Error {
   }
 
   /**
-   * Constructs a new instance of {@link TestError} initialized with the given {@link String message}
+   * Constructs a new {@link TestError} initialized with the given {@link String message}
    * describing the error along with the given {@link Throwable} used as the cause of this test error.
    *
    * @param message {@link String} containing a description of the test error.

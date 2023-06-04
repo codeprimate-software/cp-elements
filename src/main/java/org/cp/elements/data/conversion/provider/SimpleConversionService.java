@@ -90,7 +90,7 @@ public class SimpleConversionService extends AbstractConversionService {
     Collections.synchronizedMap(new HashMap<>(13, 0.95f));
 
   /**
-   * Constructs a new instance of {@link SimpleConversionService} initialized with all the {@link Converter Converters}
+   * Constructs a new {@link SimpleConversionService} initialized with all the {@link Converter Converters}
    * defined in the {@link org.cp.elements.data.conversion.converters} package.
    *
    * @throws IllegalArgumentException if the resource {@link URL} of the chosen {@link Converter} {@link Class}

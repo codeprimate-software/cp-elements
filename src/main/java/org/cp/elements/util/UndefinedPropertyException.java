@@ -28,13 +28,13 @@ package org.cp.elements.util;
 public class UndefinedPropertyException extends RuntimeException {
 
   /**
-   * Constructs a new instance of {@link UndefinedPropertyException}
+   * Constructs a new {@link UndefinedPropertyException}
    * with no {@link String message} and no {@link Throwable cause}.
    */
   public UndefinedPropertyException() { }
 
   /**
-   * Constructs a new instance of {@link UndefinedPropertyException} initialized with the given {@link String message}
+   * Constructs a new {@link UndefinedPropertyException} initialized with the given {@link String message}
    * used to description this {@link RuntimeException}.
    *
    * @param message {@link String} containing a {@literal message} to description this {@link RuntimeException}.
@@ -44,7 +44,7 @@ public class UndefinedPropertyException extends RuntimeException {
   }
 
   /**
-   * Constructs a new instance of {@link UndefinedPropertyException} initialized with the given {@link Throwable}
+   * Constructs a new {@link UndefinedPropertyException} initialized with the given {@link Throwable}
    * used as the cause or reason this {@link RuntimeException} was thrown.
    *
    * @param cause {@link Throwable} used as the reason this {@link RuntimeException} was thrown.
@@ -54,7 +54,7 @@ public class UndefinedPropertyException extends RuntimeException {
   }
 
   /**
-   * Constructs a new instance of {@link UndefinedPropertyException} initialized with the given {@link String message}
+   * Constructs a new {@link UndefinedPropertyException} initialized with the given {@link String message}
    * used to description this {@link RuntimeException} along with the given {@link Throwable} used as the cause
    * or reason this {@link RuntimeException} was thrown.
    *

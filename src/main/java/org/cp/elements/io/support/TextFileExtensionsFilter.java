@@ -39,7 +39,7 @@ public class TextFileExtensionsFilter extends FileExtensionFilter {
   };
 
   /**
-   * Constructs a new instance of {@link TextFileExtensionsFilter} to filter {@link File Files} by text file types.
+   * Constructs a new {@link TextFileExtensionsFilter} to filter {@link File Files} by text file types.
    *
    * @see org.cp.elements.io.FileExtensionFilter#FileExtensionFilter(String...)
    */

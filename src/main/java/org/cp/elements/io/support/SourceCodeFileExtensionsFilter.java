@@ -64,8 +64,7 @@ public class SourceCodeFileExtensionsFilter extends FileExtensionFilter {
   };
 
   /**
-   * Constructs a new instance of {@link SourceCodeFileExtensionsFilter} to filter {@link File Files}
-   * by source code file types.
+   * Constructs a new {@link SourceCodeFileExtensionsFilter} to filter {@link File Files} by source code file types.
    *
    * @see org.cp.elements.io.FileExtensionFilter#FileExtensionFilter(String...)
    */

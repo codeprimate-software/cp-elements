@@ -92,7 +92,7 @@ public enum HttpStatus {
   private final String description;
 
   /**
-   * Constructs a new instance of {@link HttpStatus} initialized with the corresponding {@link Integer numeric value}
+   * Constructs a new {@link HttpStatus} initialized with the corresponding {@link Integer numeric value}
    * and {@link String description} for the HTTP status code.
    *
    * @param httpStatusCode {@link Integer} declaring the numeric value for the HTTP status code.

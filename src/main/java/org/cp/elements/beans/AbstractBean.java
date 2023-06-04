@@ -96,7 +96,7 @@ public abstract class AbstractBean<ID extends Comparable<ID>, USER, PROCESS> ext
   private final VetoableChangeSupport vetoableChangeSupport = new VetoableChangeSupport(this);
 
   /**
-   * Constructs a new instance of {@link AbstractBean}.
+   * Constructs a new {@link AbstractBean}.
    *
    * This default, no-arg constructor simply registers a {@link ChangeRecorder} {@link PropertyChangeListener}
    * to record and keep track of changes in state to {@literal this} {@link AbstractBean}.
@@ -110,7 +110,7 @@ public abstract class AbstractBean<ID extends Comparable<ID>, USER, PROCESS> ext
   }
 
   /**
-   * Constructs a new instance of {@link AbstractBean} initialized with the given typed {@link ID identifier}
+   * Constructs a new {@link AbstractBean} initialized with the given typed {@link ID identifier}
    * to uniquely identify {@literal this} {@link Bean}.
    *
    * It is recommended that the {@link ID identifier} uniquely identify {@link Object Objects}
@@ -422,9 +422,9 @@ public abstract class AbstractBean<ID extends Comparable<ID>, USER, PROCESS> ext
   }
 
   /**
-   * Constructs a new instance of {@link PropertyChangeEvent} initialized with {@literal this} {@link Bean}
-   * as the source of the event as well as the {@link String name} of the property that is changing
-   * along with the property's {@link Object old value} and {@link Object new value}.
+   * Constructs a new {@link PropertyChangeEvent} initialized with {@literal this} {@link Bean} as the source
+   * of the event as well as the {@link String name} of the property that is changing along with the property's
+   * {@link Object old value} and {@link Object new value}.
    *
    * @param propertyName {@link String} containing the {@literal name} of the property that is changing.
    * @param oldValue {@link Object} containing the old value for the {@link String named} property.

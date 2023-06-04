@@ -113,7 +113,7 @@ public class MapProperty extends AbstractIndexedProperty<Object> {
   }
 
   /**
-   * Constructs a new instance of {@link MapProperty} initialized with the given, required {@link BeanModel}
+   * Constructs a new {@link MapProperty} initialized with the given, required {@link BeanModel}
    * modeling the bean containing the property along with the given, required {@link PropertyDescriptor}
    * describing the {@link Map Map-typed} bean property.
    *

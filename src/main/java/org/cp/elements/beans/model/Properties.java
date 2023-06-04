@@ -147,7 +147,7 @@ public class Properties implements Iterable<Property>, Streamable<Property> {
   private final Set<Property> properties;
 
   /**
-   * Constructs a new instance of {@link Properties} initialized from the given array of {@link Property properties}.
+   * Constructs a new {@link Properties} initialized from the given array of {@link Property properties}.
    *
    * @param properties array of {@link Property properties} used to initialize this collection.
    * @see org.cp.elements.beans.model.Property

@@ -278,7 +278,7 @@ public class PropertiesBuilder implements Builder<Properties> {
   private final Properties properties;
 
   /**
-   * Constructs a new instance of {@link PropertiesBuilder} initialized with an empty set of {@link Properties}.
+   * Constructs a new {@link PropertiesBuilder} initialized with an empty set of {@link Properties}.
    *
    * @see java.util.Properties
    */
@@ -287,7 +287,7 @@ public class PropertiesBuilder implements Builder<Properties> {
   }
 
   /**
-   * Constructs a new instance of {@link PropertiesBuilder} initialized with the given set of {@link Properties}
+   * Constructs a new {@link PropertiesBuilder} initialized with the given set of {@link Properties}
    * used as {@literal defaults}.
    *
    * @param defaults {@link Properties} used as {@literal defaults}; may be {@literal null}.
@@ -355,7 +355,7 @@ public class PropertiesBuilder implements Builder<Properties> {
   }
 
   /**
-   * Constructs a new instance of {@link PropertiesAdapter} from this {@link PropertiesBuilder}.
+   * Constructs a new {@link PropertiesAdapter} from this {@link PropertiesBuilder}.
    *
    * @return a {@link PropertiesAdapter} from this {@link PropertiesBuilder}.
    * @see org.cp.elements.util.PropertiesAdapter

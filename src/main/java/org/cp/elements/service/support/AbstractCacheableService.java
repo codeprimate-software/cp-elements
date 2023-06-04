@@ -51,7 +51,7 @@ public abstract class AbstractCacheableService<KEY extends Comparable<KEY>, VALU
   }
 
   /**
-   * Constructs a new instance of the {@link Cache} interface.
+   * Constructs a new the {@link Cache} interface.
    *
    * The {@link Cache} is used to provide caching services to this application service component.
    *

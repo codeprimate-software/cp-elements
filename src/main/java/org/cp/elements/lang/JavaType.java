@@ -122,7 +122,7 @@ public enum JavaType {
   private final Class<?> type;
 
   /**
-   * Constructs a new instance of the {@link JavaType} enumerated value initialized with
+   * Constructs a new the {@link JavaType} enumerated value initialized with
    * the given Java {@link Class type}.
    *
    * @param type {@link Class} representing the Java {@link Class type}.

@@ -107,7 +107,7 @@ public abstract class AbstractIndexedProperty<INDEX> extends Property {
   }
 
   /**
-   * Constructs a new instance of {@link AbstractIndexedProperty} initialized with the given,
+   * Constructs a new {@link AbstractIndexedProperty} initialized with the given,
    * required {@link BeanModel} modeling the bean containing this indexed property along with
    * the given, required {@link PropertyDescriptor} describing this indexed property.
    *
@@ -229,7 +229,7 @@ public abstract class AbstractIndexedProperty<INDEX> extends Property {
     private VALUE value;
 
     /**
-     * Constructs a new instance of {@link IndexedValue} initialized with the given {@link VALUE value}
+     * Constructs a new {@link IndexedValue} initialized with the given {@link VALUE value}
      * at the given, required {@link INDEX index} within an indexed data structure, such as an array,
      * {@link List} or {@link Map}.
      *

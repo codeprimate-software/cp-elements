@@ -32,8 +32,8 @@ public class CacheException extends RuntimeException {
   public CacheException() { }
 
   /**
-   * Constructs a new instance of {@link CacheException} initialized with the given {@link String message}
-   * to describe the error.
+   * Constructs a new {@link CacheException} initialized with the given {@link String message}
+   * to describe this cache error.
    *
    * @param message {@link String} containing a {@literal  description} of this {@link CacheException}.
    */
@@ -42,7 +42,7 @@ public class CacheException extends RuntimeException {
   }
 
   /**
-   * Constructs a new instance of {@link CacheException} initialized with the given {@link Throwable cause}
+   * Constructs a new {@link CacheException} initialized with the given {@link Throwable cause}
    * used as the underlying reason for this {@link CacheException}.
    *
    * @param cause {@link Throwable} used as the reason (cause) for this {@link CacheException}.
@@ -52,9 +52,9 @@ public class CacheException extends RuntimeException {
   }
 
   /**
-   * Constructs a new instance of {@link CacheException} initialized with the given {@link String message}
-   * to describe the error along with the given {@link Throwable cause} used as the underlying reason for
-   * this {@link CacheException}.
+   * Constructs a new {@link CacheException} initialized with the given {@link String message}
+   * to describe this cache error along with the given {@link Throwable cause} used as the underlying reason
+   * for this {@link CacheException}.
    *
    * @param message {@link String} containing a {@literal  description} of this {@link CacheException}.
    * @param cause {@link Throwable} used as the reason (cause) for this {@link CacheException}.

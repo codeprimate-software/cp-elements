@@ -32,8 +32,8 @@ public class DataAccessException extends RuntimeException {
   public DataAccessException() { }
 
   /**
-   * Constructs a new instance of {@link DataAccessException} initialized with the given {@link String message}
-   * describing the data access error.
+   * Constructs a new {@link DataAccessException} initialized with the given {@link String message}
+   * describing this data access error.
    *
    * @param message {@link String} describing the data access error.
    */
@@ -42,8 +42,8 @@ public class DataAccessException extends RuntimeException {
   }
 
   /**
-   * Constructs a new instance of {@link DataAccessException} initialized with the given {@link Throwable}
-   * used as the {@literal cause} of the data access error.
+   * Constructs a new {@link DataAccessException} initialized with the given {@link Throwable}
+   * used as the {@literal cause} of this data access error.
    *
    * @param cause {@link Throwable} used as the cause of the data access error.
    * @see java.lang.Throwable
@@ -53,9 +53,9 @@ public class DataAccessException extends RuntimeException {
   }
 
   /**
-   * Constructs a new instance of {@link DataAccessException} initialized with the given {@link String message}
-   * describing the data access error along with the given {@link Throwable} used as the {@literal cause}
-   * of the data access error.
+   * Constructs a new {@link DataAccessException} initialized with the given {@link String message}
+   * describing this data access error along with the given {@link Throwable} used as the {@literal cause}
+   * of this data access error.
    *
    * @param message {@link String} describing the data access error.
    * @param cause {@link Throwable} used as the cause of the data access error.

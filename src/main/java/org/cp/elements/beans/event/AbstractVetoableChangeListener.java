@@ -37,7 +37,7 @@ import org.cp.elements.lang.annotation.NotNull;
 public abstract class AbstractVetoableChangeListener extends AbstractListener implements VetoableChangeListener {
 
   /**
-   * Constructs a new instance of {@link AbstractVetoableChangeListener} initialized with
+   * Constructs a new {@link AbstractVetoableChangeListener} initialized with
    * the array of {@link String property names}.
    *
    * @param propertyNames array of {@link String property names} for which this listener is interested and processes
@@ -48,7 +48,7 @@ public abstract class AbstractVetoableChangeListener extends AbstractListener im
   }
 
   /**
-   * Constructs a new instance of {@link AbstractVetoableChangeListener} initialized with
+   * Constructs a new {@link AbstractVetoableChangeListener} initialized with
    * the {@link Iterable} of {@link String property names}.
    *
    * @param propertyNames {@link Iterable} of {@link String property names} for which this listener

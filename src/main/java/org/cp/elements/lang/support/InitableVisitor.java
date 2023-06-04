@@ -42,7 +42,7 @@ public class InitableVisitor implements Visitor {
   private final Object[] args;
 
   /**
-   * Constructs a new instance of {@link InitableVisitor} with no argument and no parameters.
+   * Constructs a new {@link InitableVisitor} with no argument and no parameters.
    */
   public InitableVisitor() {
     this.args = null;
@@ -50,7 +50,7 @@ public class InitableVisitor implements Visitor {
   }
 
   /**
-   * Constructs a new instance of {@link InitableVisitor} initialized with the given array of {@link Object arguments}.
+   * Constructs a new {@link InitableVisitor} initialized with the given array of {@link Object arguments}.
    *
    * @param args array of {@link Object arguments} used by this {@link Visitor} to initialize
    * both {@link ParameterizedInitable} and {@link Initable} objects when visited.
@@ -61,7 +61,7 @@ public class InitableVisitor implements Visitor {
   }
 
   /**
-   * Constructs a new instance of {@link InitableVisitor} initialized with the given {@link Map parameters}.
+   * Constructs a new {@link InitableVisitor} initialized with the given {@link Map parameters}.
    *
    * @param parameters {@link Map} of parameters used by this {@link Visitor} to initialize
    * a {@link ParameterizedInitable} object when visited.

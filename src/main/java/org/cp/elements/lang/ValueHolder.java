@@ -120,14 +120,14 @@ public class ValueHolder<T> {
   }
 
   /**
-   * Constructs a new instance of {@link ValueHolder} with no {@link Object value}.
+   * Constructs a new {@link ValueHolder} with no {@link Object value}.
    *
    * @see #ValueHolder(Object)
    */
   public ValueHolder() { }
 
   /**
-   * Constructs a new instance of {@link ValueHolder} initialized with the given {@link Object value}.
+   * Constructs a new {@link ValueHolder} initialized with the given {@link Object value}.
    *
    * @param value {@link Object value} held by {@literal this} {@link ValueHolder}.
    * @see #ValueHolder()
@@ -189,12 +189,12 @@ public class ValueHolder<T> {
   public static class ComparableValueHolder<T extends Comparable<T>> extends ValueHolder<T> implements Comparable<T> {
 
     /**
-     * Constructs a new instance of {@link ComparableValueHolder}.
+     * Constructs a new {@link ComparableValueHolder}.
      */
     public ComparableValueHolder() { }
 
     /**
-     * Constructs a new instance of {@link ComparableValueHolder} initialized with the given {@link Comparable object}.
+     * Constructs a new {@link ComparableValueHolder} initialized with the given {@link Comparable object}.
      *
      * @param value {@link Comparable object} used in the comparison.
      * @see java.lang.Comparable
@@ -221,12 +221,12 @@ public class ValueHolder<T> {
     private static final long serialVersionUID = 421081248;
 
     /**
-     * Constructs a new instance of {@link SerializableValueHolder}.
+     * Constructs a new {@link SerializableValueHolder}.
      */
     public SerializableValueHolder() { }
 
     /**
-     * Constructs a new instance of {@link SerializableValueHolder} initialized with
+     * Constructs a new {@link SerializableValueHolder} initialized with
      * the given {@link Serializable object}.
      *
      * @param value {@link Serializable object} to serialize to a stream.

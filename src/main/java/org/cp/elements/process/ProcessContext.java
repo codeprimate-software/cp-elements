@@ -81,7 +81,7 @@ public class ProcessContext {
   private String username;
 
   /**
-   * Constructs a new instance of {@link ProcessContext} initialized with the given {@link Process} object
+   * Constructs a new {@link ProcessContext} initialized with the given {@link Process} object
    * for which this {@link ProcessContext} is about.
    *
    * @param process {@link Process} for which the context is captured.

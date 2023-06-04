@@ -37,7 +37,7 @@ public class PropertyNotSetException extends IllegalPropertyValueException {
   public PropertyNotSetException() { }
 
   /**
-   * Constructs a new instance of {@link PropertyNotSetException} initialized with
+   * Constructs a new {@link PropertyNotSetException} initialized with
    * the given {@link String message} to describe this exception.
    *
    * @param message {@link String} describing this exception.
@@ -47,7 +47,7 @@ public class PropertyNotSetException extends IllegalPropertyValueException {
   }
 
   /**
-   * Constructs a new instance of {@link PropertyNotSetException} initialized with the given {@link Throwable}
+   * Constructs a new {@link PropertyNotSetException} initialized with the given {@link Throwable}
    * used as the cause and reason this exception was thrown.
    *
    * @param cause {@link Throwable} used as the cause and reason this exception was thrown.
@@ -57,7 +57,7 @@ public class PropertyNotSetException extends IllegalPropertyValueException {
   }
 
   /**
-   * Constructs a new instance of {@link PropertyNotSetException} initialized with
+   * Constructs a new {@link PropertyNotSetException} initialized with
    * the given {@link String message} to describe this exception along with the given {@link Throwable}
    * used as the cause and reason this exception was thrown.
    *

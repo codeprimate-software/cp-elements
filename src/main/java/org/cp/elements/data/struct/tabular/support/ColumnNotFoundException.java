@@ -35,14 +35,12 @@ import org.cp.elements.lang.annotation.Nullable;
 public class ColumnNotFoundException extends RuntimeException {
 
   /**
-   * Constructs a new instance of {@link ColumnNotFoundException} with no {@link String message}
-   * and no {@link Throwable cause}.
+   * Constructs a new {@link ColumnNotFoundException} with no {@link String message} and no {@link Throwable cause}.
    */
   public ColumnNotFoundException() { }
 
   /**
-   * Constructs a new instance of {@link ColumnNotFoundException} with the given {@link String message}
-   * used to describe the error.
+   * Constructs a new {@link ColumnNotFoundException} with the given {@link String message} used to describe this error.
    *
    * @param message {@link String} containing a {@literal description} of this {@link ColumnNotFoundException}
    */
@@ -51,7 +49,7 @@ public class ColumnNotFoundException extends RuntimeException {
   }
 
   /**
-   * Constructs a new instance of {@link ColumnNotFoundException} with the given {@link Throwable cause}
+   * Constructs a new {@link ColumnNotFoundException} with the given {@link Throwable cause}
    * used as the underlying reason this {@link ColumnNotFoundException} was thrown.
    *
    * @param cause {@link Throwable} used as the reason (cause) for this {@link ColumnNotFoundException}
@@ -61,8 +59,8 @@ public class ColumnNotFoundException extends RuntimeException {
   }
 
   /**
-   * Constructs a new instance of {@link ColumnNotFoundException} with the given {@link String message}
-   * used to describe the error along with an underlying reason this {@link ColumnNotFoundException} was thrown.
+   * Constructs a new {@link ColumnNotFoundException} with the given {@link String message} used to describe this error
+   * along with an underlying reason this {@link ColumnNotFoundException} was thrown.
    *
    * @param message {@link String} containing a {@literal description} of this {@link ColumnNotFoundException}
    * @param cause {@link Throwable} used as the reason (cause) for this {@link ColumnNotFoundException}

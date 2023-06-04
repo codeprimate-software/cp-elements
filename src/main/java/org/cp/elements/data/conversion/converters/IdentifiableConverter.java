@@ -48,7 +48,7 @@ public class IdentifiableConverter extends AbstractConverter<Long, Identifiable<
   private ObjectFactory objectFactory;
 
   /**
-   * Constructs a new instance of {@link IdentifiableConverter}.
+   * Constructs a new {@link IdentifiableConverter}.
    */
   public IdentifiableConverter() {
     this(ObjectFactoryReferenceHolder.hasReference() ? ObjectFactoryReferenceHolder.get()
@@ -56,7 +56,7 @@ public class IdentifiableConverter extends AbstractConverter<Long, Identifiable<
   }
 
   /**
-   * Constructs a new instance of {@link IdentifiableConverter} initialized with the given {@link ObjectFactory}
+   * Constructs a new {@link IdentifiableConverter} initialized with the given {@link ObjectFactory}
    * used to construct an {@link Object} from an {@literal identifier (ID)}.
    *
    * @param objectFactory {@link ObjectFactory} used to construct an {@link Object} from an {@literal identifier (ID}.

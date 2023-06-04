@@ -57,14 +57,14 @@ public abstract class AbstractConfiguration implements Configuration, Conversion
   private ConversionService conversionService;
 
   /**
-   * Constructs a new instance of {@link AbstractConfiguration} with no parent {@link Configuration}.
+   * Constructs a new {@link AbstractConfiguration} with no parent {@link Configuration}.
    */
   public AbstractConfiguration() {
     this.parent = null;
   }
 
   /**
-   * Constructs a new instance of {@link AbstractConfiguration} initialized with the given {@literal parent}
+   * Constructs a new {@link AbstractConfiguration} initialized with the given {@literal parent}
    * {@link Configuration}.
    *
    * @param parent {@link Configuration} used as a fallback for retrieving configuration metadata
@@ -337,7 +337,7 @@ public abstract class AbstractConfiguration implements Configuration, Conversion
     private final SOURCE source;
 
     /**
-     * Constructs a new instance of {@link AbstractConfigurationDescriptor} initialized with the given,
+     * Constructs a new {@link AbstractConfigurationDescriptor} initialized with the given,
      * required {@link SOURCE}.
      *
      * @param source {@link SOURCE} object used as the {@literal source} of this {@link Configuration}.
@@ -379,7 +379,7 @@ public abstract class AbstractConfiguration implements Configuration, Conversion
     }
 
     /**
-     * Constructs a new instance of {@link FileConfigurationDescriptor} initialized with the given,
+     * Constructs a new {@link FileConfigurationDescriptor} initialized with the given,
      * required {@link File} used as the {@literal source} of the {@link Configuration}.
      *
      * @param file {@link File} used as the source of the {@link Configuration}; must not be {@literal null}.
@@ -412,7 +412,7 @@ public abstract class AbstractConfiguration implements Configuration, Conversion
     }
 
     /**
-     * Constructs a new instance of {@link MapConfigurationDescriptor} initialized with the given, required {@link Map}
+     * Constructs a new {@link MapConfigurationDescriptor} initialized with the given, required {@link Map}
      * used as the {@literal source} of the {@link Configuration}.
      *
      * @param map {@link Map} used as the source of the {@link Configuration}; must not be {@literal null}.
@@ -446,7 +446,7 @@ public abstract class AbstractConfiguration implements Configuration, Conversion
     }
 
     /**
-     * Constructs a new instance of {@link PropertiesConfigurationDescriptor} initialized with
+     * Constructs a new {@link PropertiesConfigurationDescriptor} initialized with
      * the given, required {@link Properties} used as the {@literal source} of the {@link Configuration}.
      *
      * @param properties {@link Properties} used as the source of the {@link Configuration};

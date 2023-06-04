@@ -32,7 +32,7 @@ public abstract class BeansException extends RuntimeException {
   public BeansException() { }
 
   /**
-   * Constructs a new instance of {@link BeansException} initialized with the given {@link String message}
+   * Constructs a new {@link BeansException} initialized with the given {@link String message}
    * describing this exception.
    *
    * @param message {@link String} containing a {@literal message} describing the exception.
@@ -42,7 +42,7 @@ public abstract class BeansException extends RuntimeException {
   }
 
   /**
-   * Constructs a new instance of {@link BeansException} initialized with a given {@link Throwable}
+   * Constructs a new {@link BeansException} initialized with a given {@link Throwable}
    * as the cause of this exception.
    *
    * @param cause {@link Throwable} used as the cause of this exception.
@@ -52,7 +52,7 @@ public abstract class BeansException extends RuntimeException {
   }
 
   /**
-   * Constructs a new instance of {@link BeansException} initialized with the given {@link String message}
+   * Constructs a new {@link BeansException} initialized with the given {@link String message}
    * describing this exception along with a {@link Throwable} used as the cause of this exception.
    *
    * @param message {@link String} containing a {@literal message} describing the exception.

@@ -38,8 +38,7 @@ public abstract class StringBasedKeyValue extends SimpleKeyValue<String, String>
   private final ConversionService conversionService = ConversionService.getLoader().getServiceInstance();
 
   /**
-   * Constructs a new instance of {@link StringBasedKeyValue} initialized with the given {@link String key}
-   * having no value.
+   * Constructs a new {@link StringBasedKeyValue} initialized with the given {@link String key} having no value.
    *
    * @param key {@link String key} in this key/value data structure.
    */
@@ -48,7 +47,7 @@ public abstract class StringBasedKeyValue extends SimpleKeyValue<String, String>
   }
 
   /**
-   * Constructs a new instance of {@link StringBasedKeyValue} initialized with the given {@link String key}
+   * Constructs a new {@link StringBasedKeyValue} initialized with the given {@link String key}
    * and {@link String value}.
    *
    * @param key {@link String key} in this key/value data structure; must not be {@literal null} or {@literal empty}.

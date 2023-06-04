@@ -359,8 +359,8 @@ public abstract class AbstractConfigurationService implements ConfigurationServi
     private final String propertyPrefix;
 
     /**
-     * Constructs a new instance of {@link ConfigurationPropertiesInterfaceMethodInterceptor} initialized with
-     * a reference to the {@link AbstractConfigurationService} and the {@link ConfigurationProperties} annotated
+     * Constructs a new {@link ConfigurationPropertiesInterfaceMethodInterceptor} initialized with a reference
+     * to the {@link AbstractConfigurationService} and the {@link ConfigurationProperties} annotated
      * {@link Class interface} containing the configuration property accessor methods, where properties are derived
      * from the {@link Method#getName() method name} prefixed with the given, required {@link String property prefix}.
      *

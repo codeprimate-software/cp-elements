@@ -34,14 +34,12 @@ import org.cp.elements.lang.annotation.Nullable;
 public class NoRowsFoundException extends RuntimeException {
 
   /**
-   * Constructs a new instance of {@link NoRowsFoundException} with no {@link String message}
-   * and no {@link Throwable cause}.
+   * Constructs a new {@link NoRowsFoundException} with no {@link String message} and no {@link Throwable cause}.
    */
   public NoRowsFoundException() { }
 
   /**
-   * Constructs a new instance of {@link NoRowsFoundException} with the given {@link String message}
-   * used to describe the error.
+   * Constructs a new {@link NoRowsFoundException} with the given {@link String message} used to describe this error.
    *
    * @param message {@link String} containing a {@literal description} of this {@link NoRowsFoundException}
    */
@@ -50,7 +48,7 @@ public class NoRowsFoundException extends RuntimeException {
   }
 
   /**
-   * Constructs a new instance of {@link NoRowsFoundException} with the given {@link Throwable cause}
+   * Constructs a new {@link NoRowsFoundException} with the given {@link Throwable cause}
    * used as the underlying reason this {@link NoRowsFoundException} was thrown.
    *
    * @param cause {@link Throwable} used as the reason (cause) for this {@link NoRowsFoundException}
@@ -60,7 +58,7 @@ public class NoRowsFoundException extends RuntimeException {
   }
 
   /**
-   * Constructs a new instance of {@link NoRowsFoundException} with the given {@link String message}
+   * Constructs a new {@link NoRowsFoundException} with the given {@link String message}
    * used to describe the error along with an underlying reason this {@link NoRowsFoundException} was thrown.
    *
    * @param message {@link String} containing a {@literal description} of this {@link NoRowsFoundException}

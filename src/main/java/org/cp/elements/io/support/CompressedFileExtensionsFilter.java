@@ -47,8 +47,7 @@ public class CompressedFileExtensionsFilter extends FileExtensionFilter {
   };
 
   /**
-   * Constructs a new instance of {@link CompressedFileExtensionsFilter} to filter {@link File Files}
-   * by compression file types.
+   * Constructs a new {@link CompressedFileExtensionsFilter} to filter {@link File Files} by compression file types.
    *
    * @see org.cp.elements.io.FileExtensionFilter#FileExtensionFilter(String...)
    */

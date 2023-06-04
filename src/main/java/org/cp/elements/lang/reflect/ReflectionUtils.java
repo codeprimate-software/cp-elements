@@ -855,7 +855,7 @@ public abstract class ReflectionUtils extends ClassUtils {
     private final Class<?> referenceType;
 
     /**
-     * Constructs a new instance of {@link MethodResolver} initialized with the given, required {@link Class type}
+     * Constructs a new {@link MethodResolver} initialized with the given, required {@link Class type}
      * from which to resolve the {@link Method} by {@link String name}.
      *
      * @param sourceType {@link Class} from which to resolve the {@link Method} by {@link String name};
@@ -933,7 +933,7 @@ public abstract class ReflectionUtils extends ClassUtils {
     }
 
     /**
-     * Constructs a new instance of {@link MethodReference} initialized with the given, required {@link Class type}
+     * Constructs a new {@link MethodReference} initialized with the given, required {@link Class type}
      * from which the {@link Method} will be resolved and {@link String method name}
      * used to identify the {@link Method}.
      *
@@ -1023,7 +1023,7 @@ public abstract class ReflectionUtils extends ClassUtils {
     private final Set<T> members = newMemberSet();
 
     /**
-     * Constructs a new instance of {@link WithExpression} initialized with the given array of {@link Member Members}
+     * Constructs a new {@link WithExpression} initialized with the given array of {@link Member Members}
      * to process.
      *
      * @param members array of {@link Member Members} to process.
@@ -1185,7 +1185,7 @@ public abstract class ReflectionUtils extends ClassUtils {
   public static class WithFields extends WithExpression<Field> {
 
     /**
-     * Constructs a new instance of {@link WithFields} initialized with an array of {@link Field Fields} to process.
+     * Constructs a new {@link WithFields} initialized with an array of {@link Field Fields} to process.
      *
      * @param fields array of {@link Field Fields} to process.
      * @see java.lang.reflect.Field
@@ -1236,7 +1236,7 @@ public abstract class ReflectionUtils extends ClassUtils {
   public static class WithMethods extends WithExpression<Method> {
 
     /**
-     * Constructs a new instance of {@link WithMethods} initialized with an array of {@link Method Methods} to process.
+     * Constructs a new {@link WithMethods} initialized with an array of {@link Method Methods} to process.
      *
      * @param methods array of {@link Method Methods} to process.
      * @see java.lang.reflect.Method

@@ -33,7 +33,7 @@ public class ChangeEvent extends EventObject {
   private final Instant changeDateTime = Instant.now();
 
   /**
-   * Constructs a new instance of {@link ChangeEvent} initialized with the given, required {@link Object} used as
+   * Constructs a new {@link ChangeEvent} initialized with the given, required {@link Object} used as
    * the source for change events.
    *
    * @param source {@link Object} reference used as the source of the change events; must not be {@literal null}.

@@ -98,7 +98,7 @@ public class SimpleKeyValue<KEY, VALUE> implements KeyValue<KEY, VALUE> {
   private final VALUE value;
 
   /**
-   * Constructs a new instance of {@link SimpleKeyValue} initialized with the given, required {@link KEY key}
+   * Constructs a new {@link SimpleKeyValue} initialized with the given, required {@link KEY key}
    * and a {@literal null} value.
    *
    * @param key {@link KEY key} in the key/value mapping; must not be {@literal null}.
@@ -110,7 +110,7 @@ public class SimpleKeyValue<KEY, VALUE> implements KeyValue<KEY, VALUE> {
   }
 
   /**
-   * Constructs a new instance of {@link SimpleKeyValue} initialized with the given, required {@link KEY key}
+   * Constructs a new {@link SimpleKeyValue} initialized with the given, required {@link KEY key}
    * and {@link VALUE value}.
    *
    * @param key {@link KEY key} in the key/value mapping; must not be {@literal null}.

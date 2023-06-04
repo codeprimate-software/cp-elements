@@ -96,7 +96,7 @@ public enum TimeUnit {
   private final String name;
 
   /**
-   * Constructs a new instance of {@link TimeUnit} initialized with the given, required {@link String abbreviation},
+   * Constructs a new {@link TimeUnit} initialized with the given, required {@link String abbreviation},
    * {@link String name} and {@link String description} to describe the unit of time.
    *
    * @param abbreviation {@link String} specifying the {@literal abbreviation} for {@literal this} {@link TimeUnit}.

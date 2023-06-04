@@ -31,7 +31,7 @@ public class ServiceUnavailableException extends ServiceException {
   public ServiceUnavailableException() { }
 
   /**
-   * Constructs a new instance of {@link ServiceUnavailableException} initialized with the given {@link String message}
+   * Constructs a new {@link ServiceUnavailableException} initialized with the given {@link String message}
    * describing the {@link RuntimeException}.
    *
    * @param message {@link String} containing a description of the {@link RuntimeException}.
@@ -41,7 +41,7 @@ public class ServiceUnavailableException extends ServiceException {
   }
 
   /**
-   * Constructs a new instance of {@link ServiceUnavailableException} initialized with the given {@link Throwable}
+   * Constructs a new {@link ServiceUnavailableException} initialized with the given {@link Throwable}
    * used as the reason this {@link RuntimeException} was thrown.
    *
    * @param cause {@link Throwable} used as the reason this {@link ServiceUnavailableException} was thrown.
@@ -51,7 +51,7 @@ public class ServiceUnavailableException extends ServiceException {
   }
 
   /**
-   * Constructs a new instance of {@link ServiceUnavailableException} initialized with the given {@link String message}
+   * Constructs a new {@link ServiceUnavailableException} initialized with the given {@link String message}
    * describing the {@link RuntimeException} and {@link Throwable} used as the reason this {@link RuntimeException}
    * was thrown.
    *

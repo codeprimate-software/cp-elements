@@ -40,14 +40,14 @@ public class BooleanConverter extends DefaultableConverter<Object, Boolean> {
   protected final Set<String> trueValues;
 
   /**
-   * Constructs a new instance of {@link BooleanConverter}.
+   * Constructs a new {@link BooleanConverter}.
    */
   public BooleanConverter() {
     this(Boolean.TRUE.toString());
   }
 
   /**
-   * Constructs a new instance of {@link BooleanConverter} initialized with an array of {@link String values}
+   * Constructs a new {@link BooleanConverter} initialized with an array of {@link String values}
    * representing {@literal true} values.
    *
    * @param trueValues array of {@link String values} representing {@literal true} values.

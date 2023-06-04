@@ -54,9 +54,9 @@ public class ConcurrentMapCache<KEY extends Comparable<KEY>, VALUE> extends Abst
   private final ConcurrentMap<KEY, VALUE> map = newConcurrentMap();
 
   /**
-   * Constructs a new instance of {@link ConcurrentMap}.
+   * Constructs a new {@link ConcurrentMap}.
    *
-   * Constructs a new {@link ConcurrentHashMap} by default.
+   * A new instance of {@link ConcurrentHashMap} is constructed by default.
    *
    * @return a new {@link ConcurrentMap}.
    * @see java.util.concurrent.ConcurrentHashMap

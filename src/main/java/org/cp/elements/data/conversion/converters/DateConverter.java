@@ -47,14 +47,14 @@ public class DateConverter extends DefaultableConverter<Object, Date> {
   private final DateFormat dateFormat;
 
   /**
-   * Constructs a new instance of {@link DateConverter} using the default date/time {@link String format pattern}.
+   * Constructs a new {@link DateConverter} using the default date/time {@link String format pattern}.
    */
   public DateConverter() {
     this(DEFAULT_PATTERN);
   }
 
   /**
-   * Constructs a new instance of {@link DateConverter} using the given, required date/time
+   * Constructs a new {@link DateConverter} using the given, required date/time
    * {@link String format pattern}.
    *
    * @param pattern {@link String} containing the format pattern used to parse date/time {@link String values}.

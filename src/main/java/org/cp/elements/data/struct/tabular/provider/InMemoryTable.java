@@ -104,8 +104,8 @@ public class InMemoryTable extends AbstractTable {
   }
 
   /**
-   * Constructs a new instance of {@link InMemoryTable} initialized with the given, required
-   * array of {@link Column Columns} defining the structure for this {@link Table}.
+   * Constructs a new {@link InMemoryTable} initialized with the given, required array of {@link Column Columns}
+   * defining the structure for this {@link Table}.
    *
    * @param columns array of {@link Column Columns} defining the structure for this {@link Table}.
    * @throws IllegalArgumentException if the given array of {@link Column Columns} is {@literal null}
@@ -176,7 +176,7 @@ public class InMemoryTable extends AbstractTable {
   }
 
   /**
-   * Constructs a new instance of {@link InMemoryTable.InMemoryColumn} initialized with
+   * Constructs a new {@link InMemoryTable.InMemoryColumn} initialized with
    * a copy of the existing, required {@link Column}.
    *
    * @param <T> concrete {@link Class type} of the {@link Column}; returns {@link InMemoryColumn}.
@@ -210,7 +210,7 @@ public class InMemoryTable extends AbstractTable {
   }
 
   /**
-   * Constructs a new instance of {@link InMemoryTable.InMemoryRow} initialized with
+   * Constructs a new {@link InMemoryTable.InMemoryRow} initialized with
    * a copy of the existing, required {@link Row}.
    *
    * @param <T> concrete {@link Class type} of the {@link Row}; returns {@link InMemoryRow}.
@@ -352,7 +352,7 @@ public class InMemoryTable extends AbstractTable {
   protected class InMemoryColumn<T> extends AbstractColumn<T> {
 
     /**
-     * Constructs a new instance of {@link InMemoryColumn} copied from the existing, required {@link Column}.
+     * Constructs a new {@link InMemoryColumn} copied from the existing, required {@link Column}.
      *
      * @param column {@link Column} to copy; must not be {@literal null}.
      * @throws IllegalArgumentException if the given {@link Column} to copy is {@literal null}.
@@ -411,7 +411,7 @@ public class InMemoryTable extends AbstractTable {
     private volatile Object[] values;
 
     /**
-     * Constructs a new instance of {@link InMemoryRow} copied from the existing, required {@link Row}.
+     * Constructs a new {@link InMemoryRow} copied from the existing, required {@link Row}.
      *
      * @param row {@link Row} to copy; must not be {@literal null}.
      * @throws IllegalArgumentException if the given {@link Row} to copy is {@literal null}.

@@ -32,7 +32,7 @@ public class PropertyReadException extends BeansException {
   public PropertyReadException() { }
 
   /**
-   * Constructs a new instance of {@link PropertyReadException} initialized with the given {@link String message}
+   * Constructs a new {@link PropertyReadException} initialized with the given {@link String message}
    * describing the exception.
    *
    * @param message {@link String} describing the exception.
@@ -42,7 +42,7 @@ public class PropertyReadException extends BeansException {
   }
 
   /**
-   * Constructs a new instance of {@link PropertyReadException} initialized with the given {@link Throwable}
+   * Constructs a new {@link PropertyReadException} initialized with the given {@link Throwable}
    * used as the underlying cause of this exception.
    *
    * @param cause {@link Throwable} used as the cause of this exception.
@@ -52,7 +52,7 @@ public class PropertyReadException extends BeansException {
   }
 
   /**
-   * Constructs a new instance of {@link PropertyReadException} initialized with the given {@link String message}
+   * Constructs a new {@link PropertyReadException} initialized with the given {@link String message}
    * describing the exception and {@link Throwable} used as the underlying cause of this exception.
    *
    * @param message {@link String} describing the exception.

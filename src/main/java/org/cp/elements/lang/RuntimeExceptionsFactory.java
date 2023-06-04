@@ -37,7 +37,7 @@ import org.cp.elements.lang.annotation.Nullable;
 public abstract class RuntimeExceptionsFactory extends CheckedExceptionsFactory {
 
   /**
-   * Constructs a new instance of {@link IllegalArgumentException} initialized with the given {@link String message}
+   * Constructs a new {@link IllegalArgumentException} initialized with the given {@link String message}
    * formatted with the array of {@link Object arguments}.
    *
    * @param message {@link String} describing the {@link IllegalArgumentException}; must not be {@literal null}.
@@ -52,7 +52,7 @@ public abstract class RuntimeExceptionsFactory extends CheckedExceptionsFactory 
   }
 
   /**
-   * Constructs a new instance of {@link IllegalArgumentException} initialized with the given {@link Throwable cause}.
+   * Constructs a new {@link IllegalArgumentException} initialized with the given {@link Throwable cause}.
    *
    * @param cause {@link Throwable} used as the {@literal cause} of the {@link IllegalArgumentException}.
    * @return a new {@link IllegalArgumentException} initialized with the given {@link Throwable cause}.
@@ -64,7 +64,7 @@ public abstract class RuntimeExceptionsFactory extends CheckedExceptionsFactory 
   }
 
   /**
-   * Constructs a new instance of {@link IllegalArgumentException} initialized with the given {@link Throwable cause}
+   * Constructs a new {@link IllegalArgumentException} initialized with the given {@link Throwable cause}
    * and {@link String message} formatted with the given array of {@link Object arguments}.
    *
    * @param cause {@link Throwable} used as the {@literal cause} of the {@link IllegalArgumentException}.
@@ -82,7 +82,7 @@ public abstract class RuntimeExceptionsFactory extends CheckedExceptionsFactory 
   }
 
   /**
-   * Constructs a new instance of {@link IllegalStateException} initialized with the given {@link String message}
+   * Constructs a new {@link IllegalStateException} initialized with the given {@link String message}
    * formatted with the given array of {@link Object arguments}.
    *
    * @param message {@link String} describing the {@link IllegalStateException}; must not be {@literal null}.
@@ -97,7 +97,7 @@ public abstract class RuntimeExceptionsFactory extends CheckedExceptionsFactory 
   }
 
   /**
-   * Constructs a new instance of {@link IllegalStateException} initialized with the given {@link String message}
+   * Constructs a new {@link IllegalStateException} initialized with the given {@link String message}
    * formatted with the given array of {@link Object arguments}.
    *
    * @param cause {@link Throwable} used as the {@literal cause} of this {@link IllegalStateException}.
@@ -110,7 +110,7 @@ public abstract class RuntimeExceptionsFactory extends CheckedExceptionsFactory 
   }
 
   /**
-   * Constructs a new instance of {@link IllegalStateException} initialized with the given {@link Throwable cause}
+   * Constructs a new {@link IllegalStateException} initialized with the given {@link Throwable cause}
    * and {@link String message} formatted with the given array of {@link Object arguments}.
    *
    * @param cause {@link Throwable} used as the {@literal cause} of this {@link IllegalStateException}.
@@ -128,7 +128,7 @@ public abstract class RuntimeExceptionsFactory extends CheckedExceptionsFactory 
   }
 
   /**
-   * Constructs a new instance of {@link IndexOutOfBoundsException} initialized with the given {@link String message}
+   * Constructs a new {@link IndexOutOfBoundsException} initialized with the given {@link String message}
    * formatted with the given array of {@link Object arguments}.
    *
    * @param message {@link String} describing the {@link IndexOutOfBoundsException}; must not be {@literal null}.
@@ -145,7 +145,7 @@ public abstract class RuntimeExceptionsFactory extends CheckedExceptionsFactory 
   }
 
   /**
-   * Constructs a new instance of {@link IndexOutOfBoundsException} initialized with the given {@link String message}
+   * Constructs a new {@link IndexOutOfBoundsException} initialized with the given {@link String message}
    * formatted with the given array of {@link Object arguments}.
    *
    * @param cause {@link Throwable} used as the {@literal cause} of the {@link IndexOutOfBoundsException}.
@@ -158,7 +158,7 @@ public abstract class RuntimeExceptionsFactory extends CheckedExceptionsFactory 
   }
 
   /**
-   * Constructs a new instance of {@link IndexOutOfBoundsException} initialized with the given {@link Throwable}
+   * Constructs a new {@link IndexOutOfBoundsException} initialized with the given {@link Throwable}
    * and {@link String message} formatted with the given array of {@link Object arguments}.
    *
    * @param cause {@link Throwable} used as the {@literal cause} of the {@link IndexOutOfBoundsException}.
@@ -176,7 +176,7 @@ public abstract class RuntimeExceptionsFactory extends CheckedExceptionsFactory 
   }
 
   /**
-   * Constructs a new instance of {@link NoSuchElementException} initialized with the given {@link String message}
+   * Constructs a new {@link NoSuchElementException} initialized with the given {@link String message}
    * formatted with the given array of {@link Object arguments}.
    *
    * @param message {@link String} describing the {@link NoSuchElementException}; must not be {@literal null}.
@@ -191,7 +191,7 @@ public abstract class RuntimeExceptionsFactory extends CheckedExceptionsFactory 
   }
 
   /**
-   * Constructs a new instance of {@link NoSuchElementException} initialized with the given {@link String message}
+   * Constructs a new {@link NoSuchElementException} initialized with the given {@link String message}
    * formatted with the given array of {@link Object arguments}.
    *
    * @param cause {@link Throwable} used as the {@literal cause} of this {@link NoSuchElementException}.
@@ -204,7 +204,7 @@ public abstract class RuntimeExceptionsFactory extends CheckedExceptionsFactory 
   }
 
   /**
-   * Constructs a new instance of {@link NoSuchElementException} initialized with the given {@link Throwable cause}
+   * Constructs a new {@link NoSuchElementException} initialized with the given {@link Throwable cause}
    * and {@link String message} formatted with the given array of {@link Object arguments}.
    *
    * @param cause {@link Throwable} used as the {@literal cause} of this {@link NoSuchElementException}.
@@ -222,7 +222,7 @@ public abstract class RuntimeExceptionsFactory extends CheckedExceptionsFactory 
   }
 
   /**
-   * Constructs a new instance of {@link NullPointerException} initialized with the given {@link String message}
+   * Constructs a new {@link NullPointerException} initialized with the given {@link String message}
    * formatted with the given array of {@link Object arguments}.
    *
    * @param message {@link String} describing the {@link NullPointerException}; must not be {@literal null}.
@@ -237,7 +237,7 @@ public abstract class RuntimeExceptionsFactory extends CheckedExceptionsFactory 
   }
 
   /**
-   * Constructs a new instance of {@link NullPointerException} initialized with the given {@link Throwable cause}.
+   * Constructs a new {@link NullPointerException} initialized with the given {@link Throwable cause}.
    *
    * @param cause {@link Throwable} used as the {@literal cause} of the {@link NullPointerException}.
    * @return a new {@link NullPointerException} initialized with the given {@link Throwable cause}.
@@ -249,7 +249,7 @@ public abstract class RuntimeExceptionsFactory extends CheckedExceptionsFactory 
   }
 
   /**
-   * Constructs a new instance of {@link NullPointerException} initialized with the given {@link Throwable cause}
+   * Constructs a new {@link NullPointerException} initialized with the given {@link Throwable cause}
    * and {@link String message} formatted with the given array of {@link Object arguments}.
    *
    * @param cause {@link Throwable} used as the {@literal cause} of the {@link NullPointerException}.
@@ -267,7 +267,7 @@ public abstract class RuntimeExceptionsFactory extends CheckedExceptionsFactory 
   }
 
   /**
-   * Constructs a new instance of {@link RuntimeException} initialized with the given {@link String message}
+   * Constructs a new {@link RuntimeException} initialized with the given {@link String message}
    * formatted with the given array of {@link Object arguments}.
    *
    * @param message {@link String} describing the {@link RuntimeException}; must not be {@literal null}.
@@ -282,7 +282,7 @@ public abstract class RuntimeExceptionsFactory extends CheckedExceptionsFactory 
   }
 
   /**
-   * Constructs a new instance of {@link RuntimeException} initialized with the given {@link Throwable cause}.
+   * Constructs a new {@link RuntimeException} initialized with the given {@link Throwable cause}.
    *
    * @param cause {@link Throwable} used as the {@literal cause} of the {@link RuntimeException}.
    * @return a new {@link RuntimeException} initialized with the given {@link Throwable cause}.
@@ -294,7 +294,7 @@ public abstract class RuntimeExceptionsFactory extends CheckedExceptionsFactory 
   }
 
   /**
-   * Constructs a new instance of {@link RuntimeException} initialized with the given {@link Throwable cause}
+   * Constructs a new {@link RuntimeException} initialized with the given {@link Throwable cause}
    * and {@link String message} formatted with the given array of {@link Object arguments}.
    *
    * @param cause {@link Throwable} used as the {@literal cause} of the {@link RuntimeException}.
@@ -312,7 +312,7 @@ public abstract class RuntimeExceptionsFactory extends CheckedExceptionsFactory 
   }
 
   /**
-   * Constructs a new instance of {@link TypeNotPresentException} initialized with the given {@link String message}
+   * Constructs a new {@link TypeNotPresentException} initialized with the given {@link String message}
    * formatted with the given array of {@link Object arguments}.
    *
    * @param message {@link String} describing the {@link TypeNotPresentException}; must not be {@literal null}.
@@ -327,7 +327,7 @@ public abstract class RuntimeExceptionsFactory extends CheckedExceptionsFactory 
   }
 
   /**
-   * Constructs a new instance of {@link TypeNotPresentException} initialized with the given {@link Throwable cause}.
+   * Constructs a new {@link TypeNotPresentException} initialized with the given {@link Throwable cause}.
    *
    * @param cause {@link Throwable} used as the {@literal cause} of the {@link TypeNotPresentException}.
    * @return a new {@link TypeNotPresentException} initialized with the given {@link Throwable cause}.
@@ -339,7 +339,7 @@ public abstract class RuntimeExceptionsFactory extends CheckedExceptionsFactory 
   }
 
   /**
-   * Constructs a new instance of {@link TypeNotPresentException} initialized with the given {@link Throwable cause}
+   * Constructs a new {@link TypeNotPresentException} initialized with the given {@link Throwable cause}
    * and {@link String message} formatted with the given array of {@link Object arguments}.
    *
    * @param cause {@link Throwable} used as the {@literal cause} of the {@link TypeNotPresentException}.
@@ -357,7 +357,7 @@ public abstract class RuntimeExceptionsFactory extends CheckedExceptionsFactory 
   }
 
   /**
-   * Constructs a new instance of {@link UnsupportedOperationException} initialized with
+   * Constructs a new {@link UnsupportedOperationException} initialized with
    * the given {@link String message} formatted with the given array of {@link Object arguments}.
    *
    * @param message {@link String} describing the {@link UnsupportedOperationException}; must not be {@literal null}.
@@ -374,7 +374,7 @@ public abstract class RuntimeExceptionsFactory extends CheckedExceptionsFactory 
   }
 
   /**
-   * Constructs a new instance of {@link UnsupportedOperationException} initialized with
+   * Constructs a new {@link UnsupportedOperationException} initialized with
    * the given {@link Throwable cause}.
    *
    * @param cause {@link Throwable} used as the {@literal cause} of the {@link UnsupportedOperationException}.
@@ -387,7 +387,7 @@ public abstract class RuntimeExceptionsFactory extends CheckedExceptionsFactory 
   }
 
   /**
-   * Constructs a new instance of {@link UnsupportedOperationException} initialized with
+   * Constructs a new {@link UnsupportedOperationException} initialized with
    * the given {@link Throwable cause} and {@link String message} formatted with
    * the given array of {@link Object arguments}.
    *

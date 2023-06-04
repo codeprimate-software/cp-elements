@@ -66,7 +66,7 @@ public class BeanModel {
   private final Properties beanProperties;
 
   /**
-   * Constructs a new instance of {@link BeanModel} initialized with the given, required {@link BeanAdapter bean}.
+   * Constructs a new {@link BeanModel} initialized with the given, required {@link BeanAdapter bean}.
    *
    * @param bean {@link BeanAdapter} to model; must not be {@literal null}.
    * @throws BeansException if information about the {@link BeanAdapter bean} could not be acquired.
@@ -177,7 +177,7 @@ public class BeanModel {
     private final BeanAdapter bean;
 
     /**
-     * Constructs a new instance of {@link BeanModelCacheKey} initialized with the given,
+     * Constructs a new {@link BeanModelCacheKey} initialized with the given,
      * required {@link BeanAdapter bean}.
      *
      * @param bean {@link BeanAdapter} used as a key component in the {@link BeanModel} {@literal cache};

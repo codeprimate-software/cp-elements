@@ -47,8 +47,7 @@ public class EnvironmentVariableValue extends StringBasedKeyValue {
   }
 
   /**
-   * Constructs a new instance of {@link EnvironmentVariableValue} initialized with
-   * the given system environment variable.
+   * Constructs a new {@link EnvironmentVariableValue} initialized with the given system environment variable.
    *
    * @param environmentVariable System environment variable; must not be {@literal null}.
    * @throws IllegalArgumentException if the environment variable is {@literal null}.

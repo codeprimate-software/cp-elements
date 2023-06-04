@@ -138,7 +138,7 @@ public class MethodInvocation {
   private Object[] arguments;
 
   /**
-   * Constructs a new instance of {@link MethodInvocation} initialized with the given {@link Object target}
+   * Constructs a new {@link MethodInvocation} initialized with the given {@link Object target}
    * on which the given {@link Method} will be invoked, passing the given array of {@link Object arguments}
    * to the {@link Method} during invocation.
    *

@@ -96,7 +96,7 @@ public class SimplePageable<T> implements Pageable<T> {
   private final List<T> list;
 
   /**
-   * Constructs a new instance of {@link SimplePageable} initialized with the given {@link List}
+   * Constructs a new {@link SimplePageable} initialized with the given {@link List}
    * and default page size of 20 elements per {@link Page}.
    *
    * @param list {@link List} to wrap and provide paging functionality for.
@@ -108,7 +108,7 @@ public class SimplePageable<T> implements Pageable<T> {
   }
 
   /**
-   * Constructs a new instance of {@link SimplePageable} initialized with the given {@link List} and given page size.
+   * Constructs a new {@link SimplePageable} initialized with the given {@link List} and given page size.
    *
    * @param list {@link List} to wrap and provide paging functionality for.
    * @param pageSize integer indicating the desired number of elements per {@link Page}
@@ -291,7 +291,7 @@ public class SimplePageable<T> implements Pageable<T> {
     }
 
     /**
-     * Constructs a new instance of {@link SimplePage} initialized with the source, underlying {@link SimplePageable}
+     * Constructs a new {@link SimplePage} initialized with the source, underlying {@link SimplePageable}
      * object containing this {@link Page} and this {@link Page Page's} page number.
      *
      * @param pageable reference to the {@link SimplePageable} object that contains this {@link Page}.

@@ -50,8 +50,7 @@ public enum HttpMethod {
   private final CrudOperation crudOperation;
 
   /**
-   * Constructs a new instance of {@link HttpMethod} initialized with an equivalent
-   * {@link CrudOperation CRUD operation}.
+   * Constructs a new {@link HttpMethod} initialized with an equivalent {@link CrudOperation CRUD operation}.
    *
    * @param crudOperation {@link CrudOperation} equivalent to this HTTP method.
    * @see org.cp.elements.dao.CrudOperation

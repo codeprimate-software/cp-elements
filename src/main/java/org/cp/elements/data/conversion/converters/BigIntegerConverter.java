@@ -42,14 +42,14 @@ public class BigIntegerConverter extends AbstractConverter<String, BigInteger> {
   private final Integer radix;
 
   /**
-   * Constructs a new instance of {@link BigIntegerConverter} with no {@link Integer radix}.
+   * Constructs a new {@link BigIntegerConverter} with no {@link Integer radix}.
    */
   public BigIntegerConverter() {
     this(null);
   }
 
   /**
-   * Constructs a new instance of {@link BigIntegerConverter} initialized with the given {@link Integer radix}.
+   * Constructs a new {@link BigIntegerConverter} initialized with the given {@link Integer radix}.
    *
    * @param radix {@link Integer} value used to initialize the {@link BigInteger}.
    */

@@ -27,13 +27,13 @@ package org.cp.elements.lang;
 public class ThrowableOperationException extends RuntimeException {
 
   /**
-   * Constructs a new instance of {@link ThrowableOperationException} having no {@link String message}
+   * Constructs a new {@link ThrowableOperationException} having no {@link String message}
    * and no {@link Throwable cause}.
    */
   public ThrowableOperationException() { }
 
   /**
-   * Constructs a new instance of {@link ThrowableOperationException} initialized with the given {@link String message}
+   * Constructs a new {@link ThrowableOperationException} initialized with the given {@link String message}
    * describing this exception.
    *
    * @param message {@link String} containing a message describing this exception.
@@ -43,7 +43,7 @@ public class ThrowableOperationException extends RuntimeException {
   }
 
   /**
-   * Constructs a new instance of {@link ThrowableOperationException} initialized with the given {@link Throwable cause}
+   * Constructs a new {@link ThrowableOperationException} initialized with the given {@link Throwable cause}
    * used as the reason this exception was thrown.
    *
    * @param cause {@link Throwable} used as the reason this exception was thrown.
@@ -53,7 +53,7 @@ public class ThrowableOperationException extends RuntimeException {
   }
 
   /**
-   * Constructs a new instance of {@link ThrowableOperationException} initialized with the given {@link String message}
+   * Constructs a new {@link ThrowableOperationException} initialized with the given {@link String message}
    * describing this exception along with the given {@link Throwable cause} used as the reason this exception
    * was thrown.
    *

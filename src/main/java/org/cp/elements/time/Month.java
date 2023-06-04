@@ -140,7 +140,7 @@ public enum Month {
   private final String name;
 
   /**
-   * Constructs a new instance of the {@link Month} enum initialized with the given month metadata and descriptors.
+   * Constructs a new the {@link Month} enum initialized with the given month metadata and descriptors.
    *
    * @param abbreviation {@link String} specifying an abbreviation for the month (for example: {@literal Jan}).
    * @param name {@link String} containing the name for the month (for example: {@literal January}).

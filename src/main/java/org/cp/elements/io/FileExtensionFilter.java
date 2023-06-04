@@ -60,7 +60,7 @@ public class FileExtensionFilter implements FileFilter, Filter<File>, Iterable<S
   private final Set<String> fileExtensions;
 
   /**
-   * Constructs a new instance of {@link FileExtensionFilter} initialized with the given array of {@link File}
+   * Constructs a new {@link FileExtensionFilter} initialized with the given array of {@link File}
    * {@link String extensions} used to define filtering criteria for matching with this {@link FileFilter}.
    *
    * @param fileExtensions array of {@link File} {@link String extensions} used to define filtering criteria
@@ -73,9 +73,8 @@ public class FileExtensionFilter implements FileFilter, Filter<File>, Iterable<S
   }
 
   /**
-   * Constructs a new instance of {@link FileExtensionFilter} initialized with the given {@link Iterable} collection
-   * of {@link File} {@link String extensions} used to define filtering criteria for matching
-   * with this {@link FileFilter}.
+   * Constructs a new {@link FileExtensionFilter} initialized with the given {@link Iterable} collection of {@link File}
+   * {@link String extensions} used to define filtering criteria for matching with this {@link FileFilter}.
    *
    * @param fileExtensions {@link Iterable} collection of {@link File} {@link String extensions} used to
    * define filtering criteria for matching with this {#link FileFilter}.

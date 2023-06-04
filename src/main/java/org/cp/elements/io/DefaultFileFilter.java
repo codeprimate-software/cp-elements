@@ -56,8 +56,8 @@ public class DefaultFileFilter implements FileFilter, Filter<File> {
   }
 
   /**
-   * Constructs a new instance of {@link DefaultFileFilter} initialized with the predetermined
-   * {@link Boolean return value} returned by the {@link #accept(File)} method.
+   * Constructs a new {@link DefaultFileFilter} initialized with the predetermined {@link Boolean return value}
+   * returned by the {@link #accept(File)} method.
    *
    * @param acceptReturnValue predetermined {@link Boolean boolean value} returned by the {@link #accept(File)} method.
    */

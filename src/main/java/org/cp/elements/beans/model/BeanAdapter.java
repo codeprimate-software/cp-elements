@@ -62,7 +62,7 @@ public class BeanAdapter {
   private final Object target;
 
   /**
-   * Constructs a new instance of {@link BeanAdapter} initialized with the given, required {@link Object POJO}
+   * Constructs a new {@link BeanAdapter} initialized with the given, required {@link Object POJO}
    * to adapt as a {@literal JavaBean}.
    *
    * @param target {@link Object} adapted as a {@literal JavaBean}.

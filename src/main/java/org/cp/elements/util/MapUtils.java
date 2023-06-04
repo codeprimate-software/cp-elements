@@ -261,7 +261,7 @@ public abstract class MapUtils {
   }
 
   /**
-   * Constructs a new instance of {@link Map.Entry} initialized with the given {@link Object key}
+   * Constructs a new {@link Map.Entry} initialized with the given {@link Object key}
    * and {@link Object value}.
    *
    * @param <K> {@link Class} type of the key.

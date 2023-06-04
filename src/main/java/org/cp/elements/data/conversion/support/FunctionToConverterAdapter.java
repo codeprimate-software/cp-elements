@@ -58,7 +58,7 @@ public class FunctionToConverterAdapter<T, R> extends AbstractConverter<T, R> {
   private final Function<T, R> function;
 
   /**
-   * Constructs a new instance of {@link FunctionToConverterAdapter} initialized with the required {@link Function}
+   * Constructs a new {@link FunctionToConverterAdapter} initialized with the required {@link Function}
    * to adapt into an instance of the {@link Converter} interface to be used in data conversions.
    *
    * @param function {@link Function} to adapt into an instance of {@link Converter}; must not be {@literal null}.

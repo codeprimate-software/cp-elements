@@ -63,7 +63,7 @@ public class JavaDeflaterInflaterCompressor implements Compressor {
   private final int compressionLevel;
 
   /**
-   * Constructs a new instance of {@link JavaDeflaterInflaterCompressor} initialized with
+   * Constructs a new {@link JavaDeflaterInflaterCompressor} initialized with
    * the given {@link Deflater#setLevel(int) compression level}.
    *
    * @param compressionLevel {@link Integer} value specifying the {@link Deflater#setLevel(int) compression level}.

@@ -138,7 +138,7 @@ public class ProcessAdapter implements Identifiable<Integer>, Initable, Nameable
   private final ThreadGroup threadGroup;
 
   /**
-   * Constructs a new instance of {@link ProcessAdapter} initialized with the given, required {@link Process}
+   * Constructs a new {@link ProcessAdapter} initialized with the given, required {@link Process}
    * and {@link ProcessContext}.
    *
    * @param process {@link Process} object adapted (wrapped) by this {@link ProcessAdapter};

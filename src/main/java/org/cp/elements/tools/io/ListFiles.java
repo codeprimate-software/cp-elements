@@ -111,7 +111,7 @@ public class ListFiles implements Runnable {
   private final File directory;
 
   /**
-   * Constructs a new instance of {@link ListFiles} initialized with the given {@link File directory}
+   * Constructs a new {@link ListFiles} initialized with the given {@link File directory}
    * for which the contents will be listed.
    *
    * @param directory {@link File} referring to the directory for which the contents will be listed.

@@ -41,7 +41,7 @@ public class HiddenFilesFilter implements FileFilter, Filter<File> {
   private final boolean hidden;
 
   /**
-   * Constructs a new instance of {@link HiddenFilesFilter} initialized with the given boolean value used to
+   * Constructs a new {@link HiddenFilesFilter} initialized with the given boolean value used to
    * indicate whether {@link File#isHidden() hidden} {@link File Files} will be accepted or rejected by
    * this {@link FileFilter}.
    *

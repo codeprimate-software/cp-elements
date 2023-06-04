@@ -79,7 +79,7 @@ public class ElementsConfigurationService extends AbstractConfigurationService {
   private static final int USER_CONFIGURATION_ORDER_BASE = 1_000;
 
   /**
-   * Constructs a new instance of the {@link ElementsConfigurationService} initialized with configuration metadata
+   * Constructs a new the {@link ElementsConfigurationService} initialized with configuration metadata
    * ({@link java.util.Properties}) contained in files in the file system or the Java classpath
    * in well known locations.
    *
@@ -236,7 +236,7 @@ public class ElementsConfigurationService extends AbstractConfigurationService {
     private final Integer order;
 
     /**
-     * Constructs a new instance of {@link OrderedConfiguration} initialized with the given,
+     * Constructs a new {@link OrderedConfiguration} initialized with the given,
      * required {@link Configuration} object used as the delegate as well as the {@link Integer order}
      * of the {@link Configuration} relative to other {@link Configuration} objects aggregated in an array
      * or {@link java.util.Collection}.

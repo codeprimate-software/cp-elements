@@ -27,13 +27,13 @@ package org.cp.elements.security;
 public class AuthorizationException extends AbstractSecurityException {
 
   /**
-   * Constructs a new instance of {@link AuthorizationException} with no {@link String message}
+   * Constructs a new {@link AuthorizationException} with no {@link String message}
    * and no {@link Throwable cause}.
    */
   public AuthorizationException() { }
 
   /**
-   * Constructs a new instance of {@link AuthorizationException} initialized with the given {@link String message}
+   * Constructs a new {@link AuthorizationException} initialized with the given {@link String message}
    * describing the security violation.
    *
    * @param message {@link String} used to describe the security violation.
@@ -43,7 +43,7 @@ public class AuthorizationException extends AbstractSecurityException {
   }
 
   /**
-   * Constructs a new instance of {@link AuthorizationException} initialized with the given {@link Throwable cause}
+   * Constructs a new {@link AuthorizationException} initialized with the given {@link Throwable cause}
    * used as the reason this security violation was thrown.
    *
    * @param cause {@link Throwable} used as the reason this security violation was thrown.
@@ -53,7 +53,7 @@ public class AuthorizationException extends AbstractSecurityException {
   }
 
   /**
-   * Constructs a new instance of {@link AuthorizationException} initialized with the given {@link String message}
+   * Constructs a new {@link AuthorizationException} initialized with the given {@link String message}
    * describing the security violation along with the given {@link Throwable cause} used as the reason
    * this security violation was thrown.
    *

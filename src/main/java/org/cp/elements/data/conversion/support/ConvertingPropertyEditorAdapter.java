@@ -40,7 +40,7 @@ public class ConvertingPropertyEditorAdapter extends PropertyEditorSupport {
   private final Converter<String, ?> converter;
 
   /**
-   * Constructs a new instance of the {@link ConvertingPropertyEditorAdapter} initialized with
+   * Constructs a new the {@link ConvertingPropertyEditorAdapter} initialized with
    * the given {@link Converter}.
    *
    * @param converter {@link Converter} backing this {@link PropertyEditor}.
@@ -55,7 +55,7 @@ public class ConvertingPropertyEditorAdapter extends PropertyEditorSupport {
   }
 
   /**
-   * Constructs a new instance of the {@link ConvertingPropertyEditorAdapter} initialized with
+   * Constructs a new the {@link ConvertingPropertyEditorAdapter} initialized with
    * the given {@link Converter}.
    *
    * @param converter {@link Converter} backing this {@link PropertyEditor}.

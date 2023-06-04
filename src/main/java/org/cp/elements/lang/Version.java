@@ -245,7 +245,7 @@ public class Version implements Comparable<Version> {
   private Qualifier qualifier = Qualifier.UNDEFINED;
 
   /**
-   * Constructs a new instance of {@link Version} initialized with major and minor version numbers.
+   * Constructs a new {@link Version} initialized with major and minor version numbers.
    *
    * @param major major version number.
    * @param minor minor version number.
@@ -258,7 +258,7 @@ public class Version implements Comparable<Version> {
   }
 
   /**
-   * Constructs a new instance of {@link Version} initialized with major, minor and maintenance version numbers.
+   * Constructs a new {@link Version} initialized with major, minor and maintenance version numbers.
    *
    * @param major major version number.
    * @param minor minor version number.
@@ -272,7 +272,7 @@ public class Version implements Comparable<Version> {
   }
 
   /**
-   * Constructs a new instance of {@link Version} initialized with major, minor and maintenance version numbers
+   * Constructs a new {@link Version} initialized with major, minor and maintenance version numbers
    * along with the version {@link Qualifier}.
    *
    * @param major major version number.
@@ -288,7 +288,7 @@ public class Version implements Comparable<Version> {
   }
 
   /**
-   * Constructs a new instance of {@link Version} initialized with major, minor and maintenance version numbers
+   * Constructs a new {@link Version} initialized with major, minor and maintenance version numbers
    * along with a version {@link Qualifier} and qualifier number.
    *
    * @param major major version number.

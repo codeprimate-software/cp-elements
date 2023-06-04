@@ -38,7 +38,7 @@ import org.cp.elements.util.CollectionUtils;
 public interface Streamable<T> {
 
   /**
-   * Factory method used to constructs a new instance of {@link Streamable} initialized with an empty {@link Stream}.
+   * Factory method used to Constructs a new {@link Streamable} initialized with an empty {@link Stream}.
    *
    * @param <T> {@link Class type} of the elements in the {@link Stream}.
    * @return a new, empty {@link Streamable} object.

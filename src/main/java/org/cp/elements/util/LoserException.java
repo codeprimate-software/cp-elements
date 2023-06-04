@@ -26,14 +26,14 @@ package org.cp.elements.util;
 public class LoserException extends RuntimeException {
 
   /**
-   * Constructs a new instance of an uninitialized {@link LoserException}, having no {@link String message}
+   * Constructs a new an uninitialized {@link LoserException}, having no {@link String message}
    * or {@link Throwable cause}.
    */
   public LoserException() {
   }
 
   /**
-   * Constructs a new instance of {@link LoserException} initialized with the given {@link String message}
+   * Constructs a new {@link LoserException} initialized with the given {@link String message}
    * to {@literal describe} this {@link RuntimeException}.
    *
    * @param message {@link String} containing a {@literal description} for this {@link RuntimeException}.
@@ -43,7 +43,7 @@ public class LoserException extends RuntimeException {
   }
 
   /**
-   * Constructs a new instance of {@link LoserException} initialized with the given {@link Throwable}
+   * Constructs a new {@link LoserException} initialized with the given {@link Throwable}
    * used as the {@literal cause} of this {@link RuntimeException}.
    *
    * @param cause {@link Throwable} used as the cause of this {@link RuntimeException}.
@@ -53,7 +53,7 @@ public class LoserException extends RuntimeException {
   }
 
   /**
-   * Constructs a new instance of {@link LoserException} initialized with the given {@link String message}
+   * Constructs a new {@link LoserException} initialized with the given {@link String message}
    * to {@literal describe} this {@link RuntimeException} and the given {@link Throwable} used as
    * the {@literal cause} of this {@link RuntimeException}.
    *

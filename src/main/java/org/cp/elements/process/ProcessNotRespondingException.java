@@ -33,7 +33,7 @@ public class ProcessNotRespondingException extends ProcessExecutionException {
   public ProcessNotRespondingException() { }
 
   /**
-   * Constructs a new instance of {@link ProcessNotRespondingException} initialized with
+   * Constructs a new {@link ProcessNotRespondingException} initialized with
    * the given {@link String message} describing this {@link ProcessExecutionException}.
    *
    * @param message {@link String} describing this {@link ProcessExecutionException}.
@@ -44,7 +44,7 @@ public class ProcessNotRespondingException extends ProcessExecutionException {
   }
 
   /**
-   * Constructs a new instance of {@link ProcessNotRespondingException} initialized with
+   * Constructs a new {@link ProcessNotRespondingException} initialized with
    * the given {@link Throwable cause} used as the reason this {@link ProcessExecutionException} was thrown.
    *
    * @param cause {@link Throwable} used as the cause and reason this {@link ProcessExecutionException} was thrown.
@@ -55,7 +55,7 @@ public class ProcessNotRespondingException extends ProcessExecutionException {
   }
 
   /**
-   * Constructs a new instance of {@link ProcessNotRespondingException} initialized with
+   * Constructs a new {@link ProcessNotRespondingException} initialized with
    * the given {@link String message} describing this {@link ProcessExecutionException} along with
    * the given {@link Throwable cause} used as the reason this {@link ProcessExecutionException} was thrown.
    *

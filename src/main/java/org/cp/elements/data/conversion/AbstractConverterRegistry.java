@@ -200,7 +200,7 @@ public abstract class AbstractConverterRegistry implements ConverterRegistry {
     private final Converter<?, ?> converter;
 
     /**
-     * Constructs a new instance of {@link ConverterDescriptor} describing the {@link Class from type}
+     * Constructs a new {@link ConverterDescriptor} describing the {@link Class from type}
      * and {@link Class to type} conversion performed by {@link Converter}.
      *
      * @param converter {@link Converter} being described.

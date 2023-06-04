@@ -133,9 +133,8 @@ public abstract class LangExtensions {
     private final ProxyFactory<T> proxyFactory;
 
     /**
-     * Constructs a new instance of {@link SafeNavigationHandler} initialized with the given,
-     * required {@link ProxyFactory} used to evaluate the next {@link Object} in the {@link Method} invocation
-     * call chain.
+     * Constructs a new {@link SafeNavigationHandler} initialized with the given, required {@link ProxyFactory}
+     * used to evaluate the next {@link Object} in the {@link Method} invocation call chain.
      *
      * @param proxyFactory {@link ProxyFactory} used to evaluate the next {@link Object}
      * in the {@link Method} invocation call chain; must not be {@literal null}.
@@ -739,7 +738,7 @@ public abstract class LangExtensions {
     private Transformer<AssertThat<T>> transformer;
 
     /**
-     * Constructs a new instance of {@link AssertThatExpression} initialized with the given {@link Object}
+     * Constructs a new {@link AssertThatExpression} initialized with the given {@link Object}
      * used as the subject of this assertion.
      *
      * @param obj {@link Object} to evaluate and make an assertion.
@@ -751,7 +750,7 @@ public abstract class LangExtensions {
     }
 
     /**
-     * Constructs a new instance of {@link AssertThatExpression} initialized with the given {@link Object}
+     * Constructs a new {@link AssertThatExpression} initialized with the given {@link Object}
      * used as the subject of this assertion.
      *
      * @param obj {@link Object} to evaluate and make an assertion.
@@ -1275,7 +1274,7 @@ public abstract class LangExtensions {
     private final AssertThat<T> delegate;
 
     /**
-     * Constructs a new instance of {@link AssertThatWrapper} initialized with the given {@link AssertThat} object.
+     * Constructs a new {@link AssertThatWrapper} initialized with the given {@link AssertThat} object.
      *
      * @param delegate {@link AssertThat} object instance used as the delegate for this wrapper.
      * @throws IllegalArgumentException if the {@link AssertThat} object is {@literal null}.

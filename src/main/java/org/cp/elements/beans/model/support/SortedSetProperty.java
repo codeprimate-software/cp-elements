@@ -124,7 +124,7 @@ public class SortedSetProperty extends AbstractIndexedProperty<Integer> {
   }
 
   /**
-   * Constructs a new instance of {@link SortedSetProperty} initialized with the given, required {@link BeanModel}
+   * Constructs a new {@link SortedSetProperty} initialized with the given, required {@link BeanModel}
    * modeling the bean containing the {@link SortedSet} property along with a given, required {@link PropertyDescriptor}
    * describing the {@link SortedSet} property.
    *

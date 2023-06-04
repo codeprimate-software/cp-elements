@@ -105,7 +105,7 @@ public enum WeightUnit {
   private final String abbreviation;
 
   /**
-   * Constructs a new instance of {@link WeightUnit} initialized with the given, required {@link String abbreviation}.
+   * Constructs a new {@link WeightUnit} initialized with the given, required {@link String abbreviation}.
    *
    * @param abbreviation {@link String} containing the abbreviation for {@literal this} {@link WeightUnit}.
    */

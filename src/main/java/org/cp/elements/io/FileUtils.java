@@ -289,7 +289,7 @@ public abstract class FileUtils extends IOUtils {
   }
 
   /**
-   * Constructs a new instance of {@link File} initialized with the given {@link String pathname}.
+   * Constructs a new {@link File} initialized with the given {@link String pathname}.
    *
    * @param pathname {@link String} containing the {@literal pathname} of the {@link File} to create;
    * must not be {@literal null}.

@@ -27,7 +27,7 @@ import org.cp.elements.lang.factory.ObjectFactory;
 import org.cp.elements.lang.factory.ObjectFactoryReferenceHolder;
 
 /**
- * {@link AbstractObjectFactory} {@literal service provider implementation (SPI)} that constructs a new instance of
+ * {@link AbstractObjectFactory} {@literal service provider implementation (SPI)} that Constructs a new
  * {@literal JavaBean} compliant {@link Object Objects} for every invocation of {@literal create(..)}.
  *
  * That is, this {@link AbstractObjectFactory} creates {@literal prototype} {@link Object POJOs}.
@@ -46,7 +46,7 @@ import org.cp.elements.lang.factory.ObjectFactoryReferenceHolder;
 public class PrototypeObjectFactory extends AbstractObjectFactory {
 
   /**
-   * Constructs a new instance of {@link PrototypeObjectFactory} setting a reference to {@literal this}
+   * Constructs a new {@link PrototypeObjectFactory} setting a reference to {@literal this}
    * {@link ObjectFactory} using the {@link ObjectFactoryReferenceHolder} providing a reference
    * has not already been set.
    *

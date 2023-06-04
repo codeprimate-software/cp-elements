@@ -35,7 +35,7 @@ public class PropertyNotFoundException extends BeansException {
   public PropertyNotFoundException() { }
 
   /**
-   * Constructs a new instance of {@link PropertyNotFoundException} initialized with the given {@link String}
+   * Constructs a new {@link PropertyNotFoundException} initialized with the given {@link String}
    * describing the bean property that could not be found.
    *
    * @param message {@link String} describing the bean property that could not be found.
@@ -45,7 +45,7 @@ public class PropertyNotFoundException extends BeansException {
   }
 
   /**
-   * Constructs a new instance of {@link PropertyNotFoundException} initialized with the given {@link Throwable}
+   * Constructs a new {@link PropertyNotFoundException} initialized with the given {@link Throwable}
    * used as the cause or reason why this exception was thrown.
    *
    * @param cause {@link Throwable} used as the cause and reason why this exception was thrown.
@@ -55,7 +55,7 @@ public class PropertyNotFoundException extends BeansException {
   }
 
   /**
-   * Constructs a new instance of {@link PropertyNotFoundException} initialized with the given {@link String}
+   * Constructs a new {@link PropertyNotFoundException} initialized with the given {@link String}
    * describing the bean property that could not be found along with the given {@link Throwable} used as
    * the cause and reason this exception was thrown.
    *

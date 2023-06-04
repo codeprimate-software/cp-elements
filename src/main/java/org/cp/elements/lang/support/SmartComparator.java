@@ -366,8 +366,8 @@ public class SmartComparator implements Comparator<Object>, Iterable<ComparatorD
     private final Comparator<?> comparator;
 
     /**
-     * Constructs a new instance of {@link ComparatorDescriptor} initialized with the given,
-     * required {@link Comparator} that will be described by this descriptor.
+     * Constructs a new {@link ComparatorDescriptor} initialized with the given, required {@link Comparator}
+     * that will be described by this descriptor.
      *
      * @param comparator {@link Comparator} to describe with this descriptor; must not be {@literal null}.
      * @throws IllegalArgumentException if the {@link Comparator} is {@literal null}.

@@ -40,7 +40,7 @@ public class DelegatingConfiguration implements Configuration, ConversionService
   private final Configuration delegate;
 
   /**
-   * Constructs a new instance of {@link DelegatingConfiguration} initialized with the given,
+   * Constructs a new {@link DelegatingConfiguration} initialized with the given,
    * required {@link Configuration} object used as the {@literal delegate}.
    *
    * @param delegate {@link Configuration} object used as a {@literal delegate}

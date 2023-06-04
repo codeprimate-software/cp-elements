@@ -59,8 +59,7 @@ public class ByteBufferOutputStream extends OutputStream {
   private ByteBuffer byteBuffer;
 
   /**
-   * Constructs a new instance of {@link ByteBufferOutputStream} initialized with
-   * the given, required {@link ByteBuffer}.
+   * Constructs a new {@link ByteBufferOutputStream} initialized with the given, required {@link ByteBuffer}.
    *
    * @param byteBuffer {@link ByteBuffer} into which this {@link OutputStream} will write data;
    * must not be {@literal null} and must be {@link ByteBuffer#isReadOnly() writable}.

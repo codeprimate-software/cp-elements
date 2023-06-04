@@ -43,7 +43,7 @@ public class ChangeSupport implements Iterable<ChangeListener> {
   private final Object source;
 
   /**
-   * Constructs a new instance of {@link ChangeSupport} initialized with the given, required {@link Object}
+   * Constructs a new {@link ChangeSupport} initialized with the given, required {@link Object}
    * used as the source of the {@link ChangeEvent change events}.
    *
    * @param source {@link Object} used as the source of the {@link ChangeEvent change events};
@@ -128,7 +128,7 @@ public class ChangeSupport implements Iterable<ChangeListener> {
   }
 
   /**
-   * Constructs a new instance of {@link ChangeEvent} initialized with the given {@link #getSource() source}
+   * Constructs a new {@link ChangeEvent} initialized with the given {@link #getSource() source}
    * {@link Object} for which {@link ChangeEvent change event} occurred.
    *
    * @param source reference to the {@literal source} {@link Object} for the {@link ChangeEvent}.

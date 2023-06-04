@@ -65,7 +65,7 @@ public class ThreadAdapter {
   private final Thread delegate;
 
   /**
-   * Constructs a new instance of {@link ThreadAdapter} initialized with
+   * Constructs a new {@link ThreadAdapter} initialized with
    * the {@link Thread#currentThread() current Thread} as the {@literal delegate}
    * for all {@link Thread}-based operations accessible from {@literal this} Adapter.
    *
@@ -78,7 +78,7 @@ public class ThreadAdapter {
   }
 
   /**
-   * Constructs a new instance of {@link ThreadAdapter} by creating a new {@link Thread} initialized with
+   * Constructs a new {@link ThreadAdapter} by creating a new {@link Thread} initialized with
    * the given {@link Runnable} object.
    *
    * @param target {@link Runnable} object to execute in a new {@link Thread}.
@@ -91,7 +91,7 @@ public class ThreadAdapter {
   }
 
   /**
-   * Constructs a new instance of {@link ThreadAdapter} initialized with the given, required {@link Thread}.
+   * Constructs a new {@link ThreadAdapter} initialized with the given, required {@link Thread}.
    *
    * The given {@link Thread} will be used as the {@literal delegate} for all {@link Thread}-based operations
    * accessible from {@literal this} Adapter.

@@ -33,13 +33,13 @@ public abstract class AbstractSecurityException extends java.lang.SecurityExcept
   private Object code;
 
   /**
-   * Constructs a new instance of {@link AbstractSecurityException} with no {@link String message}
+   * Constructs a new {@link AbstractSecurityException} with no {@link String message}
    * and no {@link Throwable cause}.
    */
   public AbstractSecurityException() { }
 
   /**
-   * Constructs a new instance of {@link AbstractSecurityException} initialized with the given {@link String message}
+   * Constructs a new {@link AbstractSecurityException} initialized with the given {@link String message}
    * describing the security violation.
    *
    * @param message {@link String} used to describe the security violation.
@@ -49,7 +49,7 @@ public abstract class AbstractSecurityException extends java.lang.SecurityExcept
   }
 
   /**
-   * Constructs a new instance of {@link AbstractSecurityException} initialized with the given {@link Throwable cause}
+   * Constructs a new {@link AbstractSecurityException} initialized with the given {@link Throwable cause}
    * used as the reason this security violation was thrown.
    *
    * @param cause {@link Throwable} used as the reason this security violation was thrown.
@@ -59,7 +59,7 @@ public abstract class AbstractSecurityException extends java.lang.SecurityExcept
   }
 
   /**
-   * Constructs a new instance of {@link AbstractSecurityException} initialized with the given {@link String message}
+   * Constructs a new {@link AbstractSecurityException} initialized with the given {@link String message}
    * describing the security violation along with the given {@link Throwable cause} used as the reason
    * this security violation was thrown.
    *

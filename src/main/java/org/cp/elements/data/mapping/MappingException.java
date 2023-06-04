@@ -32,8 +32,7 @@ public class MappingException extends RuntimeException {
   public MappingException() { }
 
   /**
-   * Constructs a new instance of {@link MappingException} initialized with a {@link String}
-   * describing this exception.
+   * Constructs a new {@link MappingException} initialized with a {@link String} describing this exception.
    *
    * @param message {@link String} containing a description of this exception.
    * @see java.lang.RuntimeException#RuntimeException(String)
@@ -43,7 +42,7 @@ public class MappingException extends RuntimeException {
   }
 
   /**
-   * Constructs a new instance of {@link MappingException} initialized with a {@link Throwable}
+   * Constructs a new {@link MappingException} initialized with a {@link Throwable}
    * object indicating the cause of this exception.
    *
    * @param cause {@link Throwable} indicating the cause of this exception.
@@ -54,7 +53,7 @@ public class MappingException extends RuntimeException {
   }
 
   /**
-   * Constructs a new instance of {@link MappingException} initialized with a {@link String}
+   * Constructs a new {@link MappingException} initialized with a {@link String}
    * describing this exception along with a {@link Throwable} object indicating the cause
    * of this exception.
    *

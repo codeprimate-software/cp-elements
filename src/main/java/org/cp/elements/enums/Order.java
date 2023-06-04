@@ -82,7 +82,7 @@ public enum Order {
   private final String name;
 
   /**
-   * Constructs a new instance of {@link Order} initialized with the given metadata and descriptors.
+   * Constructs a new {@link Order} initialized with the given metadata and descriptors.
    *
    * @param abbreviation {@link String} specifying the {@literal abbreviation} of {@literal this} {@link Order}.
    * @param name {@link String} containing the {@literal name} of {@literal this} {@link Order}.

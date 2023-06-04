@@ -71,7 +71,7 @@ public class CacheToMapAdapter<KEY extends Comparable<KEY>, VALUE> extends Abstr
   private final Cache<KEY, VALUE> cache;
 
   /**
-   * Constructs a new instance of {@link CacheToMapAdapter} initialized with the given, required {@link Cache}
+   * Constructs a new {@link CacheToMapAdapter} initialized with the given, required {@link Cache}
    * adapted and used to back this {@link Map} implementation.
    *
    * @param cache {@link Cache} to adapt as a {@link Map}; must not be {@literal null}.
@@ -226,7 +226,7 @@ public class CacheToMapAdapter<KEY extends Comparable<KEY>, VALUE> extends Abstr
     private final Cache<KEY, VALUE> cache;
 
     /**
-     * Constructs a new instance of {@link CacheMapEntry} initialized with the given, required {@link KEY key}
+     * Constructs a new {@link CacheMapEntry} initialized with the given, required {@link KEY key}
      * identifying the target {@link Cache.Entry} in the given, required {@link Cache}.
      *
      * @param cache reference to the {@link Cache} backing this {@link CacheMapEntry}; must not be {@literal null}.

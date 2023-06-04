@@ -37,7 +37,7 @@ import org.cp.elements.lang.annotation.Nullable;
 public class EnvironmentVariablesConfiguration extends AbstractConfiguration {
 
   /**
-   * Constructs a new instance of {@link EnvironmentVariablesConfiguration} with
+   * Constructs a new {@link EnvironmentVariablesConfiguration} with
    * initial {@literal environment variables} provided by the {@link System#getenv() System environment}.
    *
    * @see java.lang.System#getenv()
@@ -47,7 +47,7 @@ public class EnvironmentVariablesConfiguration extends AbstractConfiguration {
   }
 
   /**
-   * Constructs a new instance of {@link EnvironmentVariablesConfiguration} initialized with the given
+   * Constructs a new {@link EnvironmentVariablesConfiguration} initialized with the given
    * {@link Configuration parent} and initial {@literal environment variables} provided by
    * the {@link System#getenv() System environment}.
    *

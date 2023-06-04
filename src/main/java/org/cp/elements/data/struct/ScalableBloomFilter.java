@@ -96,7 +96,7 @@ public class ScalableBloomFilter<T> implements BloomFilter<T>, Iterable<BloomFil
   }
 
   /**
-   * Constructs a new instance of the {@link ScalableBloomFilter} class initialized with the default scale.
+   * Constructs a new {@link ScalableBloomFilter} initialized with the default scale.
    *
    * @see #ScalableBloomFilter(int)
    */
@@ -105,7 +105,7 @@ public class ScalableBloomFilter<T> implements BloomFilter<T>, Iterable<BloomFil
   }
 
   /**
-   * Constructs a new instance of the {@link ScalableBloomFilter} class initialized with the given scale.
+   * Constructs a new {@link ScalableBloomFilter} initialized with the given scale.
    *
    * @param scale integer value indicating the maximum number of {@link BloomFilter Bloom Filters} managed by
    * this {@link ScalableBloomFilter}.
@@ -235,8 +235,8 @@ public class ScalableBloomFilter<T> implements BloomFilter<T>, Iterable<BloomFil
   }
 
   /**
-   * Constructs a new instance of {@link BloomFilter} initialized with the given approximate, estimated number
-   * of elements and acceptable false positive rate.
+   * Constructs a new {@link BloomFilter} initialized with the given approximate, estimated number of elements
+   * and acceptable false positive rate.
    *
    * @param approximateNumberOfElements integer value indicating the approximate, estimated number of elements
    * the user expects will be added to the returned {@link BloomFilter} instance.

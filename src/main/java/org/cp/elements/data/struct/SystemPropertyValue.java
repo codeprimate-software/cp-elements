@@ -48,8 +48,7 @@ public class SystemPropertyValue extends StringBasedKeyValue {
   }
 
   /**
-   * Constructs a new instance of {@link SystemPropertyValue} initialized with
-   * the given Java {@link String system property}.
+   * Constructs a new {@link SystemPropertyValue} initialized with the given Java {@link String system property}.
    *
    * @param systemProperty {@link String} containing the {@literal Java system property};
    * must not be {@literal null} or {@literal empty}.

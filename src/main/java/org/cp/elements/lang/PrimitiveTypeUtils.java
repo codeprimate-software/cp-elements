@@ -100,7 +100,7 @@ public abstract class PrimitiveTypeUtils {
     private final Class<?> wrapperType;
 
     /**
-     * Constructs a new instance of {@link PrimitiveToWrapperTypeAssociation} initialized with the given,
+     * Constructs a new {@link PrimitiveToWrapperTypeAssociation} initialized with the given,
      * required primitive type and associated wrapper type.
      *
      * @param primitiveType Java primitive type; must not be {@literal null}.
@@ -151,7 +151,7 @@ public abstract class PrimitiveTypeUtils {
       private final Class<?> primitiveType;
 
       /**
-       * Constructs a new instance of this {@link Builder} used to construct and initialize
+       * Constructs a new this {@link Builder} used to construct and initialize
        * a new {@link PrimitiveToWrapperTypeAssociation}.
        *
        * @param primitiveType Java primitive type.

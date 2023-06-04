@@ -44,7 +44,7 @@ public class ConfigurationFileExtensionsFilter extends FileExtensionFilter {
   };
 
   /**
-   * Constructs a new instance of {@link ConfigurationFileExtensionsFilter} to filter {@link File Files}
+   * Constructs a new {@link ConfigurationFileExtensionsFilter} to filter {@link File Files}
    * by configuration file types.
    *
    * @see org.cp.elements.io.FileExtensionFilter#FileExtensionFilter(String...)

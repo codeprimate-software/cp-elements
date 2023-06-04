@@ -26,13 +26,13 @@ package org.cp.elements.context.configure;
 public class ConfigurationException extends RuntimeException {
 
   /**
-   * Constructs a new instance of {@link ConfigurationException}
+   * Constructs a new {@link ConfigurationException}
    * with no {@link String message} and no {@link Throwable cause}.
    */
   public ConfigurationException() { }
 
   /**
-   * Constructs a new instance of {@link ConfigurationException} initialized with the given {@link String message}
+   * Constructs a new {@link ConfigurationException} initialized with the given {@link String message}
    * used to description this {@link RuntimeException}.
    *
    * @param message {@link String} containing a {@literal message} to description this {@link RuntimeException}.
@@ -42,7 +42,7 @@ public class ConfigurationException extends RuntimeException {
   }
 
   /**
-   * Constructs a new instance of {@link ConfigurationException} initialized with the given {@link Throwable}
+   * Constructs a new {@link ConfigurationException} initialized with the given {@link Throwable}
    * used as the cause or reason this {@link RuntimeException} was thrown.
    *
    * @param cause {@link Throwable} used as the reason this {@link RuntimeException} was thrown.
@@ -52,7 +52,7 @@ public class ConfigurationException extends RuntimeException {
   }
 
   /**
-   * Constructs a new instance of {@link ConfigurationException} initialized with the given {@link String message}
+   * Constructs a new {@link ConfigurationException} initialized with the given {@link String message}
    * used to description this {@link RuntimeException} along with the given {@link Throwable} used as the cause
    * or reason this {@link RuntimeException} was thrown.
    *

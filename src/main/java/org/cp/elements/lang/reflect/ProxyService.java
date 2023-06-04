@@ -61,7 +61,7 @@ public final class ProxyService<T> implements Iterable<ProxyFactory>, ServiceTem
   private final ServiceLoader<ProxyFactory> proxyFactoriesLoader;
 
   /**
-   * Constructs a new instance of {@link ProxyService} used to initialize all {@link ProxyFactory}
+   * Constructs a new {@link ProxyService} used to initialize all {@link ProxyFactory}
    * Service Provider Implementations (SPI).
    *
    * @see org.cp.elements.lang.reflect.ProxyFactory

@@ -82,7 +82,7 @@ public enum HttpHeader {
   private final String name;
 
   /**
-   * Constructs a new instance of {@link HttpHeader} initialized with the given, required HTTP request/response header
+   * Constructs a new {@link HttpHeader} initialized with the given, required HTTP request/response header
    * {@link String name}.
    *
    * @param name {@link String} containing the {@literal name} of the HTTP request/response header.

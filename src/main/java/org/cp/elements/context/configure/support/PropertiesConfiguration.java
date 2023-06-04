@@ -45,7 +45,7 @@ public class PropertiesConfiguration extends AbstractConfiguration {
   private final Properties properties;
 
   /**
-   * Constructs a new instance of {@link PropertiesConfiguration} initialized with {@link Properties}
+   * Constructs a new {@link PropertiesConfiguration} initialized with {@link Properties}
    * contained in the given, required {@link File}.
    *
    * @param propertiesFile {@link File} containing {@link Properties} for this {@link Configuration};
@@ -59,7 +59,7 @@ public class PropertiesConfiguration extends AbstractConfiguration {
   }
 
   /**
-   * Constructs a new instance of {@link PropertiesConfiguration} initialized with {@link Properties}
+   * Constructs a new {@link PropertiesConfiguration} initialized with {@link Properties}
    * contained in the given, required {@link File} and the {@link Configuration parent} as backup.
    *
    * @param propertiesFile {@link File} containing {@link Properties} for this {@link Configuration};
@@ -88,7 +88,7 @@ public class PropertiesConfiguration extends AbstractConfiguration {
   }
 
   /**
-   * Constructs a new instance of {@link PropertiesConfiguration} initialized with the given,
+   * Constructs a new {@link PropertiesConfiguration} initialized with the given,
    * required {@link Properties}.
    *
    * @param properties {@link Properties} used for this {@link Configuration}; must not be {@literal null}.
@@ -100,7 +100,7 @@ public class PropertiesConfiguration extends AbstractConfiguration {
   }
 
   /**
-   * Constructs a new instance of {@link PropertiesConfiguration} initialized with the given,
+   * Constructs a new {@link PropertiesConfiguration} initialized with the given,
    * required {@link Properties} and {@link Configuration parent} as backup.
    *
    * @param properties {@link Properties} used for this {@link Configuration}; must not be {@literal null}.

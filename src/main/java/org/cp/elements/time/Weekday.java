@@ -138,7 +138,7 @@ public enum Weekday {
   private final String name;
 
   /**
-   * Constructs a new instance of {@link Weekday} initialized with weekday (day of week) metadata and descriptors.
+   * Constructs a new {@link Weekday} initialized with weekday (day of week) metadata and descriptors.
    *
    * @param abbreviation {@link String} specifying the {@literal abbreviation} for {@literal this} {@link Weekday}.
    * @param name {@link String} containing the {@literal name} of {@literal this} {@link Weekday}.

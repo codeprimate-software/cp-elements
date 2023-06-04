@@ -41,8 +41,7 @@ public class ArchiveFileExtensionsFilter extends FileExtensionFilter {
   };
 
   /**
-   * Constructs a new instance of {@link ArchiveFileExtensionsFilter} to filter {@link File Files}
-   * by archive file types.
+   * Constructs a new {@link ArchiveFileExtensionsFilter} to filter {@link File Files} by archive file types.
    *
    * @see org.cp.elements.io.FileExtensionFilter#FileExtensionFilter(String...)
    */

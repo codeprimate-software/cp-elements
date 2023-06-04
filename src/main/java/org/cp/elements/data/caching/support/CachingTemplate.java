@@ -72,7 +72,7 @@ public class CachingTemplate<KEY extends Comparable<KEY>, VALUE> {
   private ReadWriteLock lock;
 
   /**
-   * Constructs a new instance of {@link CachingTemplate} initialized with the given, required {@link Cache}.
+   * Constructs a new {@link CachingTemplate} initialized with the given, required {@link Cache}.
    *
    * @param cache {@link Cache} used by this template for all {@link Cache} data access operations;
    * must not be {@literal null}.
@@ -85,7 +85,7 @@ public class CachingTemplate<KEY extends Comparable<KEY>, VALUE> {
   }
 
   /**
-   * Constructs a new instance of {@link CachingTemplate} initialized with the given, required {@link Cache}
+   * Constructs a new {@link CachingTemplate} initialized with the given, required {@link Cache}
    * used in all caching operations performed by this template along with a {@link Lock} to synchronize on
    * the {@link Cache} data access operations when performed concurrently in a multi-Threaded environment.
    *
@@ -130,7 +130,7 @@ public class CachingTemplate<KEY extends Comparable<KEY>, VALUE> {
   }
 
   /**
-   * Constructs a new instance of the {@link ReadWriteLock}.
+   * Constructs a new {@link ReadWriteLock}.
    *
    * The {@link Lock} is reentrant.
    *

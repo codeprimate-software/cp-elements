@@ -26,14 +26,13 @@ package org.cp.elements.net;
 public class NetworkException extends RuntimeException {
 
   /**
-   * Constructs a new instance of {@link NetworkException} with no {@link String message}
-   * and no {@link Throwable cause}.
+   * Constructs a new {@link NetworkException} with no {@link String message} and no {@link Throwable cause}.
    */
   public NetworkException() { }
 
   /**
-   * Constructs a new instance of {@link NetworkException} initialized with the given {@link String message}
-   * describing the network error.
+   * Constructs a new {@link NetworkException} initialized with the given {@link String message}
+   * describing this network error.
    *
    * @param message {@link String} containing a message describing the network error.
    */
@@ -42,7 +41,7 @@ public class NetworkException extends RuntimeException {
   }
 
   /**
-   * Constructs a new instance of {@link NetworkException} initialized with the given {@link Throwable cause}
+   * Constructs a new {@link NetworkException} initialized with the given {@link Throwable cause}
    * used as the reason this network error was thrown.
    *
    * @param cause {@link Throwable} used as the reason this network error was thrown.
@@ -52,8 +51,8 @@ public class NetworkException extends RuntimeException {
   }
 
   /**
-   * Constructs a new instance of {@link NetworkException} initialized with the given {@link String message}
-   * describing the network error along with the given {@link Throwable cause} used as the reason
+   * Constructs a new {@link NetworkException} initialized with the given {@link String message}
+   * describing this network error along with the given {@link Throwable cause} used as the reason
    * this network error was thrown.
    *
    * @param message {@link String} containing a message describing the network error.

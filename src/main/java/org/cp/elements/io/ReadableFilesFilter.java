@@ -41,7 +41,7 @@ public class ReadableFilesFilter implements FileFilter, Filter<File> {
   private final boolean readable;
 
   /**
-   * Constructs a new instance of {@link ReadableFilesFilter} initialized with the given boolean value
+   * Constructs a new {@link ReadableFilesFilter} initialized with the given boolean value
    * used to indicate whether readable {@link File Files} are accepted or rejected by this {@link FileFilter}.
    *
    * @param readable a boolean value indicating whether {@link File#canRead() readable} {@link File Files}

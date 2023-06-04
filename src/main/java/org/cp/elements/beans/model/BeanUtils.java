@@ -84,7 +84,7 @@ public abstract class BeanUtils extends ObjectUtils {
   }
 
   /**
-   * Constructs a new instance of {@link PropertyChangeEvent} initialized with the given, required
+   * Constructs a new {@link PropertyChangeEvent} initialized with the given, required
    * {@link Object source}, {@link String propertyName}, {@link Object old value} and {@link Object new value}.
    *
    * @param source {@link Object} source of the {@link PropertyChangeEvent}; must not be {@literal null}.

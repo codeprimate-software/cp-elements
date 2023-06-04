@@ -38,7 +38,7 @@ import org.cp.elements.lang.annotation.Nullable;
 public class SystemPropertiesConfiguration extends AbstractConfiguration {
 
   /**
-   * Constructs a new instance of {@link SystemPropertiesConfiguration} initialized with
+   * Constructs a new {@link SystemPropertiesConfiguration} initialized with
    * Java {@link System#getProperties() System properties}.
    *
    * @see java.lang.System#getProperties()
@@ -48,7 +48,7 @@ public class SystemPropertiesConfiguration extends AbstractConfiguration {
   }
 
   /**
-   * Constructs a new instance of {@link SystemPropertiesConfiguration} initialized with
+   * Constructs a new {@link SystemPropertiesConfiguration} initialized with
    * the given {@link Configuration parent} and Java {@link System#getProperties() System properties}.
    *
    * @param parent {@link Configuration} used as the parent of this {@link Configuration}.

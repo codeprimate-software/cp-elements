@@ -83,7 +83,7 @@ public enum Gender {
   private final String name;
 
   /**
-   * Constructs a new instance of {@link Gender} initialized with the given, required {@link String abbreviation}
+   * Constructs a new {@link Gender} initialized with the given, required {@link String abbreviation}
    * and {@link String name}.
    *
    * @param abbreviation {@link String} specifying the abbreviation for {@literal this} {@link Gender}.

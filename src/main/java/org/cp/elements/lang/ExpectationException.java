@@ -26,13 +26,13 @@ package org.cp.elements.lang;
 public class ExpectationException extends RuntimeException {
 
   /**
-   * Constructs a new instance of {@link ExpectationException} initialized with no {@link String message}
+   * Constructs a new {@link ExpectationException} initialized with no {@link String message}
    * and no {@link Throwable cause}.
    */
   public ExpectationException() { }
 
   /**
-   * Constructs a new instance of {@link ExpectationException} initialized with the given {@link String message}
+   * Constructs a new {@link ExpectationException} initialized with the given {@link String message}
    * describing this exception.
    *
    * @param message {@link String} containing a messaged used to describe this exception.
@@ -42,7 +42,7 @@ public class ExpectationException extends RuntimeException {
   }
 
   /**
-   * Constructs a new instance of {@link ExpectationException} initialized with the given {@link Throwable}
+   * Constructs a new {@link ExpectationException} initialized with the given {@link Throwable}
    * used as the cause of this exception.
    *
    * @param cause {@link Throwable} used as the cause for this exception.
@@ -52,7 +52,7 @@ public class ExpectationException extends RuntimeException {
   }
 
   /**
-   * Constructs a new instance of {@link ExpectationException} initialized with the given {@link String message}
+   * Constructs a new {@link ExpectationException} initialized with the given {@link String message}
    * describing this exception along with the given {@link Throwable} used as the cause of this exception.
    *
    * @param message {@link String} containing a messaged used to describe this exception.

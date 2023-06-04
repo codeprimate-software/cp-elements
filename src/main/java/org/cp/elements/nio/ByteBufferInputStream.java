@@ -55,7 +55,7 @@ public class ByteBufferInputStream extends InputStream {
   private final ByteBuffer byteBuffer;
 
   /**
-   * Constructs a new instance of {@link ByteBufferInputStream} backed by the given, required {@link ByteBuffer}.
+   * Constructs a new {@link ByteBufferInputStream} backed by the given, required {@link ByteBuffer}.
    *
    * @param byteBuffer {@link ByteBuffer} used to back the {@link InputStream}; must not be {@literal null}.
    * @throws IllegalArgumentException if the {@link ByteBuffer} is {@literal null}.

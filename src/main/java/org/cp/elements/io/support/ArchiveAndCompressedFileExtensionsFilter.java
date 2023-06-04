@@ -67,7 +67,7 @@ public class ArchiveAndCompressedFileExtensionsFilter extends FileExtensionFilte
   };
 
   /**
-   * Constructs a new instance of {@link ArchiveAndCompressedFileExtensionsFilter} to filter {@link File Files}
+   * Constructs a new {@link ArchiveAndCompressedFileExtensionsFilter} to filter {@link File Files}
    * by archive and compression file types.
    *
    * @see org.cp.elements.io.FileExtensionFilter#FileExtensionFilter(String...)

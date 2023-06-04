@@ -32,7 +32,7 @@ public class CacheNotFoundException extends CacheException {
   public CacheNotFoundException() { }
 
   /**
-   * Constructs a new instance of {@link CacheNotFoundException} initialized with the given {@link String message}
+   * Constructs a new {@link CacheNotFoundException} initialized with the given {@link String message}
    * describing the {@link RuntimeException}.
    *
    * @param message {@link String} containing a description of the {@link RuntimeException}.
@@ -42,8 +42,8 @@ public class CacheNotFoundException extends CacheException {
   }
 
   /**
-   * Constructs a new instance of {@link CacheNotFoundException} initialized with the given {@link Throwable}
-   * used as the cause of this {@link RuntimeException}.
+   * Constructs a new {@link CacheNotFoundException} initialized with the given {@link Throwable}
+   * used as the {@literal cause} of this {@link RuntimeException}.
    *
    * @param cause {@link Throwable} uses as the reason this {@link RuntimeException} was thrown.
    */
@@ -52,7 +52,7 @@ public class CacheNotFoundException extends CacheException {
   }
 
   /**
-   * Constructs a new instance of {@link CacheNotFoundException} initialized with the given {@link String message}
+   * Constructs a new {@link CacheNotFoundException} initialized with the given {@link String message}
    * describing the {@link RuntimeException} along with the given {@link Throwable} used as the cause
    * of this {@link RuntimeException}.
    *

@@ -56,7 +56,7 @@ public abstract class AbstractColumn<T> implements Column<T>, Comparable<Column<
   private View view;
 
   /**
-   * Constructs a new instance of {@link AbstractColumn} initialized with the given, required {@link String name}
+   * Constructs a new {@link AbstractColumn} initialized with the given, required {@link String name}
    * and {@link Class type}.
    *
    * @param name {@link String} containing the {@literal name} of this {@link Column};
@@ -73,7 +73,7 @@ public abstract class AbstractColumn<T> implements Column<T>, Comparable<Column<
   }
 
   /**
-   * Constructs a new instance of {@link AbstractColumn} copied from the given, required {@link Column}.
+   * Constructs a new {@link AbstractColumn} copied from the given, required {@link Column}.
    *
    * @param column {@link Column} to copy; must not be {@literal null}.
    * @throws IllegalArgumentException if the given {@link Column} is {@literal null}.

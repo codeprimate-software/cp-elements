@@ -184,7 +184,7 @@ public abstract class JavaVersion implements Comparable<JavaVersion> {
   private final Integer patch;
 
   /**
-   * Constructs a new instance of {@link JavaVersion} initialized with
+   * Constructs a new {@link JavaVersion} initialized with
    * {@link Integer#TYPE major} and {@link Integer#TYPE minor} version numbers.
    *
    * @param major {@link Integer#TYPE} for the {@literal major} version number.
@@ -197,7 +197,7 @@ public abstract class JavaVersion implements Comparable<JavaVersion> {
   }
 
   /**
-   * Constructs a new instance of {@link JavaVersion} initialized with {@link Integer#TYPE major},
+   * Constructs a new {@link JavaVersion} initialized with {@link Integer#TYPE major},
    * {@link Integer#TYPE minor} and {@link Integer#TYPE patch} version numbers.
    *
    * @param major {@link Integer#TYPE} for the {@literal major} version number.
@@ -211,7 +211,7 @@ public abstract class JavaVersion implements Comparable<JavaVersion> {
   }
 
   /**
-   * Constructs a new instance of {@link JavaVersion} initialized with the given {@link Integer#TYPE major},
+   * Constructs a new {@link JavaVersion} initialized with the given {@link Integer#TYPE major},
    * {@link Integer#TYPE minor}, and {@link Integer#TYPE patch} version numbers along with
    * a {@link Integer#TYPE build number}.
    *

@@ -141,7 +141,7 @@ public class ComposableFilter<T> implements Composite<Filter<T>>, Filter<T> {
   }
 
   /**
-   * Constructs a new instance of {@link ComposableFilter} with a given {@link Filter} for the left operand,
+   * Constructs a new {@link ComposableFilter} with a given {@link Filter} for the left operand,
    * the {@link LogicalOperator} combining the two {@link Filter Filters} into a compound {@link Filter},
    * and the given {@link Filter} for the right operand.
    *

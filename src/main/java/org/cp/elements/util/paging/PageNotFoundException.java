@@ -36,7 +36,7 @@ public class PageNotFoundException extends RuntimeException {
   }
 
   /**
-   * Constructs a new instance of {@link PageNotFoundException} initialized with a given {@link String message}
+   * Constructs a new {@link PageNotFoundException} initialized with a given {@link String message}
    * to describe the {@link Page} not found error.
    *
    * @param message {@link String} describing the {@link Page} not found error.
@@ -47,7 +47,7 @@ public class PageNotFoundException extends RuntimeException {
   }
 
   /**
-   * Constructs a new instance of {@link PageNotFoundException} initialized with the given {@link Throwable}
+   * Constructs a new {@link PageNotFoundException} initialized with the given {@link Throwable}
    * to indicate the cause of the {@link Page} not found error.
    *
    * @param cause {@link Throwable} indicating the cause of the {@link Page} not found error.
@@ -58,7 +58,7 @@ public class PageNotFoundException extends RuntimeException {
   }
 
   /**
-   * Constructs a new instance of {@link PageNotFoundException} initialized with a given {@link String message}
+   * Constructs a new {@link PageNotFoundException} initialized with a given {@link String message}
    * to describe the {@link Page} not found error and a {@link Throwable} to indicate the cause
    * of the {@link Page} not found error.
    *

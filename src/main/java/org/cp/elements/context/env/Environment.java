@@ -133,7 +133,7 @@ public class Environment implements Iterable<String> {
   private final PropertiesAdapter systemProperties;
 
   /**
-   * Constructs a new instance of {@link Environment} initialized with the given, required {@link PropertiesAdapter}
+   * Constructs a new {@link Environment} initialized with the given, required {@link PropertiesAdapter}
    * containing the {@literal environment variable} configuration of this system.
    *
    * Additionally, the {@link Environment} initializes a reference to

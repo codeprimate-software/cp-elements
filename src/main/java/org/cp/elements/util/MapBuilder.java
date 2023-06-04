@@ -88,7 +88,7 @@ public class MapBuilder<KEY, VALUE> implements Builder<Map<KEY, VALUE>> {
   }
 
   /**
-   * Constructs a new instance of {@link MapBuilder} initialized with the given {@link Map}.
+   * Constructs a new {@link MapBuilder} initialized with the given {@link Map}.
    *
    * @param map {@link Map} to build (populate with {@link Map#put(Object, Object) put} operations;
    * must not be {@literal null}.

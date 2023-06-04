@@ -43,14 +43,14 @@ public class BigDecimalConverter extends AbstractConverter<String, BigDecimal> {
   private final MathContext mathContext;
 
   /**
-   * Constructs a new instance of {@link BigDecimalConverter} with no {@link MathContext}.
+   * Constructs a new {@link BigDecimalConverter} with no {@link MathContext}.
    */
   public BigDecimalConverter() {
     this(null);
   }
 
   /**
-   * Constructs a new instance of {@link BigDecimalConverter} initialized with the given {@link MathContext}.
+   * Constructs a new {@link BigDecimalConverter} initialized with the given {@link MathContext}.
    *
    * @param mathContext {@link MathContext} used to initialize the {@link BigDecimal} value.
    * @see java.math.MathContext

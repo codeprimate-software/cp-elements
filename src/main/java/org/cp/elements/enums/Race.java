@@ -87,7 +87,7 @@ public enum Race {
   private final String name;
 
   /**
-   * Constructs a new instance of {@link Race} initialized with the given {@link String abbreviation}
+   * Constructs a new {@link Race} initialized with the given {@link String abbreviation}
    * and {@link String name} for the {@link Race}.
    *
    * @param abbreviation {@link String} specifying the {@literal abbreviation} for {@literal this} {@link Race}.

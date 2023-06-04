@@ -103,7 +103,7 @@ public class EchoServer extends AbstractClientServerSupport implements Runnable 
   private final ServerSocket serverSocket;
 
   /**
-   * Constructs a new instance of the {@link EchoServer} listening on the given {@code port}.
+   * Constructs a new the {@link EchoServer} listening on the given {@code port}.
    *
    * @param port {@link Integer} value indicating the port number on which the {@link EchoServer} will listen.
    * @throws IllegalArgumentException if the given {@code port} number is not valid.
@@ -249,7 +249,7 @@ public class EchoServer extends AbstractClientServerSupport implements Runnable 
   }
 
   /**
-   * Constructs a new instance of an {@link ExecutorService} to run the Echo Service.
+   * Constructs a new an {@link ExecutorService} to run the Echo Service.
    *
    * @return a new instance of {@link ExecutorService} used to run the Echo Service.
    * @see java.util.concurrent.Executors#newFixedThreadPool(int)

@@ -72,7 +72,7 @@ public class MapToCacheAdapter<KEY extends Comparable<KEY>, VALUE> extends Abstr
   private final Map<KEY, VALUE> map;
 
   /**
-   * Constructs a new instance of {@link MapToCacheAdapter} initialized with the given, required {@link Map}.
+   * Constructs a new {@link MapToCacheAdapter} initialized with the given, required {@link Map}.
    *
    * @param map {@link Map} used to back this {@link Cache}; must not be {@literal null}.
    * @throws IllegalArgumentException if {@link Map} is {@literal null}.

@@ -218,7 +218,7 @@ public enum SimpleTypeConversions {
   private final Class<?> targetType;
 
   /**
-   * Constructs a new instance of the {@link SimpleTypeConversions} {@link Enum enumeration} initialized with
+   * Constructs a new the {@link SimpleTypeConversions} {@link Enum enumeration} initialized with
    * the given, required {@link Class target type} of the {@link Object} resulting from the conversion.
    *
    * @param targetType {@link Class} declaring the {@link Class target type} of the conversion.

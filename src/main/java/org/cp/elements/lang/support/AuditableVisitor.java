@@ -46,7 +46,7 @@ public class AuditableVisitor<USER, PROCESS> implements Visitor {
   private final Auditor<USER, PROCESS> auditor;
 
   /**
-   * Constructs a new instance of {@link AuditableVisitor} initialized with the creating and modifying user and process.
+   * Constructs a new {@link AuditableVisitor} initialized with the creating and modifying user and process.
    *
    * @param user {@link USER} authorized and responsible for changing {@literal this} {@link Auditable} object.
    * @param process {@link PROCESS} authorized and responsible for changing {@literal this} {@link Auditable} object.
@@ -59,7 +59,7 @@ public class AuditableVisitor<USER, PROCESS> implements Visitor {
   }
 
   /**
-   * Constructs a new instance of {@link AuditableVisitor} initialized with the creating and modifying user and process
+   * Constructs a new {@link AuditableVisitor} initialized with the creating and modifying user and process
    * as well as the date and time {@literal this} {@link Auditable} object was created or modified.
    *
    * @param user {@link USER} authorized and responsible for changing {@literal this} {@link Auditable} object.

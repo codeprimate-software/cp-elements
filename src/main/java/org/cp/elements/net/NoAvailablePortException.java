@@ -27,13 +27,12 @@ package org.cp.elements.net;
 public class NoAvailablePortException extends NetworkException {
 
   /**
-   * Constructs a new instance of {@link NoAvailablePortException} with no {@link String message}
-   * and no {@link Throwable cause}.
+   * Constructs a new {@link NoAvailablePortException} with no {@link String message} and no {@link Throwable cause}.
    */
   public NoAvailablePortException() { }
 
   /**
-   * Constructs a new instance of {@link NoAvailablePortException} initialized with the given {@link String message}
+   * Constructs a new {@link NoAvailablePortException} initialized with the given {@link String message}
    * describing the no available network port error.
    *
    * @param message {@link String} containing a message describing the network port error.
@@ -43,8 +42,8 @@ public class NoAvailablePortException extends NetworkException {
   }
 
   /**
-   * Constructs a new instance of {@link NoAvailablePortException} initialized with the given {@link Throwable cause}
-   * used as the reason this no available network port error was thrown.
+   * Constructs a new {@link NoAvailablePortException} initialized with the given {@link Throwable cause}
+   * used as the reason a no available network port error was thrown.
    *
    * @param cause {@link Throwable} used as the reason this no available network port error ws thrown.
    */
@@ -53,9 +52,9 @@ public class NoAvailablePortException extends NetworkException {
   }
 
   /**
-   * Constructs a new instance of {@link NoAvailablePortException} initialized with the given {@link String message}
+   * Constructs a new {@link NoAvailablePortException} initialized with the given {@link String message}
    * describing the no available network port error along with the given {@link Throwable cause} used as the reason
-   * this no available network port error was thrown.
+   * a no available network port error was thrown.
    *
    * @param message {@link String} containing a message describing the network port error.
    * @param cause {@link Throwable} used as the reason this no available network port error ws thrown.

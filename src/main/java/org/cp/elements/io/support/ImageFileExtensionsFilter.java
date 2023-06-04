@@ -46,7 +46,7 @@ public class ImageFileExtensionsFilter extends FileExtensionFilter {
   };
 
   /**
-   * Constructs a new instance of {@link ImageFileExtensionsFilter} to filter {@link File Files} by image file types.
+   * Constructs a new {@link ImageFileExtensionsFilter} to filter {@link File Files} by image file types.
    *
    * @see org.cp.elements.io.FileExtensionFilter#FileExtensionFilter(String...)
    */

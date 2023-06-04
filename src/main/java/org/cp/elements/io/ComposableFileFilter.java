@@ -201,9 +201,8 @@ public class ComposableFileFilter implements Composite<FileFilter>, FileFilter, 
   }
 
   /**
-   * Constructs a new instance of {@link ComposableFileFilter} initialized with {@link FileFilter left}
-   * and {@link FileFilter right} operands joined by the given, required {@link LogicalOperator}
-   * when used in the filtering process.
+   * Constructs a new {@link ComposableFileFilter} initialized with {@link FileFilter left} and {@link FileFilter right}
+   * operands joined by the given, required {@link LogicalOperator} when used in the filtering process.
    *
    * @param leftOperand {@link FileFilter} used in the left-hand side (lhs) of the logical expression;
    * must not be {@literal null}.
