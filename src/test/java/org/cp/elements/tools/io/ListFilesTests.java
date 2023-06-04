@@ -36,7 +36,7 @@ import org.junit.jupiter.api.Test;
 
 import org.cp.elements.io.FileSystemUtils;
 import org.cp.elements.lang.StringUtils;
-import org.cp.elements.test.AbstractBaseTestSuite;
+import org.cp.elements.test.AbstractTestSuite;
 
 /**
  * Unit Tests for {@link ListFiles}.
@@ -47,7 +47,7 @@ import org.cp.elements.test.AbstractBaseTestSuite;
  * @see org.cp.elements.tools.io.ListFiles
  * @since 1.0.0
  */
-public class ListFilesTests extends AbstractBaseTestSuite {
+public class ListFilesTests extends AbstractTestSuite {
 
   private File mockDirectory(String name) {
 

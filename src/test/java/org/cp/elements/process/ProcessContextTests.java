@@ -30,7 +30,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.cp.elements.context.env.Environment;
 import org.cp.elements.io.FileSystemUtils;
 import org.cp.elements.lang.SystemUtils;
-import org.cp.elements.test.AbstractBaseTestSuite;
+import org.cp.elements.test.AbstractTestSuite;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -41,11 +41,11 @@ import org.mockito.junit.jupiter.MockitoExtension;
  * @see org.junit.jupiter.api.Test
  * @see org.mockito.Mock
  * @see org.mockito.Mockito
- * @see org.cp.elements.test.AbstractBaseTestSuite
+ * @see org.cp.elements.test.AbstractTestSuite
  * @since 1.0.0
  */
 @ExtendWith(MockitoExtension.class)
-public class ProcessContextTests extends AbstractBaseTestSuite {
+public class ProcessContextTests extends AbstractTestSuite {
 
   @Mock
   private File mockFile;

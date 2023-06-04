@@ -61,7 +61,7 @@ import org.cp.elements.lang.reflect.FieldNotFoundException;
 import org.cp.elements.lang.reflect.MethodNotFoundException;
 import org.cp.elements.lang.reflect.ModifierUtils;
 import org.cp.elements.lang.reflect.ReflectionUtils;
-import org.cp.elements.test.AbstractBaseTestSuite;
+import org.cp.elements.test.AbstractTestSuite;
 import org.cp.elements.test.TestUtils;
 import org.cp.elements.util.ArrayUtils;
 
@@ -85,12 +85,12 @@ import lombok.ToString;
  * @see org.mockito.Mockito
  * @see org.cp.elements.lang.ClassUtils
  * @see org.cp.elements.lang.reflect.ReflectionUtils
- * @see org.cp.elements.test.AbstractBaseTestSuite
+ * @see org.cp.elements.test.AbstractTestSuite
  * @see org.cp.elements.test.TestUtils
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
-public class ClassUtilsUnitTests extends AbstractBaseTestSuite {
+public class ClassUtilsUnitTests extends AbstractTestSuite {
 
   private <T> void assertConstructor(Constructor<T> constructor, Class<T> declaringClass, Class<?>[] parameterTypes) {
 

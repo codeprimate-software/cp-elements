@@ -49,7 +49,7 @@ import org.cp.elements.io.FileSystemUtils;
 import org.cp.elements.lang.NumberUtils;
 import org.cp.elements.lang.ThrowableAssertions;
 import org.cp.elements.lang.annotation.Id;
-import org.cp.elements.test.AbstractBaseTestSuite;
+import org.cp.elements.test.AbstractTestSuite;
 import org.cp.elements.test.TestUtils;
 import org.cp.elements.util.ArrayUtils;
 
@@ -66,11 +66,11 @@ import lombok.RequiredArgsConstructor;
  * @see java.lang.reflect.Modifier
  * @see org.junit.jupiter.api.Test
  * @see org.cp.elements.lang.reflect.ReflectionUtils
- * @see org.cp.elements.test.AbstractBaseTestSuite
+ * @see org.cp.elements.test.AbstractTestSuite
  * @see org.cp.elements.test.TestUtils
  * @since 1.0.0
  */
-public class ReflectionUtilsTests extends AbstractBaseTestSuite {
+public class ReflectionUtilsTests extends AbstractTestSuite {
 
   private static final AtomicReference<String> METHOD_NAME = new AtomicReference<>();
 

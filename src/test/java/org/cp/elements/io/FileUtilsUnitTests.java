@@ -48,7 +48,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.cp.elements.lang.StringUtils;
 import org.cp.elements.lang.annotation.NotNull;
 import org.cp.elements.lang.annotation.Nullable;
-import org.cp.elements.test.AbstractBaseTestSuite;
+import org.cp.elements.test.AbstractTestSuite;
 import org.cp.elements.test.annotation.IntegrationTest;
 import org.cp.elements.time.Month;
 import org.mockito.Mock;
@@ -65,12 +65,12 @@ import org.mockito.junit.jupiter.MockitoExtension;
  * @see org.mockito.Mock
  * @see org.mockito.Mockito
  * @see org.cp.elements.io.FileUtils
- * @see org.cp.elements.test.AbstractBaseTestSuite
+ * @see org.cp.elements.test.AbstractTestSuite
  * @see org.cp.elements.test.annotation.IntegrationTest
  * @since 1.0.0
  */
 @ExtendWith(MockitoExtension.class)
-public class FileUtilsUnitTests extends AbstractBaseTestSuite {
+public class FileUtilsUnitTests extends AbstractTestSuite {
 
   @Mock
   private File mockFile;

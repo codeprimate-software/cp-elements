@@ -26,7 +26,7 @@ import java.io.File;
 import org.junit.jupiter.api.Test;
 
 import org.cp.elements.lang.annotation.NotNull;
-import org.cp.elements.test.AbstractBaseTestSuite;
+import org.cp.elements.test.AbstractTestSuite;
 
 import org.mockito.quality.Strictness;
 
@@ -39,10 +39,10 @@ import org.mockito.quality.Strictness;
  * @see org.junit.jupiter.api.Test
  * @see org.mockito.Mockito
  * @see org.cp.elements.io.DefaultFileFilter
- * @see org.cp.elements.test.AbstractBaseTestSuite
+ * @see org.cp.elements.test.AbstractTestSuite
  * @since 1.0.0
  */
-public class DefaultFileFilterUnitTests extends AbstractBaseTestSuite {
+public class DefaultFileFilterUnitTests extends AbstractTestSuite {
 
   private @NotNull File newFile(@NotNull String pathname) {
     return new File(pathname);

@@ -30,7 +30,7 @@ import org.junit.jupiter.api.Test;
 
 import org.cp.elements.lang.annotation.NotNull;
 import org.cp.elements.lang.annotation.Nullable;
-import org.cp.elements.test.AbstractBaseTestSuite;
+import org.cp.elements.test.AbstractTestSuite;
 import org.cp.elements.test.annotation.IntegrationTest;
 import org.cp.elements.test.annotation.SubjectUnderTest;
 
@@ -44,10 +44,10 @@ import org.mockito.quality.Strictness;
  * @see org.junit.jupiter.api.Test
  * @see org.mockito.Mockito
  * @see org.cp.elements.io.DirectoriesOnlyFilter
- * @see org.cp.elements.test.AbstractBaseTestSuite
+ * @see org.cp.elements.test.AbstractTestSuite
  * @since 1.0.0
  */
-public class DirectoriesOnlyFilterUnitTests extends AbstractBaseTestSuite {
+public class DirectoriesOnlyFilterUnitTests extends AbstractTestSuite {
 
   @SubjectUnderTest
   private final DirectoriesOnlyFilter directoriesOnlyFilter = DirectoriesOnlyFilter.INSTANCE;

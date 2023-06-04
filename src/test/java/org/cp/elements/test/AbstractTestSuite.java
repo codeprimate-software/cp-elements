@@ -15,15 +15,16 @@
  */
 package org.cp.elements.test;
 
-import static org.cp.elements.util.stream.StreamUtils.stream;
-
 import java.io.File;
 import java.io.FileFilter;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.cp.elements.io.FileSystemUtils;
 import org.cp.elements.lang.Assert;
+import org.cp.elements.lang.ClassUtils;
+import org.cp.elements.lang.ObjectUtils;
 import org.cp.elements.lang.annotation.NotNull;
 import org.cp.elements.lang.annotation.Nullable;
 import org.cp.elements.util.ArrayUtils;
@@ -39,11 +40,11 @@ import org.cp.elements.util.stream.StreamUtils;
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
-public abstract class AbstractBaseTestSuite {
+public abstract class AbstractTestSuite {
 
-  protected static final File TEMPORARY_DIRECTORY = new File(System.getProperty("java.io.tmpdir"));
-  protected static final File USER_HOME = new File(System.getProperty("user.home"));
-  protected static final File WORKING_DIRECTORY = new File(System.getProperty("user.dir"));
+  protected static final File TEMPORARY_DIRECTORY = FileSystemUtils.TEMPORARY_DIRECTORY;
+  protected static final File USER_HOME = FileSystemUtils.USER_HOME_DIRECTORY;
+  protected static final File WORKING_DIRECTORY = FileSystemUtils.WORKING_DIRECTORY;
 
   protected static final String BUILD_DIRECTORY_NAME = "build";
   protected static final String CLASSES_DIRECTORY_NAME = "classes";
@@ -52,13 +53,13 @@ public abstract class AbstractBaseTestSuite {
 
   private final Logger logger;
 
-  protected AbstractBaseTestSuite() {
+  protected AbstractTestSuite() {
 
     this.logger = Logger.getLogger(getClass().getName());
     this.logger.setLevel(Level.WARNING);
     this.logger.setUseParentHandlers(false);
 
-    stream(this.logger.getHandlers()).forEach(this.logger::removeHandler);
+    StreamUtils.stream(this.logger.getHandlers()).forEach(this.logger::removeHandler);
 
     this.logger.addHandler(new ConsoleHandler());
   }
@@ -83,23 +84,15 @@ public abstract class AbstractBaseTestSuite {
   }
 
   protected File getLocation(Class<?> type) {
-
-    String pathname = type.getName().replaceAll("\\.", "/").concat(".class");
-
-    return new File(getClassesDirectory(), pathname);
+    return new File(getClassesDirectory(), ClassUtils.getResourceName(type));
   }
 
   protected File getProjectHomeDirectory() {
 
     if (!WORKING_DIRECTORY.getAbsolutePath().contains(getProjectHomeDirectoryName())) {
-
-      File resolvedProjectHomeDirectory =  searchForProjectHomeDirectory(WORKING_DIRECTORY);
-
-      Assert.state(resolvedProjectHomeDirectory != null,
+      return ObjectUtils.requireState(searchForProjectHomeDirectory(WORKING_DIRECTORY),
         "Unable to find project directory [%s] in working directory [%s]",
         getProjectHomeDirectoryName(), WORKING_DIRECTORY);
-
-      return resolvedProjectHomeDirectory;
     }
     else {
       int index = WORKING_DIRECTORY.getAbsolutePath().indexOf(getProjectHomeDirectoryName());

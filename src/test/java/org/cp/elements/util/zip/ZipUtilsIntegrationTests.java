@@ -23,7 +23,7 @@ import java.io.IOException;
 import org.junit.jupiter.api.Test;
 
 import org.cp.elements.io.FileSystemUtils;
-import org.cp.elements.test.AbstractBaseTestSuite;
+import org.cp.elements.test.AbstractTestSuite;
 import org.cp.elements.test.annotation.IntegrationTest;
 
 /**
@@ -35,7 +35,7 @@ import org.cp.elements.test.annotation.IntegrationTest;
  * @since 1.0.0
  */
 @IntegrationTest
-public class ZipUtilsIntegrationTests extends AbstractBaseTestSuite {
+public class ZipUtilsIntegrationTests extends AbstractTestSuite {
 
   @Test
   public void zipThenUnzipSrcMainAsciidocDirectory() throws IOException {

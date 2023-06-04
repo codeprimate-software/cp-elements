@@ -38,7 +38,7 @@ import org.cp.elements.io.FileSystemUtils;
 import org.cp.elements.lang.StringUtils;
 import org.cp.elements.net.NetworkUtils;
 import org.cp.elements.process.ProcessAdapter;
-import org.cp.elements.test.AbstractBaseTestSuite;
+import org.cp.elements.test.AbstractTestSuite;
 import org.cp.elements.tools.net.EchoClient;
 import org.cp.elements.tools.net.EchoServer;
 
@@ -49,12 +49,12 @@ import org.cp.elements.tools.net.EchoServer;
  * @see org.junit.jupiter.api.Test
  * @see org.cp.elements.process.ProcessAdapter
  * @see org.cp.elements.process.java.JavaProcessExecutor
- * @see org.cp.elements.test.AbstractBaseTestSuite
+ * @see org.cp.elements.test.AbstractTestSuite
  * @see org.cp.elements.tools.net.EchoClient
  * @see org.cp.elements.tools.net.EchoServer
  * @since 1.0.0
  */
-public class JarFileProcessExecutorIntegrationTests extends AbstractBaseTestSuite {
+public class JarFileProcessExecutorIntegrationTests extends AbstractTestSuite {
 
   private static final long TIMEOUT = 5;
 

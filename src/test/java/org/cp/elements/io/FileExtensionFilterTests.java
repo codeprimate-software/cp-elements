@@ -27,7 +27,7 @@ import org.junit.jupiter.api.Test;
 
 import org.cp.elements.lang.annotation.NotNull;
 import org.cp.elements.lang.annotation.Nullable;
-import org.cp.elements.test.AbstractBaseTestSuite;
+import org.cp.elements.test.AbstractTestSuite;
 import org.cp.elements.util.ArrayUtils;
 import org.cp.elements.util.stream.StreamUtils;
 
@@ -38,10 +38,10 @@ import org.cp.elements.util.stream.StreamUtils;
  * @see java.io.File
  * @see org.junit.jupiter.api.Test
  * @see org.cp.elements.io.FileExtensionFilter
- * @see org.cp.elements.test.AbstractBaseTestSuite
+ * @see org.cp.elements.test.AbstractTestSuite
  * @since 1.0.0
  */
-public class FileExtensionFilterTests extends AbstractBaseTestSuite {
+public class FileExtensionFilterTests extends AbstractTestSuite {
 
   private @NotNull File newFile(@NotNull String pathname) {
     return new File(pathname);
