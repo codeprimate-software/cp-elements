@@ -96,8 +96,8 @@ public abstract class AbstractBean<ID extends Comparable<ID>, USER, PROCESS> ext
   private final VetoableChangeSupport vetoableChangeSupport = new VetoableChangeSupport(this);
 
   /**
-   * Constructs a new instance of {@link AbstractBean}.
-   *
+   * Constructs a new {@link AbstractBean}.
+   * <p>
    * This default, no-arg constructor simply registers a {@link ChangeRecorder} {@link PropertyChangeListener}
    * to record and keep track of changes in state to {@literal this} {@link AbstractBean}.
    *
@@ -112,7 +112,7 @@ public abstract class AbstractBean<ID extends Comparable<ID>, USER, PROCESS> ext
   /**
    * Constructs a new instance of {@link AbstractBean} initialized with the given typed {@link ID identifier}
    * to uniquely identify {@literal this} {@link Bean}.
-   *
+   * <p>
    * It is recommended that the {@link ID identifier} uniquely identify {@link Object Objects}
    * within {@literal this} {@link Bean} {@link Class type}.
    *

@@ -42,10 +42,10 @@ public abstract class Assert {
 
   /**
    * Asserts that an {@literal argument} is valid.
-   *
+   * <p>
    * The assertion holds if and only if (iff) the {@code argument} tested by the {@link Predicate}
    * evaluates to {@literal true}.
-   *
+   * <p>
    * For example, application code might assert that:
    *
    * <pre>
@@ -68,10 +68,10 @@ public abstract class Assert {
 
   /**
    * Asserts that an {@literal argument} is valid.
-   *
+   * <p>
    * The assertion holds if and only if (iff) the {@code argument} tested by the {@link Predicate}
    * evaluates to {@literal true}.
-   *
+   * <p>
    * For example, application code might assert that:
    *
    * <pre>
@@ -101,10 +101,10 @@ public abstract class Assert {
 
   /**
    * Asserts that an {@literal argument} is valid.
-   *
+   * <p>
    * The assertion holds if and only if (iff) the {@code argument} tested by the {@link Predicate}
    * evaluates to {@literal true}.
-   *
+   * <p>
    * For example, application code might assert that:
    *
    * <pre>
@@ -132,10 +132,10 @@ public abstract class Assert {
 
   /**
    * Asserts that an {@literal argument} is valid.
-   *
+   * <p>
    * The assertion holds if and only if (iff) the {@code argument} tested by the {@link Predicate}
    * evaluates to {@literal true}.
-   *
+   * <p>
    * For example, application code might assert that:
    *
    * <pre>
@@ -160,8 +160,8 @@ public abstract class Assert {
   }
 
   /**
-   * Null-safe utility method used to determine whether the given {@link Object argument}
-   * tested by the given {@link Predicate argument predicate} evaluates to {@literal true}.
+   * Null-safe utility method used to determine whether the given {@link Object argument},
+   * tested by the given {@link Predicate argument predicate}, evaluates to {@literal true}.
    *
    * @param <T> {@link Class type} of the {@link Object} processed by the given {@link Predicate}.
    * @param argument {@link Object} value to test and validate.
@@ -194,7 +194,7 @@ public abstract class Assert {
 
   /**
    * Asserts that two {@link Object objects} are comparable.
-   *
+   * <p>
    * The assertion holds if and only if the (iff) {@link Comparable Comparable objects} are equal by comparison.
    *
    * @param <T> {@link Comparable Comparable class type} of the {@link Object objects} to compare.
@@ -211,7 +211,7 @@ public abstract class Assert {
 
   /**
    * Asserts that two {@link Object objects} are comparable.
-   *
+   * <p>
    * The assertion holds if and only if the (iff) {@link Comparable Comparable objects} are equal by comparison.
    *
    * @param <T> {@link Comparable Comparable class type} of the {@link Object objects} to compare.
@@ -234,7 +234,7 @@ public abstract class Assert {
 
   /**
    * Asserts that two {@link Object objects} are comparable.
-   *
+   * <p>
    * The assertion holds if and only if the (iff) {@link Comparable Comparable objects} are equal by comparison.
    *
    * @param <T> {@link Comparable Comparable class type} of the {@link Object objects} to compare.
@@ -255,7 +255,7 @@ public abstract class Assert {
 
   /**
    * Asserts that two {@link Object objects} are comparable.
-   *
+   * <p>
    * The assertion holds if and only if the (iff) {@link Comparable Comparable objects} are equal by comparison.
    *
    * @param <T> {@link Comparable Comparable class type} of the {@link Object objects} to compare.
@@ -289,7 +289,7 @@ public abstract class Assert {
 
   /**
    * Asserts that two {@link Object objects} are equal as determined by {@link Object#equals(Object)}.
-   *
+   * <p>
    * The assertion holds if and only if (iff) both {@link Object objects} are {@literal non-null}
    * and {@link Object#equals(Object) equal} in value.
    *
@@ -306,7 +306,7 @@ public abstract class Assert {
 
   /**
    * Asserts that two {@link Object objects} are equal as determined by {@link Object#equals(Object)}.
-   *
+   * <p>
    * The assertion holds if and only if (iff) both {@link Object objects} are {@literal non-null}
    * and {@link Object#equals(Object) equal} in value.
    *
@@ -327,7 +327,7 @@ public abstract class Assert {
 
   /**
    * Asserts that two {@link Object objects} are equal as determined by {@link Object#equals(Object)}.
-   *
+   * <p>
    * The assertion holds if and only if (iff) both {@link Object objects} are {@literal non-null}
    * and {@link Object#equals(Object) equal} in value.
    *
@@ -348,7 +348,7 @@ public abstract class Assert {
 
   /**
    * Asserts that two {@link Object objects} are equal as determined by {@link Object#equals(Object)}.
-   *
+   * <p>
    * The assertion holds if and only if (iff) both {@link Object objects} are {@literal non-null}
    * and {@link Object#equals(Object) equal} in value.
    *
@@ -379,7 +379,7 @@ public abstract class Assert {
 
   /**
    * Assert that the given {@link String} is not {@literal blank}, {@literal empty} or {@literal null}.
-   *
+   * <p>
    * The assertion holds if and only if (iff) the {@link String} is not {@literal null},
    * not {@link String#isEmpty() empty} and does not contain any
    * {@link Character#isWhitespace(char) whitespace characters}.
@@ -396,7 +396,7 @@ public abstract class Assert {
 
   /**
    * Assert that the given {@link String} is not {@literal blank}, {@literal empty} or {@literal null}.
-   *
+   * <p>
    * The assertion holds if and only if (iff) the {@link String} is not {@literal null},
    * not {@link String#isEmpty() empty} and does not contain any
    * {@link Character#isWhitespace(char) whitespace characters}.
@@ -417,7 +417,7 @@ public abstract class Assert {
 
   /**
    * Assert that the given {@link String} is not {@literal blank}, {@literal empty} or {@literal null}.
-   *
+   * <p>
    * The assertion holds if and only if (iff) the {@link String} is not {@literal null},
    * not {@link String#isEmpty() empty} and does not contain any
    * {@link Character#isWhitespace(char) whitespace characters}.
@@ -438,7 +438,7 @@ public abstract class Assert {
 
   /**
    * Assert that the given {@link String} is not {@literal blank}, {@literal empty} or {@literal null}.
-   *
+   * <p>
    * The assertion holds if and only if (iff) the {@link String} is not {@literal null},
    * not {@link String#isEmpty() empty} and does not contain any
    * {@link Character#isWhitespace(char) whitespace characters}.
@@ -470,7 +470,7 @@ public abstract class Assert {
 
   /**
    * Asserts that the {@link Thread#currentThread() current Thread} holds the specified {@link Object lock}.
-   *
+   * <p>
    * The assertion holds if and only if (iff) the {@link Object lock} is not {@literal null}
    * and the {@link Thread#currentThread() current Thread} holds the {@link Object lock}.
    *
@@ -487,7 +487,7 @@ public abstract class Assert {
 
   /**
    * Asserts that the {@link Thread#currentThread() current Thread} holds the specified {@link Object lock}.
-   *
+   * <p>
    * The assertion holds if and only if (iff) the {@link Object lock} is not {@literal null}
    * and the {@link Thread#currentThread() current Thread} holds the {@link Object lock}.
    *
@@ -507,7 +507,7 @@ public abstract class Assert {
 
   /**
    * Asserts that the {@link Thread#currentThread() current Thread} holds the specified {@link Object lock}.
-   *
+   * <p>
    * The assertion holds if and only if (iff) the {@link Object lock} is not {@literal null}
    * and the {@link Thread#currentThread() current Thread} holds the {@link Object lock}.
    *
@@ -527,7 +527,7 @@ public abstract class Assert {
 
   /**
    * Asserts that the {@link Thread#currentThread() current Thread} holds the specified {@link Object lock}.
-   *
+   * <p>
    * The assertion holds if and only if (iff) the {@link Object lock} is not {@literal null}
    * and the {@link Thread#currentThread() current Thread} holds the {@link Object lock}.
    *
@@ -559,7 +559,7 @@ public abstract class Assert {
 
   /**
    * Asserts that the {@link Class from class type} is assignable to the {@link Class to class type}.
-   *
+   * <p>
    * The assertion holds if and only if (iff) the {@link Class from class type} is the same as
    * or a subclass of the {@link Class to class type}.
    *
@@ -578,7 +578,7 @@ public abstract class Assert {
 
   /**
    * Asserts that the {@link Class from class type} is assignable to the {@link Class to class type}.
-   *
+   * <p>
    * The assertion holds if and only if (iff) the {@link Class from class type} is the same as
    * or a subclass of the {@link Class to class type}.
    *
@@ -601,7 +601,7 @@ public abstract class Assert {
 
   /**
    * Asserts that the {@link Class from class type} is assignable to the {@link Class to class type}.
-   *
+   * <p>
    * The assertion holds if and only if (iff) the {@link Class from class type} is the same as
    * or a subclass of the {@link Class to class type}.
    *
@@ -624,7 +624,7 @@ public abstract class Assert {
 
   /**
    * Asserts that the {@link Class from class type} is assignable to the {@link Class to class type}.
-   *
+   * <p>
    * The assertion holds if and only if (iff) the {@link Class from class type} is the same as
    * or a subclass of the {@link Class to class type}.
    *
@@ -646,7 +646,7 @@ public abstract class Assert {
   /**
    * Null-safe method used to determine whether the {@link Class from class type} is assignable to
    * the {@link Class to class type}.
-   *
+   * <p>
    * {@literal null}, or the {@link Class from class type} when {@literal null}, can be assigned to
    * the {@link Class to class type}. However, you cannot assign something to {@literal null},
    * therefore the {@link Class to class type} can never be {@literal null}.
@@ -666,7 +666,7 @@ public abstract class Assert {
 
   /**
    * Asserts that the condition is {@literal false}.
-   *
+   * <p>
    * The assertion holds if and only if (iff) the {@link Boolean condition} is equal to {@literal false}.
    *
    * @param condition {@link Boolean value} being evaluated.
@@ -680,7 +680,7 @@ public abstract class Assert {
 
   /**
    * Asserts that the condition is {@literal false}.
-   *
+   * <p>
    * The assertion holds if and only if (iff) the {@link Boolean condition} is equal to {@literal false}.
    *
    * @param condition {@link Boolean value} being evaluated.
@@ -698,7 +698,7 @@ public abstract class Assert {
 
   /**
    * Asserts that the condition is {@literal false}.
-   *
+   * <p>
    * The assertion holds if and only if (iff) the {@link Boolean condition} is equal to {@literal false}.
    *
    * @param condition {@link Boolean value} being evaluated.
@@ -716,7 +716,7 @@ public abstract class Assert {
 
   /**
    * Asserts that the condition is {@literal false}.
-   *
+   * <p>
    * The assertion holds if and only if (iff) the {@link Boolean condition} is equal to {@literal false}.
    *
    * @param condition {@link Boolean value} being evaluated.
@@ -744,10 +744,10 @@ public abstract class Assert {
 
   /**
    * Asserts that the given {@link Object} is an instance of the specified {@link Class type}.
-   *
+   * <p>
    * The assertion holds if and only if (iff) the {@link Object} is not {@literal null}
    * and is an instance of the specified {@link Class type}.
-   *
+   * <p>
    * This assertion functions exactly the same as the Java {@literal instanceof} operator.
    *
    * @param obj {@link Object} evaluated as an instance of {@link Class type}.
@@ -762,10 +762,10 @@ public abstract class Assert {
 
   /**
    * Asserts that the given {@link Object} is an instance of the specified {@link Class type}.
-   *
+   * <p>
    * The assertion holds if and only if (iff) the {@link Object} is not {@literal null}
    * and is an instance of the specified {@link Class type}.
-   *
+   * <p>
    * This assertion functions exactly the same as the Java {@literal instanceof} operator.
    *
    * @param obj {@link Object} evaluated as an instance of {@link Class type}.
@@ -784,10 +784,10 @@ public abstract class Assert {
 
   /**
    * Asserts that the given {@link Object} is an instance of the specified {@link Class type}.
-   *
+   * <p>
    * The assertion holds if and only if (iff) the {@link Object} is not {@literal null}
    * and is an instance of the specified {@link Class type}.
-   *
+   * <p>
    * This assertion functions exactly the same as the Java {@literal instanceof} operator.
    *
    * @param obj {@link Object} evaluated as an instance of {@link Class type}.
@@ -806,10 +806,10 @@ public abstract class Assert {
 
   /**
    * Asserts that the given {@link Object} is an instance of the specified {@link Class type}.
-   *
+   * <p>
    * The assertion holds if and only if (iff) the {@link Object} is not {@literal null}
    * and is an instance of the specified {@link Class type}.
-   *
+   * <p>
    * This assertion functions exactly the same as the Java {@literal instanceof} operator.
    *
    * @param obj {@link Object} evaluated as an instance of {@link Class type}.
@@ -826,7 +826,7 @@ public abstract class Assert {
 
   /**
    * Null-safe method used to determine whether the given {@link Object} is an instance of {@link Class type}.
-   *
+   * <p>
    * Note that an {@link Object} cannot be an instance of {@literal null}.
    *
    * @param obj {@link Object} to evaluate.
@@ -842,7 +842,7 @@ public abstract class Assert {
 
   /**
    * Asserts that the {@link Boolean condition} is {@literal true}.
-   *
+   * <p>
    * The assertion holds if and only if (iff) the {@link Boolean condition} is equal to {@literal true}.
    *
    * @param condition {@link Boolean value} being evaluated.
@@ -856,7 +856,7 @@ public abstract class Assert {
 
   /**
    * Asserts that the {@link Boolean condition} is {@literal true}.
-   *
+   * <p>
    * The assertion holds if and only if (iff) the {@link Boolean condition} is equal to {@literal true}.
    *
    * @param condition {@link Boolean value} being evaluated.
@@ -874,7 +874,7 @@ public abstract class Assert {
 
   /**
    * Asserts that the {@link Boolean condition} is {@literal true}.
-   *
+   * <p>
    * The assertion holds if and only if (iff) the {@link Boolean condition} is equal to {@literal true}.
    *
    * @param condition {@link Boolean value} being evaluated.
@@ -892,7 +892,7 @@ public abstract class Assert {
 
   /**
    * Asserts that the {@link Boolean condition} is {@literal true}.
-   *
+   * <p>
    * The assertion holds if and only if (iff) the {@link Boolean condition} is equal to {@literal true}.
    *
    * @param condition {@link Boolean value} being evaluated.
@@ -920,7 +920,7 @@ public abstract class Assert {
 
   /**
    * Asserts that the given {@link String} is not {@link String#isEmpty() empty}.
-   *
+   * <p>
    * The assertion holds if and only if (iff) the {@link String String}
    * is not the {@link String#isEmpty() empty String}.
    *
@@ -935,7 +935,7 @@ public abstract class Assert {
 
   /**
    * Asserts that the given {@link String} is not {@link String#isEmpty() empty}.
-   *
+   * <p>
    * The assertion holds if and only if (iff) the {@link String String}
    * is not the {@link String#isEmpty() empty String}.
    *
@@ -954,7 +954,7 @@ public abstract class Assert {
 
   /**
    * Asserts that the given {@link String} is not {@link String#isEmpty() empty}.
-   *
+   * <p>
    * The assertion holds if and only if (iff) the {@link String String}
    * is not the {@link String#isEmpty() empty String}.
    *
@@ -973,7 +973,7 @@ public abstract class Assert {
 
   /**
    * Asserts that the given {@link String} is not {@link String#isEmpty() empty}.
-   *
+   * <p>
    * The assertion holds if and only if (iff) the {@link String String}
    * is not the {@link String#isEmpty() empty String}.
    *
@@ -1002,7 +1002,7 @@ public abstract class Assert {
 
   /**
    * Asserts that the {@link Object array} is not {@literal empty}.
-   *
+   * <p>
    * The assertion holds if and only if (iff) the {@link Object array} is not {@literal null}
    * and contains at least 1 element. Elements of the array are not evaluated.
    *
@@ -1016,7 +1016,7 @@ public abstract class Assert {
 
   /**
    * Asserts that the {@link Object array} is not {@literal empty}.
-   *
+   * <p>
    * The assertion holds if and only if (iff) the {@link Object array} is not {@literal null}
    * and contains at least 1 element. Elements of the array are not evaluated.
    *
@@ -1034,7 +1034,7 @@ public abstract class Assert {
 
   /**
    * Asserts that the {@link Object array} is not {@literal empty}.
-   *
+   * <p>
    * The assertion holds if and only if (iff) the {@link Object array} is not {@literal null}
    * and contains at least 1 element. Elements of the array are not evaluated.
    *
@@ -1052,7 +1052,7 @@ public abstract class Assert {
 
   /**
    * Asserts that the {@link Object array} is not {@literal empty}.
-   *
+   * <p>
    * The assertion holds if and only if (iff) the {@link Object array} is not {@literal null}
    * and contains at least 1 element. Elements of the array are not evaluated.
    *
@@ -1079,7 +1079,7 @@ public abstract class Assert {
 
   /**
    * Asserts that the {@link Collection} is not {@link Collection#isEmpty() empty}.
-   *
+   * <p>
    * The assertion holds if and only if (iff) the {@link Collection} is not {@literal null}
    * and contains at least 1 element. Elements of the {@link Collection} are not evaluated.
    *
@@ -1095,7 +1095,7 @@ public abstract class Assert {
 
   /**
    * Asserts that the {@link Collection} is not {@link Collection#isEmpty() empty}.
-   *
+   * <p>
    * The assertion holds if and only if (iff) the {@link Collection} is not {@literal null}
    * and contains at least 1 element. Elements of the {@link Collection} are not evaluated.
    *
@@ -1115,7 +1115,7 @@ public abstract class Assert {
 
   /**
    * Asserts that the {@link Collection} is not {@link Collection#isEmpty() empty}.
-   *
+   * <p>
    * The assertion holds if and only if (iff) the {@link Collection} is not {@literal null}
    * and contains at least 1 element. Elements of the {@link Collection} are not evaluated.
    *
@@ -1135,7 +1135,7 @@ public abstract class Assert {
 
   /**
    * Asserts that the {@link Collection} is not {@link Collection#isEmpty() empty}.
-   *
+   * <p>
    * The assertion holds if and only if (iff) the {@link Collection} is not {@literal null}
    * and contains at least 1 element. Elements of the {@link Collection} are not evaluated.
    *
@@ -1167,7 +1167,7 @@ public abstract class Assert {
 
   /**
    * Asserts that the {@link Iterable} is not empty.
-   *
+   * <p>
    * The assertion holds if and only if (iff) the {@link Iterable} is not {@literal null}
    * and contains at least 1 element. Elements of the {@link Iterable} are not evaluated.
    *
@@ -1182,7 +1182,7 @@ public abstract class Assert {
 
   /**
    * Asserts that the {@link Iterable} is not empty.
-   *
+   * <p>
    * The assertion holds if and only if (iff) the {@link Iterable} is not {@literal null}
    * and contains at least 1 element. Elements of the {@link Iterable} are not evaluated.
    *
@@ -1201,7 +1201,7 @@ public abstract class Assert {
 
   /**
    * Asserts that the {@link Iterable} is not empty.
-   *
+   * <p>
    * The assertion holds if and only if (iff) the {@link Iterable} is not {@literal null}
    * and contains at least 1 element. Elements of the {@link Iterable} are not evaluated.
    *
@@ -1220,7 +1220,7 @@ public abstract class Assert {
 
   /**
    * Asserts that the {@link Iterable} is not empty.
-   *
+   * <p>
    * The assertion holds if and only if (iff) the {@link Iterable} is not {@literal null}
    * and contains at least 1 element. Elements of the {@link Iterable} are not evaluated.
    *
@@ -1262,7 +1262,7 @@ public abstract class Assert {
 
   /**
    * Asserts that the {@link Map} is not {@link Map#isEmpty() empty}.
-   *
+   * <p>
    * The assertion holds if and only if (iff) the {@link Map} is not {@literal null}
    * and contains at least 1 key/value mapping. Keys and values of the {@link Map} are not evaluated.
    *
@@ -1277,7 +1277,7 @@ public abstract class Assert {
 
   /**
    * Asserts that the {@link Map} is not {@link Map#isEmpty() empty}.
-   *
+   * <p>
    * The assertion holds if and only if (iff) the {@link Map} is not {@literal null}
    * and contains at least 1 key/value mapping. Keys and values of the {@link Map} are not evaluated.
    *
@@ -1296,7 +1296,7 @@ public abstract class Assert {
 
   /**
    * Asserts that the {@link Map} is not {@link Map#isEmpty() empty}.
-   *
+   * <p>
    * The assertion holds if and only if (iff) the {@link Map} is not {@literal null}
    * and contains at least 1 key/value mapping. Keys and values of the {@link Map} are not evaluated.
    *
@@ -1315,7 +1315,7 @@ public abstract class Assert {
 
   /**
    * Asserts that the {@link Map} is not {@link Map#isEmpty() empty}.
-   *
+   * <p>
    * The assertion holds if and only if (iff) the {@link Map} is not {@literal null}
    * and contains at least 1 key/value mapping. Keys and values of the {@link Map} are not evaluated.
    *
@@ -1405,7 +1405,7 @@ public abstract class Assert {
 
   /**
    * Asserts that the {@link Object} reference is not {@literal null}.
-   *
+   * <p>
    * The assertion holds if and only if (iff) the {@link Object} reference is not {@literal null}.
    *
    * @param obj {@link Object} reference to evaluate.
@@ -1419,7 +1419,7 @@ public abstract class Assert {
 
   /**
    * Asserts that the {@link Object} reference is not {@literal null}.
-   *
+   * <p>
    * The assertion holds if and only if (iff) the {@link Object} reference is not {@literal null}.
    *
    * @param obj {@link Object} reference to evaluate.
@@ -1437,7 +1437,7 @@ public abstract class Assert {
 
   /**
    * Asserts that the {@link Object} reference is not {@literal null}.
-   *
+   * <p>
    * The assertion holds if and only if (iff) the {@link Object} reference is not {@literal null}.
    *
    * @param obj {@link Object} reference to evaluate.
@@ -1455,7 +1455,7 @@ public abstract class Assert {
 
   /**
    * Asserts that the {@link Object} reference is not {@literal null}.
-   *
+   * <p>
    * The assertion holds if and only if (iff) the {@link Object} reference is not {@literal null}.
    *
    * @param obj {@link Object} reference to evaluate.
@@ -1483,7 +1483,7 @@ public abstract class Assert {
 
   /**
    * Assert that two {@link Object Objects} are not the same {@link Object} as determined by the identity comparison.
-   *
+   * <p>
    * The assertion holds if and only if (iff) the two {@link Object objects} are not the same {@link Object} in memory.
    *
    * @param obj1 {@link Object left operand} in the identity comparison.
@@ -1498,7 +1498,7 @@ public abstract class Assert {
 
   /**
    * Assert that two {@link Object Objects} are not the same {@link Object} as determined by the identity comparison.
-   *
+   * <p>
    * The assertion holds if and only if (iff) the two {@link Object objects} are not the same {@link Object} in memory.
    *
    * @param obj1 {@link Object left operand} in the identity comparison.
@@ -1517,7 +1517,7 @@ public abstract class Assert {
 
   /**
    * Assert that two {@link Object Objects} are not the same {@link Object} as determined by the identity comparison.
-   *
+   * <p>
    * The assertion holds if and only if (iff) the two {@link Object objects} are not the same {@link Object} in memory.
    *
    * @param obj1 {@link Object left operand} in the identity comparison.
@@ -1536,7 +1536,7 @@ public abstract class Assert {
 
   /**
    * Assert that two {@link Object Objects} are not the same {@link Object} as determined by the identity comparison.
-   *
+   * <p>
    * The assertion holds if and only if (iff) the two {@link Object objects} are not the same {@link Object} in memory.
    *
    * @param obj1 {@link Object left operand} in the identity comparison.
@@ -1566,7 +1566,7 @@ public abstract class Assert {
 
   /**
    * Asserts that two {@link Object Objects} are the same {@link Object} as determined by the identity comparison.
-   *
+   * <p>
    * The assertion holds if and only if (iff) the two {@link Object Objects} are the same {@link Object} in memory.
    *
    * @param obj1 {@link Object left operand} in the identity comparison.
@@ -1581,7 +1581,7 @@ public abstract class Assert {
 
   /**
    * Asserts that two {@link Object Objects} are the same {@link Object} as determined by the identity comparison.
-   *
+   * <p>
    * The assertion holds if and only if (iff) the two {@link Object Objects} are the same {@link Object} in memory.
    *
    * @param obj1 {@link Object left operand} in the identity comparison.
@@ -1600,7 +1600,7 @@ public abstract class Assert {
 
   /**
    * Asserts that two {@link Object Objects} are the same {@link Object} as determined by the identity comparison.
-   *
+   * <p>
    * The assertion holds if and only if (iff) the two {@link Object Objects} are the same {@link Object} in memory.
    *
    * @param obj1 {@link Object left operand} in the identity comparison.
@@ -1619,7 +1619,7 @@ public abstract class Assert {
 
   /**
    * Asserts that two {@link Object Objects} are the same {@link Object} as determined by the identity comparison.
-   *
+   * <p>
    * The assertion holds if and only if (iff) the two {@link Object Objects} are the same {@link Object} in memory.
    *
    * @param obj1 {@link Object left operand} in the identity comparison.
@@ -1649,7 +1649,7 @@ public abstract class Assert {
 
   /**
    * Asserts that the state is valid.
-   *
+   * <p>
    * The assertion holds if and only if (iff) valid is {@literal true}.
    *
    * @param state {@link Boolean value} indicating whether the state is valid.
@@ -1662,7 +1662,7 @@ public abstract class Assert {
 
   /**
    * Asserts that the state is valid.
-   *
+   * <p>
    * The assertion holds if and only if (iff) valid is {@literal true}.
    *
    * @param state {@link Boolean value} indicating whether the state is valid.
@@ -1679,7 +1679,7 @@ public abstract class Assert {
 
   /**
    * Asserts that the state is valid.
-   *
+   * <p>
    * The assertion holds if and only if (iff) valid is {@literal true}.
    *
    * @param state {@link Boolean value} indicating whether the state is valid.
@@ -1696,7 +1696,7 @@ public abstract class Assert {
 
   /**
    * Asserts that the state is valid.
-   *
+   * <p>
    * The assertion holds if and only if (iff) valid is {@literal true}.
    *
    * @param state {@link Boolean value} indicating whether the state is valid.
@@ -1711,11 +1711,11 @@ public abstract class Assert {
 
   /**
    * Asserts that an operation is supported.
-   *
+   * <p>
    * The assertion holds if and only if (iff) supported is {@literal true}.
-   *
+   * <p>
    * For example, the application code might assert that:
-   *
+   * <p>
    * <code>
    *   Assert.supported(dataAccessOperations.isCacheable(), "Data Access Operations (DAO) are not cacheable");
    * </code>
@@ -1731,11 +1731,11 @@ public abstract class Assert {
 
   /**
    * Asserts that an operation is supported.
-   *
+   * <p>
    * The assertion holds if and only if (iff) supported is {@literal true}.
-   *
+   * <p>
    * For example, the application code might assert that:
-   *
+   * <p>
    * <code>
    *   Assert.supported(dataAccessOperations.isCacheable(), "Data Access Operations (DAO) are not cacheable");
    * </code>
@@ -1755,11 +1755,11 @@ public abstract class Assert {
 
   /**
    * Asserts that an operation is supported.
-   *
+   * <p>
    * The assertion holds if and only if (iff) supported is {@literal true}.
-   *
+   * <p>
    * For example, the application code might assert that:
-   *
+   * <p>
    * <code>
    *   Assert.supported(dataAccessOperations.isCacheable(), "Data Access Operations (DAO) are not cacheable");
    * </code>
@@ -1779,11 +1779,11 @@ public abstract class Assert {
 
   /**
    * Asserts that an operation is supported.
-   *
+   * <p>
    * The assertion holds if and only if (iff) supported is {@literal true}.
-   *
+   * <p>
    * For example, the application code might assert that:
-   *
+   * <p>
    * <code>
    *   Assert.supported(dataAccessOperations.isCacheable(), "Data Access Operations (DAO) are not cacheable");
    * </code>
