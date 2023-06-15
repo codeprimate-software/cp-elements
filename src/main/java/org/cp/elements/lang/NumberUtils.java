@@ -147,28 +147,15 @@ public abstract class NumberUtils {
 
   private static int parseInt(char digit) {
 
-    switch (digit) {
-      case'A':
-      case 'a':
-        return 10;
-      case 'B':
-      case 'b':
-        return 11;
-      case 'C':
-      case 'c':
-        return 12;
-      case 'D':
-      case 'd':
-        return 13;
-      case 'E':
-      case 'e':
-        return 14;
-      case 'F':
-      case 'f':
-        return 15;
-      default:
-        return Integer.parseInt(String.valueOf(digit));
-    }
+    return switch (digit) {
+      case 'A', 'a' -> 10;
+      case 'B', 'b' -> 11;
+      case 'C', 'c' -> 12;
+      case 'D', 'd' -> 13;
+      case 'E', 'e' -> 14;
+      case 'F', 'f' -> 15;
+      default -> Integer.parseInt(String.valueOf(digit));
+    };
   }
 
   private static @NotNull String stripBinaryNumberPrefixNotation(@NotNull String value) {
@@ -328,6 +315,7 @@ public abstract class NumberUtils {
    *
    * @param number {@link Integer number} to evaluate as prime.
    * @return a {@literal true} if the given {@link Integer} is {@literal prime}, otherwise return {@literal false}.
+   * @see <a href="https://en.wikipedia.org/wiki/Primality_test">Primality test</a>
    */
   public static boolean isPrime(int number) {
 
