@@ -43,7 +43,7 @@ import org.cp.elements.util.stream.StreamUtils;
 
 /**
  * The {@link ServiceTemplate} interface defines a contract for declaring an application service component.
- *
+ * <p>
  * Additionally, this {@link ServiceTemplate} interface defines a contract for application service components
  * encapsulating business logic and other service operations common to all services.
  *

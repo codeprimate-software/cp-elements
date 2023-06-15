@@ -67,7 +67,7 @@ public abstract class LangExtensions {
   /**
    * Safe-navigation operator used to safely navigate a sequence of {@link Object} {@link Method} invocations
    * in a call chain, for example:
-   *
+   * <p>
    * <code>
    *   obj.getX().getY().getZ()...
    * </code>

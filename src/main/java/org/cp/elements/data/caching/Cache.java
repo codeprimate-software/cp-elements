@@ -46,7 +46,7 @@ import org.cp.elements.util.stream.StreamUtils;
 /**
  * Abstract Data Type (ADT) defining a cache data structure, mapping {@link KEY keys} to {@link VALUE values} in-memory
  * for quick access.
- *
+ * <p>
  * Caches are used in cases when, given identical input, the data access operation returns the same output. Caching
  * is ideal for fact access to infrequently changing data, or relatively static data compared to transactional data
  * that is frequently changing. Although, caches can be used to store and process transactional data as well, caches
@@ -54,13 +54,13 @@ import org.cp.elements.util.stream.StreamUtils;
  *
  * Caching providers and implementors of this {@link Cache} interface, must minimally provide implementations of
  * the following {@link Cache} operations:
- *
+ * <p>
  * <ul>
  *   <li>{@link #evict(Comparable)}</li>
  *   <li>{@link #get(Comparable)}</li>
  *   <li>{@link #put(Comparable, Object)}</li>
  * </ul>
- *
+ * <p>
  * If the {@link Cache} implementation should support atomic (synchronous) operations with locking,
  * then caching providers should additionally override the {@link #getLock()} method to return a {@literal non-null}
  * {@link Object} to be used as the {@literal lock}.
