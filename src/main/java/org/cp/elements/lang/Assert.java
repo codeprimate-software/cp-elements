@@ -979,7 +979,7 @@ public abstract class Assert {
    *
    * @param value {@link String} to evaluate.
    * @param cause {@link RuntimeException} thrown if the assertion fails.
-   * @throws java.lang.RuntimeException if the {@link String} is {@link String#isEmpty()} empty}.
+   * @throws java.lang.RuntimeException if the {@link String} is {@link String#isEmpty() empty}.
    * @see java.lang.String
    */
   public static void notEmpty(String value, RuntimeException cause) {
