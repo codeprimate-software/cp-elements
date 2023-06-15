@@ -324,6 +324,35 @@ public abstract class NumberUtils {
   }
 
   /**
+   * Determines whether a given {@link Integer number} is a {@literal prime number}.
+   *
+   * @param number {@link Integer number} to evaluate as prime.
+   * @return a {@literal true} if the given {@link Integer} is {@literal prime}, otherwise return {@literal false}.
+   */
+  public static boolean isPrime(int number) {
+
+    if (number <= 1) {
+      return false;
+    }
+
+    if (number == 2 || number == 3) {
+      return true;
+    }
+
+    if (number % 2 == 0 || number % 3 == 0) {
+      return false;
+    }
+
+    for (int num = 5; num <= Math.sqrt(number); num += 6) {
+      if (number % num == 0 || number % (num + 2) == 0) {
+        return false;
+      }
+    }
+
+    return true;
+  }
+
+  /**
    * Determines whether the given {@link Double value} is a {@literal whole number}, which is defined as
    * any {@link Double value} having no fractional value, or containing only zeroes after the decimal point.
    *
