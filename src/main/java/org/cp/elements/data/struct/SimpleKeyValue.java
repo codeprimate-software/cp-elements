@@ -159,15 +159,13 @@ public class SimpleKeyValue<KEY, VALUE> implements KeyValue<KEY, VALUE> {
       return true;
     }
 
-    if (!(obj instanceof SimpleKeyValue)) {
+    if (!(obj instanceof SimpleKeyValue<?, ?> that)) {
       return false;
     }
 
-    if (!getClass().equals(obj.getClass())) {
+    if (!getClass().equals(that.getClass())) {
       return false;
     }
-
-    SimpleKeyValue<?, ?> that = (SimpleKeyValue<?, ?>) obj;
 
     return this.getKey().equals(that.getKey())
       && ObjectUtils.equals(this.getValue(), that.getValue());
