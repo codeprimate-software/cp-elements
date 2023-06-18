@@ -52,7 +52,7 @@
   </licenses>
 
   <organization>
-    <name>Codeprimate, LLC</name>
+    <name>Codeprimate.org</name>
     <url>http://www.codeprimate.org/</url>
   </organization>
 
@@ -61,7 +61,7 @@
       <id>jblum</id>
       <name>John J. Blum</name>
       <email>john dot blum at codeprimate dot org</email>
-      <organization>Codeprimate, LLC.</organization>
+      <organization>Codeprimate.org</organization>
       <organizationUrl>http://www.codeprimate.org</organizationUrl>
     </developer>
   </developers>
