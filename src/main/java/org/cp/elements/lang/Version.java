@@ -131,24 +131,21 @@ public class Version implements Comparable<Version> {
    */
   public static @NotNull Version parse(@NotNull String version) {
 
-    Assert.hasText(version, "A version [%s] is required", version);
+    Assert.hasText(version, "The version [%s] to parse is required", version);
 
     String[] versionNumbers = version.split(VERSION_NUMBER_SEPARATOR);
 
     switch (versionNumbers.length) {
-      case 1:
+      case 1 -> {
         String[] majorMinorVersionNumbers = {
           versionNumbers[0], String.valueOf(DEFAULT_VERSION_NUMBER)
         };
         return parseMajorMinor(majorMinorVersionNumbers);
-      case 2:
-        return parseMajorMinor(versionNumbers);
-      case 3:
-        return parseMajorMinorMaintenance(versionNumbers);
-      case 4:
-        return parseMajorMinorMaintenanceQualifier(versionNumbers);
-      default:
-        throw new IllegalArgumentException(String.format("Unrecognized format for version [%s]", version));
+      }
+      case 2 -> { return parseMajorMinor(versionNumbers); }
+      case 3 -> { return parseMajorMinorMaintenance(versionNumbers); }
+      case 4 -> { return parseMajorMinorMaintenanceQualifier(versionNumbers); }
+      default -> throw new IllegalArgumentException(String.format("Unrecognized format for version [%s]", version));
     }
   }
 

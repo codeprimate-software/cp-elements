@@ -173,7 +173,7 @@ public class VersionTests {
     Arrays.asList("  ", "", null).forEach(version ->
       assertThatIllegalArgumentException()
         .isThrownBy(() -> Version.parse(version))
-        .withMessage("A version [%s] is required", version)
+        .withMessage("The version [%s] to parse is required", version)
         .withNoCause());
   }
 
