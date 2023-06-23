@@ -195,7 +195,7 @@ public abstract class AbstractBean<ID extends Comparable<ID>, USER, PROCESS> ext
   /**
    * Gets the {@link String name} of the {@link Field} mapped to the given {@literal property}
    * of {@literal this} {@link Bean}.
-   *
+   * <p>
    * If no such mapping exists, then the given {@link String named} property is returned.
    *
    * @param propertyName {@link String} value containing the {@literal name} of the property
@@ -219,7 +219,7 @@ public abstract class AbstractBean<ID extends Comparable<ID>, USER, PROCESS> ext
 
   /**
    * Determines whether {@literal this} {@link Bean} has been modified.
-   *
+   * <p>
    * One implementation suggests that if the {@link Instant last modified date and time} does not match
    * the {@link Instant current modified date and time} then {@literal this} {@link Bean} has been modified.
    *
@@ -232,7 +232,7 @@ public abstract class AbstractBean<ID extends Comparable<ID>, USER, PROCESS> ext
 
   /**
    * Determines whether the {@link String named} property of {@literal this} {@link Bean} has been modified.
-   *
+   * <p>
    * The property has been changed if the old value is not equal in value to the new value.
    *
    * @param propertyName {@link String} containing the name of the property to check for modification.
@@ -288,7 +288,7 @@ public abstract class AbstractBean<ID extends Comparable<ID>, USER, PROCESS> ext
   /**
    * Changes the {@link Object old value} of the given property, referenced by {@link String name},
    * to the {@link Object new value}, effectively modifying the internal state of {@literal this} {@link Bean}.
-   *
+   * <p>
    * This method uses the Java Reflection API to set the {@link Field} for the corresponding {@literal property}.
    *
    * @param propertyName {@link String} containing the name of the property ({@link Field}) to set.
@@ -357,7 +357,7 @@ public abstract class AbstractBean<ID extends Comparable<ID>, USER, PROCESS> ext
   /**
    * Notifies all {@link VetoableChangeListener VetoableChangeListeners} of a {@link PropertyChangeEvent} happening to
    * {@literal this} {@link Bean}.
-   *
+   * <p>
    * The change to the property may be vetoed by one of the {@link VetoableChangeListener VetoableChangeListeners}
    * listening to property changes occuring on {@literal this} {@link Bean}. If the property change is vetoed by
    * any listener, the veto prevents the value of the property from changing.
@@ -441,18 +441,18 @@ public abstract class AbstractBean<ID extends Comparable<ID>, USER, PROCESS> ext
 
   /**
    * Processes the change in state to the {@link String named} property of {@literal this} {@link Bean}.
-   *
+   * <p>
    * A {@link PropertyChangeEvent} is created to notify all listeners of the state change.
-   *
+   * <p>
    * First, all {@link VetoableChangeListener VetoableChangeListeners} are notified of the pending state change
    * in order to validate the change and veto any undesirable change to the specified property.
-   *
+   * <p>
    * Next, the state change is effected followed by notification of
    * all {@link PropertyChangeListener PropertyChangeListeners}.
-   *
+   * <p>
    * Finally, a {@link ChangeEvent} is sent to all {@link ChangeListener ChangeListeners} notifying the listeners
    * that {@literal this} {@link Bean} has been changed.
-   *
+   * <p>
    * This particular implementation employs a callback style and approach to effectively changing the state
    * of {@literal this} {@link Bean}. As it is not always possible to access the particular {@link Field Fields}
    * of an {@link Object Object's} class, the callback allows the subclass to effect the change, naturally.
@@ -472,18 +472,18 @@ public abstract class AbstractBean<ID extends Comparable<ID>, USER, PROCESS> ext
 
   /**
    * Processes the change in state to the {@link String named} property of {@literal this} {@link Bean}.
-   *
+   * <p>
    * A {@link PropertyChangeEvent} is created to notify all listeners of the state change.
-   *
+   * <p>
    * First, all {@link VetoableChangeListener VetoableChangeListeners} are notified of the pending state change
    * in order to validate the change and veto any undesirable change to the specified property.
-   *
+   * <p>
    * Next, the state change is effected followed by notification of
    * all {@link PropertyChangeListener PropertyChangeListeners}.
-   *
+   * <p>
    * Finally, a {@link ChangeEvent} is sent to all {@link ChangeListener ChangeListeners} notifying the listeners
    * that {@literal this} {@link Bean} has been changed.
-   *
+   * <p>
    * This particular implementation employs a callback style and approach to effectively changing the state
    * of {@literal this} {@link Bean}. As it is not always possible to access the particular {@link Field Fields}
    * of an {@link Object Object's} class, the callback allows the subclass to effect the change, naturally.
@@ -665,7 +665,7 @@ public abstract class AbstractBean<ID extends Comparable<ID>, USER, PROCESS> ext
    * Unregisters the given {@link VetoableChangeListener} from listening to and being notified of
    * {@link PropertyChangeEvent PropertyChangeEvents} to the given {@link String named} property
    * of {@literal this} {@link Bean}.
-   *
+   * <p>
    * In addition, the listener's vote in vetoing possibly undesirable changes to {@literal this} {@link Bean}
    * state is now void.
    *
@@ -682,7 +682,7 @@ public abstract class AbstractBean<ID extends Comparable<ID>, USER, PROCESS> ext
    * Unregisters the given {@link VetoableChangeListener} from listening to and being notified of
    * {@link PropertyChangeEvent PropertyChangeEvents} to the given {@link String named} property
    * of {@literal this} {@link Bean}.
-   *
+   * <p>
    * In addition, the listener's vote in vetoing possibly undesirable changes to {@literal this} {@link Bean} state
    * is now void.
    *
@@ -730,7 +730,7 @@ public abstract class AbstractBean<ID extends Comparable<ID>, USER, PROCESS> ext
 
   /**
    * Compares the given {@link Bean} with {@literal this} {@link Bean} to determine sort order.
-   *
+   * <p>
    * The default implementation is to order by identifier, where {@literal null} identifiers
    * are ordered before {@literal non-null} identifiers.
    *
@@ -757,7 +757,7 @@ public abstract class AbstractBean<ID extends Comparable<ID>, USER, PROCESS> ext
 
   /**
    * Determines whether {@literal this} {@link Bean} and the given {@link Bean} are equal.
-   *
+   * <p>
    * {@literal This} {@link Bean} and the given {@link Bean} are considered equal if their {@link #getId() identifiers}
    * match. A {@literal null} {@link #getId() identifier} is not logically equal to any other {@link Bean}, even other
    * {@link Bean Beans} with a {@literal null} {@link #getId() identifier} regardless of the {@link Bean} other state.

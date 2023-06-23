@@ -33,8 +33,8 @@ import org.cp.elements.util.stream.StreamUtils;
  * Interface defining a contract for Java {@link Object Objects} and services
  * {@link ServiceLoader#load(Class, ClassLoader) loaded} with Java's {@link ServiceLoader}.
  *
- * @author John Blum
  * @param <T> {@link Class type} of the service instance loaded by this {@link ServiceLoader}.
+ * @author John Blum
  * @see java.util.ServiceLoader
  * @since 1.0.0
  */
@@ -43,7 +43,7 @@ public interface ServiceLoaderSupport<T> {
 
   /**
    * Gets the {@link ClassLoader} used to load the {@literal service provider} {@link Class} files and resource files.
-   *
+   * <p>
    * By default, returns the {@link Thread#currentThread() current Thread}
    * {@link Thread#getContextClassLoader() context ClassLoader}.
    *
@@ -100,16 +100,16 @@ public interface ServiceLoaderSupport<T> {
    * Resolves a {@literal service instance} by {@link Nameable#getName() name} or {@link Qualifier#name() Qualifer name}
    * depending on whether the {@literal service instance} is a {@literal named service} implementing {@link Nameable}
    * or has been annotated with Elements' {@link Qualifier} annotation.
-   *
+   * <p>
    * The algorithm considers whether the {@literal service instance} is a {@literal named service} first,
    * implementing Elements' {@link Nameable} interface and using {@link Nameable#getName()} to match to
    * the {@code declaredName} for the {@literal service}.
-   *
+   * <p>
    * Alternatively, it is assumed that the developer annotated his/her {@literal service provider implementation},
    * that is the main {@literal service provider} {@link Class}, with Elements' {@link Qualifier} annotation.
    * The algorithm does not search interface extensions or super classes of
    * the implementing {@literal service provider} class.
-   *
+   * <p>
    * {@link Nameable} takes precedence over {@link Qualifier} since {@link Nameable} can be dynamic
    * and {@link Qualifier} is static.
    *
@@ -148,7 +148,7 @@ public interface ServiceLoaderSupport<T> {
   /**
    * Declares the {@link Class type} used to {@link ServiceLoader#load(Class) load the service} with
    * the Java {@link ServiceLoader}.
-   *
+   * <p>
    * By default, returns the {@link Class type} of the {@link Class} implementing this interface.
    *
    * @return a {@link Class type} of the service to load.

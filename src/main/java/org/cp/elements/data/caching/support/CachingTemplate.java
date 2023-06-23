@@ -36,9 +36,9 @@ import org.cp.elements.lang.annotation.Nullable;
  * This Template additionally performs locking for both read and write data access operations when using the wrapped
  * {@link Cache} in order to coordinate concurrent {@link Cache} operations in a multi-Thread environment.
  *
- * @author John Blum
  * @param <KEY> {@link Class type} of the {@link Cache} key.
  * @param <VALUE> {@link Class type} of the {@link Cache} value.
+ * @author John Blum
  * @see java.util.concurrent.locks.Lock
  * @see java.util.concurrent.locks.ReadWriteLock
  * @see java.util.concurrent.locks.ReentrantReadWriteLock
@@ -131,7 +131,7 @@ public class CachingTemplate<KEY extends Comparable<KEY>, VALUE> {
 
   /**
    * Constructs a new {@link ReadWriteLock}.
-   *
+   * <p>
    * The {@link Lock} is reentrant.
    *
    * @return a new {@link ReadWriteLock}.
@@ -194,7 +194,7 @@ public class CachingTemplate<KEY extends Comparable<KEY>, VALUE> {
 
   /**
    * Clears the entire contents of the {@link Cache}.
-   *
+   * <p>
    * The {@link Cache} operation acquires a {@literal write lock}.
    *
    * @param lock {@link ReadWriteLock} used to synchronize the {@link Cache} clear operation.
@@ -208,7 +208,7 @@ public class CachingTemplate<KEY extends Comparable<KEY>, VALUE> {
 
   /**
    * Evicts the {@link Cache.Entry} mapped to the given {@link KEY key} from the {@link Cache}.
-   *
+   * <p>
    * This {@link Cache} operation acquires a {@literal write lock}.
    *
    * @param lock {@link ReadWriteLock} used to synchronize the {@link Cache} eviction (remove) operation.
@@ -223,7 +223,7 @@ public class CachingTemplate<KEY extends Comparable<KEY>, VALUE> {
 
   /**
    * Reads the {@link VALUE value} stored in this {@link Cache} mapped to the given {@link KEY}.
-   *
+   * <p>
    * This {@link Cache} operation acquires a {@literal read lock}.
    *
    * @param lock {@link ReadWriteLock} used to synchronize the {@link Cache} read (get) operation.
@@ -240,7 +240,7 @@ public class CachingTemplate<KEY extends Comparable<KEY>, VALUE> {
 
   /**
    * Writes (puts) the given {@link VALUE value} to the {@link Cache} mapped to the given {@link KEY key}.
-   *
+   * <p>
    * This {@link Cache} operation acquires a {@literal write lock}.
    *
    * @param lock {@link ReadWriteLock} used to synchronize the {@link Cache} write (put) operation.
@@ -261,10 +261,10 @@ public class CachingTemplate<KEY extends Comparable<KEY>, VALUE> {
 
   /**
    * Implementation of the {@literal Cache-Aside} Cache Pattern, also known as {@literal Look-Aside} Cache Pattern.
-   *
+   * <p>
    * This caching data access operation first attempts to locate an {@link Cache.Entry} in the {@link Cache}
    * with the given {@link KEY key}, returning the {@link VALUE value} of the {@link Cache.Entry} if present.
-   *
+   * <p>
    * If an {@link Cache.Entry} with the given {@link KEY key} is not present in the {@link Cache},
    * then the given {@link Supplier cacheable operation} is invoked to compute or load a {@link VALUE value}.
    * The {@link VALUE value} is then put into the {@link Cache} as a {@link Cache.Entry} mapped to the given
@@ -355,7 +355,7 @@ public class CachingTemplate<KEY extends Comparable<KEY>, VALUE> {
   /**
    * This caching data access operation invokes the given, required {@link Supplier cacheable operation}
    * and then caches the {@link VALUE result} before returning the computed {@link VALUE}.
-   *
+   * <p>
    * The {@link VALUE result} of the {@link Supplier cacheable operation} is only cached if the {@link VALUE result}
    * is not {@literal null} and the {@link Supplier cacheable operation} completes successfully.
    *

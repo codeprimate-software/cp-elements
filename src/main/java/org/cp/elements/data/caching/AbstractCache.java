@@ -29,9 +29,9 @@ import org.cp.elements.util.CollectionUtils;
 /**
  * Abstract base class supporting the implementation of different types of {@link Cache Caches}.
  *
- * @author John Blum
  * @param <KEY> {@link Class type} of the {@link Cache} key.
  * @param <VALUE> {@link Class type} of the {@link Cache} value.
+ * @author John Blum
  * @see org.cp.elements.data.caching.Cache
  * @see java.lang.Comparable
  * @since 1.0.0
@@ -44,10 +44,10 @@ public abstract class AbstractCache<KEY extends Comparable<KEY>, VALUE> implemen
 
   /**
    * Gets the configured {@link Object lock} used to run operations on this {@link Cache} atomically / synchronously.
-   *
+   * <p>
    * If no {@link Object lock} has been configured, that is, the {@link Object lock} is {@literal null},
    * then the {@link Cache} operations will not be atomic.
-   *
+   * <p>
    * No {@link Object lock} is configured by default.
    *
    * @return the configured {@link Object lock}; may be {@literal null}.
@@ -69,7 +69,7 @@ public abstract class AbstractCache<KEY extends Comparable<KEY>, VALUE> implemen
 
   /**
    * Clears the entire contents of (all entries from) this {@link Cache}.
-   *
+   * <p>
    * This {@link Cache} operation is not supported by default since it can be a very costly operation,
    * especially in a distributed context. Caching providers and implementors should therefore provide
    * a custom and efficient implementation to clear the contents and {@link Cache.Entry entries} from
@@ -95,7 +95,7 @@ public abstract class AbstractCache<KEY extends Comparable<KEY>, VALUE> implemen
 
   /**
    * Gets the {@link VALUE value} stored in this {@link Cache} mapped to the given {@link KEY}.
-   *
+   * <p>
    * Returns {@literal null} if the {@link VALUE value} mapped to the given {@link KEY key} is {@literal null},
    * or this {@link Cache} does not contain an entry mapped to the given {@link KEY key}.
    *
@@ -113,7 +113,7 @@ public abstract class AbstractCache<KEY extends Comparable<KEY>, VALUE> implemen
 
   /**
    * Returns the {@link String name} of this {@link Cache}.
-   *
+   * <p>
    * The configured {@link String name} may be {@literal null}.
    *
    * @return the {@link String name} of this {@link Cache}; may be {@literal null}.
@@ -126,7 +126,7 @@ public abstract class AbstractCache<KEY extends Comparable<KEY>, VALUE> implemen
 
   /**
    * Returns an {@link Iterator} iterating over the {@link Cache.Entry entries} in this {@link Cache}.
-   *
+   * <p>
    * When extending from {@link AbstractCache}, caching providers must be careful to either override
    * the {@link #keys()} or this {@literal iterator} method, since {@literal iterator()} calls {@link #keys()}
    * and {@link #keys()} calls {@literal iterator()}, which will end up in infinite recursion.
@@ -158,7 +158,7 @@ public abstract class AbstractCache<KEY extends Comparable<KEY>, VALUE> implemen
 
   /**
    * Returns all {@link KEY keys} in this {@link Cache}.
-   *
+   * <p>
    * Returns an {@link Collections#emptySet()} by default.
    *
    * @return a {@link Set} containing all the {@link KEY keys} from this {@link Cache}.

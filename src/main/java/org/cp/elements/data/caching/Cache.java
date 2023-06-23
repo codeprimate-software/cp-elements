@@ -51,7 +51,7 @@ import org.cp.elements.util.stream.StreamUtils;
  * is ideal for fact access to infrequently changing data, or relatively static data compared to transactional data
  * that is frequently changing. Although, caches can be used to store and process transactional data as well, caches
  * excel when the number of reads exceeds the number of writes.
- *
+ * <p>
  * Caching providers and implementors of this {@link Cache} interface, must minimally provide implementations of
  * the following {@link Cache} operations:
  * <p>
@@ -65,9 +65,9 @@ import org.cp.elements.util.stream.StreamUtils;
  * then caching providers should additionally override the {@link #getLock()} method to return a {@literal non-null}
  * {@link Object} to be used as the {@literal lock}.
  *
- * @author John Blum
  * @param <KEY> {@link Comparable} {@link Class type} of {@literal keys} used for mapping by this {@link Cache}.
  * @param <VALUE> {@link Class type} of {@link VALUE values} stored in this {@link Cache}.
+ * @author John Blum
  * @see java.lang.Comparable
  * @see java.lang.Iterable
  * @see java.util.Map
@@ -85,10 +85,10 @@ public interface Cache<KEY extends Comparable<KEY>, VALUE>
 
   /**
    * Gets the configured {@link Object lock} used to run operations on this {@link Cache} atomically / synchronously.
-   *
+   * <p>
    * If no {@link Object lock} has been configured, that is, the {@link Object lock} is {@literal null},
    * then the {@link Cache} operations will not be atomic.
-   *
+   * <p>
    * No {@link Object lock} is configured by default.
    *
    * @return the configured {@link Object lock}; may be {@literal null}.
@@ -265,10 +265,10 @@ public interface Cache<KEY extends Comparable<KEY>, VALUE>
 
   /**
    * Gets the {@link VALUE value} stored in this {@link Cache} mapped to the given {@link KEY}.
-   *
+   * <p>
    * Returns {@literal null} if the {@link VALUE value} mapped to the given {@link KEY key} is {@literal null},
    * or this {@link Cache} does not contain an {@link Cache.Entry} mapped to the given {@link KEY key}.
-   *
+   * <p>
    * Even though the {@link Cache} interface provides a default implementation, cache providers are still encouraged
    * to override this method and provide a more efficient, custom implementation that is conducive to the underlying
    * data store as recommended in the {@link Cache} interface Javadoc.
@@ -292,9 +292,9 @@ public interface Cache<KEY extends Comparable<KEY>, VALUE>
 
   /**
    * Gets all {@link VALUE values} stored in this {@link Cache} mapped to {@link KEY keys} in the given array.
-   *
+   * <p>
    * Returns an empty {@link List} if the array of {@link KEY keys} is {@literal null} or {@literal empty}.
-   *
+   * <p>
    * Given an array of {@link KEY keys}: {@literal [ keyOne, keyTwo, ..., keyN ]} this method will return
    * a {@link List} of {@link VALUE values}: {@literal [ valueOne, valueTwo, ..., valueN ]} even if the values
    * are {@literal null}. The {@link List} of {@link VALUE values} matches 1 for 1 for each {@link KEY key}
@@ -321,9 +321,9 @@ public interface Cache<KEY extends Comparable<KEY>, VALUE>
   /**
    * Gets all {@link VALUE values} stored in this {@link Cache} mapped to {@link KEY keys}
    * in the given {@link Iterable}.
-   *
+   * <p>
    * Returns an empty {@link List} if the {@link Iterable} of {@link KEY keys} is {@literal null} or {@literal empty}.
-   *
+   * <p>
    * Given an {@link Iterable} of {@link KEY keys}: {@literal [ keyOne, keyTwo, ..., keyN ]} this method will return
    * a {@link List} of {@link VALUE values}: {@literal [ valueOne, valueTwo, ..., valueN ]} even if the values
    * are {@literal null}. The {@link List} of {@link VALUE values} matches 1 for 1 for each {@link KEY key}
@@ -398,7 +398,7 @@ public interface Cache<KEY extends Comparable<KEY>, VALUE>
   /**
    * Gets the {@link VALUE existing value} stored in this {@link Cache} mapped to the given {@link KEY key}
    * then maps the {@link VALUE new value} to the given {@link KEY key}.
-   *
+   * <p>
    * The {@link VALUE new value} will be {@link #put(Comparable, Object)} (stored) in this {@link Cache}
    * regardless if the given {@link KEY key} was mapped to a {@link VALUE} or not.
    *
@@ -422,7 +422,7 @@ public interface Cache<KEY extends Comparable<KEY>, VALUE>
    * Gets the {@link VALUE existing value} stored in this {@link Cache} mapped to the given {@link KEY key}
    * then maps the {@link VALUE new value} to the given {@link KEY key} only if the given {@link KEY key}
    * was currently mapped to a {@link VALUE value} in the first place.
-   *
+   * <p>
    * The {@link VALUE new value} will be {@link #put(Comparable, Object)} (stored) in this {@link Cache}
    * if and only if (iff) the given {@link KEY key} was mapped to an {@link VALUE existing value}.
    *
@@ -453,7 +453,7 @@ public interface Cache<KEY extends Comparable<KEY>, VALUE>
    * Gets the {@link VALUE existing value} stored in this {@link Cache} mapped to the given {@link KEY key}
    * then maps the {@link VALUE new value} to the given {@link KEY key} only if the {@link VALUE existing value}
    * is equal to the {@link VALUE expected value}.
-   *
+   * <p>
    * The {@link VALUE new value} will be {@link #put(Comparable, Object)} (stored) in this {@link Cache}
    * if and only if (iff) the given {@link KEY key} was mapped to the {@link VALUE expected value}.
    *
@@ -489,7 +489,7 @@ public interface Cache<KEY extends Comparable<KEY>, VALUE>
 
   /**
    * Gets the {@link Cache.Entry}, key/value mapping from this {@link Cache} for the given {@link KEY}.
-   *
+   * <p>
    * The {@link Cache.Entry} returned by this method is considered {@literal attached}. Any changes to
    * the key/value mapping in this {@link Cache} are reflected in the {@link Cache.Entry} returned for
    * the given {@link KEY key}.
@@ -571,7 +571,7 @@ public interface Cache<KEY extends Comparable<KEY>, VALUE>
   /**
    * Puts the {@link Identifiable object} in this {@link Cache} by mapping the {@link Identifiable#getId() ID}
    * of the {@link Identifiable object} to the {@link Identifiable object} itself.
-   *
+   * <p>
    * The {@link Identifiable} object must be an instance of {@link VALUE}.
    *
    * @param entity {@link Identifiable object} to {@literal put} in this {@link Cache}; must not be {@literal null}.
@@ -593,11 +593,11 @@ public interface Cache<KEY extends Comparable<KEY>, VALUE>
   /**
    * Puts all {@link Identifiable objects} in this {@link Cache} by mapping each {@link Identifiable object's}
    * {@link Identifiable#getId() ID} to the {@link Identifiable object} itself.
-   *
+   * <p>
    * All {@link Identifiable objects} must be an instance of {@link VALUE}.
-   *
+   * <p>
    * WARNING: This putAll(..) operation is not atomic.
-   *
+   * <p>
    * For example, if any {@link Identifiable object} in the array is {@literal null}, then it will cause
    * an {@link IllegalArgumentException} to be thrown. However, any {@link Identifiable object} that came before
    * the {@literal null} value will still be persisted to this {@link Cache}.
@@ -624,11 +624,11 @@ public interface Cache<KEY extends Comparable<KEY>, VALUE>
   /**
    * Puts all {@link Identifiable objects} in this {@link Cache} by mapping each {@link Identifiable object's}
    * {@link Identifiable#getId() ID} to the {@link Identifiable object} itself.
-   *
+   * <p>
    * All {@link Identifiable objects} must be an instance of {@link VALUE}.
-   *
+   * <p>
    * WARNING: This putAll(..) operation is not atomic.
-   *
+   * <p>
    * For example, if any {@link Identifiable object} in the {@link Iterable} is {@literal null}, then it will cause
    * an {@link IllegalArgumentException} to be thrown. However, any {@link Identifiable object} that came before
    * the {@literal null} value will still be persisted to this {@link Cache}.
@@ -821,7 +821,7 @@ public interface Cache<KEY extends Comparable<KEY>, VALUE>
 
     /**
      * Factory method used to copy a given, required {@link Cache.Entry} as a new instance.
-     *
+     * <p>
      * The resulting {@link Cache.Entry} will be {@link #materialize() materialized} and therefore,
      * will effectively be independent of the {@link Cache.Entry} on which the new instance is based.
      * The {@link #setValue(Object)} method is not supported.
@@ -936,7 +936,7 @@ public interface Cache<KEY extends Comparable<KEY>, VALUE>
 
     /**
      * Gets the {@link VALUE value} from this {@link Cache.Entry}.
-     *
+     * <p>
      * Returns {@literal null} by default.
      *
      * @return the {@link VALUE value} from this {@link Cache.Entry}.

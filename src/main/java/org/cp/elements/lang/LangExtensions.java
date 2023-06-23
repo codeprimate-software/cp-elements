@@ -69,7 +69,7 @@ public abstract class LangExtensions {
    * in a call chain, for example:
    * <p>
    * <code>
-   *   obj.getX().getY().getZ()...
+   * obj.getX().getY().getZ()...
    * </code>
    *
    * @param <T> {@link Class type} of {@link Object} to Proxy.
@@ -324,7 +324,7 @@ public abstract class LangExtensions {
 
     /**
      * Asserts whether the {@link Object} to evaluate is {@link Comparable} to the given {@link Object}.
-     *
+     * <p>
      * This assertion performs an equality comparison as determined by the {@link Comparable} criteria
      * based on the {@link Comparable} {@link Class type} of the {@link Object objects}.
      *
@@ -338,7 +338,7 @@ public abstract class LangExtensions {
 
     /**
      * Asserts whether the {@link Object} to evaluate is {@link Comparable} to the given {@link Object}.
-     *
+     * <p>
      * This assertion performs an equality comparison as determined by the {@link Comparable} criteria
      * based on the {@link Comparable} {@link Class type} of the {@link Object objects}.
      *
@@ -766,7 +766,7 @@ public abstract class LangExtensions {
 
     /**
      * Return the expected outcome of this assertion when applied to the {@link Object subject}.
-     *
+     * <p>
      * Defaults to {@literal true}, implying that the assertion statement made about the {@link Object subject}
      * should result in a {@literal true} value.
      *
@@ -1248,7 +1248,7 @@ public abstract class LangExtensions {
   /**
    * A {@literal Decorator} used to decorate or modify the existing behavior and functionality of an existing assertion
    * ({@link AssertThat} instance).
-   *
+   * <p>
    * This class makes it easier to extend and customize any existing assertion in the {@code transform(..)} operation.
    *
    * @param <T> {@link Class type} of {@link Object} to evaluate and assert.
@@ -1534,9 +1534,9 @@ public abstract class LangExtensions {
 
     /**
      * Converts a {@link Object target} into an {@link Object} of the requested, required {@link Class type}.
-     *
+     * <p>
      * For example, this operation may be used to convert a {@link String} into a {@link Integer}.
-     *
+     * <p>
      * If more complex and sophisticated conversions are required, then users should consider Element's
      * {@link org.cp.elements.data.conversion.ConversionService}.
      *
@@ -1631,7 +1631,7 @@ public abstract class LangExtensions {
     /**
      * Returns the final {@link Boolean result} of all the {@link Predicate#test(Object) test evaluations}
      * applied to the {@link #getTarget() target}.
-     *
+     * <p>
      * Returns {@literal true} by default.
      *
      * @return the final {@link Boolean result} of all the {@link Predicate#test(Object) test evaluations}
@@ -1646,7 +1646,7 @@ public abstract class LangExtensions {
      * Applies the given {@link Function} to the {@link #getTarget() target} in order to follow the {@literal has-a}
      * relationships of the {@link #getTarget() target} and extract a composed {@link Object collaborator}
      * for further {@link #expectThat(Predicate) test evaluation}.
-     *
+     * <p>
      * For instance, the current {@link Given} object may be composed of a {@literal Person} object
      * having a composed {@link java.time.LocalDate birthDate} property. This method can be used to extract
      * the {@literal Person's} {@link java.time.LocalDate birthDate} using {@literal thenGiven(Person:getBirthDate)}.
@@ -1780,7 +1780,7 @@ public abstract class LangExtensions {
     /**
      * Determines whether the {@link Object} provided to the {@literal is} operator is equal to
      * the {@link Object} parameter.
-     *
+     * <p>
      * The {@link Object Objects} are considered equal as determined by their {@link Comparable#compareTo} method.
      * This implies that the {@link Object Objects} in the equality comparison must implement
      * the {@link Comparable} interface.
@@ -1794,7 +1794,7 @@ public abstract class LangExtensions {
     /**
      * Shortcut for {@literal not().comparableTo(:Object)}. Determines whether the {@link Object} provided to
      * the {@literal is} operator is not equal to the {@link Object} parameter.
-     *
+     * <p>
      * The {@link Object Objects} are considered equal as determined by their {@link Comparable#compareTo} method.
      * This implies that the {@link Object Objects} in the equality comparison must implement
      * the {@link Comparable} interface.
@@ -1810,7 +1810,7 @@ public abstract class LangExtensions {
     /**
      * Determines whether the {@link Object} provided to the {@literal is} operator is equal to
      * the {@link Object} parameter.
-     *
+     * <p>
      * The {@link Object Objects} are considered equal when neither is {@literal null}, both refer to
      * the same {@link Object}, or both {@link Object Objects} have the same {@literal value} as determined by
      * their {@link Object#equals} method.
@@ -1824,7 +1824,7 @@ public abstract class LangExtensions {
     /**
      * Shortcut for not().equalTo(:Object). Determines whether the {@link Object} provided to the {@literal is} operator
      * is not equal to the {@link Object} parameter.
-     *
+     * <p>
      * The {@link Object Objects} are considered unequal when either is {@literal null}, both are {@link Object Objects}
      * of different {@link Class types}, or both {@link Object Objects} are unequal in {@literal value} as determined by
      * their {@link Object#equals} method.
@@ -2083,7 +2083,7 @@ public abstract class LangExtensions {
 
   /**
    * Implementation of the {@link Is} interface.
-   *
+   * <p>
    * Note, this implementation is Thread-safe, although it is very unlikely that a {@link Thread}
    * will share an instance of this class since every invocation of the {@link #is(Object)} operator factory method
    * will return a new instance of this class, at least for the time being.

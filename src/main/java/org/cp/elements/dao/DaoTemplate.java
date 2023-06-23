@@ -34,8 +34,8 @@ import org.cp.elements.util.CollectionUtils;
  * for the CRUD ({@literal CREATE, READ, UPDATE, DELETE}) data access operations
  * as well as simple queries.
  *
- * @author John J. Blum
  * @param <T> {@link Class type} of {@link Object application domain model object} being persisted.
+ * @author John J. Blum
  * @see java.util.function.Function
  * @see java.util.function.Predicate
  * @see java.util.Comparator
@@ -58,7 +58,7 @@ public interface DaoTemplate<T> {
   /**
    * Creates a new instance of a Bean of {@link Class type} {@link T} initialized with
    * the given, required {@link Function}.
-   *
+   * <p>
    * The new Bean is passed to the {@code callback} {@link Function} in order to perform any necessary initialization
    * or other customizations before the Bean is returned.
    *
@@ -77,7 +77,7 @@ public interface DaoTemplate<T> {
 
   /**
    * Finds all Beans persisted to the data store.
-   *
+   * <p>
    * Returns an {@link List#isEmpty() empty List} by default.
    *
    * @return all Beans contained in the data store.
@@ -113,7 +113,7 @@ public interface DaoTemplate<T> {
 
   /**
    * Finds all Beans matching the criteria defined by the given, required {@link Predicate}.
-   *
+   * <p>
    * Returns a {@link Collections#emptyList()} by default.
    *
    * @param queryPredicate {@link Predicate} defining the criteria used to match Beans;
@@ -164,7 +164,7 @@ public interface DaoTemplate<T> {
 
   /**
    * Finds a single, {@link Optional} Bean matching the criteria defined by the given, required {@link Predicate}.
-   *
+   * <p>
    * Returns {@link Optional#empty()} by default.
    *
    * @param queryPredicate {@link Predicate} defining the criteria used to match a single Bean.
@@ -232,7 +232,7 @@ public interface DaoTemplate<T> {
 
   /**
    * Saves the given Bean to the data store.
-   *
+   * <p>
    * If the Bean is new (usually indicated by the absence of an ID), then the Bean is inserted in the data store,
    * otherwise the data store is updated with the Bean's current state.
    *
