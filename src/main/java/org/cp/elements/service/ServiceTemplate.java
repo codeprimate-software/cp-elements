@@ -47,8 +47,8 @@ import org.cp.elements.util.stream.StreamUtils;
  * Additionally, this {@link ServiceTemplate} interface defines a contract for application service components
  * encapsulating business logic and other service operations common to all services.
  *
- * @author John J. Blum
  * @param <T> {@link Class type} of the {@link Object service object} implementing this interface.
+ * @author John J. Blum
  * @see java.util.ServiceLoader
  * @see org.cp.elements.context.configure.Configuration
  * @see org.cp.elements.context.configure.ConfigurationService

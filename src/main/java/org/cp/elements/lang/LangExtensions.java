@@ -69,7 +69,7 @@ public abstract class LangExtensions {
    * in a call chain, for example:
    * <p>
    * <code>
-   *   obj.getX().getY().getZ()...
+   * obj.getX().getY().getZ()...
    * </code>
    *
    * @param <T> {@link Class} type of given {@link Object} to Proxy.
