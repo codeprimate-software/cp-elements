@@ -81,6 +81,7 @@
     <java-module-name>codeprimate.elements</java-module-name>
     <build-helper-maven-plugin.version>3.4.0</build-helper-maven-plugin.version>
     <maven-changelog-plugin.version>2.3</maven-changelog-plugin.version>
+    <jmh.version>1.36</jmh.version>
   </properties>
 
   <build>
@@ -114,6 +115,18 @@
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
       <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.openjdk.jmh</groupId>
+      <artifactId>jmh-core</artifactId>
+      <version>${jmh.version}</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.openjdk.jmh</groupId>
+      <artifactId>jmh-generator-annprocess</artifactId>
+      <version>${jmh.version}</version>
+      <scope>provided</scope>
     </dependency>
   </dependencies>
 
