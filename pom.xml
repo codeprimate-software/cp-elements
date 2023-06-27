@@ -81,6 +81,7 @@
     <java-module-name>codeprimate.elements</java-module-name>
     <build-helper-maven-plugin.version>3.4.0</build-helper-maven-plugin.version>
     <maven-changelog-plugin.version>2.3</maven-changelog-plugin.version>
+    <datafaker.version>2.0.1</datafaker.version>
     <jmh.version>1.36</jmh.version>
   </properties>
 
@@ -115,6 +116,18 @@
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
       <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>net.datafaker</groupId>
+      <artifactId>datafaker</artifactId>
+      <version>${datafaker.version}</version>
+      <scope>provided</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>org.yaml</groupId>
+          <artifactId>snakeyaml</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.openjdk.jmh</groupId>
