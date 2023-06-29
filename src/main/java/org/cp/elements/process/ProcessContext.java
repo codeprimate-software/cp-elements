@@ -30,20 +30,20 @@ import org.cp.elements.context.env.Environment;
 import org.cp.elements.io.FileSystemUtils;
 import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.SystemUtils;
+import org.cp.elements.lang.annotation.NotNull;
 import org.cp.elements.lang.annotation.NullSafe;
 
 /**
- * The {@link ProcessContext} class captures details about the operating environment (context)
+ * Abstract Data Type (ADT) used to capture details about the operating environment (context)
  * in which a {@link Process} is running.
  *
  * @author John Blum
  * @see java.io.File
  * @see java.lang.Process
- * @see java.util.Optional
  * @see java.lang.ProcessBuilder.Redirect
+ * @see org.cp.elements.context.env.Environment
  * @see org.cp.elements.io.FileSystemUtils
  * @see org.cp.elements.lang.SystemUtils
- * @see Environment
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
@@ -59,7 +59,7 @@ public class ProcessContext {
    * @see #ProcessContext(Process)
    * @see java.lang.Process
    */
-  public static ProcessContext newProcessContext(Process process) {
+  public static @NotNull ProcessContext newProcessContext(@NotNull Process process) {
     return new ProcessContext(process);
   }
 
@@ -163,7 +163,7 @@ public class ProcessContext {
    * @return the {@link Process} object wrapped by this context.
    * @see java.lang.Process
    */
-  public Process getProcess() {
+  public @NotNull Process getProcess() {
     return this.process;
   }
 
@@ -203,7 +203,7 @@ public class ProcessContext {
 
   /**
    * Initializes this {@link ProcessContext} from the given {@link ProcessBuilder}.
-   *
+   * <p>
    * Sets the run user to {@link SystemUtils#USERNAME}.
    *
    * @param processBuilder {@link ProcessBuilder} used to initialize this {@link ProcessContext}.
@@ -218,7 +218,8 @@ public class ProcessContext {
    * @see #redirectInput(java.lang.ProcessBuilder.Redirect)
    * @see #redirectOutput(java.lang.ProcessBuilder.Redirect)
    */
-  public ProcessContext from(ProcessBuilder processBuilder) {
+  public @NotNull ProcessContext from(@NotNull ProcessBuilder processBuilder) {
+
     ranBy(SystemUtils.USERNAME);
     ranIn(processBuilder.directory());
     ranWith(processBuilder.command());
@@ -232,7 +233,7 @@ public class ProcessContext {
   }
 
   /**
-   * Sets whether the {@link Process sub-process} wrapped by this context inherits it's IO
+   * Sets whether the {@link Process sub-process} wrapped by this context inherits its IO
    * from it's {@link Process parent}.
    *
    * @param inheritIO boolean value indicating whether the {@link Process sub-process} wrapped by this context
@@ -240,7 +241,7 @@ public class ProcessContext {
    * @return this {@link ProcessContext}.
    * @see #inheritsIO()
    */
-  public ProcessContext inheritIO(boolean inheritIO) {
+  public @NotNull ProcessContext inheritIO(boolean inheritIO) {
     this.inheritIO = inheritIO;
     return this;
   }
@@ -252,7 +253,7 @@ public class ProcessContext {
    * @return this {@link ProcessContext}.
    * @see #getUsername()
    */
-  public ProcessContext ranBy(String username) {
+  public @NotNull ProcessContext ranBy(String username) {
     this.username = username;
     return this;
   }
@@ -265,7 +266,7 @@ public class ProcessContext {
    * @throws IllegalArgumentException if {@link File} is not a valid directory
    * @see java.io.File
    */
-  public ProcessContext ranIn(File directory) {
+  public @NotNull ProcessContext ranIn(File directory) {
     Assert.isTrue(FileSystemUtils.isDirectory(directory), "[%s] must be a valid directory", directory);
     this.directory = directory;
     return this;
@@ -274,13 +275,13 @@ public class ProcessContext {
   /**
    * Sets the command-line used to execute the {@link Process}.
    *
-   * @param commandLine array of elements constituting the command used to executed the {@link Process}.
+   * @param commandLine array of elements constituting the command used to execute the {@link Process}.
    * @return this {@link ProcessContext}.
    * @see #ranWith(List)
    * @see #getCommandLine()
    */
   @NullSafe
-  public ProcessContext ranWith(String... commandLine) {
+  public @NotNull ProcessContext ranWith(String... commandLine) {
     return ranWith(asList(nullSafeArray(commandLine, String.class)));
   }
 
@@ -292,7 +293,7 @@ public class ProcessContext {
    * @see #getCommandLine()
    */
   @NullSafe
-  public ProcessContext ranWith(List<String> commandLine) {
+  public @NotNull ProcessContext ranWith(List<String> commandLine) {
     this.commandLine = new ArrayList<>(nullSafeList(commandLine));
     return this;
   }
@@ -305,7 +306,7 @@ public class ProcessContext {
    * @see java.lang.ProcessBuilder.Redirect
    * @see #getError()
    */
-  public ProcessContext redirectError(Redirect error) {
+  public @NotNull ProcessContext redirectError(ProcessBuilder.Redirect error) {
     this.error = error;
     return this;
   }
@@ -319,7 +320,7 @@ public class ProcessContext {
    * @return this {@link ProcessContext}.
    * @see #isRedirectingErrorStream()
    */
-  public ProcessContext redirectErrorStream(boolean redirectErrorStream) {
+  public @NotNull ProcessContext redirectErrorStream(boolean redirectErrorStream) {
     this.redirectErrorStream = redirectErrorStream;
     return this;
   }
@@ -332,7 +333,7 @@ public class ProcessContext {
    * @see java.lang.ProcessBuilder.Redirect
    * @see #getInput()
    */
-  public ProcessContext redirectInput(Redirect input) {
+  public @NotNull ProcessContext redirectInput(Redirect input) {
     this.input = input;
     return this;
   }
@@ -345,7 +346,7 @@ public class ProcessContext {
    * @see java.lang.ProcessBuilder.Redirect
    * @see #getOutput()
    */
-  public ProcessContext redirectOutput(Redirect output) {
+  public @NotNull ProcessContext redirectOutput(Redirect output) {
     this.output = output;
     return this;
   }
@@ -357,8 +358,10 @@ public class ProcessContext {
    * @return this {@link ProcessContext}.
    * @see java.lang.ProcessBuilder
    */
-  public ProcessContext to(ProcessBuilder processBuilder) {
+  public @NotNull ProcessContext to(ProcessBuilder processBuilder) {
+
     return Optional.ofNullable(processBuilder).map(localProcessBuilder -> {
+
       localProcessBuilder.command(getCommandLine());
       localProcessBuilder.directory(getDirectory());
       localProcessBuilder.environment().clear();
@@ -374,6 +377,7 @@ public class ProcessContext {
       }
 
       return this;
+
     }).orElse(this);
   }
 
@@ -386,7 +390,7 @@ public class ProcessContext {
    * @see #usingEnvironmentVariables()
    * @see #getEnvironment()
    */
-  public ProcessContext using(Environment environment) {
+  public @NotNull ProcessContext using(Environment environment) {
     this.environment = environment;
     return this;
   }
@@ -400,7 +404,7 @@ public class ProcessContext {
    * @see #using(Environment)
    * @see #getEnvironment()
    */
-  public ProcessContext usingEnvironmentVariables() {
+  public @NotNull ProcessContext usingEnvironmentVariables() {
     return using(Environment.fromEnvironmentVariables());
   }
 }

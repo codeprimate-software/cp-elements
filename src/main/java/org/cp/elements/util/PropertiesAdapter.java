@@ -47,7 +47,7 @@ import org.cp.elements.lang.annotation.Nullable;
 public class PropertiesAdapter implements Iterable<String> {
 
   /**
-   * Factory method used to construct a new instance of {@link PropertiesAdapter} with no {@link Properties}.
+   * Factory method used to construct a new {@link PropertiesAdapter} with no {@link Properties}.
    *
    * @return a new {@link PropertiesAdapter} with no {@link Properties}.
    * @see #PropertiesAdapter(Properties)
@@ -59,7 +59,7 @@ public class PropertiesAdapter implements Iterable<String> {
   }
 
   /**
-   * Factory method used to construct a new instance of {@link PropertiesAdapter} initialized with the given,
+   * Factory method used to construct a new {@link PropertiesAdapter} initialized with the given,
    * required {@link Properties}.
    *
    * @param properties {@link Properties} to adapt; must not be {@literal null}.
@@ -77,8 +77,8 @@ public class PropertiesAdapter implements Iterable<String> {
   private final Properties delegate;
 
   /**
-   * Constructs a new instance of {@link PropertiesAdapter} initialized with the given, required {@link Properties}.
-   *
+   * Constructs a new {@link PropertiesAdapter} initialized with the given, required {@link Properties}.
+   * <p>
    * Additionally, this constructor will load the configured {@link ConversionService}.
    *
    * @param properties {@link Properties} to adapt; must not be {@literal null}.
@@ -118,7 +118,7 @@ public class PropertiesAdapter implements Iterable<String> {
   /**
    * Gets the {@link String value} of the {@link String named} property or returns the {@link String default value}
    * if the {@link String named} property is not declared or defined (set).
-   *
+   * <p>
    * The {@link String value} of the {@link String named} property, when declared and defined, is returned as is,
    * as defined, without any alterations.
    *
@@ -250,7 +250,7 @@ public class PropertiesAdapter implements Iterable<String> {
 
   /**
    * Returns {@literal null} for a {@literal "null"} {@link String value} or simply returns the {@link String value}.
-   *
+   * <p>
    * The {@link String value} is safely {@link String#trim() trimmed} before evaluation.
    *
    * @param value {@link String} to evaluate.
@@ -291,7 +291,7 @@ public class PropertiesAdapter implements Iterable<String> {
 
   /**
    * Gets the assigned {@link String value} of {@link String named} property.
-   *
+   * <p>
    * If the {@link String named} property is assigned a {@literal null} {@link String value},
    * then {@literal null} is returned.
    *
@@ -306,7 +306,7 @@ public class PropertiesAdapter implements Iterable<String> {
   /**
    * Gets the assigned {@link String value} of the {@link String named} property or returns
    * the {@link String default value} if the {@link String named} property is not declared or defined.
-   *
+   * <p>
    * If the {@link String named} property is assigned a {@literal null} {@link String value},
    * then {@literal null} is returned.
    *
@@ -324,8 +324,8 @@ public class PropertiesAdapter implements Iterable<String> {
 
   /**
    * Gets the assigned {@link String value} of the {@link String named} property or returns
-   * the {@link Supplier default value} if the {@link String named} property does not exist.
-   *
+   * the {@link Supplier supplied default value} if the {@link String named} property does not exist.
+   * <p>
    * If the {@link String named} property is assigned a {@literal null} {@link String value},
    * then {@literal null} is returned.
    *
@@ -385,8 +385,8 @@ public class PropertiesAdapter implements Iterable<String> {
 
   /**
    * Gets the assigned {@link String value} of the {@link String named} property as an instance of
-   * the requested {@link Class} type or the {@link T default value} if the {@link String named} property
-   * was not declared or is undefined (not set).
+   * the requested {@link Class} type or the {@link Supplier supplied default value}
+   * if the {@link String named} property was not declared or is undefined (not set).
    *
    * @param <T> {@link Class type} of the return value.
    * @param propertyName {@link String} containing the {@literal name} of the property.
@@ -445,11 +445,9 @@ public class PropertiesAdapter implements Iterable<String> {
       return true;
     }
 
-    if (!(obj instanceof PropertiesAdapter)) {
+    if (!(obj instanceof PropertiesAdapter that)) {
       return false;
     }
-
-    PropertiesAdapter that = (PropertiesAdapter) obj;
 
     return this.getProperties().equals(that.getProperties());
   }

@@ -30,7 +30,7 @@ import org.cp.elements.lang.annotation.Nullable;
 import org.cp.elements.util.ArrayUtils;
 
 /**
- * The {@link ListFiles} class is a Codeprimate Elements Tool used to list the contents of a directory
+ * Codeprimate Elements Tool used to list the contents of a {@link File#isDirectory() directory}
  * in a hierarchical form in a TUI, such as a CLI.
  *
  * @author John Blum
@@ -81,7 +81,7 @@ public class ListFiles implements Runnable {
   }
 
   /**
-   * Factory method used to construct a new instance of {@link ListFiles} that will list the contents
+   * Factory method used to construct a new {@link ListFiles} that will list the contents
    * of the {@link FileSystemUtils#WORKING_DIRECTORY current working directory}.
    *
    * @return a new instance of {@link ListFiles} listing the contents
@@ -95,7 +95,7 @@ public class ListFiles implements Runnable {
   }
 
   /**
-   * Factory method used to construct a new instance of {@link ListFiles} with the given {@link File directory}
+   * Factory method used to construct a new {@link ListFiles} with the given {@link File directory}
    * for which the contents will be listed.
    *
    * @param directory {@link File} referring to the directory for which the contents will be listed.
@@ -135,9 +135,9 @@ public class ListFiles implements Runnable {
 
   /**
    * Runs the {@link File directory} content listing.
-   *
-   * This program and list files algorithm operates recursively in depth-first order, listing the contents or all
-   * sub-directories and files in a hierarchical view.
+   * <p>
+   * This program and list files algorithm operates recursively in depth-first order, listing the contents of all
+   * {@link File#isDirectory() subdirectories} and {@link File#isFile() files} in a hierarchical view.
    *
    * @see java.lang.Runnable#run()
    * @see #listFiles(File, String)

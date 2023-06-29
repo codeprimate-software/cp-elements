@@ -32,7 +32,7 @@ import org.cp.elements.lang.annotation.Nullable;
 public class ThreadAdapter {
 
   /**
-   * Factory method used to construct a new instance of {@link ThreadAdapter} initialized with
+   * Factory method used to construct a new {@link ThreadAdapter} initialized with
    * the {@link Thread#currentThread() current Thread}.
    *
    * @return a new {@link ThreadAdapter} initialized with the {@link Thread#currentThread()}.
@@ -45,8 +45,7 @@ public class ThreadAdapter {
   }
 
   /**
-   * Factory method used to construct a new instance of {@link ThreadAdapter} initialized with the given,
-   * required {@link Thread}.
+   * Factory method used to construct a new {@link ThreadAdapter} initialized with the given, required {@link Thread}.
    *
    * @param thread {@link Thread} to adapt/wrap; must not be {@literal null}.
    * @return a new {@link ThreadAdapter} initialized with the given, required {@link Thread}.
@@ -90,8 +89,8 @@ public class ThreadAdapter {
   }
 
   /**
-   * Constructs a new instance of {@link ThreadAdapter} initialized with the given, required {@link Thread}.
-   *
+   * Constructs a new {@link ThreadAdapter} initialized with the given, required {@link Thread}.
+   * <p>
    * The given {@link Thread} will be used as the {@literal delegate} for all {@link Thread}-based operations
    * accessible from {@literal this} adapter.
    *
@@ -108,9 +107,9 @@ public class ThreadAdapter {
   }
 
   /**
-   * Gets the {@literal Thread} adapted ({@literal wrapped}) by {@literal this} {@link ThreadAdapter}.
-   *
-   * All operations accessible from {@literal this} adapter are delegated to the underlying, configured {@link Thread}.
+   * Gets the configured {@literal Thread} adapted ({@literal wrapped}) by {@literal this} {@link ThreadAdapter}.
+   * <p>
+   * All operations accessible from {@literal this} Adapter are delegated to the underlying, configured {@link Thread}.
    *
    * @return the {@literal Thread} adapted ({@literal wrapped}) by {@literal this} {@link ThreadAdapter};
    * never {@literal null}.
@@ -122,7 +121,7 @@ public class ThreadAdapter {
 
   /**
    * Determines whether {@literal this} {@link Thread} is alive.
-   *
+   * <p>
    * A {@link Thread} is {@literal alive} if it has been started and has not yet died.
    *
    * @return a boolean value indicating whether {@literal this} {@link Thread} is alive.
@@ -135,7 +134,7 @@ public class ThreadAdapter {
   /**
    * Determines whether {@literal this} {@link Thread} is currently in a {@literal blocked}
    * {@link Thread#getState() state}.
-   *
+   * <p>
    * A {@link Thread} may currently be {@literal blocked} waiting on a lock or be performing some IO operation.
    *
    * @return a boolean valued indicating whether {@literal this} {@link Thread} is blocked.
@@ -148,7 +147,7 @@ public class ThreadAdapter {
 
   /**
    * Determines whether {@literal this} {@link Thread} is a {@link Thread#isDaemon() daemon} {@link Thread}.
-   *
+   * <p>
    * A {@link Thread#isDaemon() daemon} {@link Thread} is a background {@link Thread} that does not prevent
    * the JVM from exiting.
    *
@@ -163,7 +162,7 @@ public class ThreadAdapter {
 
   /**
    * Determines whether {@literal this} {@link Thread} is a {@link Thread#isDaemon() non-daemon} {@link Thread}.
-   *
+   * <p>
    * A {@link Thread#isDaemon() non-daemon} {@link Thread} is a background {@link Thread} that prevents
    * the JVM from exiting. A {@link Thread#isDaemon() daemon} {@link Thread} is also known as
    * a {@literal user} {@link Thread}.
@@ -179,7 +178,7 @@ public class ThreadAdapter {
 
   /**
    * Alias method for {@link #isNonDaemon()}.
-   *
+   * <p>
    * A {@link Thread#isDaemon() non-daemon} {@link Thread} is also known as a {@literal user} {@link Thread}.
    *
    * @return a boolean value indicating whether {@literal this} {@link Thread} is a {@literal user} {@link Thread}.
@@ -192,7 +191,7 @@ public class ThreadAdapter {
 
   /**
    * Determines whether {@literal this} {@link Thread} has been {@link Thread#isInterrupted() interrupted}.
-   *
+   * <p>
    * The {@link Thread#isInterrupted() interrupted status} of {@literal this} {@link Thread} is unaffected
    * by this method. This {@link Thread} can only be interrupted by another {@link Thread} when {@literal this}
    * {@link Thread} is blocked waiting on a lock or performing some blocking IO operation.
@@ -207,7 +206,7 @@ public class ThreadAdapter {
 
   /**
    * Determines whether {@literal this} {@link Thread} is {@literal new}.
-   *
+   * <p>
    * A {@literal new} {@link Thread} is any {@link Thread} that has not been started yet.
    *
    * @return a boolean value indicating whether {@literal this} {@link Thread} is {@literal new}.
@@ -220,7 +219,7 @@ public class ThreadAdapter {
 
   /**
    * Determines whether {@literal this} {@link Thread} is {@literal runnable}.
-   *
+   * <p>
    * A {@literal runnable} {@link Thread} is any {@link Thread} that can be scheduled by the Operating System (OS)
    * for execution.
    *
@@ -330,7 +329,6 @@ public class ThreadAdapter {
     return this;
   }
 
-
   /**
    * Gets the {@link String name} of {@literal this} {@link Thread}.
    *
@@ -343,8 +341,8 @@ public class ThreadAdapter {
 
   /**
    * Sets the priority of {@literal this} {@link Thread}.
-   *
-   * The priority of {@literal this} {@link Thread} is set to the smaller of the specified new priority
+   * <p>
+   * The priority of {@literal this} {@link Thread} is set to the smallest of the specified new priority
    * and the maximum permitted priority of the {@link Thread Thread's} {@link ThreadGroup}.
    *
    * @param priority priority for {@literal this} {@link Thread}.
@@ -438,6 +436,7 @@ public class ThreadAdapter {
    *
    * @see java.lang.Thread#checkAccess()
    */
+  @SuppressWarnings("deprecated")
   public void checkAccess() {
     getDelegate().checkAccess();
   }
@@ -463,7 +462,7 @@ public class ThreadAdapter {
 
   /**
    * Causes the currently executing {@link Thread} to join and wait for {@literal this} {@link Thread} to terminate.
-   *
+   * <p>
    * The currently executing {@link Thread} waits indefinitely for {@literal this} {@link Thread} to terminate,
    * or until the currently executing {@link Thread} is interrupted.
    *
@@ -478,7 +477,7 @@ public class ThreadAdapter {
   /**
    * Causes the currently executing {@link Thread} to join and wait for {@literal this} {@link Thread} to terminate,
    * or until the specified number of milliseconds have elapsed.
-   *
+   * <p>
    * The currently executing {@link Thread} will wait until the timeout or the currently executing {@link Thread}
    * is interrupted.
    *
@@ -494,7 +493,7 @@ public class ThreadAdapter {
   /**
    * Causes the currently executing {@link Thread} to join and wait for {@literal this} {@link Thread} to terminate,
    * or until the specified number of milliseconds and nanoseconds have elapsed.
-   *
+   * <p>
    * The currently executing {@link Thread} will wait until the timeout or the currently executing {@link Thread}
    * is interrupted.
    *
@@ -522,7 +521,7 @@ public class ThreadAdapter {
 
   /**
    * Causes {@literal this} {@link Thread} to begin execution.
-   *
+   * <p>
    * The Java Virtual Machine (JVM) will call {@literal this} {@link Thread Thread's} {@link Thread#run()} method.
    *
    * @see java.lang.Thread#start()

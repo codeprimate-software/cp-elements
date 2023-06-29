@@ -41,7 +41,7 @@ import org.cp.elements.util.ArrayUtils;
 
 /**
  * Implementation of the {@link Table} interface implementing a tabular data structure and storing data in the JVM Heap.
- *
+ * <p>
  * The {@link InMemoryTable} is an ordered collection of {@link Column Columns} and {@link Row Rows} along with
  * a data set populating the {@literal table}.
  *
@@ -304,7 +304,7 @@ public class InMemoryTable extends AbstractTable {
 
   /**
    * Validates the given {@link Column}.
-   *
+   * <p>
    * By default, the {@link Column} must not be {@literal null}.
    *
    * @param column {@link Column} to validate.
@@ -318,7 +318,7 @@ public class InMemoryTable extends AbstractTable {
 
   /**
    * Validates the given {@link Row}.
-   *
+   * <p>
    * By default, the {@link Row} must not be {@literal null}.
    *
    * @param row {@link Row} to validate.
@@ -379,11 +379,9 @@ public class InMemoryTable extends AbstractTable {
         return true;
       }
 
-      if (!(obj instanceof Column)) {
+      if (!(obj instanceof Column<?> that)) {
         return false;
       }
-
-      Column<?> that = (Column<?>) obj;
 
       return ObjectUtils.equals(this.getName(), that.getName())
         && ObjectUtils.isNullOrEqualTo(that.getView().orElse(null), this.getView().orElse(null));

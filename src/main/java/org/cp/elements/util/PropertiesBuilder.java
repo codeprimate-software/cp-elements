@@ -38,7 +38,7 @@ import org.cp.elements.lang.annotation.NullSafe;
 import org.cp.elements.lang.annotation.Nullable;
 
 /**
- * {@link PropertiesBuilder} is a {@link Builder} object for constructing a new instance of Java {@link Properties}.
+ * {@link PropertiesBuilder} is a {@link Builder} implementation for constructing a new Java {@link Properties}.
  *
  * @author John J. Blum
  * @see java.util.Properties
@@ -54,7 +54,7 @@ import org.cp.elements.lang.annotation.Nullable;
 public class PropertiesBuilder implements Builder<Properties> {
 
   /**
-   * Factory method used to construct a new instance of {@link PropertiesBuilder} initialized with {@link Properties}
+   * Factory method used to construct a new {@link PropertiesBuilder} initialized with {@link Properties}
    * loaded from the given, required {@link File}.
    *
    * @param properties {@link File} containing properties to load; must not be {@literal null}.
@@ -83,7 +83,7 @@ public class PropertiesBuilder implements Builder<Properties> {
   }
 
   /**
-   * Factory method used to construct a new instance of {@link PropertiesBuilder} initialized with {@link Properties}
+   * Factory method used to construct a new {@link PropertiesBuilder} initialized with {@link Properties}
    * loaded from the given, required {@link InputStream}.
    *
    * @param inputStream input source containing {@link Properties} to load; must not be {@literal null}.
@@ -112,13 +112,13 @@ public class PropertiesBuilder implements Builder<Properties> {
   }
 
   /**
-   * Factory method to initialize a new instance of the {@link PropertiesBuilder} with the key/values
+   * Factory method used to initialize a new instance of the {@link PropertiesBuilder} with the key/values
    * from the given {@link Map}.
    *
    * @param map the {@link Map} used to initialize the new {@link PropertiesBuilder}.
    * @return a new {@link PropertiesBuilder} initialized with the key/values from the given {@link Map}.
    * @throws IllegalArgumentException if the {@link Map} is {@literal null} or the given {@link Map}
-   * contains a singl {@literal nul} key.
+   * contains a single {@literal nul} key.
    * @see java.util.Properties
    * @see java.util.Map
    * @see #from(Properties)
@@ -143,8 +143,8 @@ public class PropertiesBuilder implements Builder<Properties> {
   }
 
   /**
-   * Factory method used to construct a new instance of {@link PropertiesBuilder} initialized with
-   * the given {@link Properties} used as {@literal defaults}.
+   * Factory method used to construct a new {@link PropertiesBuilder} initialized with the given {@link Properties}
+   * used as {@literal defaults}.
    *
    * @param defaults {@link Properties} used to initialize the {@link PropertiesBuilder} as {@literal defaults}.
    * @return a new {@link PropertiesBuilder} initialized with the given {@link Properties} as {@literal defaults}.
@@ -159,7 +159,7 @@ public class PropertiesBuilder implements Builder<Properties> {
   }
 
   /**
-   * Factory method used to construct a new instance of {@link PropertiesBuilder} initialized with {@link Properties}
+   * Factory method used to construct a new {@link PropertiesBuilder} initialized with {@link Properties}
    * loaded from the given, required {@link Reader}.
    *
    * @param reader {@link Reader} containing the {@link Properties} to load; must not be {@literal null}.
@@ -188,7 +188,7 @@ public class PropertiesBuilder implements Builder<Properties> {
   }
 
   /**
-   * Factory method used to construct a new instance of {@link PropertiesBuilder} initialized from
+   * Factory method used to construct a new {@link PropertiesBuilder} initialized from
    * the given {@literal associative array}, of the form:
    * {@literal [ "keyOne=valueOne", "keyTwo=valueTwo", ..., "keyN=valueN" ]}.
    *
@@ -201,7 +201,7 @@ public class PropertiesBuilder implements Builder<Properties> {
   }
 
   /**
-   * Factory method used to construct a new instance of {@link PropertiesBuilder} initialized with
+   * Factory method used to construct a new {@link PropertiesBuilder} initialized with
    * {@link System#getenv() System environment variables}.
    *
    * @return a new {@link PropertiesBuilder} initialized with {@link System#getenv() System environment variables}.
@@ -216,7 +216,7 @@ public class PropertiesBuilder implements Builder<Properties> {
   }
 
   /**
-   * Factory method used to construct a new instance of {@link PropertiesBuilder} initialized from
+   * Factory method used to construct a new {@link PropertiesBuilder} initialized from
    * Java {@link System#getProperties() System properties}.
    *
    * @return a new {@link PropertiesBuilder} initialized with Java {@link System#getProperties() System properties}.
@@ -231,7 +231,7 @@ public class PropertiesBuilder implements Builder<Properties> {
   }
 
   /**
-   * Factory method used to construct a new instance of {@link PropertiesBuilder} initialized with {@link Properties}
+   * Factory method used to construct a new {@link PropertiesBuilder} initialized with {@link Properties}
    * loaded from the given, required {@literal XML} {@link InputStream}.
    *
    * @param inputStream {@literal XML} input source containing {@link Properties} to load; must not be {@literal null}.
@@ -261,8 +261,8 @@ public class PropertiesBuilder implements Builder<Properties> {
   }
 
   /**
-   * Factory method used to construct a new instance of {@link PropertiesBuilder} with no {@link Properties}.
-   *
+   * Factory method used to construct a new {@link PropertiesBuilder} with no {@link Properties}.
+   * <p>
    * This factory method serves the same purpose as the {@code new} operator, but can be used in
    * a {@link Dsl DSL} style.
    *
@@ -310,7 +310,7 @@ public class PropertiesBuilder implements Builder<Properties> {
 
   /**
    * Sets the {@link String named} property to the given {@link Object value}.
-   *
+   * <p>
    * The {@link String} of the given {@link Object value} is computed with {@link String#valueOf(Object)}.
    *
    * @param propertyName {@link String} containing the {@literal name} of the property to set;

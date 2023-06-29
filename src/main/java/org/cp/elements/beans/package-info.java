@@ -16,10 +16,10 @@
 /**
  * The Elements {@literal beans} package is an extension of the JavaBeans API providing useful and convenient features
  * and capabilities not present in the JavaBeans API.
- *
+ * <p>
  * The {@link org.cp.elements.beans.AbstractBean} class enables application domain model classes and types to be
  * identified, audited, constrain properties and emit events.
- *
+ * <p>
  * Additionally, the {@link org.cp.elements.beans.model.BeanAdapter} and {@link org.cp.elements.beans.model.BeanModel}
  * classes can be used to perform much more fine-grained and sophisticated property value evaluations, such as
  * constraining properties via accessor annotations.

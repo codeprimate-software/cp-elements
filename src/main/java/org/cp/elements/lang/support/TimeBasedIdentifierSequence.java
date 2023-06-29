@@ -22,9 +22,9 @@ import org.cp.elements.lang.concurrent.ThreadSafe;
 /**
  * Implementation of the {@link IdentifierSequence} interface generating unique, {@link Long Long-typed} identifiers
  * based on {@link System#nanoTime() time}.
- *
+ * <p>
  * In particular, this implementation uses the {@link System} clock and is {@link ThreadSafe Thread-safe}.
- *
+ * <p>
  * While this maybe useful for testing purposes, it should not be used in distributed systems
  * where multiple application or system components may generate ID's using different instances
  * of this class in separate JVMs. This is particularly important with respect to clock skew.

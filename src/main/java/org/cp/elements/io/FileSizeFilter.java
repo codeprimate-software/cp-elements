@@ -39,9 +39,9 @@ import org.cp.elements.lang.annotation.NullSafe;
 public abstract class FileSizeFilter implements FileFilter, Filter<File> {
 
   /**
-   * Factory method used to construct a new instance of {@link FileSizeFilter} initialized with the given, required
-   * {@link RelationalOperator} used during the filtering process to evaluate (match) and filter {@link File Files}
-   * by {@link File#length() size}.
+   * Factory method used to construct a new {@link FileSizeFilter} initialized with the given,
+   * required {@link RelationalOperator} used during the filtering process to evaluate (match)
+   * and filter {@link File Files} by {@link File#length() size}.
    *
    * @param operator [{@link RelationalOperator} used to evaluate a {@link File} by {@link File#length() size};
    * must not be {@literal null}.
@@ -66,7 +66,7 @@ public abstract class FileSizeFilter implements FileFilter, Filter<File> {
   /**
    * Determines whether the given {@link File} is accepted by this {@link FileFilter} based on
    * {@link File} {@link File#length() size}.
-   *
+   * <p>
    * The {@link File} is accepted if the {@link File File's} {@link File#length() length (byte size)} satisfies
    * the filtering criteria of this {@link FileFilter}.
    *
@@ -78,9 +78,9 @@ public abstract class FileSizeFilter implements FileFilter, Filter<File> {
   public abstract boolean accept(File file);
 
   /**
-   * Factory method used to construct a new instance of {@link FileSizeFilter} that filters {@link File Files}
+   * Factory method used to construct a new {@link FileSizeFilter} that filters {@link File Files}
    * by {@link File#length() size} between a minimum and maximum (inclusive) number of bytes.
-   *
+   * <p>
    * In other words, {@link File#length()} must be greater than {@code minSize} AND less than {@code maxSize}.
    *
    * @param minSize minimum acceptable {@link File} {@link File#length() length (size)} in bytes.
@@ -95,7 +95,7 @@ public abstract class FileSizeFilter implements FileFilter, Filter<File> {
   }
 
   /**
-   * Factory method used to construct a new instance of {@link FileSizeFilter} that filters {@link File Files}
+   * Factory method used to construct a new {@link FileSizeFilter} that filters {@link File Files}
    * by {@link File#length() size} equal to the given number of bytes.
    *
    * @param size acceptable {@link File} {@link File#length() length (size)} in bytes.
@@ -109,7 +109,7 @@ public abstract class FileSizeFilter implements FileFilter, Filter<File> {
   }
 
   /**
-   * Factory method used to construct a new instance of {@link FileSizeFilter} that filters {@link File Files}
+   * Factory method used to construct a new {@link FileSizeFilter} that filters {@link File Files}
    * by {@link File#length() size} greater than the given number of bytes.
    *
    * @param size minimum {@link File} {@link File#length() length (size)} in bytes.
@@ -123,7 +123,7 @@ public abstract class FileSizeFilter implements FileFilter, Filter<File> {
   }
 
   /**
-   * Factory method used to construct a new instance of {@link FileSizeFilter} that filters {@link File Files}
+   * Factory method used to construct a new {@link FileSizeFilter} that filters {@link File Files}
    * by {@link File#length() size} less than the given number of bytes.
    *
    * @param size maximum {@link File} {@link File#length() length (size)} in bytes.
@@ -137,9 +137,9 @@ public abstract class FileSizeFilter implements FileFilter, Filter<File> {
   }
 
   /**
-   * Factory method used to construct a new instance of {@link FileSizeFilter} that filters {@link File Files}
+   * Factory method used to construct a new {@link FileSizeFilter} that filters {@link File Files}
    * by {@link File#length() size} outside of a minimum and maximum (exclusive) number of bytes.
-   *
+   * <p>
    * In other words, {@link File#length()} must either be less than {@code lessThanSize}
    * OR greater than {@code greaterThanSize}.
    *

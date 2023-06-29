@@ -20,8 +20,8 @@ import org.cp.elements.lang.ObjectUtils;
 import org.cp.elements.lang.annotation.NotNull;
 
 /**
- * The ComposableRunnable class is an implementation of the Runnable interface and the Composite Design Pattern to
- * compose multiple Runnable objects and treat it as a single instance of Runnable.
+ * Implementation of the {@link Runnable} interface and the {@literal Composite Software Design Pattern} used to
+ * compose multiple {@link Runnable} objects and treat it as a single instance of {@link Runnable}.
  *
  * @author John J. Blum
  * @see java.lang.Runnable
@@ -36,7 +36,7 @@ public class ComposableRunnable implements Composite<Runnable>, Runnable {
   private final Runnable runnableTwo;
 
   /**
-   * Returns the single instance of {@link ComposableRunnable} used to compose 2 or more indiviudal {@link Runnable}
+   * Returns the single instance of {@link ComposableRunnable} used to compose 2 or more individual {@link Runnable}
    * objects into a {@link Composite} {@link Runnable} object.
    *
    * @return the single instance of {@link ComposableRunnable}.
@@ -47,8 +47,8 @@ public class ComposableRunnable implements Composite<Runnable>, Runnable {
   }
 
   /**
-   * Default, private constructor used to construct a Singleton instance of the {@link ComposableRunnable} used to
-   * compose 2 or more individual {@link Runnable} objects into a Composite {@link Runnable} object.
+   * Default, private constructor used to construct a {@literal Singleton} instance of the {@link ComposableRunnable}
+   * used to compose 2 or more individual {@link Runnable} objects into a {@literal Composite} {@link Runnable} object.
    */
   private ComposableRunnable() {
 
@@ -57,7 +57,7 @@ public class ComposableRunnable implements Composite<Runnable>, Runnable {
   }
 
   /**
-   * Constructs an instance of the ComposableRunnable class composed an initialized with 2 Runnable objects.
+   * Constructs a new {@link ComposableRunnable} composed an initialized with 2 {@link Runnable} objects.
    *
    * @param runnableOne the left Runnable node in the composed graph.
    * @param runnableTwo the right Runnable node in the composed graph.
@@ -71,7 +71,7 @@ public class ComposableRunnable implements Composite<Runnable>, Runnable {
 
   /**
    * Composes two {@link Runnable} objects into a single, compound {@link Runnable} object.
-   *
+   * <p>
    * Returns the {@code runnableOne} if {@code runnableTwo} is {@literal null}
    * and {@code runnableTwo} if the {@code runnableOne} is {@literal null}.
    *
@@ -107,7 +107,7 @@ public class ComposableRunnable implements Composite<Runnable>, Runnable {
   }
 
   /**
-   * Runs the left and right Runnable objects/nodes in the graph.
+   * Runs the left and right {@link Runnable} objects/nodes in the graph.
    *
    * @see java.lang.Runnable#run()
    */

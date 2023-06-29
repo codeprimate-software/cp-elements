@@ -143,7 +143,7 @@ public abstract class AbstractView implements View {
 
   /**
    * Returns a {@link String} representation of this {@link View}.
-   *
+   * <p>
    * By default, this method returns the {@link #getName()} of this {@link View}.
    *
    * @return a {@link String} describing this {@link View}.

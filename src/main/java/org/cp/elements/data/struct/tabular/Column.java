@@ -36,7 +36,7 @@ public interface Column<T> extends Nameable<String> {
   /**
    * Returns an {@link Optional} {@link String alias} used as an {@link String alternate name}
    * when referring to this {@link Column}.
-   *
+   * <p>
    * Returns {@link Optional#empty()} by default.
    *
    * @return an {@link Optional} {@link String alias} used as an {@link String alternate name}
@@ -59,7 +59,7 @@ public interface Column<T> extends Nameable<String> {
   /**
    * Returns an {@link Optional} {@link Object default value} used as the {@link Object value} for this {@link Column}
    * when a {@link Object value} is not provided.
-   *
+   * <p>
    * Returns {@link Optional#empty()} by default.
    *
    * @return an {@link Optional} {@link Object default value} used as the {@link Object value} for this {@link Column}
@@ -81,7 +81,7 @@ public interface Column<T> extends Nameable<String> {
 
   /**
    * Returns an {@link Optional} {@link String description} of the data stored in this {@link Column}.
-   *
+   * <p>
    * Returns {@link Optional#empty()} by default.
    *
    * @return an {@link Optional} {@link String description} of the data stored in this {@link Column}.
@@ -122,9 +122,9 @@ public interface Column<T> extends Nameable<String> {
 
   /**
    * Returns an {@link Optional} {@link View} containing this {@link Column}.
-   *
+   * <p>
    * This {@link Column} may not be necessarily defined inside the context of a {@link View}.
-   *
+   * <p>
    * Returns {@link Optional#empty()} by default.
    *
    * @return an {@link Optional} {@link View} containing this {@link Column}.

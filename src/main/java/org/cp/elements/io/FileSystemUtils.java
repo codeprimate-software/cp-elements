@@ -63,7 +63,7 @@ public abstract class FileSystemUtils extends FileUtils {
   /**
    * Creates a {@link String file system path} by appending the array of {@link String path elements}
    * to the {@link String base path} separated by the {@link File#separator}.
-   *
+   * <p>
    * If the array of {@link String path elements} is {@literal null} or {@literal empty}
    * then {@link String base path} is returned.
    *
@@ -125,12 +125,12 @@ public abstract class FileSystemUtils extends FileUtils {
 
   /**
    * Counts the number of files in the given {@link File file system path}.
-   *
+   * <p>
    * If {@link File path} is a {@link File#isFile() file} then this method returns {@literal 1}.
    * If {@link File path} is a {@link File#isDirectory() directory} then this method will recursively visit
    * all {@link File subdirectories}, counting all the {@link File files} contained in the given {@link File path}
    * excluding {@link File subdirectories} (in the count) and the {@link File path} itself.
-   *
+   * <p>
    * The {@link File} must simply {@link File#exists() exist} in order to be counted.
    *
    * @param path {@link File file system path} to evaluate.
@@ -146,12 +146,12 @@ public abstract class FileSystemUtils extends FileUtils {
 
   /**
    * Counts the number of files in the given {@link File file system path} accepted by the given {@link FileFilter}.
-   *
+   * <p>
    * If {@link File path} is a {@link File#isFile() file} then this method returns {@literal 1}.
    * If {@link File path} is a {@link File#isDirectory() directory} then this method will recursively visit
    * all {@link File subdirectories}, counting all the {@link File files} contained in the given {@link File path}
    * excluding {@link File subdirectories} (in the count) and the {@link File path} itself.
-   *
+   * <p>
    * The {@link File} must simply {@link File#exists() exist} in order to be counted.
    *
    * @param path {@link File file system path} to evaluate.
@@ -177,14 +177,14 @@ public abstract class FileSystemUtils extends FileUtils {
 
   /**
    * Deletes the given {@link File} from the file system.
-   *
+   * <p>
    * If {@link File path} is a {@link File#isDirectory() directory}, then this method recursively deletes
    * all {@link File files} and {@link File subdirectories} contained in the given {@link File path} along with
    * the {@link File directory} itself.
-   *
+   * <p>
    * If {@link File path} is just a plain old {@link File#isFile() file}, then only the given {@link File}
    * will be deleted.
-   *
+   * <p>
    * This method attempts to delete as many {@link File files} as possible up to and including
    * the given {@link File path}.
    *
@@ -200,14 +200,14 @@ public abstract class FileSystemUtils extends FileUtils {
 
   /**
    * Deletes the given {@link File} from the file system if accepted by the given {@link FileFilter}.
-   *
+   * <p>
    * If {@link File path} is a {@link File#isDirectory() directory}, then this method recursively deletes
    * all {@link File files} and {@link File subdirectories} contained in the given {@link File path} along with
    * the {@link File directory} itself.
-   *
+   * <p>
    * If {@link File path} is just a plain old {@link File#isFile() file}, then only the given {@link File}
    * will be deleted.
-   *
+   * <p>
    * This method attempts to delete as many {@link File files} as possible up to and including
    * the given {@link File path}.
    *
@@ -235,9 +235,9 @@ public abstract class FileSystemUtils extends FileUtils {
 
   /**
    * Determines whether the given {@link File#isDirectory() directory} is empty.
-   *
+   * <p>
    * A {@link File#isDirectory() directory} is {@literal empty} if it does not contain any {@link File#isFile() files}
-   * or {@link File#isDirectory()} subdirectories}, or is not a {@link File#isDirectory() directory}.
+   * or {@link File#isDirectory() subdirectories}, or is not a {@link File#isDirectory() directory}.
    *
    * @param directory {@link File} referring to a {@link File#isDirectory() directory} to evaluate.
    * @return a boolean value indicating whether the given {@link File#isDirectory() directory} is empty.
@@ -265,7 +265,7 @@ public abstract class FileSystemUtils extends FileUtils {
 
   /**
    * Lists all {@link File files} in the given {@link File#isDirectory() directory}.
-   *
+   * <p>
    * This method uses recursion to list all {@link File files} in the given {@link File#isDirectory() directory}
    * as well as any {@link File#isDirectory() subdirectories} of the given {@link File#isDirectory() directory}.
    *
@@ -284,7 +284,7 @@ public abstract class FileSystemUtils extends FileUtils {
   /**
    * Lists all {@link File files} in the given {@link File#isDirectory() directory}
    * accepted by the given {@link FileFilter}.
-   *
+   * <p>
    * This method uses recursion to list all {@link File files} in the given {@link File#isDirectory() directory}
    * as well as any {@link File#isDirectory() subdirectories} of the given {@link File#isDirectory() directory}.
    *
@@ -365,7 +365,7 @@ public abstract class FileSystemUtils extends FileUtils {
 
   /**
    * Determines the size of the given {@link File path} in bytes.
-   *
+   * <p>
    * The {@link Long path size} is determined by the {@link File#length() byte size}
    * of all the {@link File#isFile() files} contained within the {@link File path} itself
    * as well as all {@link File#isFile() files} in {@link File#isDirectory() subdirectories}.
@@ -382,7 +382,7 @@ public abstract class FileSystemUtils extends FileUtils {
 
   /**
    * Determines the size of the given {@link File path} in bytes.
-   *
+   * <p>
    * The {@link Long path size} is determined by the {@link File#length() byte size}
    * of all the {@link File#isFile() files} contained within the {@link File path} itself
    * as well as all {@link File#isFile() files} in {@link File#isDirectory() subdirectories}

@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.service.annotation;
 
 import java.lang.annotation.Documented;
@@ -25,7 +24,7 @@ import java.lang.annotation.Target;
 
 /**
  * The {@link Service} annotation marks an application component/bean as a {@link Service} {@link Class}.
- *
+ * <p>
  * A {@link Service} {@link Class} is typically an application component that contains business functions
  * and encapsulates business rules.
  *

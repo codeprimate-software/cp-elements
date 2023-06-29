@@ -35,7 +35,7 @@ import org.cp.elements.util.MapUtils;
 
 /**
  * The {@link MapToCacheAdapter} class is a {@link Cache} implementation backed by a {@link Map}.
- *
+ * <p>
  * This class adapts the {@link Map} interface into an instance of {@link Cache}.
  *
  * @author John Blum

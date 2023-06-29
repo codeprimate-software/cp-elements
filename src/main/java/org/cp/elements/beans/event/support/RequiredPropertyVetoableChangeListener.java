@@ -35,7 +35,7 @@ import org.cp.elements.lang.annotation.Nullable;
 /**
  * A {@link VetoableChangeListener} implementation used to enforce {@literal required} properties
  * declared on a JavaBean/POJO contain an actual {@link Object value} when set.
- *
+ * <p>
  * {@literal Required} properties are declared with the Elements {@link Required} annotation on a JavaBean/POJO
  * {@link java.lang.reflect.Field} or {@literal accessor/mutator} {@link java.lang.reflect.Method}.
  *

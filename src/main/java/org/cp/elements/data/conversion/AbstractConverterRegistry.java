@@ -33,7 +33,7 @@ import org.cp.elements.lang.support.SmartComparator;
 import org.cp.elements.util.ArrayUtils;
 
 /**
- * The {@link AbstractConverterRegistry} class is an abstract base class for a registry of {@link Converter Converters}.
+ * Abstract base class for a registry of {@link Converter Converters}.
  *
  * @author John Blum
  * @see java.lang.reflect.ParameterizedType
@@ -77,7 +77,7 @@ public abstract class AbstractConverterRegistry implements ConverterRegistry {
   /**
    * Registers the {@link Converter} with this {@link ConverterRegistry} making it available
    * to perform {@link Class type} conversions.
-   *
+   * <p>
    * Any existing, registered {@link Converter} converting from the same {@link Class source type}
    * to the same {@link Class target type} will simply be overridden with the incoming {@link Converter} registration.
    *
@@ -126,8 +126,8 @@ public abstract class AbstractConverterRegistry implements ConverterRegistry {
   }
 
   /**
-   * The {@link ConverterDescriptor} class encapsulates meta-data describing the {@link Class from type}
-   * {@link Class to type} conversion performed by the {@link Converter}.
+   * Abstract Data Type used to encapsulate metadata describing the {@link Class from type} {@link Class to type}
+   * conversion performed by the {@link Converter}.
    *
    * @see org.cp.elements.data.conversion.Converter
    * @see java.lang.Comparable
@@ -253,7 +253,7 @@ public abstract class AbstractConverterRegistry implements ConverterRegistry {
 
     /**
      * Determines whether the {@link Converter} performs an exact {@link Class type} conversion.
-     *
+     * <p>
      * The conversion is exact if the {@link Class qualified target type} matches the {@link Class to type}
      * of the {@link Converter}.
      *
@@ -308,11 +308,9 @@ public abstract class AbstractConverterRegistry implements ConverterRegistry {
         return true;
       }
 
-      if (!(obj instanceof ConverterDescriptor)) {
+      if (!(obj instanceof ConverterDescriptor that)) {
         return false;
       }
-
-      ConverterDescriptor that = (ConverterDescriptor) obj;
 
       return ObjectUtils.equals(this.getFromType(), that.getFromType())
         && ObjectUtils.equals(this.getToType(), that.getToType());

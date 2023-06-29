@@ -127,7 +127,7 @@ public abstract class CollectionUtils {
   @NullSafe
   public static @NotNull <T> Enumeration<T> asEnumeration(@Nullable Iterator<T> iterator) {
 
-    return iterator == null ? Collections.emptyEnumeration() : new Enumeration<T>() {
+    return iterator == null ? Collections.emptyEnumeration() : new Enumeration<>() {
 
       @Override
       public boolean hasMoreElements() {
@@ -185,7 +185,7 @@ public abstract class CollectionUtils {
   @NullSafe
   public static @NotNull <T> Iterator<T> asIterator(@Nullable Enumeration<T> enumeration) {
 
-    return enumeration == null ? Collections.emptyIterator() : new Iterator<T>() {
+    return enumeration == null ? Collections.emptyIterator() : new Iterator<>() {
 
       @Override
       public boolean hasNext() {
@@ -238,7 +238,7 @@ public abstract class CollectionUtils {
    *
    * @param <T> {@link Class} type of the elements in the array.
    * @param elements array of elements to convert into a {@link Set}.
-   * @return the array of elements as a {@link Set}.
+   * @return a {@link Set} from the given array of elements.
    * @see java.util.Set
    */
   @NullSafe
@@ -291,7 +291,7 @@ public abstract class CollectionUtils {
 
   /**
    * Counts the number of elements in the {@link Iterable} collection.
-   *
+   * <p>
    * If {@link Iterable} is {@literal null} or contains no elements, then count will be {@literal 0}.
    * If the {@link Iterable} is a {@link Collection}, then {@link Collection#size()} is returned,
    * otherwise the elements of the {@link Iterable} are iterated over, counting the number of elements
@@ -490,7 +490,7 @@ public abstract class CollectionUtils {
 
   /**
    * Determines whether the {@link Iterable} is empty.
-   *
+   * <p>
    * The {@link Iterable} is empty if it contains no elements
    * or the {@link Iterable} object reference is {@literal null}.
    *
@@ -506,7 +506,7 @@ public abstract class CollectionUtils {
 
   /**
    * Determines whether the {@link Iterable} is not empty.
-   *
+   * <p>
    * The {@link Iterable} is not empty iff it is not {@literal null} and contains at least 1 element.
    *
    * @param iterable {@link Iterable} to evaluate.
@@ -812,7 +812,7 @@ public abstract class CollectionUtils {
 
     Assert.notNull(iterator, "Iterator is required");
 
-    return new Iterator<T>() {
+    return new Iterator<>() {
 
       @Override
       public boolean hasNext() {

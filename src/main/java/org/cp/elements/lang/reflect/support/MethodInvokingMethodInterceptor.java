@@ -24,8 +24,7 @@ import org.cp.elements.lang.reflect.MethodInterceptor;
 import org.cp.elements.lang.reflect.MethodInvocation;
 
 /**
- * The {@link MethodInvokingMethodInterceptor} class is {@link MethodInterceptor} implementation used to invoke
- * the {@link Method} on a specified target {@link Object}.
+ * {@link MethodInterceptor} implementation used to invoke the {@link Method} on a specified target {@link Object}.
  *
  * @author John Blum
  * @see java.lang.reflect.Method
@@ -37,8 +36,8 @@ import org.cp.elements.lang.reflect.MethodInvocation;
 public class MethodInvokingMethodInterceptor implements MethodInterceptor<Object> {
 
   /**
-   * Factory method used to construct a new instance of {@link MethodInvokingMethodInterceptor} initialized
-   * with the given target {@link Object} on which the {@link Method} invocation will be called.
+   * Factory method used to construct a new {@link MethodInvokingMethodInterceptor} initialized with
+   * the given target {@link Object} on which the {@link Method} invocation will be called.
    *
    * @param target {@link Object} on which the {@link Method} will be invoked.
    * @return a new instance of {@link MethodInvokingMethodInterceptor} initialized with the given {@link Object target}.
@@ -53,9 +52,8 @@ public class MethodInvokingMethodInterceptor implements MethodInterceptor<Object
   private final Object target;
 
   /**
-   * Default constructor used to construct a new instance of {@link MethodInvokingMethodInterceptor}
-   * with no {@link Object target}.
-   *
+   * Default constructor used to construct a new {@link MethodInvokingMethodInterceptor} with no {@link Object target}.
+   * <p>
    * This constructor is used to invoke {@link java.lang.reflect.Modifier#STATIC} {@link Method methods}.
    *
    * @see #MethodInvokingMethodInterceptor(Object)
@@ -87,9 +85,10 @@ public class MethodInvokingMethodInterceptor implements MethodInterceptor<Object
   }
 
   /**
-   * Intercepts the given {@link MethodInvocation} on a proxied {@link Object} and in turn invokes the {@link Method}
-   * on the configured {@link #getTarget() target} object.  If {@link #getTarget() target} is {@literal null}
-   * then the {@link Method} will be invoked on the configured target of the {@link MethodInvocation}.
+   * Intercepts the given {@link MethodInvocation} on the proxy of an {@link Object} and in turn invokes
+   * the {@link Method} on the configured {@link #getTarget() target} object.  If {@link #getTarget() target}
+   * is {@literal null} then the {@link Method} will be invoked on the configured target of
+   * the {@link MethodInvocation}.
    *
    * @param <T> {@link Class type} of the {@link Object return value}.
    * @param methodInvocation {@link MethodInvocation} being intercepted.

@@ -119,7 +119,7 @@ public abstract class ReflectionUtils extends ClassUtils {
     // Null Method references are not equal even if both Method references are null
     if (ArrayUtils.noNullElements(methodReference, method)) {
 
-      // Short circuit if the Method references refer to the same Object;
+      // Short-circuit if the Method references refer to the same Object;
       //  a Method is clearly equal to itself.
       if (methodReference.get() == method) {
         return true;
@@ -151,7 +151,7 @@ public abstract class ReflectionUtils extends ClassUtils {
 
   /**
    * Determines whether the first {@link Method} is an {@literal overload} of the second {@link Method}.
-   *
+   * <p>
    * Overloading compliments a {@link Method}.
    *
    * @param methodOne first method {@link Method} in the equality comparison.
@@ -173,7 +173,7 @@ public abstract class ReflectionUtils extends ClassUtils {
 
   /**
    * Determines whether the first {@link Method} is an {@literal override} of the second {@link Method}.
-   *
+   * <p>
    * Overriding hides a {@link Method}.
    *
    * @param methodOne first method {@link Method} in the equality comparison.
@@ -283,7 +283,7 @@ public abstract class ReflectionUtils extends ClassUtils {
 
   /**
    * Gets the value of the field with the specified name on the given object cast to the desired field type.
-   * This method assumes the field is a instance (object) member field.
+   * This method assumes the field is an instance (object) member field.
    *
    * @param <T> the desired return type in which the field's value will be cast; should be compatible with
    * the field's declared type.
@@ -291,7 +291,7 @@ public abstract class ReflectionUtils extends ClassUtils {
    * @param fieldName a String indicating the name of the field from which to get the value.
    * @param fieldType the declared type of the object's field.
    * @return the value of the specified field on the given object cast to the desired type.
-   * @throws IllegalArgumentException if the given object's class type does not declare a instance member field
+   * @throws IllegalArgumentException if the given object's class type does not declare an instance member field
    * with the specified name.
    * @throws FieldAccessException if the value for the specified field could not be retrieved.
    * @see #getValue(Object, java.lang.reflect.Field, Class)
@@ -312,7 +312,7 @@ public abstract class ReflectionUtils extends ClassUtils {
   /**
    * Gets the {@link Object value} of the {@link Field} on the given {@link Object} cast to
    * the requested {@link Class type}.
-   *
+   * <p>
    * If the {@link Object target} is {@literal null}, then this method assumes the {@link Field}
    * is a static (class) member; otherwise the {@link Field} is considered to be an instance ({@link Object}) member.
    *
@@ -320,7 +320,7 @@ public abstract class ReflectionUtils extends ClassUtils {
    * the field's declared type.
    * @param target {@link Object} on which the {@link Field} is defined.
    * @param field {@link Field} from which to get the value; must not be {@literal null}.
-   * @param fieldType {@link Class return type} of the {@link Field Field's} {@link Object}value};
+   * @param fieldType {@link Class return type} of the {@link Field Field's} {@link Object value};
    * should be compatible with the {@link Field Fields's} {@link Field#getType() declared type}.
    * @return the value of the given field on the given object cast to the desired type.
    * @throws FieldAccessException if the value for the specified field could not be retrieved.
@@ -715,7 +715,7 @@ public abstract class ReflectionUtils extends ClassUtils {
   /**
    * Calls the {@link Method} on the given {@link Object}, passing the given array of {@link Object arguments}
    * then casting the {@link Object return value} to the requested {@link Class type}.
-   *
+   * <p>
    * If the {@link Object target} is {@literal null}, then this method assumes the {@link Method} to invoke
    * is a static ({@link Class}) member, otherwise the {@link Method} to invoke is considered to be
    * an instance ({@link Object}) member.
@@ -891,7 +891,7 @@ public abstract class ReflectionUtils extends ClassUtils {
   }
 
   /**
-   * ADT used to refer to a {@link Method}.
+   * Abstract Data Type (ADT) used to refer to a {@link Method}.
    *
    * @see org.cp.elements.lang.annotation.FluentApi
    * @see org.cp.elements.lang.FluentApiExtension
@@ -956,7 +956,7 @@ public abstract class ReflectionUtils extends ClassUtils {
 
     /**
      * Gets an array containing the {@link Method Method's} parameter {@link Class types}.
-     *
+     * <p>
      * The number, order and {@link Class types} (along with the {@link Method Method's} {@link String name})
      * constitutes the {@link Method Method's} signature.
      *
@@ -1023,8 +1023,7 @@ public abstract class ReflectionUtils extends ClassUtils {
     private final Set<T> members = newMemberSet();
 
     /**
-     * Constructs a new instance of {@link WithExpression} initialized with the given array of {@link Member Members}
-     * to process.
+     * Constructs a new {@link WithExpression} initialized with the given array of {@link Member Members} to process.
      *
      * @param members array of {@link Member Members} to process.
      * @see java.lang.reflect.Member

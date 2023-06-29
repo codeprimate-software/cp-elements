@@ -221,7 +221,7 @@ public abstract class FileUtils extends IOUtils {
 
   /**
    * Determines whether the given {@link File} has any content.
-   *
+   * <p>
    * If the {@link File} refers to a {@link File#isDirectory() directory}, then the directory is empty
    * if it contains not files or subdirectories.
    *
@@ -303,7 +303,7 @@ public abstract class FileUtils extends IOUtils {
 
   /**
    * Utility method used to guard against a potentially {@literal null} {@link FileFilter}.
-   *
+   * <p>
    * By default, the {@link FileFilter} returned when the given {@link FileFilter} is {@literal null}
    * {@link FileFilter#accept(File) accepts} all {@link File files}.
    *
@@ -332,7 +332,7 @@ public abstract class FileUtils extends IOUtils {
 
   /**
    * Utility method used to guard against a potentially {@literal null} {@link FilenameFilter}.
-   *
+   * <p>
    * By default, the {@link FilenameFilter} returned when the given {@link FilenameFilter} is {@literal null}
    * {@link FilenameFilter#accept(File, String) accepts} all {@link File files}.
    *
@@ -409,7 +409,7 @@ public abstract class FileUtils extends IOUtils {
 
   /**
    * Determines the size in bytes of the given {@link File}.
-   *
+   * <p>
    * If the {@link File} is {@literal null} or does not {@link File#exists() exist}, then {@literal 0} is returned.
    *
    * @param path {@link File} to evaluate.

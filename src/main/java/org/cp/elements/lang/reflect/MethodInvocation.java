@@ -31,7 +31,7 @@ import org.cp.elements.lang.annotation.Nullable;
 import org.cp.elements.util.ArrayUtils;
 
 /**
- * The {@link MethodInvocation} class encapsulates all the necessary information to invoke a {@link Method}
+ * Abstract Data Type (ADT) used to encapsulate all the necessary information to invoke a {@link Method}
  * on a given target {@link Object}.
  *
  * @author John Blum
@@ -42,10 +42,9 @@ import org.cp.elements.util.ArrayUtils;
 public class MethodInvocation {
 
   /**
-   * Factory method used to construct a new instance of {@link MethodInvocation} initialized with
-   * the given {@link Method} and array of {@link Object arguments} passed to the {@link Method}
-   * during invocation.
-   *
+   * Factory method used to construct a new {@link MethodInvocation} initialized with the given {@link Method}
+   * and array of {@link Object arguments} passed to the {@link Method} during invocation.
+   * <p>
    * The {@link Method} is expected to be a {@link java.lang.reflect.Modifier#STATIC},
    * {@link Class} member {@link Method}.
    *
@@ -61,10 +60,9 @@ public class MethodInvocation {
   }
 
   /**
-   * Factory method used to construct a new instance of {@link MethodInvocation} initialized with
-   * the given target {@link Object}, instance {@link Method} and array of {@link Object arguments}
-   * passed to the {@link Method} during invocation.
-   *
+   * Factory method used to construct a new {@link MethodInvocation} initialized with the given target {@link Object},
+   * instance {@link Method} and array of {@link Object arguments} passed to the {@link Method} during invocation.
+   * <p>
    * The {@link Method} represents a {@link java.lang.reflect.Modifier#STATIC non-static} instance {@link Method}
    * that will be invoked on the given target {@link Object}.
    *
@@ -82,10 +80,10 @@ public class MethodInvocation {
   }
 
   /**
-   * Factory method used to construct a new instance of {@link MethodInvocation} initialized with the given,
+   * Factory method used to construct a new {@link MethodInvocation} initialized with the given,
    * required {@link Class type} on which the {@code methodName named} {@link Method} accepting the given
    * array of {@link Object arguments} is declared.
-   *
+   * <p>
    * The {@link String named} {@link Method} is expected to be a {@link java.lang.reflect.Modifier#STATIC},
    * {@link Class} member {@link Method}.
    *
@@ -107,10 +105,10 @@ public class MethodInvocation {
   }
 
   /**
-   * Factory method used to construct an instance of {@link MethodInvocation} initialized with the given
-   * {@link Object target} on which the {@code methodName named} {@link Method} accepting the given
-   * array of {@link Object arguments} will be invoked.
-   *
+   * Factory method used to construct a new {@link MethodInvocation} initialized with the given {@link Object target}
+   * on which the {@code methodName named} {@link Method} accepting the given array of {@link Object arguments}
+   * will be invoked.
+   * <p>
    * The {@link String named} {@link Method} represents a {@link java.lang.reflect.Modifier#STATIC non-static}
    * instance {@link Method} that will be invoked on the given target {@link Object}.
    *

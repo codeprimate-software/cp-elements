@@ -78,10 +78,10 @@ public abstract class AbstractRule<T, ID extends Comparable<ID>> implements Rule
   /**
    * Determines the {@link Boolean outcome expected} when evaluating an {@link Object}
    * with this {@literal business rule}.
-   *
+   * <p>
    * The {@link Object} is expected to either satisfy or violate the criteria of this {@literal business rule}
    * when evaluated.
-   *
+   * <p>
    * Returns {@literal true} by default.
    *
    * @return the {@link Boolean expected outcome} when evaluating an {@link Object} with this {@literal business rule}.
@@ -106,10 +106,10 @@ public abstract class AbstractRule<T, ID extends Comparable<ID>> implements Rule
   /**
    * Indicates whether this {@literal business rule} is configured to throw an {@link Exception} on failure
    * when the {@link Object} is evaluated.
-   *
+   * <p>
    * If the {@link Object} evaluated by this {@literal business rule} violates the criteria,
    * then an {@link Exception} is thrown.
-   *
+   * <p>
    * Returns {@literal false} by default.
    *
    * @return a boolean value indicating whether this {@literal business} rule is configured to throw

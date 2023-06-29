@@ -51,8 +51,8 @@ public abstract class AbstractCacheableService<KEY extends Comparable<KEY>, VALU
   }
 
   /**
-   * Constructs a new instance of the {@link Cache} interface.
-   *
+   * Constructs a new {@link Cache}.
+   * <p>
    * The {@link Cache} is used to provide caching services to this application service component.
    *
    * @return a new instance of the {@link Cache} interface.
@@ -64,7 +64,7 @@ public abstract class AbstractCacheableService<KEY extends Comparable<KEY>, VALU
 
   /**
    * Determines whether this application service component has been configured with caching enabled.
-   *
+   * <p>
    * The default implementation returns {@literal true} if a {@link Cache} instance is present.
    *
    * @return a boolean value indicating whether this application service component
@@ -78,7 +78,7 @@ public abstract class AbstractCacheableService<KEY extends Comparable<KEY>, VALU
   /**
    * Determines whether the cacheable service operation resulted in a cache hit.
    *
-   * @return a boolean value indicating whether the cacehable service operation
+   * @return a boolean value indicating whether the cacheable service operation
    * resulted in a cache hit.
    * @see #isCacheMiss()
    */
@@ -89,7 +89,7 @@ public abstract class AbstractCacheableService<KEY extends Comparable<KEY>, VALU
   /**
    * Determines whether the cacheable service operation resulted in a cache miss.
    *
-   * @return a boolean value indicating whether the cacehable service operation
+   * @return a boolean value indicating whether the cacheable service operation
    * resulted in a cache miss.
    * @see #isCacheHit()
    */
@@ -111,7 +111,7 @@ public abstract class AbstractCacheableService<KEY extends Comparable<KEY>, VALU
    * Enables an application service method to optionally apply and use caching to carry out its function.
    *
    * @param key {@link KEY key} used to look up an existing {@link VALUE value} in the {@link Cache}.
-   * @param cacheLoader {@link Supplier} used to compute/execute the application serivce method function
+   * @param cacheLoader {@link Supplier} used to compute/execute the application service method function
    * if the {@link Cache} does not contain an already computed {@link VALUE value} or caching is not enabled.
    * @return the cached or computed {@link VALUE value}.
    * @see org.cp.elements.data.caching.support.CachingTemplate#withCaching(Comparable, Supplier)
@@ -125,9 +125,7 @@ public abstract class AbstractCacheableService<KEY extends Comparable<KEY>, VALU
     return getCache()
       .map(CachingTemplate::with)
       .<VALUE>map(template -> template.withCaching(key, () -> {
-
         setCacheMiss();
-
         return cacheLoader.get();
       }))
       .orElseGet(cacheLoader);

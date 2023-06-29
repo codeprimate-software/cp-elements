@@ -170,7 +170,7 @@ public class ChangeSupport implements Iterable<ChangeListener> {
   /**
    * Registers the given {@link ChangeListener} to the {@link List} of listeners managed by {@literal this}
    * {@link ChangeSupport} object.
-   *
+   * <p>
    * The registered {@link ChangeListener} will be notified of all {@link ChangeEvent change events} occurring on
    * the {@link #getSource() source} {@link Object}.
    *
@@ -192,7 +192,7 @@ public class ChangeSupport implements Iterable<ChangeListener> {
 
   /**
    * Unregisters the given {@link ChangeListener} from {@literal this} {@link ChangeSupport} object.
-   *
+   * <p>
    * The unregistered {@link ChangeListener} will no longer be notified of any {@link ChangeEvent change events}
    * occurring on the {@link #getSource() source} {@link Object}.
    *

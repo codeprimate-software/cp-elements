@@ -31,9 +31,8 @@ import org.junit.Before;
 import org.junit.Test;
 
 /**
- * The {@link CommonSortTestSuite} class is an abstract base class encapsulating test functionality and logic
- * common to all {@link Sorter} based test classes.
- *
+ * Abstract base class encapsulating test functionality and logic common to all {@link Sorter} based test classes.
+ * <p>
  * In addition, this abstract test suite class setups a sortable data structure and basic test case
  * to test sort order functionality of the {@link Sorter}.
  *

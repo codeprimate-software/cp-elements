@@ -26,7 +26,7 @@ import org.cp.elements.lang.annotation.Nullable;
 import org.cp.elements.util.CollectionExtensions;
 
 /**
- * An {@link Enum enumeration} for all the days in a week.
+ * {@link Enum Enumeration} for all the days in a week.
  *
  * @author John J. Blum
  * @see java.lang.Enum
@@ -207,9 +207,9 @@ public enum Weekday {
 
   /**
    * Gets an adjacent {@link Weekday} relative to {@literal this} {@link Weekday}.
-   *
+   * <p>
    * The {@literal adjacent} {@link Weekday} is either the day before {@literal this} {@link Weekday}, as in yesterday,
-   * or the the day after {@literal this} {@link Weekday}, as in tomorrow.
+   * or the day after {@literal this} {@link Weekday}, as in tomorrow.
    *
    * @param positionFunction {@link Function} used to adjust the {@link #getPosition()} of {@literal this}
    * {@link Weekday} to an {@literal adjacent} day.
@@ -222,7 +222,7 @@ public enum Weekday {
 
   /**
    * Gets the {@link Weekday} after {@literal this} {@link Weekday}.
-   *
+   * <p>
    * If {@literal this} {@link Weekday} is {@link Weekday#SATURDAY},
    * then this method will return {@link Weekday#SUNDAY} and the week resets.
    *
@@ -235,7 +235,7 @@ public enum Weekday {
 
   /**
    * Gets the {@link Weekday} prior to {@literal this} {@link Weekday}.
-   *
+   * <p>
    * If {@literal this} {@link Weekday} is {@link Weekday#SUNDAY},
    * then this method will return {@link Weekday#SATURDAY} and the week returns to the previous week.
    *
@@ -335,11 +335,11 @@ public enum Weekday {
 
   /**
    * Determines whether {@literal this} {@link Weekday} enumerated value is a day in the week not on the weekend.
-   *
+   * <p>
    * Will return {@literal true} if the {@link Weekday} is in the set of: [{@literal Monday}, {@literal Tuesday},
    * {@literal Wednesday}, {@literal Thursday}, {@literal Friday}].
-   *
-   * Will return {@literal false} if the {@link Weekday} is in the set of: [{@literal Saturday}, {@literal Sundday}].
+   * <p>
+   * Will return {@literal false} if the {@link Weekday} is in the set of: [{@literal Saturday}, {@literal Sunday}].
    *
    * @return a boolean value if {@literal this} {@link Weekday} enumerated value is a day in the week
    * not on the weekend.
@@ -351,9 +351,9 @@ public enum Weekday {
 
   /**
    * Determines whether {@literal this} {@link Weekday} enumerated value is a day of the weekend.
-   *
+   * <p>
    * Will return {@literal true} if the {Weekday} is in the set of: [{@literal Sunday}, {@literal Saturday}].
-   *
+   * <p>
    * Will return {@literal false} if the {@link Weekday} is in the set of: [{@literal Monday}, {@literal Tuesday},
    * {@literal Wednesday}, {@literal Thursday}, {@literal Friday}].
    *

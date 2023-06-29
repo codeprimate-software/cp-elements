@@ -26,7 +26,7 @@ import org.cp.elements.lang.annotation.NotNull;
 import org.cp.elements.lang.annotation.Nullable;
 
 /**
- * An {@link Enum Enumeration} of well-known {@link String named} network service ports.
+ * {@link Enum Enumeration} of well-known {@link String named} network service ports.
  *
  * @author John J. Blum
  * @see java.lang.Enum
@@ -125,7 +125,7 @@ public enum ServicePort {
 
   /**
    * Determines whether this {@link ServicePort} is reserved by the operating system (OS).
-   *
+   * <p>
    * Any port number that is less than or equal to {@literal 1024}  is reserved.
    *
    * @return a boolean indicating whether this {@link ServicePort} is reserved by the operating system (OS).

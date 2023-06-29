@@ -34,9 +34,8 @@ import org.cp.elements.process.ProcessExecutionException;
 import org.cp.elements.process.ProcessExecutor;
 
 /**
- * The {@link ProcessBuilderProcessExecutor} class is a {@link ProcessExecutor} using the {@link ProcessBuilder} API
- * to configure and execute (start) a running Operating System (OS) program, returning a reference
- * to the running OS {@link Process}.
+ * {@link ProcessExecutor} implementation using the {@link ProcessBuilder} API to configure and execute (start)
+ * a running Operating System (OS) program, returning a reference to the running OS {@link Process}.
  *
  * @author John Blum
  * @see java.io.File
@@ -52,8 +51,8 @@ import org.cp.elements.process.ProcessExecutor;
 public class ProcessBuilderProcessExecutor implements ProcessExecutor<ProcessAdapter> {
 
   /**
-   * Factory method to construct a new instance of {@link ProcessBuilderProcessExecutor} used to execute and run
-   * a {@link Process} with Java's {@link ProcessBuilder} API.
+   * Factory method to construct a new {@link ProcessBuilderProcessExecutor} used to execute and run a {@link Process}
+   * with Java's {@link ProcessBuilder} API.
    *
    * @return a new instance of {@link ProcessBuilderProcessExecutor} to execute and run {@link Process processes}.
    * @see org.cp.elements.process.support.ProcessBuilderProcessExecutor
@@ -127,7 +126,7 @@ public class ProcessBuilderProcessExecutor implements ProcessExecutor<ProcessAda
 
   /**
    * Constructs, configures and initializes a new instance of {@link ProcessBuilder} used to execute and run programs.
-   *
+   * <p>
    * The configuration of the {@link ProcessBuilder} is based on this {@link ProcessBuilderProcessExecutor}.
    *
    * @param commandLine array of {@link String} values constituting the program and its runtime arguments.
@@ -140,6 +139,7 @@ public class ProcessBuilderProcessExecutor implements ProcessExecutor<ProcessAda
    * @see java.io.File
    */
   protected ProcessBuilder newProcessBuilder(String[] commandLine, File directory, Environment environment) {
+
     ProcessBuilder processBuilder = new ProcessBuilder(commandLine);
 
     processBuilder.directory(directory);

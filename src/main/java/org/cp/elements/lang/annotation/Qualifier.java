@@ -25,7 +25,7 @@ import java.lang.annotation.Target;
 /**
  * Java {@link Annotation} used to qualify a reference to an {@link Object} used as a collaborator
  * ({@literal has-a} relationship) in another {@link Object} to carry out its function or service.
- *
+ * <p>
  * This is useful in application service component type design when {@literal programming to interfaces},
  * and more than 1 application service component of the {@link Class#isInterface() interface type} exists
  * or is available to be used as a collaborator in the dependent {@link Object}.

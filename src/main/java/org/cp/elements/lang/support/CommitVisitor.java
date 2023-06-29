@@ -38,8 +38,8 @@ public class CommitVisitor implements Visitor {
   private final Object target;
 
   /**
-   * Default public no-arg constructor used to construct a newm, uninitialized instance of the {@link CommitVisitor}.
-   *
+   * Default, public no-arg constructor used to construct a new, uninitialized instance of the {@link CommitVisitor}.
+   * <p>
    * This instance will target all application domain objects for the {@literal commit} operation.
    *
    * @see #CommitVisitor(Object)
@@ -49,9 +49,9 @@ public class CommitVisitor implements Visitor {
   }
 
   /**
-   * Construct a new instance of {@link CommitVisitor} initialized with the specified {@literal target} {@link Object},
+   * Construct a new {@link CommitVisitor} initialized with the specified {@literal target} {@link Object},
    * used as the subject of the {@literal commit} operation.
-   *
+   * <p>
    * Only the {@literal target} {@link Object} will be committed, or affected by {@literal this} {@link Visitor}.
    *
    * @param target the target Object of the 'commit' operation.
@@ -81,7 +81,7 @@ public class CommitVisitor implements Visitor {
 
   /**
    * Determines whether the specified {@link Visitable} {@link Object} is committable.
-   *
+   * <p>
    * The {@link Object} is committable if the {@link Object} is {@link Auditable} and {@literal this} {@link Visitor}
    * is not targeting a specific {@link Object} in the application domain object (entity) graph hierarchy.
    *

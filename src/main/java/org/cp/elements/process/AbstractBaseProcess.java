@@ -15,6 +15,8 @@
  */
 package org.cp.elements.process;
 
+import static org.cp.elements.lang.RuntimeExceptionsFactory.newUnsupportedOperationException;
+
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Optional;
@@ -27,14 +29,15 @@ import org.cp.elements.lang.Nameable;
 import org.cp.elements.process.util.ProcessUtils;
 
 /**
- * Abstract base class extending {@link Process} in order to simplify the implementation
- * of different {@link Process} types.
- *
- * Additionally, this {@link Process} base class implementation adds {@link Integer ID}
- * and {@link String name} properties to the {@link Process} object.
+ * Abstract base class extending {@link Process} simplifying the implementation of different {@link Process} types.
+ * <p>
+ * Additionally, this {@link Process} base class implementation adds {@link Integer ID} and {@link String name}
+ * properties to the {@link Process} object.
  *
  * @author John Blum
  * @see java.lang.Process
+ * @see org.cp.elements.lang.Identifiable
+ * @see org.cp.elements.lang.Nameable
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
@@ -62,7 +65,7 @@ public abstract class AbstractBaseProcess extends Process implements Identifiabl
    */
   @Override
   public final void setId(Integer id) {
-    throw new UnsupportedOperationException("Setting the ID of the Process is not supported;"
+    throw newUnsupportedOperationException("Setting the ID of the Process is not supported;"
       + " a Process ID (PID) is assigned by the Operating System");
   }
 

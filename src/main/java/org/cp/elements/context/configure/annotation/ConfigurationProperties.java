@@ -44,7 +44,7 @@ public @interface ConfigurationProperties {
 
   /**
    * The {@link String prefix} defining the subset of configuration properties referencable from this {@link Object}.
-   *
+   * <p>
    * Default to {@link String empty}, implying no configuration property prefix.
    *
    * @return {@link String} containing the configuration properties prefix.

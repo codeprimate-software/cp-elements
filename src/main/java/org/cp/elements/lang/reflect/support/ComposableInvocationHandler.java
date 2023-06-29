@@ -117,15 +117,15 @@ public class ComposableInvocationHandler implements InvocationHandler, Iterable<
    * Composite operation that delegates the invocation of the given {@link Method} on the {@code Proxy}
    * to each {@link InvocationHandler} contained in this {@literal Composite} returning the value
    * of the first {@link InvocationHandler} in the collection to handle the {@link Method} invocation.
-   *
+   * <p>
    * If no {@link InvocationHandler} can successfully handle the {@link Method} invocation,
    * then a {@link UnhandledMethodInvocationException} will be thrown.
    *
    * @param proxy {@link Object proxy} on which the {@link Method} was invoked.
    * @param method {@link Method} that was called.
    * @param args array of {@link Object arguments} passed to the {@link Method}.
-   * @return the return value of the {@link Method} or the value provided by the {@link InvocationHandler}
-   * as a result of handling the proxied {@link Method}.
+   * @return the {@link Object return value} of the {@link Method} or the {@link Object value} provided by
+   * the {@link InvocationHandler} as a result of handling the proxy of the {@link Method}.
    * @throws UnhandledMethodInvocationException if all {@link Method} invocation handlers fail
    * to handle the {@link Method}.
    * @see java.lang.reflect.InvocationHandler#invoke(Object, Method, Object[])

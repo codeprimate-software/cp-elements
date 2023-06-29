@@ -51,7 +51,7 @@ public abstract class AbstractRow implements Row {
   /**
    * Constructs a new {@link AbstractRow} initialized with given array of {@link Object values}
    * used as {@link Object values} for each {@link Column} of the new {@link AbstractRow}.
-   *
+   * <p>
    * The new {@link AbstractRow} is backed by the given array of {@link Object values}. The array is not copied.
    *
    * @param values array of {@link Object values} used as {@link Object values} for each {@link Column}

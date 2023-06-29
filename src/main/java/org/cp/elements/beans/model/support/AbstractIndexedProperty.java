@@ -39,7 +39,7 @@ import org.cp.elements.lang.annotation.Nullable;
 
 /**
  * Abstract Data Type (ADT) modeling an {@literal indexed} bean property.
- *
+ * <p>
  * The primary function of this ADT is to model {@literal ordered}, index-based bean properties, such as an array,
  * {@link List} or {@link Map}, where the property's collection of values can be individually referenced with
  * an index, such as with a positional index in an array or {@link Map} key.
@@ -172,7 +172,7 @@ public abstract class AbstractIndexedProperty<INDEX> extends Property {
 
   /**
    * Abstract Data Type (ADT) modeling both an {@link INDEX index} and {@link VALUE value}.
-   *
+   * <p>
    * The {@link Object value} is expected to be at the given {@link INDEX index}, position
    * within a {@link Collection Collection-like} data structure, such as an array or a {@link List}
    * or referencable by the {@link INDEX index} in a {@link Map Map-based} data structure.

@@ -26,7 +26,7 @@ import org.cp.elements.lang.annotation.NotNull;
 import org.cp.elements.lang.annotation.Nullable;
 
 /**
- * An {@link Enum Enumeration} of weight measurements.
+ * {@link Enum Enumeration} of weight measurements.
  *
  * @author John Blum
  * @see java.lang.Enum
@@ -43,7 +43,7 @@ public enum WeightUnit {
 
   /**
    * Factory method used to get the default unit of weight based in the current, default {@link Locale}.
-   *
+   * <p>
    * Returns {@link WeightUnit#OUNCE} if this is the {@literal United States of America (USA)},
    * otherwise returns {@link WeightUnit#GRAM}.
    *

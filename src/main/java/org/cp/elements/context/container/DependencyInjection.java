@@ -22,10 +22,10 @@ import org.cp.elements.service.loader.ServiceLoaderSupport;
 
 /**
  * Interface defining a contract for {@literal Dependency Injection} as code.
- *
+ * <p>
  * Additionally, this interface defines a contract for a very lightweight and simple
  * {@literal Inversion of Control (IOC)} container.
- *
+ * <p>
  * This container service provider implementation (SPI) is configurable using
  * the Java {@link java.util.ServiceLoader} functionality.
  *

@@ -56,8 +56,8 @@ import org.cp.elements.process.util.ProcessUtils;
 import org.cp.elements.util.CollectionUtils;
 
 /**
- * The {@link ProcessAdapter} class is an Adapter (wrapper) for a Java {@link Process} object.
- *
+ * Adapter (wrapper) for a Java {@link Process} object.
+ * <p>
  * This class provides additional, convenient operations on an instance of {@link Process} that
  * are not available in the Java {@link Process} API.
  *
@@ -82,8 +82,7 @@ public class ProcessAdapter implements Identifiable<Integer>, Initable, Nameable
   protected static final long DEFAULT_TIMEOUT_MILLISECONDS = TimeUnit.SECONDS.toMillis(30);
 
   /**
-   * Factory method used to construct a new instance of {@link ProcessAdapter} initialized with
-   * the given, required {@link Process}.
+   * Factory method used to construct a new {@link ProcessAdapter} initialized with the given, required {@link Process}.
    *
    * @param process {@link Process} object to adapt as an instance of {@link ProcessAdapter};
    * must not be {@literal null}.
@@ -103,8 +102,8 @@ public class ProcessAdapter implements Identifiable<Integer>, Initable, Nameable
   }
 
   /**
-   * Factory method used to construct a new instance of {@link ProcessAdapter} initialized with
-   * the given, required {@link Process} and corresponding {@link ProcessContext}.
+   * Factory method used to construct a new {@link ProcessAdapter} initialized with the given, required {@link Process}
+   * and corresponding {@link ProcessContext}.
    *
    * @param process {@link Process} object to adapt as an instance of {@link ProcessAdapter};
    * must not be {@literal null}.
@@ -353,7 +352,7 @@ public class ProcessAdapter implements Identifiable<Integer>, Initable, Nameable
 
   /**
    * Returns the process identifier (PID) of this running {@link Process}.
-   *
+   * <p>
    * This operation is safe from the unhandled {@link PidUnknownException}, which will be thrown
    * if the {@link Process} has terminated and the PID file was deleted.
    *
@@ -386,9 +385,9 @@ public class ProcessAdapter implements Identifiable<Integer>, Initable, Nameable
   }
 
   /**
-   * Returns the configured {@link Logger} to log runtime details.
+   * Returns the configured {@link Logger} to log runtime details of the running {@link Process}.
    *
-   * @return the {@link Logger}.
+   * @return the configured {@link Logger}.
    * @see java.util.logging.Logger
    */
   protected Logger getLogger() {
@@ -486,8 +485,9 @@ public class ProcessAdapter implements Identifiable<Integer>, Initable, Nameable
   }
 
   /**
-   * Forcibly terminates this {@link Process} if still running.  Returns the exit value even if this {@link Process}
-   * was previously terminated.
+   * Forcibly terminates this {@link Process} if still running.
+   * <p>
+   * Returns the exit value even if this {@link Process} was previously terminated.
    *
    * @return an integer value indicating the exit value of this [forcibly] terminated {@link Process}.
    * @see java.lang.Process#destroyForcibly()
@@ -533,8 +533,10 @@ public class ProcessAdapter implements Identifiable<Integer>, Initable, Nameable
   }
 
   /**
-   * Terminates this {@link Process} if still running.  {@code #stop()} has no effect if this {@link Process}
-   * was previously terminated and will just return the exit value.
+   * Terminates this {@link Process} if still running.
+   * <p>
+   * {@code #stop()} has no effect if this {@link Process} was previously terminated
+   * and will just return the exit value.
    *
    * @return an integer value indicating the exit value of this {@link Process} after it has stopped.
    * @see #stop(long, TimeUnit)
@@ -545,6 +547,7 @@ public class ProcessAdapter implements Identifiable<Integer>, Initable, Nameable
 
   /**
    * Attempts to terminate this {@link Process} within the given timeout if still running.
+   * <p>
    * {@code #stop(long, TimeUnit)} has no effect if this {@link Process} was previously terminated
    * and will just return the exit value.
    *
@@ -681,7 +684,7 @@ public class ProcessAdapter implements Identifiable<Integer>, Initable, Nameable
 
   /**
    * Waits indefinitely until this {@link Process} stops.
-   *
+   * <p>
    * This method handles the {@link InterruptedException} thrown by {@link Process#waitFor()}
    * by resetting the interrupt bit on the current (calling) {@link Thread}.
    *
@@ -704,7 +707,7 @@ public class ProcessAdapter implements Identifiable<Integer>, Initable, Nameable
 
   /**
    * Waits until the specified timeout for this {@link Process} to stop.
-   *
+   * <p>
    * This method handles the {@link InterruptedException} thrown by {@link Process#waitFor(long, TimeUnit)}
    * by resetting the interrupt bit on the current (calling) {@link Thread}.
    *

@@ -30,8 +30,8 @@ import org.cp.elements.lang.annotation.FluentApi;
 import org.cp.elements.lang.annotation.NotNull;
 
 /**
- * The {@link CollectionExtensions} class provides methods to write natural language expressions when performing
- * various {@link Collection} oriented operations.
+ * Abstract extension class providing methods to write natural language expressions when performing various
+ * {@link Collection} oriented operations.
  *
  * @author John J. Blum
  * @see java.util.Arrays
@@ -48,7 +48,7 @@ public abstract class CollectionExtensions {
 
   /**
    * The {@literal from} operator performs conversions on the given array and its elements.
-   *
+   * <p>
    * For instance, the array can be converted into an ordered {@link List} of elements,
    * or a unique {@link Set} of elements originating from the array.
    *

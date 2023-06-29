@@ -26,8 +26,7 @@ import org.cp.elements.lang.Integers;
 import org.cp.elements.lang.concurrent.ThreadSafe;
 
 /**
- * The {@link SimpleBloomFilter} class is a probabilistic data structure testing whether a given data element
- * is a member of the set maintained by the filter.
+ * A probabilistic data structure testing whether a given data element is a member of the set maintained by the filter.
  *
  * @author John J. Blum
  * @param <T> {@link Number type} of the elements contained by this {@link BloomFilter}.
@@ -98,7 +97,7 @@ public class SimpleBloomFilter<T> implements BloomFilter<T> {
   /**
    * Factory method used to construct an instance of the {@link SimpleBloomFilter} class initialized with a size of
    * 1 element expected to be added to the {@link BloomFilter}.
-   *
+   * <p>
    * The acceptable, false positive rate defaults to 1%.
    *
    * @param <T> {@link Class type} of elements added/evaluated by this Bloom Filter.
@@ -113,7 +112,7 @@ public class SimpleBloomFilter<T> implements BloomFilter<T> {
   /**
    * Factory method used to construct an instance of the {@link SimpleBloomFilter} class initialized with
    * an approximate, estimated number of elements that the caller expects will be added to the {@link BloomFilter}.
-   *
+   * <p>
    * The acceptable, false positive rate defaults to 1%.
    *
    * @param <T> {@link Class type} of elements added/evaluated by this Bloom Filter.
@@ -170,9 +169,9 @@ public class SimpleBloomFilter<T> implements BloomFilter<T> {
   /**
    * Computes the required number of bits needed by the Bloom Filter as a factor of the approximate number of elements
    * to be added to the filter along with the desired, acceptable false positive rate (probability).
-   *
-   * m = n * (log p) / (log 2) ^ 2
-   *
+   * <p>
+   * {@literal m = n * (log p) / (log 2) ^ 2}
+   * <p>
    * m is the required number of bits needed for the Bloom Filter.
    * n is the approximate number of elements to be added to the bloom filter
    * p is the acceptable false positive rate between 0.0 and 1.0 exclusive
@@ -196,16 +195,16 @@ public class SimpleBloomFilter<T> implements BloomFilter<T> {
    * Computes the optimal number of hash functions to apply to each element added to the Bloom Filter as a factor
    * of the approximate (estimated) number of elements that will be added to the filter along with
    * the required number of bits needed by the filter, which was computed from the probability of false positives.
-   *
-   * k = m/n * log 2
-   *
+   * <p>
+   * {@literal k = m/n * log 2}
+   * <p>
    * m is the required number of bits needed for the bloom filter
    * n is the approximate number of elements to be added to the bloom filter
    * k is the optimal number of hash functions to apply to the element added to the bloom filter
    *
    * @param approximateNumberOfElements integer value indicating the approximate, estimated number of elements
    * the user expects will be added to the Bloom Filter.
-   * @param requiredNumberOfBits the required number of bits needed by the Bloom Filter to satify the probability
+   * @param requiredNumberOfBits the required number of bits needed by the Bloom Filter to satisfy the probability
    * of false positives.
    * @return the optimal number of hash functions used by the Bloom Filter.
    */
@@ -218,8 +217,7 @@ public class SimpleBloomFilter<T> implements BloomFilter<T> {
   }
 
   /**
-   * Constructs an instance of the {@link SimpleBloomFilter} class with the default number of bits
-   * and default number of hash functions.
+   * Constructs a new {@link SimpleBloomFilter} with the default number of bits and default number of hash functions.
    *
    * @see #SimpleBloomFilter(int, int)
    */
@@ -228,7 +226,7 @@ public class SimpleBloomFilter<T> implements BloomFilter<T> {
   }
 
   /**
-   * Constructs an instance of the {@link SimpleBloomFilter} class initialized with the required number of bits
+   * Constructs a new {@link SimpleBloomFilter} initialized with the required number of bits
    * and optimal number of hash functions.
    *
    * @param numberOfBits the number of bits needed by this filter.
@@ -262,7 +260,7 @@ public class SimpleBloomFilter<T> implements BloomFilter<T> {
   /**
    * Determines the length of the bit array used as a filter in this {@link BloomFilter}, which is based on
    * the given number of bits required by this {@link BloomFilter}.
-   *
+   * <p>
    * WARNING: This method may be overridden in subclasses but should be careful not to rely on any state
    * in this {@link BloomFilter} class since this method is called from the constructor.
    *
@@ -364,12 +362,12 @@ public class SimpleBloomFilter<T> implements BloomFilter<T> {
 
   /**
    * Determines the approximate, estimated size of this {@link BloomFilter}.
-   *
+   * <p>
    * The estimated size is approximately the number of elements that have been added to this {@link BloomFilter},
    * calculated as...
-   *
-   * n* = - m/n * log(1 - X/m)
-   *
+   * <p>
+   * {@literal n* = - m/n * log(1 - X/m)}
+   * <p>
    * n* is an estimate of the number of elements in this filter
    * m is the length (size) of this filter
    * k is the number of hash functions
@@ -388,7 +386,6 @@ public class SimpleBloomFilter<T> implements BloomFilter<T> {
     return Double.valueOf(Math.abs(Math.round(estimatedSize))).intValue();
   }
 
-  /* (non-Javadoc) */
   private int countNumberOfBitsSetToOne() {
 
     AtomicInteger numberOfBitsSetToOne = new AtomicInteger(0);

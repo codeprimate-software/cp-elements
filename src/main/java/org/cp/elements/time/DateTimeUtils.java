@@ -27,11 +27,10 @@ import org.cp.elements.lang.annotation.NullSafe;
 import org.cp.elements.lang.annotation.Nullable;
 
 /**
- * The {@link DateTimeUtils} class is an abstract utility class containing common functionality for conveniently
- * working with dates and times.
- *
- * This class predates the new {@code java.time} package in the Java API and it is highly recommended that users use
- * those date/time types instead.
+ * Abstract utility class containing common functionality for conveniently processing dates and times.
+ * <p>
+ * This class predates the new {@code java.time} package in the Java API, and it is highly recommended that
+ * users use those date/time types instead.
  *
  * @author John J. Blum
  * @see java.util.Calendar
@@ -143,7 +142,7 @@ public abstract class DateTimeUtils {
 
   /**
    * Truncates the time portion of the {@link Calendar Calendar's} date and time components.
-   *
+   * <p>
    * If the {@link Calendar} object is {@literal null}, then {@literal null} is returned. The fields of
    * the {@link Calendar} to be truncated include the hour of day, minute, second and milliseconds.
    *

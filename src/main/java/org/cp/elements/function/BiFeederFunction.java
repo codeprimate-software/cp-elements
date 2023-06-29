@@ -25,13 +25,13 @@ import org.cp.elements.lang.annotation.NotNull;
  * where the first argument is an arbitrary value and the second argument is a possible, merged return value
  * from a {@link BiFeederFunction} proceeding {@literal this} {@link BiFeederFunction} in a composition of
  * {@link BiFeederFunction BiFeederFunctions}.
- *
+ * <p>
  * The first {@link BiFeederFunction} in the composition can be passed an initial value or {@literal null}
  * as the second argument. The second argument to all downstream {@link BiFeederFunction BiFeederFunctions}
  * will be the composite value of the second argument to {@literal this} {@link BiFeederFunction}
  * {@link #merge(Object, Object) merged} with the return value from {@link BiFeederFunction} immediately proceeding
  * {@literal this} {@link BiFeederFunction}.
- *
+ * <p>
  * Implementors of {@literal this} interface must implement the {@link #merge(Object, Object)} operation.
  *
  * @author John Blum
@@ -57,7 +57,7 @@ public interface BiFeederFunction<T, R> extends BiFunction<T, R, R> {
 
   /**
    * Composes {@literal this} {@link BiFeederFunction} with the given, required {@link BiFunction}.
-   *
+   * <p>
    * The given {@link BiFunction} will be executed after {@literal this} {@link BiFeederFunction}
    * and the {@link R return value} will be used as input, or the second argument to
    * the given {@link BiFunction}.
@@ -81,7 +81,7 @@ public interface BiFeederFunction<T, R> extends BiFunction<T, R, R> {
 
   /**
    * Merges two {@link R argument} values into a single {@link R value}.
-   *
+   * <p>
    * This method return {@literal this} {@link BiFeederFunction BiFeederFunction's}
    * {@link R return value} by default.
    *

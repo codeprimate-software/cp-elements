@@ -45,7 +45,7 @@ import org.cp.elements.process.ProcessAdapter;
 import org.cp.elements.util.ArrayUtils;
 
 /**
- * The {@link ProcessUtils} class is an abstract utility class for working with Java {@link Process} objects.
+ * Abstract utility class used to process with Java {@link Process} objects.
  *
  * @author John J. Blum
  * @see java.io.File
@@ -104,7 +104,7 @@ public abstract class ProcessUtils {
 
   /**
    * Null-safe method to determine whether the given {@link Process} is still alive, or that the {@link Process}
-   * has not yet terminated yet.
+   * has not terminated yet.
    *
    * @param process {@link Process} to evaluate if still alive.
    * @return a boolean value indicating whether the given {@link Process} is still alive.
@@ -149,7 +149,7 @@ public abstract class ProcessUtils {
   /**
    * Null-safe method to determine if the {@link Process} represented by the given {@link ProcessAdapter} is running.
    *
-   * @param processAdapter {@link ProcessAdapter} wraping the {@link Process} to evaluate if running.
+   * @param processAdapter {@link ProcessAdapter} wrapping the {@link Process} to evaluate if running.
    * @return a boolean value indicating whether the {@link Process} object adapted/wrapped by
    * the given {@link ProcessAdapter} is running.
    * @see org.cp.elements.process.ProcessAdapter
@@ -187,7 +187,7 @@ public abstract class ProcessUtils {
    * Kills the given {@link Process}.
    *
    * @param process {@link Process} to kill.
-   * @return a boolean value indicating whether the the given {@link Process} was successfully terminated.
+   * @return a boolean value indicating whether the given {@link Process} was successfully terminated.
    * @see java.lang.Process
    * @see java.lang.Process#destroy()
    * @see java.lang.Process#destroyForcibly()
@@ -231,7 +231,7 @@ public abstract class ProcessUtils {
    * Kills the process represented by the given {@link ProcessAdapter}.
    *
    * @param processAdapter {@link ProcessAdapter} representing the process to kill.
-   * @return a boolean value indicating whether the the given process represented by the {@link ProcessAdapter}
+   * @return a boolean value indicating whether the given process represented by the {@link ProcessAdapter}
    * was successfully terminated.
    * @see org.cp.elements.process.ProcessAdapter
    * @see #kill(Process)
@@ -291,11 +291,11 @@ public abstract class ProcessUtils {
 
   /**
    * Searches the given, required {@link File path} for a {@literal .pid} {@link File}.
-   *
+   * <p>
    * If the given {@link File} is a directory then the directory is recursively searched (depth-first) until the first
    * {@literal .pid} {@link File} is found. If the algorithm exhausts its search and no {@literal .pid} {@link File}
    * can be found, then {@literal null} is returned.
-   *
+   * <p>
    * If the given {@link File path} is a file then the file's containing directory is used as the base directory
    * to begin the search and the algorithm continues as described above.
    *

@@ -29,7 +29,7 @@ import org.cp.elements.lang.factory.ObjectFactoryReferenceHolder;
 /**
  * {@link AbstractObjectFactory} {@literal service provider implementation (SPI)} that constructs a new instance of
  * {@literal JavaBean} compliant {@link Object Objects} for every invocation of {@literal create(..)}.
- *
+ * <p>
  * That is, this {@link AbstractObjectFactory} creates {@literal prototype} {@link Object POJOs}.
  *
  * @author John J. Blum
@@ -105,7 +105,7 @@ public class PrototypeObjectFactory extends AbstractObjectFactory {
    * Initializes the given {@link Object} with the array of {@link Object arguments} providing the {@link Object}
    * implements the {@link ParameterizedInitable} interface. Alternatively, this method will call the no argument
    * {@link Initable#init()} method if the {@link Object} implements the {@link Initable} interface.
-   *
+   * <p>
    * This method does nothing if the {@link Object} cannot be initialized in any capacity.
    *
    * @param <T> {@link Class type} of {@link Object} to initialize.

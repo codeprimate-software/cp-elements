@@ -57,7 +57,7 @@ public abstract class MapUtils {
 
   /**
    * Determines the number of {@link Map.Entry entries} in the {@link Map}.
-   *
+   * <p>
    * This method is null-safe and will return {@literal 0} if the {@link Map} is {@literal null} or {@literal empty}.
    *
    * @param <K> {@link Class} type of the key.
@@ -205,7 +205,7 @@ public abstract class MapUtils {
 
   /**
    * Determines whether the given {@link Map} is empty.
-   *
+   * <p>
    * A {@link Map} is considered empty if it contains no entries or is {@literal null}.
    *
    * @param map {@link Map} to evaluate.
@@ -220,7 +220,7 @@ public abstract class MapUtils {
 
   /**
    * Determines whether the given {@link Map} is not empty.
-   *
+   * <p>
    * A {@link Map} is considered non-empty if it is not {@literal null} and contains at least 1 entry.
    *
    * @param map {@link Map} to evaluate.
@@ -273,7 +273,7 @@ public abstract class MapUtils {
    */
   public static @NotNull <K, V> Map.Entry<K, V> newMapEntry(K key, V value) {
 
-    return new Map.Entry<K, V>() {
+    return new Map.Entry<>() {
 
       @Override
       public K getKey() {
@@ -295,7 +295,7 @@ public abstract class MapUtils {
   /**
    * Determines whether the {@link Map} is not {@literal null} and contains no {@literal null}
    * {@link Map.Entry Map Entries}.
-   *
+   * <p>
    * The {@link Map} contains no {@literal null} {@link Map.Entry Map Entries} is there does not exist a mapping
    * where either the key or value, or both, are {@literal null}.
    *
@@ -342,7 +342,7 @@ public abstract class MapUtils {
 
   /**
    * Converts the given {@link Map} into an associative array.
-   *
+   * <p>
    * The associative array takes the form of [key1=value1, key2=value2, ..., keyN=valueN].
    *
    * @param map {@link Map} to convert into an associative array.

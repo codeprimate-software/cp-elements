@@ -24,7 +24,7 @@ import org.cp.elements.lang.annotation.NotNull;
 import org.cp.elements.lang.annotation.Nullable;
 
 /**
- * An {@link Enum enumeration} of the months in a calendar year.
+ * {@link Enum Enumeration} of the months in a calendar year.
  *
  * @author John J. Blum
  * @see java.lang.Enum
@@ -140,7 +140,7 @@ public enum Month {
   private final String name;
 
   /**
-   * Constructs a new instance of the {@link Month} enum initialized with the given month metadata and descriptors.
+   * Constructs a new {@link Month} initialized with the given month metadata and descriptors.
    *
    * @param abbreviation {@link String} specifying an abbreviation for the month (for example: {@literal Jan}).
    * @param name {@link String} containing the name for the month (for example: {@literal January}).
@@ -222,7 +222,7 @@ public enum Month {
 
   /**
    * Gets the {@link Month} following {@literal this} {@link Month}.
-   *
+   * <p>
    * If {@literal this} {@link Month} is {@link Month#DECEMBER},
    * then the {@link Month} resets to {@link Month#JANUARY}.
    *
@@ -235,7 +235,7 @@ public enum Month {
 
   /**
    * Gets the {@link Month} prior to {@literal this} {@link Month}.
-   *
+   * <p>
    * If {@literal this} {@link Month} is {@link Month#JANUARY},
    * then the {@link Month} rolls back to {@link Month#DECEMBER}.
    *

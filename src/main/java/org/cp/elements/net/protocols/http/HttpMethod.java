@@ -25,9 +25,9 @@ import org.cp.elements.lang.annotation.NotNull;
 import org.cp.elements.lang.annotation.Nullable;
 
 /**
- * An {@link Enum Enumeration} of all HTTP methods:
+ * {@link Enum Enumeration} of all HTTP methods:
  * [ {@literal POST}, {@literal GET}, {@literal PUT}, {@literal DELETE}, ... ].
- *
+ * <p>
  * Additionally, The {@link HttpMethod} is mapped to a corresponding and equivalent {@link CrudOperation}.
  *
  * @author John J. Blum
