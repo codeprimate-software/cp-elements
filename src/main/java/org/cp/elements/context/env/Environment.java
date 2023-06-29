@@ -135,7 +135,7 @@ public class Environment implements Iterable<String> {
   /**
    * Constructs a new {@link Environment} initialized with the given, required {@link PropertiesAdapter}
    * containing the {@literal environment variable} configuration of this system.
-   *
+   * <p>
    * Additionally, the {@link Environment} initializes a reference to
    * the configured Java {@link System#getProperties() System properties}.
    *
@@ -193,7 +193,7 @@ public class Environment implements Iterable<String> {
   /**
    * Determines whether the {@literal environment variable} identified by the given {@link String name}
    * is declared in this {@link Environment}.
-   *
+   * <p>
    * Even though the {@link String named} {@literal environment variable} is present (exists, or is declared)
    * does not mean the {@literal environment variable} is set (defined). See {@link #isSet(String)}.
    *
@@ -663,7 +663,7 @@ public class Environment implements Iterable<String> {
 
   /**
    * Gets the value of the {@literal user.dir} {@link System#getProperty(String) System property}.
-   *
+   * <p>
    * The value of the {@literal user.dir} {@link System#getProperty(String) System property} is the same as
    * the current working directory.
    *
@@ -737,11 +737,9 @@ public class Environment implements Iterable<String> {
       return true;
     }
 
-    if (!(obj instanceof Environment)) {
+    if (!(obj instanceof Environment that)) {
       return false;
     }
-
-    Environment that = (Environment) obj;
 
     return this.environmentVariables().equals(that.environmentVariables());
   }
@@ -770,9 +768,9 @@ public class Environment implements Iterable<String> {
 
   /**
    * Converts this {@link Environment} into an {@link String associative array}.
-   *
+   * <p>
    * An associative array is of the form:
-   *
+   * <p>
    * [
    *   environmentVariableOne = value,
    *   environmentVariableTwo = value,

@@ -28,7 +28,7 @@ import org.cp.elements.lang.ObjectUtils;
 import org.cp.elements.lang.annotation.NotNull;
 
 /**
- * An {@link InputStream} implementation that reads from a Java {@link ByteBuffer}.
+ * {@link InputStream} implementation that reads from a Java {@link ByteBuffer}.
  *
  * @author John Blum
  * @see java.io.InputStream
@@ -39,8 +39,8 @@ import org.cp.elements.lang.annotation.NotNull;
 public class ByteBufferInputStream extends InputStream {
 
   /**
-   * Factory method used to construct a new instance of {@link ByteBufferInputStream} backed by
-   * the given, required {@link ByteBuffer}.
+   * Factory method used to construct a new {@link ByteBufferInputStream} backed by the given,
+   * required {@link ByteBuffer}.
    *
    * @param byteBuffer {@link ByteBuffer} used to back the {@link InputStream}; must not be {@literal null}.
    * @return a new {@link ByteBufferInputStream} initialized with the given, required {@link ByteBuffer}.
@@ -67,7 +67,7 @@ public class ByteBufferInputStream extends InputStream {
 
   private @NotNull ByteBuffer prepareForReading(@NotNull ByteBuffer byteBuffer) {
 
-    return (ByteBuffer) (byteBuffer.position() > 0
+    return (byteBuffer.position() > 0
       ? byteBuffer.limit(byteBuffer.position()).rewind().mark()
       : byteBuffer.limit(byteBuffer.capacity())).mark();
   }
@@ -187,7 +187,7 @@ public class ByteBufferInputStream extends InputStream {
 
   /**
    * Skips the given number of bytes read from this {@link InputStream}.
-   *
+   * <p>
    * Effectively moves the {@link ByteBuffer#position()} ahead by the number of available or given number of bytes,
    * which ever is smaller.
    *

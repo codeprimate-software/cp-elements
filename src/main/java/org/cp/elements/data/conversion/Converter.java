@@ -59,7 +59,7 @@ public interface Converter<S, T> extends ConversionServiceAware, Function<S, T> 
   /**
    * Determines whether this {@link Converter} can convert {@link Object Objects} of the given {@link Class from type}
    * into {@link Object Objects} of the given {@link Class to type}.
-   *
+   * <p>
    * By default, the {@link Class type} to convert {@literal from} must be assignable to the {@link Class type}
    * to convert to.
    *

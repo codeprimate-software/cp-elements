@@ -22,7 +22,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import org.cp.elements.lang.ClassUtils;
 import org.cp.elements.lang.annotation.NotNull;
@@ -32,8 +31,8 @@ import org.cp.elements.util.ArrayUtils;
 import org.cp.elements.util.stream.StreamUtils;
 
 /**
- * The {@link ProxyFactory} class is an abstract factory object used to create a proxy for a given target {@link Object}
- * implementing the given set of {@link Class interfaces}.
+ * Abstract factory object used to create a proxy for a given target {@link Object} implementing the given set of
+ * {@link Class interfaces}.
  *
  * @author John Blum
  * @param <T> {@link Class type} of the {@link Object} to proxy.
@@ -45,7 +44,7 @@ import org.cp.elements.util.stream.StreamUtils;
 public abstract class ProxyFactory<T> {
 
   /**
-   * Returns a reference to a {@link ProxyFactory} Service Provider Implementation (SPI) provided by Elements
+   * Returns a reference to a {@link ProxyFactory} {@literal Service Provider Implementation (SPI)} provided by Elements
    * that delegates all proxy operations to any and all application configured {@link ProxyFactory}
    * Service Provider Implementations (SPI).
    *
@@ -80,8 +79,8 @@ public abstract class ProxyFactory<T> {
   }
 
   /**
-   * Factory method used to construct a new instance of {@link ProxyFactory} that will be used to
-   * create a {@literal Proxy} for the given {@link Object} implementing the given array of {@link Class interfaces}.
+   * Factory method used to construct a new ={@link ProxyFactory} that will be used to create a {@literal Proxy}
+   * for the given {@link Object} implementing the given array of {@link Class interfaces}.
    *
    * @param <T> {@link Class type} of the {@link Object} to proxy.
    * @param target {@link Object} to proxy.
@@ -118,7 +117,7 @@ public abstract class ProxyFactory<T> {
 
     allImplementedInterfaces.addAll(Arrays.stream(ArrayUtils.nullSafeArray(interfaces, Class.class))
       .filter(ClassUtils::isInterface)
-      .collect(Collectors.toList()));
+      .toList());
 
     return allImplementedInterfaces.toArray(new Class<?>[0]);
   }
@@ -160,7 +159,7 @@ public abstract class ProxyFactory<T> {
 
   /**
    * Gets the Java {@link ClassLoader} used to resolve and define the Proxy {@link Class}.
-   *
+   * <p>
    * If the {@link ClassLoader} was not configured then the current {@link Thread Thread's} {@link ClassLoader}
    * will be used.
    *

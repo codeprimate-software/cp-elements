@@ -46,11 +46,11 @@ public abstract class BufferUtils {
 
   /**
    * Computes the {@literal load factor} of the given, required {@link Buffer}.
-   *
+   * <p>
    * The {@literal load factor} is a function of the {@link Buffer Buffer's} {@link Buffer#position()}
    * and {@link Buffer#capacity()}, irrespective of the {@link Buffer Buffer's} {@link Buffer#limit()},
    * if set.
-   *
+   * <p>
    * Just because a {@link Buffer} has reached its {@link Buffer#limit()} does not mean it is at
    * or nearing {@link Buffer#capacity()}. This computation is often used in the determination
    * for whether to {@link #copy(ByteBuffer, int)} reallocate the {@link Buffer}.
@@ -74,14 +74,14 @@ public abstract class BufferUtils {
   /**
    * Copies the given, required {@link ByteBuffer} into a new {@link ByteBuffer} with
    * additional {@link ByteBuffer#capacity()}.
-   *
+   * <p>
    * The {@link ByteBuffer#position()} will be set to immediately after the last byte copied from
    * the given {@link ByteBuffer}, which corresponds to either the given {@link ByteBuffer ByteBuffer's}
    * {@link ByteBuffer#limit()} or its {@link ByteBuffer#capacity()}, dependent on the existing data
    * in the {@link ByteBuffer}.
-   *
+   * <p>
    * The {@link ByteBuffer#limit()} of the new {@link ByteBuffer} (copy) will match its {@link ByteBuffer#capacity()}.
-   *
+   * <p>
    * The {@link ByteBuffer#capacity()} of the new {@link ByteBuffer} (copy) will be the {@link ByteBuffer#capacity()}
    * of the given {@link ByteBuffer} plus the {@code additionalCapacity}.
    *
@@ -126,13 +126,13 @@ public abstract class BufferUtils {
   private static @NotNull ByteBuffer prepareByteBufferToCopy(@NotNull ByteBuffer buffer) {
 
     return buffer.position() > 0
-      ? (ByteBuffer) buffer.limit(buffer.position()).rewind()
-      : (ByteBuffer) buffer.limit(buffer.capacity());
+      ? buffer.limit(buffer.position()).rewind()
+      : buffer.limit(buffer.capacity());
   }
 
   /**
    * Gets an array of bytes containing the contents of the given, required {@link ByteBuffer}.
-   *
+   * <p>
    * This method handles {@link ByteBuffer#isReadOnly() read-only} {@link ByteBuffer ByteBuffers}.
    *
    * @param buffer {@link ByteBuffer} from which to extract an array of bytes
@@ -180,7 +180,7 @@ public abstract class BufferUtils {
    * Converts the big, wrapper {@link Byte} array into a primitive byte array.
    *
    * @param array big, wrapper {@link Byte} array to convert.
-   * @return a a primitive byte array containing the lement of the big {@link Byte} array.
+   * @return a primitive byte array containing the element of the big {@link Byte} array.
    * @see #toBigByteArray(byte[])
    */
   @NullSafe

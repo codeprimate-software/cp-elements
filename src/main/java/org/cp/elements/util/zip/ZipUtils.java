@@ -74,11 +74,11 @@ public abstract class ZipUtils {
   /**
    * Tries to resolve the {@link String} of the {@link ZipEntry} given the {@link File directory} being zipped
    * and the {@link File} from when the {@link ZipEntry} is being constructed.
-   *
+   * <p>
    * The resolved {@link ZipEntry} {@link String name} will be the relative path of the given {@link File}
    * if the {@link File} is relative to the given {@link File directory}, otherwise the {@link ZipEntry}
    * {@link String name} will be the {@link String name} of the given {@link File}.
-   *
+   * <p>
    * If {@link File diretory} is {@literal null}, or is not a valid {@link File directory},
    * or the {@link File directory} refers to the root of the file system (i.e. the {@link File#getName() name}
    * of the {@link File directory} is {@link String empty}), then the resolved {@link ZipEntry} {@link String name}

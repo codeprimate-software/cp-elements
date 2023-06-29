@@ -59,7 +59,7 @@ public abstract class FileLastModifiedFilter implements FileFilter, Filter<File>
    * Factory method used to construct a new instance of {@link FileLastModifiedFilter} initialized with the given,
    * required {@link RelationalOperator} used in the evaluation and filtering of {@link File Files}
    * by {@link File#lastModified() last modified timestamp}.
-   *
+   * <p>
    * By default, the {@link FileLastModifiedFilter} reject {@literal null} {@link File} references.
    *
    * @param <T> {@link Class type} of the {@link File} attribute that is the subject of the comparison.
@@ -90,7 +90,7 @@ public abstract class FileLastModifiedFilter implements FileFilter, Filter<File>
 
   /**
    * Determines whether the given {@link File} is accepted by this {@link FileFilter}.
-   *
+   * <p>
    * The {@link File} is accepted if the {@link File File's} {@link File#lastModified() last modified timestamp}
    * matches the expected date/time criteria of this {@link FileFilter}.
    *

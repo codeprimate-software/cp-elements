@@ -15,6 +15,7 @@
  */
 package org.cp.elements.lang.support;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -48,7 +49,7 @@ import org.cp.elements.util.stream.StreamUtils;
 
 /**
  * {@link Comparator} implementation capable of comparing {@link Object Objects} using a variety of strategies.
- *
+ * <p>
  * It should be noted that since {@link Comparator} objects are not {@link Serializable} by default,
  * then the "registered" {@link Comparator Comparators} by {@link Class type} are not serialized.
  *
@@ -63,10 +64,11 @@ import org.cp.elements.util.stream.StreamUtils;
 @FluentApi
 public class SmartComparator implements Comparator<Object>, Iterable<ComparatorDescriptor>, Serializable {
 
+  @Serial
   private static final long serialVersionUID = -1851003770115084180L;
 
   /**
-   * Factory method used to construct a new instance of {@link SmartComparator}.
+   * Factory method used to construct a new {@link SmartComparator}.
    *
    * @return a new {@link SmartComparator}.
    */
@@ -79,12 +81,12 @@ public class SmartComparator implements Comparator<Object>, Iterable<ComparatorD
 
   /**
    * Smartly {@link Comparator#compare(Object, Object) compares} two {@link Object objects}.
-   *
+   * <p>
    * First, an attempt is made to {@link #findByExactType(Class) find} a {@link Comparator}
    * {@link #register(Comparator) registered} with this {@link SmartComparator} that exactly matches one of the given
    * {@link Object object's} {@link Class type}. If such a {@link Comparator} is found, then the {@link Comparator}
    * is used to {@link Comparator#compare(Object, Object) compare} the {@link Object objects}.
-   *
+   * <p>
    * Next, an attempt is made to {@link #findByCompatibleType(Class) find} a {@link Comparator}
    * {@link #register(Comparator) registered} with this {@link SmartComparator} that is compatible with one of
    * the given {@link Object object's} {@link Class type}. When the {@link Comparator}
@@ -93,19 +95,19 @@ public class SmartComparator implements Comparator<Object>, Iterable<ComparatorD
    * is {@link Class#isAssignableFrom(Class) assignment compatible}. If such a {@link Comparator} is found,
    * then the {@link Comparator} is used to {@link Comparator#compare(Object, Object) compare}
    * the {@link Object objects}.
-   *
+   * <p>
    * If an appropriate {@link Comparator} cannot be found to {@link Comparator#compare(Object, Object) compare}
    * the {@link Object objects}, and if either or both of the {@link Object objects} are {@link Comparable},
    * then the {@link Comparable Comparable objects} {@link Comparable#compareTo(Object)} methods is called.
-   *
+   * <p>
    * Then, if either {@link Object} in the comparison is an instance of {@link String}, then this method attempts
    * to {@link Comparator#compare(Object, Object)} the {@link Object objects} using their
    * {@link String#valueOf(Object) String rpresentation}.
-   *
+   * <p>
    * Finally, if none of the above methods were successful in comparing the {@link Object objects}, then any declared
    * ordering is applied, returning a {@link Ordered#DEFAULT default order}, if order was not declared, as the result
    * of this method.
-   *
+   * <p>
    * Always orders {@literal null} values {@link Ordered#LAST last}.
    *
    * @param objectOne first {@link Object} in the comparison.
@@ -310,7 +312,7 @@ public class SmartComparator implements Comparator<Object>, Iterable<ComparatorD
 
   /**
    * Unregisters the given, required {@link ComparatorDescriptor} from this {@link SmartComparator}.
-   *
+   * <p>
    * Internally, {@link Comparator Comparators} are described and registered as
    * {@link ComparatorDescriptor descriptors}.
    *
@@ -348,7 +350,7 @@ public class SmartComparator implements Comparator<Object>, Iterable<ComparatorD
   protected static class ComparatorDescriptor {
 
     /**
-     * Factory method used to construct a new instance of {@link ComparatorDescriptor} initialized with the given,
+     * Factory method used to construct a new {@link ComparatorDescriptor} initialized with the given,
      * required {@link Comparator} that will be described by the {@link ComparatorDescriptor descriptor}.
      *
      * @param comparator {@link Comparator} to describe with the {@link ComparatorDescriptor descriptor};
@@ -389,7 +391,7 @@ public class SmartComparator implements Comparator<Object>, Iterable<ComparatorD
 
     /**
      * Gets the resolved {@link Class type} of the {@link Comparator Comparator's} type parameter.
-     *
+     * <p>
      * For instance, if a user's {@literal CustomComparator} implements {@link Comparator Comparator&lt;User&gt;},
      * then this method returns {@literal User}.
      *
@@ -467,11 +469,9 @@ public class SmartComparator implements Comparator<Object>, Iterable<ComparatorD
         return true;
       }
 
-      if (!(obj instanceof ComparatorDescriptor)) {
+      if (!(obj instanceof ComparatorDescriptor that)) {
         return false;
       }
-
-      ComparatorDescriptor that = (ComparatorDescriptor) obj;
 
       return ObjectUtils.equals(this.getComparator(), that.getComparator())
         && ObjectUtils.equalsIgnoreNull(this.lazyResolvedType.get(), that.lazyResolvedType.get());
@@ -557,6 +557,7 @@ public class SmartComparator implements Comparator<Object>, Iterable<ComparatorD
       return objectOne.compareTo(objectTwo);
     }
 
+    @Serial
     private @NotNull Object readResolve() {
       return INSTANCE;
     }
@@ -579,6 +580,7 @@ public class SmartComparator implements Comparator<Object>, Iterable<ComparatorD
       return Integer.compare(ObjectUtils.hashCode(objectOne), ObjectUtils.hashCode(objectTwo));
     }
 
+    @Serial
     private @NotNull Object readResolve() {
       return INSTANCE;
     }

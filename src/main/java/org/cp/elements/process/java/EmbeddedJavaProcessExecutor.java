@@ -15,7 +15,6 @@
  */
 package org.cp.elements.process.java;
 
-import static java.util.Arrays.asList;
 import static org.cp.elements.lang.ClassUtils.getName;
 import static org.cp.elements.lang.ClassUtils.getSimpleName;
 import static org.cp.elements.lang.ClassUtils.isConstructorWithArrayParameter;
@@ -33,7 +32,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.Callable;
 
@@ -59,12 +58,12 @@ import org.cp.elements.process.ProcessExecutor;
 @SuppressWarnings({ "rawtypes", "unused" })
 public class EmbeddedJavaProcessExecutor implements ProcessExecutor<Void> {
 
-  protected static final Collection<JavaClassExecutor> JAVA_CLASS_EXECUTORS = Collections.unmodifiableList(asList(
-    new ExecutableExecutor<>(), new RunnableExecutor<>(), new CallableExecutor<>(), new MainMethodExecutor<>()));
+  protected static final Collection<JavaClassExecutor> JAVA_CLASS_EXECUTORS =
+    List.of(new ExecutableExecutor<>(), new RunnableExecutor<>(), new CallableExecutor<>(), new MainMethodExecutor<>());
 
   /**
-   * Factory method used to construct an instance of the {@link EmbeddedJavaProcessExecutor}, which is used to execute
-   * Java {@link Class Classes} embedded in the currently running Java program.
+   * Factory method used to construct a new {@link EmbeddedJavaProcessExecutor}, which is used to
+   * execute Java {@link Class Classes} embedded in the currently running Java program.
    *
    * @return a new instance of the {@link EmbeddedJavaProcessExecutor} class.
    * @see org.cp.elements.process.java.EmbeddedJavaProcessExecutor
@@ -145,8 +144,8 @@ public class EmbeddedJavaProcessExecutor implements ProcessExecutor<Void> {
 
   /**
    * Executes the given Java {@link Class} passing the given array of {@link String arguments}.
-   *
-   * This execute method employs a {@link JavaClassExecutor} strategy to execute the given Java {@link Class}.
+   * <p>
+   * This {@code execute} method employs a {@link JavaClassExecutor} strategy to execute the given Java {@link Class}.
    * The Java {@link Class} is expected to either implement {@link Runnable}, {@link Callable}, {@link Executable}
    * or implement a {@literal main} {@link Method}.
    *

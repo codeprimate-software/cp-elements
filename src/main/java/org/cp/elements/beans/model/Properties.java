@@ -182,7 +182,7 @@ public class Properties implements Iterable<Property>, Streamable<Property> {
 
   /**
    * Finds all {@link Property properties} in this collection matching the given {@link Predicate}.
-   *
+   * <p>
    * If the given {@link Predicate} is {@literal null}, then this method behaves as if there is no {@link Predicate}
    * in the query used to match {@link Property properties} and therefore matches all {@link Property properites}.
    *
@@ -266,7 +266,7 @@ public class Properties implements Iterable<Property>, Streamable<Property> {
 
   /**
    * Finds all {@literal serializable} {@link Properties}.
-   *
+   * <p>
    * {@link Properties} that are {@link Property#isReadable()} and is not {@link Property#isTransient()}
    * are considered {@literal serializable}. However, this method does not take into account
    * the {@link Property#getType()} and whether the {@link Class type} of the {@link Property}

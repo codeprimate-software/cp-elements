@@ -25,27 +25,27 @@ import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.annotation.NullSafe;
 
 /**
- * The {@link ScalableBloomFilter} class is an implementation of a {@link BloomFilter} that is scalable at runtime.
- *
+ * Implementation of {@link BloomFilter} that is scalable at runtime.
+ * <p>
  * The objective of this {@link BloomFilter} implementation is to save space (memory) and improve on reliability
  * with precision accuracy by minimizing saturation when managing larger data sets, which leads to more false positives,
  * particularly as the data set grows, which is definitely the case with event streams.
- *
+ * <p>
  * In a world of Big Data, technically implying an endless supply of data and an unlimited number of data sources,
  * the data set is only going to get bigger.  Therefore, approximating/estimating the number of data elements
  * in advance will only become increasingly more difficult.  It is largely already in-deterministic given continuous
  * streams of data inherit in the Internet of Things (e.g. event sources).
- *
+ * <p>
  * Therefore, being able to reliably determine the presence of a data element in a set with accuracy and efficiency
  * is paramount to reasoning about data and performing meaningful actions with the data given/provided.
- *
+ * <p>
  * This {@link BloomFilter} introduces another dimension by serving as a facade for a collection (aggregation) of
  * {@link BloomFilter Bloom Filters} over which the managed set of elements can be amortized.
- *
+ * <p>
  * To add and store 1 billion data elements with a 1% false positive rate, the {@link BloomFilter} would need ~1.2 GB
  * of space.  That is expensive in terms of memory!  It would be an improvement if the cost could be amortized
  * over time as the need for more space grows.
- *
+ * <p>
  * This implementation is still pretty crude and needs improvement.
  *
  * @author John Blum
@@ -87,7 +87,7 @@ public class ScalableBloomFilter<T> implements BloomFilter<T>, Iterable<BloomFil
    * @param <T> {@link Class type} of elements added to this {@link BloomFilter}.
    * @param scale integer value indicating the maximum number of {@link BloomFilter Bloom Filters} managed by
    * this {@link ScalableBloomFilter}.
-   * @return an new instance of {@link ScalableBloomFilter} initialized with the given scale.
+   * @return a new instance of {@link ScalableBloomFilter} initialized with the given scale.
    * @throws IllegalArgumentException if scale is less than equal to 0.
    * @see #ScalableBloomFilter(int)
    */
@@ -121,7 +121,7 @@ public class ScalableBloomFilter<T> implements BloomFilter<T>, Iterable<BloomFil
 
   /**
    * Returns the configured acceptable, false positive rate allowed by this aggregate {@link BloomFilter}.
-   *
+   * <p>
    * Defaults to 1% (or 0.01).
    *
    * @return the configured acceptable, false positive rate allowed by this aggregate {@link BloomFilter}.
@@ -133,7 +133,7 @@ public class ScalableBloomFilter<T> implements BloomFilter<T>, Iterable<BloomFil
   /**
    * Returns the configured approximate (estimated) number of elements that will be added to each
    * of the {@link BloomFilter Bloom Filters} managed by this {@link ScalableBloomFilter}.
-   *
+   * <p>
    * Defaults to 10,000,000 elements.
    *
    * @return the configured approximate (estimated) number of elements that will be added to each
@@ -220,7 +220,6 @@ public class ScalableBloomFilter<T> implements BloomFilter<T>, Iterable<BloomFil
    * @see java.util.Iterator
    */
   @Override
-  @SuppressWarnings("unchecked")
   public Iterator<BloomFilter<T>> iterator() {
     return asIterator(getBloomFilters());
   }
@@ -263,7 +262,6 @@ public class ScalableBloomFilter<T> implements BloomFilter<T>, Iterable<BloomFil
    * @see #newBloomFilter(int, float)
    */
   @NullSafe
-  @SuppressWarnings("unchecked")
   protected BloomFilter<T> resolveBloomFilter(int index) {
 
     return Optional.ofNullable(getBloomFilters()[index])

@@ -26,7 +26,7 @@ import org.cp.elements.lang.annotation.NotNull;
 /**
  * Extension of {@link FileLastModifiedFilter} using {@literal java.time.LocalTime} types to filter {@link File Files}
  * by {@link File#lastModified() last modified timestamp}.
- *
+ * <p>
  * In this case, the factory methods in this class are only interested in filtering {@link File Files}
  * by the {@link LocalTime time of day}, ignoring the {@link LocalDate date}. Additionally, consideration is only
  * taken for {@literal local} {@link File Files} are considered; remote {@link File Files} are not taken
@@ -41,9 +41,9 @@ import org.cp.elements.lang.annotation.NotNull;
 public abstract class FileLastModifiedFilterExtension extends FileLastModifiedFilter {
 
   /**
-   * Factory method used to construct a new instance of {@link FileLastModifiedFilterExtension} used to
-   * filter {@link File Files} with a {@link File#lastModified() last modified timestamp} occurring after
-   * the given, required {@link LocalTime time}.
+   * Factory method used to construct a new {@link FileLastModifiedFilterExtension} used to filter {@link File Files}
+   * with a {@link File#lastModified() last modified timestamp} occurring after the given,
+   * required {@link LocalTime time}.
    *
    * @param lastModified {@link LocalTime} used to filter {@link File Files}
    * with a {@link File#lastModified() last modified timestamp} occurring after this time; must not be {@literal null}.
@@ -58,9 +58,9 @@ public abstract class FileLastModifiedFilterExtension extends FileLastModifiedFi
   }
 
   /**
-   * Factory method used to construct a new instance of {@link FileLastModifiedFilterExtension} used to
-   * filter {@link File Files} with a {@link File#lastModified() last modified timestamp} occurring before
-   * the given, required {@link LocalTime time}.
+   * Factory method used to construct a new {@link FileLastModifiedFilterExtension} used to filter {@link File Files}
+   * with a {@link File#lastModified() last modified timestamp} occurring before the given,
+   * required {@link LocalTime time}.
    *
    * @param lastModified {@link LocalTime} used to filter {@link File Files}
    * with a {@link File#lastModified() last modified timestamp} occurring before this time; must not be {@literal null}.
@@ -75,9 +75,9 @@ public abstract class FileLastModifiedFilterExtension extends FileLastModifiedFi
   }
 
   /**
-   * Factory method used to construct a new instance of {@link FileLastModifiedFilterExtension} used to
-   * filter {@link File Files} with a {@link File#lastModified() last modified timestamp} occurring during
-   * (between) the given, required {@link LocalTime times}.
+   * Factory method used to construct a new {@link FileLastModifiedFilterExtension} used to filter {@link File Files}
+   * with a {@link File#lastModified() last modified timestamp} occurring during (between) the given,
+   * required {@link LocalTime times}.
    *
    * @param lastModifiedOnAfter {@link LocalTime} used to filter {@link File Files}
    * with a {@link File#lastModified() last modified timestamp} occurring on or after this time;
@@ -100,9 +100,8 @@ public abstract class FileLastModifiedFilterExtension extends FileLastModifiedFi
   }
 
   /**
-   * Factory method used to construct a new instance of {@link FileLastModifiedFilterExtension} used to
-   * filter {@link File Files} with a {@link File#lastModified() last modified timestamp} occurring on
-   * the given, required {@link LocalTime time}.
+   * Factory method used to construct a new {@link FileLastModifiedFilterExtension} used to filter {@link File Files}
+   * with a {@link File#lastModified() last modified timestamp} occurring on the given, required {@link LocalTime time}.
    *
    * @param lastModified {@link LocalTime} used to filter {@link File Files}
    * with a {@link File#lastModified() last modified timestamp} occurring on this time; must not be {@literal null}.
@@ -117,9 +116,9 @@ public abstract class FileLastModifiedFilterExtension extends FileLastModifiedFi
   }
 
   /**
-   * Factory method used to construct a new instance of {@link FileLastModifiedFilterExtension} used to
-   * filter {@link File Files} with a {@link File#lastModified() last modified timestamp} occurring outside
-   * of the given, required {@link LocalTime times}.
+   * Factory method used to construct a new {@link FileLastModifiedFilterExtension} used to filter {@link File Files}
+   * with a {@link File#lastModified() last modified timestamp} occurring outside the given,
+   * required {@link LocalTime times}.
    *
    * @param lastModifiedBefore {@link LocalTime} used to filter {@link File Files}
    * with a {@link File#lastModified() last modified timestamp} occurring before this time;

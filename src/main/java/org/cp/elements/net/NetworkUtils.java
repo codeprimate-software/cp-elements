@@ -61,7 +61,7 @@ public abstract class NetworkUtils {
   /**
    * Attempts to close the given {@link ServerSocket} returning a boolean value to indicate whether the operation
    * was successful.
-   *
+   * <p>
    * Ignores any {@link IOException} thrown while attempting to {@link ServerSocket#close()} the {@link ServerSocket}.
    *
    * @param serverSocket {@link ServerSocket} to close.
@@ -86,7 +86,7 @@ public abstract class NetworkUtils {
   /**
    * Attempts to close the given {@link Socket} returning a boolean value to indicate whether the operation
    * was successful.
-   *
+   * <p>
    * Ignores any {@link IOException} thrown while attempting to {@link Socket#close()} the {@link Socket}.
    *
    * @param socket {@link Socket} to close.
@@ -110,7 +110,7 @@ public abstract class NetworkUtils {
 
   /**
    * Leniently parses the given, required {@link String} as a {@link Integer numeric value} representing a network port.
-   *
+   * <p>
    * This parse method works by stripping the digits from the given {@link String}. Therefore, this method is capable
    * of parsing {@link String values} of the form {@literal hostname:port}, for example: {@literal skullbox:8080}.
    *
@@ -128,7 +128,7 @@ public abstract class NetworkUtils {
 
   /**
    * Leniently parses the given {@link String} as a {@link Integer numeric value} representing a network port.
-   *
+   * <p>
    * This parse method works by stripping the digits from the given {@link String}. Therefore, this method is capable
    * of parsing {@link String values} of the form {@literal hostname:port}, for example: {@literal skullbox:8080}.
    *

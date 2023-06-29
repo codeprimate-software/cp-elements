@@ -137,7 +137,7 @@ public abstract class AbstractConfigurationService implements ConfigurationServi
   /**
    * Determines whether the {@literal Profiles} declared by the given, required {@link Configuration} are active
    * as declared and specified by this {@link ConfigurationService}.
-   *
+   * <p>
    * If the given, required {@link Configuration} did not declare any {@literal Profiles},
    * then the {@link Configuration} is part of the {@literal DEFAULT Profile} and is active by default.
    * Otherwise, the {@literal Profile} or at least one of the {@literal Profiles} declared by the {@link Configuration}
@@ -301,7 +301,7 @@ public abstract class AbstractConfigurationService implements ConfigurationServi
    * @see #getDependencyInjectionContainer()
    */
   protected @Nullable <T extends Configuration> T initialize(@Nullable T configuration) {
-    return configuration != null ? getDependencyInjectionContainer().inject(configuration) : configuration;
+    return configuration != null ? getDependencyInjectionContainer().inject(configuration) : null;
   }
 
   /**
@@ -322,7 +322,7 @@ public abstract class AbstractConfigurationService implements ConfigurationServi
    * {@link MethodInterceptor} implementation that provides access to configuration properties given
    * an {@link Class#isInterface() interface} declaring property accessors using {@literal JavaBean} style
    * property accessor methods.
-   *
+   * <p>
    * Only {@literal getter} methods are currently supported.
    *
    * @see org.cp.elements.lang.reflect.MethodInterceptor
@@ -372,7 +372,8 @@ public abstract class AbstractConfigurationService implements ConfigurationServi
      * or {@link ConfigurationProperties} {@link Class interface} or {@link String property prefix} are {@literal null}.
      */
     protected ConfigurationPropertiesInterfaceMethodInterceptor(
-        @NotNull AbstractConfigurationService configurationService, @NotNull Class<?> configurationPropertiesInterface,
+        @NotNull AbstractConfigurationService configurationService,
+        @NotNull Class<?> configurationPropertiesInterface,
         @NotNull String propertyPrefix) {
 
       this.configurationService =
@@ -631,7 +632,7 @@ public abstract class AbstractConfigurationService implements ConfigurationServi
 
   /**
    * {@link Comparator} implementation used to sort and order {@link Configuration} objects.
-   *
+   * <p>
    * A {@link Configuration} is inspected. If the {@link Configuration} object implements the {@link Orderable}
    * interface and the {@link Orderable#getOrder()} is a {@link Number} object, then an {@link Integer} value
    * is computed. If the {@link Configuration} object implemented the {@link Ordered} interface, then

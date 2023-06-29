@@ -45,7 +45,7 @@ public abstract class ThreadUtils {
 
   /**
    * Determines whether the given {@link Thread} is {@literal alive}.
-   *
+   * <p>
    * A {@link Thread} is {@literal alive} if it has been started and has not yet died.
    *
    * @param thread {@link Thread} to evaluate.
@@ -59,7 +59,7 @@ public abstract class ThreadUtils {
 
   /**
    * Determines whether the given {@link Thread} is in a blocked state.
-   *
+   * <p>
    * A {@link Thread} may be currently blocked waiting on a lock or performing some IO operation.
    *
    * @param thread {@link Thread} to evaluate.
@@ -74,7 +74,7 @@ public abstract class ThreadUtils {
 
   /**
    * Determines whether the given {@link Thread} is a {@link Thread#isDaemon() daemon} {@link Thread}.
-   *
+   * <p>
    * A {@link Thread#isDaemon() daemon} {@link Thread} is a background {@link Thread} that does not prevent
    * the JVM from exiting.
    *
@@ -92,7 +92,7 @@ public abstract class ThreadUtils {
   /**
    * Determines whether the given {@link Thread} is a {@link Thread#isDaemon() non-daemon},
    * {@literal user} {@link Thread}.
-   *
+   * <p>
    * A {@link Thread#isDaemon() non-daemon} {@link Thread} is a background {@link Thread} that will prevent
    * the JVM from exiting.
    *
@@ -122,7 +122,7 @@ public abstract class ThreadUtils {
 
   /**
    * Determines whether the given {@link Thread} has been interrupted.
-   *
+   * <p>
    * The interrupted status of the {@link Thread} is unaffected by this method.
    *
    * @param thread {@link Thread} to evaluate.
@@ -136,7 +136,7 @@ public abstract class ThreadUtils {
 
   /**
    * Determines whether the given {@link Thread} is {@literal new}.
-   *
+   * <p>
    * A {@literal new} {@link Thread} is any {@link Thread} that has not been started yet.
    *
    * @param thread {@link Thread} to evaluate.
@@ -152,7 +152,7 @@ public abstract class ThreadUtils {
 
   /**
    * Determines whether the given {@link Thread} is {@literal runnable}.
-   *
+   * <p>
    * A {@literal runnable} {@link Thread} is any {@link Thread} that can be scheduled by the Operating System (OS)
    * for execution.
    *
@@ -311,7 +311,7 @@ public abstract class ThreadUtils {
 
   /**
    * Null-safe method used to dump the (call) stack of the current {@link Thread}.
-   *
+   * <p>
    * The stack is dumped to {@link System#err standard error}.
    *
    * @param tag {@link String} label used to prefix the stack dump of the current {@link Thread}.
@@ -425,7 +425,7 @@ public abstract class ThreadUtils {
   /**
    * Causes the {@link Thread#currentThread() current Thread} to sleep for the given number
    * of {@link Integer#TYPE milliseconds} and {@link Integer#TYPE nanoseconds}.
-   *
+   * <p>
    * If the {@link Thread current Thread} is interrupted, the sleep is aborted, however, the interrupt bit
    * is reset and this method returns {@literal false}.
    *
@@ -632,7 +632,7 @@ public abstract class ThreadUtils {
 
     /**
      * Evaluates the given {@link Condition}, waiting up to at most the specified duration.
-     *
+     * <p>
      * If the provided {@link Condition} is {@literal null}, the {@link Condition#FALSE_CONDITION} is used.
      *
      * @param condition {@link Condition} to evaluate.
@@ -663,7 +663,7 @@ public abstract class ThreadUtils {
 
     /**
      * Runs this {@link WaitTask} with no {@link Condition}.
-     *
+     * <p>
      * This effectively causes the current {@link Thread} to block for the full duration of the wait.
      *
      * @return a boolean value indicating whether the full wait was realized.

@@ -39,14 +39,14 @@ public interface Serializer {
   /**
    * Determines whether the given {@link Object} is {@link #serialize(Object) serializable}, or rather, whether
    * the given {@link Object} can be serialized into a sequence of bytes by this {@link Serializer}.
-   *
+   * <p>
    * The default implementation simply checks whether the given {@link Object} is an instance of {@link Serializable}.
    * However, an {@link Object} does not necessarily need to be {@link Serializable} to be
-   * {@link #serialize(Object) serialized} by a specific {@link Serializer} implementation; serializability is entirely
-   * dependent on the {@link Serializer} implementation.
-   *
+   * {@link #serialize(Object) serialized} by a specific {@link Serializer} implementation; the ability to serialize
+   * a {@link Object value} is entirely dependent on the {@link Serializer} implementation.
+   * <p>
    * It is assumed that if a {@link Serializer} can {@link #serialize(Object)} a given {@link Object} that it should
-   * also subsequently be capable of {@link #deserialize(ByteBuffer)}  deserializing} a byte sequence from
+   * also subsequently be capable of {@link #deserialize(ByteBuffer)  deserializing} a byte sequence from
    * the given {@link Object}.
    *
    * @param target {@link Object} to evaluate whether it can be serialized by this {@link Serializer}.

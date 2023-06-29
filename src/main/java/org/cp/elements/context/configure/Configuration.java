@@ -61,7 +61,7 @@ public interface Configuration extends Describable<Descriptor<?>>, Iterable<Stri
   /**
    * Determines whether the configuration property identified by the given {@link String name} is present
    * in the configuration metadata.
-   *
+   * <p>
    * Even if the configuration property was declared (present) does not mean the property is defined (set).
    *
    * @param propertyName {@link String} containing the {@literal name} of the configuration property.
@@ -77,7 +77,7 @@ public interface Configuration extends Describable<Descriptor<?>>, Iterable<Stri
   /**
    * Determines whether the configuration property identified by the given {@link String name} is set
    * in the configuration metadata.
-   *
+   * <p>
    * If a configuration property is set then it means the property was both declared and defined with a value.
    *
    * @param propertyName {@link String} containing the {@literal name} of the configuration property.
@@ -103,7 +103,7 @@ public interface Configuration extends Describable<Descriptor<?>>, Iterable<Stri
 
   /**
    * Returns the {@link String name} of this {@link Configuration}.
-   *
+   * <p>
    * By default, this method returns the {@link String} of the implementing {@link Configuration} class;
    * this method should be overridden.
    *
@@ -136,7 +136,7 @@ public interface Configuration extends Describable<Descriptor<?>>, Iterable<Stri
 
   /**
    * Gets the {@link String value} of the configuration property identified by the given {@link String name}.
-   *
+   * <p>
    * The configuration property is required to be declared (present) and defined (set)
    * otherwise a {@link ConfigurationException} will be thrown.
    *
@@ -151,7 +151,7 @@ public interface Configuration extends Describable<Descriptor<?>>, Iterable<Stri
 
   /**
    * Gets the {@link String value} of the configuration property identified by the given {@link String name}.
-   *
+   * <p>
    * The {@code required} parameter is used to specify whether the {@link String named} configuration property
    * is {@literal required}, or whether a {@link ConfigurationException} should be thrown when the property
    * is undeclared (not present) or undefined (not set).
@@ -169,7 +169,7 @@ public interface Configuration extends Describable<Descriptor<?>>, Iterable<Stri
   /**
    * Gets the {@link String value} of the configuration property identified by the given {@link String name}
    * or the {@link String default value} if the property is not declared (present) and not defined (set).
-   *
+   * <p>
    * By passing an {@link String argument} to the {@code defaultValue} parameter, this effectively overrides
    * the {@literal required} parameter in the call to {@link #getPropertyValue(String, boolean)} to specify
    * that the configuration property is not required to be declared (present) or defined (set), and returns
@@ -192,7 +192,7 @@ public interface Configuration extends Describable<Descriptor<?>>, Iterable<Stri
   /**
    * Gets the {@link String value} of the configuration property identified by the given {@link String name}
    * or the {@link Supplier default value} if the property is not declared (present) and not defined (set).
-   *
+   * <p>
    * By passing an {@link String argument} to the {@code defaultValue} parameter, this effectively overrides
    * the {@literal required} parameter in the call to {@link #getPropertyValue(String, boolean)} to specify
    * that the configuration property is not required to be declared (present) or defined (set), and returns
@@ -216,7 +216,7 @@ public interface Configuration extends Describable<Descriptor<?>>, Iterable<Stri
   /**
    * Gets the {@link Object value} of the configuration property identified by the given {@link String name}
    * as an instance of {@link Class type T}.
-   *
+   * <p>
    * The configuration property is required to be declared (present) and defined (set)
    * otherwise a {@link ConfigurationException} will be thrown.
    *
@@ -235,7 +235,7 @@ public interface Configuration extends Describable<Descriptor<?>>, Iterable<Stri
   /**
    * Gets the {@link Object value} of the configuration property identified by the given {@link String name}
    * as an instance of {@link Class type T}.
-   *
+   * <p>
    * The {@code required} parameter is used to specify whether the {@link String named} configuration property
    * is {@literal required}, or whether a {@link ConfigurationException} should be thrown when the property
    * is undeclared (not present) or undefined (not set).
@@ -261,7 +261,7 @@ public interface Configuration extends Describable<Descriptor<?>>, Iterable<Stri
    * Gets the {@link Object value} of the configuration property identified by the given {@link String name}
    * as an instance of {@link Class type T} or the {@link T default value} if the property
    * is not declared (present) and not defined (set).
-   *
+   * <p>
    * By passing an {@link Object argument} to the {@code defaultValue} parameter, this effectively overrides
    * the {@literal required} parameter in the call to {@link #getPropertyValueAs(String, Class, boolean)} to specify
    * that the configuration property is not required to be declared (present) or defined (set), and returns
@@ -286,7 +286,7 @@ public interface Configuration extends Describable<Descriptor<?>>, Iterable<Stri
    * Gets the {@link Object value} of the configuration property identified by the given {@link String name}
    * as an instance of {@link Class type T} or the {@link Supplier default value} if the property
    * is not declared (present) and not defined (set).
-   *
+   * <p>
    * By passing an {@link Object argument} to the {@code defaultValue} parameter, this effectively overrides
    * the {@literal required} parameter in the call to {@link #getPropertyValueAs(String, Class, boolean)} to specify
    * that the configuration property is not required to be declared (present) or defined (set), and returns

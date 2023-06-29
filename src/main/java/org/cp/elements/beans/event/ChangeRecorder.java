@@ -72,7 +72,7 @@ public class ChangeRecorder implements Iterable<String>, PropertyChangeListener,
   /**
    * Event handler method that is fired when a property of the {@link Bean} monitored by this {@link ChangeRecorder}
    * has been modified.
-   *
+   * <p>
    * The {@link PropertyChangeEvent} encapsulates all the information pertaining to the property change
    * including the {@link String name} of the property, the {@link Object old value} and {@link Object new value}
    * along with the source {@link Bean} of the targeted change.

@@ -359,7 +359,7 @@ public abstract class AbstractBean<ID extends Comparable<ID>, USER, PROCESS> ext
    * {@literal this} {@link Bean}.
    * <p>
    * The change to the property may be vetoed by one of the {@link VetoableChangeListener VetoableChangeListeners}
-   * listening to property changes occuring on {@literal this} {@link Bean}. If the property change is vetoed by
+   * listening to property changes occurring on {@literal this} {@link Bean}. If the property change is vetoed by
    * any listener, the veto prevents the value of the property from changing.
    *
    * @param event {@link PropertyChangeEvent} capturing the property that is changing.

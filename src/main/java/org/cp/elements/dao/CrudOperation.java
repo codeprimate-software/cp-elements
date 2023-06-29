@@ -38,7 +38,7 @@ public enum CrudOperation {
   /**
    * Returns a {@link CrudOperation} enumerated value matching the given {@link String name} or {@link Optional#empty()}
    * if no match was found.
-   *
+   * <p>
    * A match is performed by ignoring case and trimming all leading and trailing whitespace
    * in the given {@link String name}.
    *

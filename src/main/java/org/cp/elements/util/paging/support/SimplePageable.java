@@ -32,8 +32,8 @@ import org.cp.elements.util.paging.PageNotFoundException;
 import org.cp.elements.util.paging.Pageable;
 
 /**
- * The {@link SimplePageable} class is an implementation {@link Pageable} that adapts, or wraps either an array
- * or a {@link List} to provide paging capabilities.
+ * {@link Pageable} implementation that adapts, or wraps either an array or a {@link List}
+ * to provide paging capabilities.
  *
  * @author John Blum
  * @param <T> {@link Class type} of the elements or items contained in the {@link Page pages}
@@ -60,8 +60,8 @@ public class SimplePageable<T> implements Pageable<T> {
   }
 
   /**
-   * Factory method used to construct a new instance of {@link SimplePageable} from the given array.
-   *
+   * Factory method used to construct a new {@link SimplePageable} from the given array.
+   * <p>
    * The returned {@link Pageable} object wraps the given array to provide paging functionality.
    * The {@link Pageable} object uses the default page size of 20 elements per {@link Page}.
    *
@@ -76,8 +76,8 @@ public class SimplePageable<T> implements Pageable<T> {
   }
 
   /**
-   * Factory method used to construct a new instance of {@link SimplePageable} for the given {@link List}.
-   *
+   * Factory method used to construct a new {@link SimplePageable} from the given {@link List}.
+   * <p>
    * The returned {@link Pageable} object wraps the given {@link List} to provide paging functionality.
    * The {@link Pageable} object uses the default page size of 20 elements per {@link Page}.
    *
@@ -181,7 +181,7 @@ public class SimplePageable<T> implements Pageable<T> {
   @Override
   public Iterator<Page<T>> iterator() {
 
-    return new Iterator<Page<T>>() {
+    return new Iterator<>() {
 
       int currentIndex;
       int currentPageNumber = 1;
@@ -256,7 +256,7 @@ public class SimplePageable<T> implements Pageable<T> {
      * Factory method used to construct a new instance of {@link SimplePage} initialized with the source,
      * underlying {@link SimplePageable} object containing this {@link Page} and this {@link Page Page's}
      * page number.
-     *
+     * <p>
      * This factory method constructs a new {@link SimplePage} for the first {@link Page}
      * in the {@link Pageable} object.
      *

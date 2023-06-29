@@ -37,8 +37,7 @@ import java.util.logging.Logger;
 import org.cp.elements.lang.annotation.NullSafe;
 
 /**
- * {@link AbstractClientServerSupport} is an abstract class supporting the development of simple
- * Java Network clients and servers.
+ * Abstract base class supporting the development of simple Java network clients and servers.
  *
  * @author John Blum
  * @see java.io.InputStream
@@ -118,6 +117,7 @@ public abstract class AbstractClientServerSupport {
    * @see java.net.ServerSocket
    */
   public ServerSocket newServerSocket(int port) {
+
     try {
       ServerSocket serverSocket = newServerSocket();
       serverSocket.setReuseAddress(DEFAULT_REUSE_ADDRESS);
@@ -142,7 +142,7 @@ public abstract class AbstractClientServerSupport {
 
   /**
    * Constructs and configures a new client {@link Socket}.
-   *
+   * <p>
    * Sets {@link Socket#setReuseAddress(boolean)} to {@literal true} and sets the {@link Socket#setSoTimeout(int)}
    * to {@literal 15 seconds}.
    *
@@ -155,10 +155,13 @@ public abstract class AbstractClientServerSupport {
   public Socket newSocket(String host, int port) {
 
     try {
+
       Socket socket = newSocket();
+
       socket.setReuseAddress(DEFAULT_REUSE_ADDRESS);
       socket.setSoTimeout(intValue(DEFAULT_SO_TIMEOUT));
       socket.connect(newSocketAddress(host, port));
+
       return socket;
     }
     catch (IOException cause) {
@@ -203,6 +206,7 @@ public abstract class AbstractClientServerSupport {
    * @see java.net.Socket
    */
   protected Socket sendMessage(Socket socket, String message) throws IOException {
+
     PrintWriter printWriter = newPrintWriter(socket);
 
     printWriter.println(message);

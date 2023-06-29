@@ -63,9 +63,8 @@ import org.cp.elements.util.ArrayUtils;
 import org.cp.elements.util.CollectionUtils;
 
 /**
- * {@link SimpleConversionService} is an application {@link Service} class that performs {@link Class type} conversions
- * using pre-canned {@link Class type} {@link Converter Converters} defined in
- * {@link org.cp.elements.data.conversion.converters}.
+ * An application {@link Service} class that performs {@link Class type} conversions using pre-canned {@link Class type}
+ * {@link Converter Converters} defined in {@link org.cp.elements.data.conversion.converters}.
  *
  * @author John J. Blum
  * @see org.cp.elements.data.conversion.AbstractConversionService
@@ -304,7 +303,7 @@ public class SimpleConversionService extends AbstractConversionService {
 
   /**
    * Sets the {@link Supplier} used to supply a {@link Object default value} for the specified {@link Class type}.
-   *
+   * <p>
    * This overloaded method is useful for dynamically generating new {@link Object values} at runtime,
    * such as date/time values
    *
@@ -365,10 +364,10 @@ public class SimpleConversionService extends AbstractConversionService {
   }
 
   /**
-   * Converts the {@link Object value} into an {@link Object} of the speicfied target {@link Class type}.
-   *
+   * Converts the {@link Object value} into an {@link Object} of the specified target {@link Class type}.
+   * <p>
    * If {@link Object value} is {@literal null} and {@link Object default values} have been
-   * {@link #isDefaultValuesEnabled()} enabled}, then the {@link Object default value} will be based on
+   * {@link #isDefaultValuesEnabled() enabled}, then the {@link Object default value} will be based on
    * the {@link Class type} to convert to and the {@link Class type} has been initialized with
    * a {@link Object default value}.
    *
@@ -377,7 +376,7 @@ public class SimpleConversionService extends AbstractConversionService {
    * @param toType {@link Class type} to convert the {@link Object value} into.
    * @return the {@link Object value} converted into an instance of the desired {@link Class target type},
    * or a {@link Object default value} if the {@link Object converted value} is {@literal null},
-   * {@link Object default values} are {@link #isDefaultValuesEnabled()} enabled} and the {@link Class type}
+   * {@link Object default values} are {@link #isDefaultValuesEnabled() enabled} and the {@link Class type}
    * has been set with a {@link Object default value}.
    * @throws ConversionException if converting the {@link Object value} into an instance of
    * the {@link Class target type} results in error.
@@ -409,8 +408,8 @@ public class SimpleConversionService extends AbstractConversionService {
   }
 
   /**
-   * The {@link CalendarValueSupplier} class is a {@link Supplier} that creates a new instance of {@link Calendar}
-   * with the current date/time for every invocaton of {@link Supplier#get()}.
+   * {@link Supplier} implementation that creates a new {@link Calendar} with the current date/time for every invocation
+   * of {@link Supplier#get()}.
    *
    * @see java.util.function.Supplier
    * @see java.util.Calendar

@@ -159,7 +159,7 @@ public class SortedSetProperty extends AbstractIndexedProperty<Integer> {
 
   /**
    * Asserts the given {@link Integer#TYPE index} is valid for the given {@link Set}.
-   *
+   * <p>
    * For any {@link Set} the index must simply be greater than equal to {@literal 0}
    * and less than the {@link Set#size()}.
    *

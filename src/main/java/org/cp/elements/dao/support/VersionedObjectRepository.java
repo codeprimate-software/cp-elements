@@ -25,11 +25,11 @@ import org.cp.elements.lang.annotation.NotNull;
 /**
  * Data Access Object (DAO) and Repository interface defining a single query method used to determine
  * if a {@link Versioned POJO} is present in the data store with the given {@literal version}.
- *
+ * <p>
  * {@literal Versioning} can be used for {@literal Optimistic Concurrency Control}, or {@literal Optimistic Locking}
  * in place of {@link org.cp.elements.lang.Auditable audited metadata}, to determine if a record for a persistent entity
  * has been change concurrently in the backend data store by another program (application process).
- *
+ * <p>
  * A typical {@literal SQL} query implementation used to determine existence or presence of a persistent entity,
  * or {@link Versioned object} with the given {@literal version} corresponds to a record in the database, would be:
  *
@@ -41,7 +41,7 @@ import org.cp.elements.lang.annotation.NotNull;
  *
  * The use of the {@literal DISTINCT} keyword in the {@literal SQL} query is optional and unnecessary when
  * the {@literal version} is unique, which should be the case for {@literal Optimistic Concurrency Control}.
- *
+ * <p>
  * Subsequently, an {@literal Optimistic Lock} is typically enforced using the following {@literal SQL UPDATE}
  * statement:
  *
@@ -68,7 +68,7 @@ public interface VersionedObjectRepository<VERSION> {
   /**
    * Query method used to query the backend data store and determine whether a record for a persistent entity
    * with the given {@literal version} exists, or is present.
-   *
+   * <p>
    * The {@link Integer value} may indicate a count of the number of records in the backend data store that have the
    * given {@literal version}. However, when the {@literal version} is used for {@literal optimistic locking}, then the
    * returned {@link Integer value} will be equal to {@literal 1} when a record with the given {@literal version} exists

@@ -25,7 +25,7 @@ import java.lang.annotation.Target;
 /**
  * {@link Annotation} used to annotate an {@link Object} (POJO) field or property as {@literal transient},
  * indicating that the field or property is not persistent and not serializable.
- *
+ * <p>
  * This {@link Transient} {@link Annotation} is a compliment to Java's {@literal transient} keyword.
  *
  * @author John Blum

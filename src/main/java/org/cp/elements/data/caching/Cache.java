@@ -873,7 +873,7 @@ public interface Cache<KEY extends Comparable<KEY>, VALUE>
      *
      * @param <KEY> {@link Class type} of the {@link Map.Entry} key.
      * @param <VALUE> {@link Class type} of the {@link Map.Entry} value.
-     * @param mapEntry {@link Map.Entry} to copy an convert into a {@link Cache.Entry};
+     * @param mapEntry {@link Map.Entry} to copy and convert into a {@link Cache.Entry};
      * must not be {@literal null}.
      * @return a new {@link Cache.Entry}.
      * @throws IllegalArgumentException if the {@link Map.Entry} is {@literal null}.

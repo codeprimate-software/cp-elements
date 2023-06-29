@@ -284,7 +284,7 @@ public interface View extends Iterable<Row>, Nameable<String> {
 
   /**
    * Determines the {@link Integer index} of the given {@link Column} in this {@link View} if present.
-   *
+   * <p>
    * The first {@link Column} is at {@link Integer index} {@literal 0}.
    *
    * @param column {@link Column} to evaluate.
@@ -301,7 +301,7 @@ public interface View extends Iterable<Row>, Nameable<String> {
   /**
    * Determines the {@link Integer index} of a {@link Column} with the given {@link String name} in this {@link View}
    * if present.
-   *
+   * <p>
    * The first {@link Column} is at {@link Integer index} {@literal 0}.
    *
    * @param columnName {@link String} containing the {@literal name} of the {@link Column} to index.
@@ -353,7 +353,7 @@ public interface View extends Iterable<Row>, Nameable<String> {
   /**
    * Determines whether this {@link View} is {@literal empty}, or whether this {@link View}
    * contains any {@link Row Rows}.
-   *
+   * <p>
    * By default, this {@link View} is considered {@literal empty} if {@link #size()} is {@literal 0}.
    *
    * @return a boolean value indicating whether this {@link View} contains any {@link Row Rows}.
@@ -365,7 +365,7 @@ public interface View extends Iterable<Row>, Nameable<String> {
 
   /**
    * Queries this {@link View} with the given {@link Query} and returns a new {@link View} from the result set.
-   *
+   * <p>
    * The {@link Query} matches {@link Row Rows}, or {@literal data} contained in this {@link View}
    * defined by a {@link Predicate}, ordered/sorted by a {@link Comparator} and projected using an array
    * or {@link Iterable} of {@link Column Columns}.

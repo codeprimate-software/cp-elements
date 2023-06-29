@@ -55,7 +55,7 @@ public class ConcurrentMapCache<KEY extends Comparable<KEY>, VALUE> extends Abst
 
   /**
    * Constructs a new {@link ConcurrentMap}.
-   *
+   * <p>
    * A new instance of {@link ConcurrentHashMap} is constructed by default.
    *
    * @return a new {@link ConcurrentMap}.
@@ -170,7 +170,7 @@ public class ConcurrentMapCache<KEY extends Comparable<KEY>, VALUE> extends Abst
 
   /**
    * Gets the {@link VALUE value} stored in this {@link Cache} mapped to the given {@link KEY}.
-   *
+   * <p>
    * Returns {@literal null} if the {@link VALUE value} mapped to the given {@link KEY key} is {@literal null},
    * or this {@link Cache} does not contain an {@link Cache.Entry} mapped to the given {@link KEY key}.
    *

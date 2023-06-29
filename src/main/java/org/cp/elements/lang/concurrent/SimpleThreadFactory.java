@@ -30,8 +30,7 @@ import org.cp.elements.lang.annotation.Nullable;
 import org.cp.elements.lang.support.UUIDIdentifierSequence;
 
 /**
- * The {@link SimpleThreadFactory} class is a {@link ThreadFactory} implementation that constructs
- * and initializes a new instance of {@link Thread}.
+ * Element's {@link ThreadFactory} implementation used to construct and initialize a new {@link Thread}.
  *
  * @author John Blum
  * @see java.lang.Thread
@@ -53,8 +52,8 @@ public class SimpleThreadFactory implements ThreadFactory {
     new ThreadGroup(String.format("%s.THREAD-GROUP", SimpleThreadFactory.class.getName()));
 
   /**
-   * Factory method used to construct a new instance of {@link SimpleThreadFactory} that then can be used to
-   * construct and start a new {@link Thread}.
+   * Factory method used to construct a new {@link SimpleThreadFactory} that then can be used to construct and start
+   * a new {@link Thread}.
    *
    * @return a new instance of {@link SimpleThreadFactory}.
    * @see org.cp.elements.lang.concurrent.SimpleThreadFactory
@@ -151,7 +150,7 @@ public class SimpleThreadFactory implements ThreadFactory {
   /**
    * Returns the configured {@literal context} {@link ClassLoader} used by new {@link Thread}
    * to resolve {@link Class} types.
-   *
+   * <p>
    * Returns the calling {@link Thread Thread's} {@link Thread#getContextClassLoader() Thread Context ClassLoader}
    * if not set.
    *
@@ -170,7 +169,7 @@ public class SimpleThreadFactory implements ThreadFactory {
 
   /**
    * Determine whether the new {@link Thread} will execute as a {@link Thread#isDaemon() daemon} {@link Thread}.
-   *
+   * <p>
    * A {@link Thread#isDaemon() daemon} {@link Thread} is a {@link Thread} that will not prevent the JVM
    * from shutting down.
    *
@@ -358,7 +357,7 @@ public class SimpleThreadFactory implements ThreadFactory {
   /**
    * The {@link SimpleUncaughtExceptionHandler} class implements {@link Thread.UncaughtExceptionHandler} by simply
    * {@literal logging} the unhandled error.
-   *
+   * <p>
    * Use and configure the {@link SimpleThreadFactory} {@link Logger} to adjust logging detail.
    *
    * @see java.lang.Thread.UncaughtExceptionHandler

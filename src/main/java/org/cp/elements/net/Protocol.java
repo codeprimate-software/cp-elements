@@ -25,7 +25,7 @@ import org.cp.elements.lang.annotation.NotNull;
 import org.cp.elements.lang.annotation.Nullable;
 
 /**
- * An {@link Enum Enumeration} of constants defining well-known network protocols.
+ * {@link Enum Enumeration} of constants defining well-known network protocols.
  *
  * @author John J. Blum
  * @see java.lang.Enum
@@ -85,7 +85,7 @@ public enum Protocol {
 
   /**
    * Returns a {@link Protocol} enumerated value matching the given {@link String name} of the network protocol.
-   *
+   * <p>
    * The match on {@link String name} is case-insensitive.
    *
    * @param name {@link String} containing the name of the network protocol to match.

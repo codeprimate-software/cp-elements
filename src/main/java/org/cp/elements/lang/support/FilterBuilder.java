@@ -23,7 +23,7 @@ import org.cp.elements.lang.annotation.Nullable;
 /**
  * {@link Builder} implementation of the {@literal Builder Software Design Pattern} used to compose
  * {@link Filter objects} with the help of the {@link ComposableFilter} class.
- *
+ * <p>
  * This {@link Builder} class can be used in place of the {@link ComposableFilter}
  * if the {@literal Composite Software Design Pattern} is less desirable.
  *
@@ -66,7 +66,7 @@ public class FilterBuilder<T> implements Builder<Filter<T>> {
   /**
    * Builds a composition of Filters combined from the addWithAnd and addWithOr methods.
    *
-   * @return a Filter composition.
+   * @return a {@link Filter} composition.
    * @see org.cp.elements.lang.Filter
    */
   public @Nullable Filter<T> build() {

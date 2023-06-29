@@ -134,7 +134,7 @@ public class PropertiesConfiguration extends AbstractConfiguration {
   /**
    * Determines whether the configuration property identified by {@link String name} is present (declared)
    * in this {@link Configuration}.
-   *
+   * <p>
    * If the configuration property is {@literal present}, then it simply means the configuration property
    * was declared, but not necessarily defined.
    *

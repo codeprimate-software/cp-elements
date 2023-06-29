@@ -171,7 +171,7 @@ public abstract class AbstractConfiguration implements Configuration, Conversion
   /**
    * Determines whether the configuration property identified by the given {@link String name} is present
    * in the configuration metadata.
-   *
+   * <p>
    * Even if the configuration property was declared (present) does not mean the property is defined (set).
    * To determine if the configuration property has value, call {@link #isSet(String)}.
    *
@@ -195,7 +195,7 @@ public abstract class AbstractConfiguration implements Configuration, Conversion
   /**
    * Determines whether the configuration property identified by the given {@link String name} is set (defined)
    * in the configuration metadata.
-   *
+   * <p>
    * If a configuration property is set then it means the property was both declared and defined
    * in Java application (program) {@link Configuration} with a {@link String value}.
    *
@@ -243,7 +243,7 @@ public abstract class AbstractConfiguration implements Configuration, Conversion
 
   /**
    * Gets the {@link String value} of the configuration property identified by the given {@link String name}.
-   *
+   * <p>
    * The {@code required} parameter is used to indicate whether the configuration property is {@literal required}
    * or not and whether a {@link ConfigurationException} will be thrown when the property is undeclared or undefined.
    *
@@ -277,7 +277,7 @@ public abstract class AbstractConfiguration implements Configuration, Conversion
   /**
    * Gets the value of the configuration property identified by the given {@link String name} as a {@link T value}
    * of the specified {@link Class type T}.
-   *
+   * <p>
    * The {@code required} parameter is used to indicate whether the configuration property is {@literal required}
    * or not and whether a {@link ConfigurationException} will be thrown when the property is undeclared or undefined.
    *

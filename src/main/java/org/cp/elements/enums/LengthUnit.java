@@ -26,7 +26,7 @@ import org.cp.elements.lang.annotation.NotNull;
 import org.cp.elements.lang.annotation.Nullable;
 
 /**
- * An {@link Enum Enumeration} of length, height or distance measurements.
+ * {@link Enum Enumeration} of length, height or distance measurements.
  *
  * @author John Blum
  * @see java.lang.Enum
@@ -64,7 +64,7 @@ public enum LengthUnit {
 
   /**
    * Factory method used to get the default unit of length based in the current, default {@link Locale}.
-   *
+   * <p>
    * Returns {@link LengthUnit#FOOT} if this is the {@literal United States of America (USA)},
    * otherwise returns {@link LengthUnit#METER} for all other countries.
    *
@@ -95,7 +95,7 @@ public enum LengthUnit {
 
   /**
    * Factory method used to find and match a {@link LengthUnit} by {@link String name}.
-   *
+   * <p>
    * This operation is case-insensitive.
    *
    * @param name {@link String} containing the {@literal name} of the {@link LengthUnit} to find.
@@ -113,7 +113,7 @@ public enum LengthUnit {
    *
    * @param predicate {@link Predicate} used to find and match the {@link LengthUnit}; must not be {@literal null}.
    * @return a {@link LengthUnit} matching the given, required {@link Predicate} or {@literal null}
-   * if no {@link LengthUnit} is a match for the the given, required {@link Predicate}.
+   * if no {@link LengthUnit} is a match for the given, required {@link Predicate}.
    * @see java.util.function.Predicate
    * @see #values()
    */
@@ -130,7 +130,7 @@ public enum LengthUnit {
   private final String abbreviation;
 
   /**
-   * Construct a new instance of {@link LengthUnit} initialized with the given, required {@link String abbreviation}.
+   * Constructs a new {@link LengthUnit} initialized with the given, required {@link String abbreviation}.
    *
    * @param abbreviation {@link String} containing the abbreviation for {@literal this} {@link LengthUnit}.
    * @param meterConversionFactor {@link Double} conversion factor used to convert measurements

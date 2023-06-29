@@ -54,7 +54,7 @@ public interface KeyValue<KEY, VALUE> {
 
   /**
    * Returns a null-safe {@link Optional} {@link VALUE value} in this key/value mapping.
-   *
+   * <p>
    * Defaults to {@link Optional#empty()}.
    *
    * @return an {@link Optional} {@link VALUE value}.
@@ -67,7 +67,7 @@ public interface KeyValue<KEY, VALUE> {
 
   /**
    * Return a materialized {@link Object value} in this key/value mapping.
-   *
+   * <p>
    * If the {@link VALUE value} is {@literal null}, then this method will return the type compatible
    * {@link VALUE defaultValue}.
    *

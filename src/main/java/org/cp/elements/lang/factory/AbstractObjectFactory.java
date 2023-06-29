@@ -53,7 +53,7 @@ public abstract class AbstractObjectFactory implements ObjectFactory {
   /**
    * Determines whether the reference to an application {@link Configuration} was initialized.
    *
-   * @return a boolean value indicating whether reference to a application {@link Configuration} was initialized.
+   * @return a boolean value indicating whether reference to an application {@link Configuration} was initialized.
    * @see org.cp.elements.context.configure.Configuration
    */
   @NullSafe
@@ -255,7 +255,7 @@ public abstract class AbstractObjectFactory implements ObjectFactory {
   /**
    * Method called after construction of the {@link Object} allowing custom {@link ObjectFactory} implementations
    * to perform post construction initialization and additional configuration as required.
-   *
+   * <p>
    * The default implementation applies the registered {@link Function object post processors}.
    *
    * @param <T> {@link Class type} of {@link Object} to create.

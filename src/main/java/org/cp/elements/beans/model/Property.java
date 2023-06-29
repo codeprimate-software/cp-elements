@@ -123,7 +123,7 @@ public class Property implements Comparable<Property>, Describable<PropertyDescr
    * Resolves all {@link Annotation Annotations} declared on the given {@link AnnotatedElement} by using the given,
    * required {@link Function} encapsulating the {@literal Strategy} for resolving {@link Annotation Annotations}
    * declared on an {@link AnnotatedElement}.
-   *
+   * <p>
    * The default {@literal Strategies} provided by this {@link Property} class includes
    * {@link AnnotatedElement#getAnnotations()} and {@link AnnotatedElement#getDeclaredAnnotations()}.
    *
@@ -158,12 +158,12 @@ public class Property implements Comparable<Property>, Describable<PropertyDescr
       @Nullable Map<T, Set<Annotation>> annotatedElementAnnotations) {
 
     return annotatedElementAnnotations != null ? annotatedElementAnnotations
-      : new AbstractMap<T, Set<Annotation>>() {
+      : new AbstractMap<>() {
 
           // Key is never cached; Value is always computed with the given Function.
           @Override
           public Set<Annotation> computeIfAbsent(T key,
-              Function<? super T, ? extends Set<Annotation>> mappingFunction) {
+              @NotNull Function<? super T, ? extends Set<Annotation>> mappingFunction) {
 
             return mappingFunction.apply(key);
           }
@@ -212,7 +212,7 @@ public class Property implements Comparable<Property>, Describable<PropertyDescr
 
   /**
    * Gets all resolvable {@link Annotation Annotations} declared on this {@link Property}.
-   *
+   * <p>
    * A {@link Property Property's} {@link Annotation Annotations} consist of
    * all {@link Annotation Annotation's} declared on the {@link Property Property's} {@link Field}
    * if the {@link Property} is not {@link #isDerived()}, as well as all {@link Annotation Annotations}
@@ -232,7 +232,7 @@ public class Property implements Comparable<Property>, Describable<PropertyDescr
    * Gets all resolvable {@link Annotation Annotations} declared on this {@link Property} using the given, required
    * {@link Function} encapsulating the {@literal Strategy} for resolving {@link Annotation Annotations}
    * on all {@link AnnotatedElement AnnotatedElements} of this {@link Property}.
-   *
+   * <p>
    * A {@link Property Property's} {@link Annotation Annotations} consist of
    * all {@link Annotation Annotation's} declared on the {@link Property Property's} {@link Field}
    * if the {@link Property} is not {@link #isDerived()}, as well as all {@link Annotation Annotations}
@@ -339,7 +339,7 @@ public class Property implements Comparable<Property>, Describable<PropertyDescr
 
   /**
    * Gets the {@link Object} {@link Field} backing this bean {@link Property} if not derived.
-   *
+   * <p>
    * The {@link Object} {@link Field} may be {@literal null} if this bean {@link Property} is derived
    * from some other {@link Object} {@link Field}. Think of an age property on a Person type derived
    * from a person's date of birth.
@@ -402,7 +402,7 @@ public class Property implements Comparable<Property>, Describable<PropertyDescr
     try {
       return readMethod != null
         ? ClassUtils.getDeclaredMethod(getBeanModel().getTargetType(), readMethod)
-        : readMethod;
+        : null;
     }
     catch (MethodNotFoundException ignore) {
       return readMethod;
@@ -472,7 +472,7 @@ public class Property implements Comparable<Property>, Describable<PropertyDescr
     try {
       return writeMethod != null
         ? ClassUtils.getDeclaredMethod(getBeanModel().getTargetType(), writeMethod)
-        : writeMethod;
+        : null;
     }
     catch (MethodNotFoundException ignore) {
       return writeMethod;
@@ -485,11 +485,11 @@ public class Property implements Comparable<Property>, Describable<PropertyDescr
    *
    * @param annotationsResolver {@link Function} encapsulating the {@literal Strategy} used to resolve
    * the {@link Annotation Annotations} declared on this {@link Property Property's}
-   * {@link #getWriteMethod()}  mutator method}; should not be {@literal null},
+   * {@link #getWriteMethod()  mutator method}; should not be {@literal null},
    * but defaults to {@link #DECLARED_ANNOTATIONS_RESOLVER}.
    * @return a {@link Set} of {@link Annotation Annotations} resolved from
    * the {@link Property Property's} {@link #getWriteMethod() mutator method}.
-   * Returns an {@link Collections#emptySet()} if this {@link Property} is not {@link #isWritable()}  writable}.
+   * Returns an {@link Collections#emptySet()} if this {@link Property} is not {@link #isWritable()  writable}.
    * @see #getAnnotatedElementAnnotations(Function, Map, AnnotatedElement)
    * @see java.lang.annotation.Annotation
    * @see #getWriteMethod()
@@ -558,7 +558,7 @@ public class Property implements Comparable<Property>, Describable<PropertyDescr
 
   /**
    * Determines whether this {@link Property} is derived from another bean {@link Property}.
-   *
+   * <p>
    * This means this {@link Property} is not backed by an {@link Object} {@link Field}.
    * For example, this {@link Property} may represent the {@literal age} property of a {@literal Person} type
    * where age is computed from the person's {@literal date of birth} using the {@literal birthdate} {@link Field}.
@@ -573,7 +573,7 @@ public class Property implements Comparable<Property>, Describable<PropertyDescr
 
   /**
    * Determines whether this {@link Property} is an {@link AbstractIndexedProperty Indexed-based Property}.
-   *
+   * <p>
    * A {@link Property} is an {@link AbstractIndexedProperty Indexed-based Property}
    * if the {@link #getType() Property's Type} is an indexed-based data structure, such as an array,
    * {@link List} or {@link Map}.
@@ -590,7 +590,7 @@ public class Property implements Comparable<Property>, Describable<PropertyDescr
   /**
    * Determines whether the {@link #getType()} of this {@link Property} is assignment compatible with
    * the given {@link Class type}.
-   *
+   * <p>
    * If the {@link Class type} argument is {@literal null}, then this method returns {@literal false}.
    *
    * @param type {@link Class} used to evaluate this {@link Property#getType() property type}.
@@ -627,7 +627,7 @@ public class Property implements Comparable<Property>, Describable<PropertyDescr
 
   /**
    * Determines whether this {@link Property} is required.
-   *
+   * <p>
    * A {@link Property} is {@literal required} if the {@link Field} backing this {@link Property},
    * the {@link Method getter method} or the {@link Method setter method} are annotated with
    * the Element's {@link Required} annotation.
@@ -643,7 +643,7 @@ public class Property implements Comparable<Property>, Describable<PropertyDescr
 
   /**
    * Determines whether this {@link Property} is serializable.
-   *
+   * <p>
    * A {@link Property} is {@literal serializable} if the {@link Property} is {@link #isReadable()}
    * and is not {@link #isTransient()}.
    *
@@ -657,7 +657,7 @@ public class Property implements Comparable<Property>, Describable<PropertyDescr
 
   /**
    * Determines whether this {@link Property} is transient.
-   *
+   * <p>
    * A {@link Property} is {@literal transient} if the {@link Field} backing this {@link Property} is declared with
    * the {@literal transient} keyword, or the {@link Method getter method} or {@link Method setter method}
    * are annotated with the Elements {@link Transient} annotation or the JavaBeans {@link java.beans.Transient}
@@ -765,7 +765,7 @@ public class Property implements Comparable<Property>, Describable<PropertyDescr
 
   /**
    * Compares this {@link Property} to the given, required {@link Property} to determine (sort) order.
-   *
+   * <p>
    * {@link Property Properties} are ordered by {@link #getName()}.
    *
    * @param property {@link Property} to compare with this {@link Property}.
@@ -794,11 +794,9 @@ public class Property implements Comparable<Property>, Describable<PropertyDescr
       return true;
     }
 
-    if (!(obj instanceof Property)) {
+    if (!(obj instanceof Property that)) {
       return false;
     }
-
-    Property that = (Property) obj;
 
     return ObjectUtils.equals(this.getName(), that.getName());
   }

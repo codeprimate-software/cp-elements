@@ -66,7 +66,7 @@ public interface Row {
 
   /**
    * Returns the {@link Object value} for the given {@link String named} {@link Column} in this {@link Row}.
-   *
+   * <p>
    * This {@link Row} must be associated with a {@link View} in order to get the {@link Object value}
    * of the {@link Column} by {@link String name}.
    *
@@ -112,7 +112,7 @@ public interface Row {
 
   /**
    * Returns an {@link Optional} {@link View} to which this {@link Row} is associated.
-   *
+   * <p>
    * Returns {@link Optional#empty()} by default. In other words, this {@link Row}
    * is not automatically associated with a {@link View}.
    *
@@ -199,7 +199,7 @@ public interface Row {
 
   /**
    * Maps the {@link Object values} of this {@link Row} to an {@link Object} of the given {@link Class type}.
-   *
+   * <p>
    * The {@link Class type} must have a default, public no argument {@link Constructor}.
    *
    * @param <T> {@link Class type} of {@link Object} to map the {@link Object values} from this {@link Row}.

@@ -25,7 +25,7 @@ import org.cp.elements.lang.annotation.Nullable;
 
 /**
  * Abstract utility class for determining the language modifiers on a {@link Class} or a {@link Member}.
- *
+ * <p>
  * A {@link Member} may be a {@link Field} or a {@link Method}.
  *
  * @author John Blum

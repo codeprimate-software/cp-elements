@@ -97,9 +97,9 @@ public interface ConfigurationService extends Iterable<Configuration> {
   /**
    * Determines whether a configuration property identified by the given {@link String name} is declared
    * in the composite {@link Configuration} aggregated by this {@link ConfigurationService}.
-   *
+   * <p>
    * A configuration property may be declared (present) but not defined (set) with a {@link String value}.
-   *
+   * <p>
    * By default, this method simply determines whether the configuration property has been {@link #isSet(String)}.
    *
    * @param propertyName {@link String} containing the {@literal name} of the configuration property to evaluate.
@@ -114,7 +114,7 @@ public interface ConfigurationService extends Iterable<Configuration> {
   /**
    * Determines whether a configuration property identified by the given {@link String name} is defined (set)
    * in the composite {@link Configuration} aggregated by this {@link ConfigurationService}.
-   *
+   * <p>
    * If a configuration property is defined (set) then it also implies that the configuration property
    * is also declared (present) in the composite {@link Configuration} aggregated by this {@link ConfigurationService}.
    *
@@ -134,7 +134,7 @@ public interface ConfigurationService extends Iterable<Configuration> {
 
   /**
    * Gets an array of {@link String profile names} that are active for this {@link ConfigurationService}.
-   *
+   * <p>
    * Alternatively, users can set the {@literal elements.configuration.profiles} property
    * in a {@literal application.properties} file.
    *
@@ -192,11 +192,11 @@ public interface ConfigurationService extends Iterable<Configuration> {
 
   /**
    * Gets the {@link String value} of the configuration property identified by the given {@link String name}.
-   *
+   * <p>
    * The {@code required} parameter is used to specify whether the {@link String named} configuration property
    * is {@literal required} to be declared (present) and defined (set) in at least one of the {@link Configuration}
    * objects aggregated by this {@link ConfigurationService}.
-   *
+   * <p>
    * The {@link String value} from the first {@link Configuration} object to declare (present) and define (set)
    * the {@link String name} configuration property is returned.
    *
@@ -225,7 +225,7 @@ public interface ConfigurationService extends Iterable<Configuration> {
   /**
    * Gets the {@link String value} of the configuration property identified by the given {@link String name}
    * or the {@link String default value} if the configuration property is not declared (present) or not defined (set).
-   *
+   * <p>
    * When given a {@link String default value}, even if {@literal null}, then the configuration property
    * is not {@literal required}, and therefore, this method has the same outcome as calling
    * {@link #getPropertyValue(String, boolean)} with a {@literal false} argument
@@ -248,7 +248,7 @@ public interface ConfigurationService extends Iterable<Configuration> {
   /**
    * Gets the {@link String value} of the configuration property identified by the given {@link String name}
    * or the {@link Supplier default value} if the configuration property is not declared (present) or not defined (set).
-   *
+   * <p>
    * When given a {@link Supplier default value}, even if {@literal null}, then the configuration property
    * is not {@literal required}, and therefore, this method has the same outcome as calling
    * {@link #getPropertyValue(String, boolean)} with a {@literal false} argument
@@ -286,11 +286,11 @@ public interface ConfigurationService extends Iterable<Configuration> {
   /**
    * Gets the {@link Object value} of the configuration property identified by the given {@link String name}
    * as an instance of {@link Class type T}.
-   *
+   * <p>
    * The {@code required} parameter is used to specify whether the {@link String named} configuration property
    * is {@literal required} to be declared (present) and defined (set) in at least one of the {@link Configuration}
    * objects aggregated by this {@link ConfigurationService}.
-   *
+   * <p>
    * The {@link Object value} from the first {@link Configuration} object to declare (present) and define (set)
    * the {@link String name} configuration property is returned.
    *
@@ -323,7 +323,7 @@ public interface ConfigurationService extends Iterable<Configuration> {
    * Gets the {@link Object value} of the configuration property identified by the given {@link String name}
    * as an instance of {@link Class type T} or gets the {@link Object default value} if the configuration property
    * is not declared (present) or not defined (set).
-   *
+   * <p>
    * When given a {@link Object default value}, even if {@literal null}, then the configuration property
    * is not {@literal required}, and therefore, this method has the same outcome as calling
    * {@link #getPropertyValueAs(String, Class, boolean)} with a {@literal false} argument
@@ -347,7 +347,7 @@ public interface ConfigurationService extends Iterable<Configuration> {
    * Gets the {@link Object value} of the configuration property identified by the given {@link String name}
    * as an instance of {@link Class type T} or gets the {@link Supplier default value} if the configuration property
    * is not declared (present) or not defined (set).
-   *
+   * <p>
    * When given a {@link Supplier default value}, even if {@literal null}, then the configuration property
    * is not {@literal required}, and therefore, this method has the same outcome as calling
    * {@link #getPropertyValueAs(String, Class, boolean)} with a {@literal false} argument
@@ -372,12 +372,12 @@ public interface ConfigurationService extends Iterable<Configuration> {
   /**
    * Proxies the given [{@link ConfigurationProperties}] {@link Class interface} used to return property values
    * sourced from the {@link Configuration} objects aggregated by this {@link ConfigurationService}.
-   *
+   * <p>
    * The {@link Class interface} based {@literal Proxy} is an object-oriented, and convenient method for accessing
    * the configuration of a Java program (application) using properties. The user-defined {@link Class interface type}
    * may optionally be annotated with Elements' {@link ConfigurationProperties} annotation declaring a property prefix
    * used to fully-qualify all property names.
-   *
+   * <p>
    * For example, a user may define the following application configuration interface:
    *
    * <pre>

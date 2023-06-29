@@ -165,7 +165,7 @@ public abstract class ArrayUtils {
   @SafeVarargs
   public static @NotNull <T> Enumeration<T> asEnumeration(T... array) {
 
-    return array == null ? Collections.emptyEnumeration() : new Enumeration<T>() {
+    return array == null ? Collections.emptyEnumeration() : new Enumeration<>() {
 
       private int index;
 
@@ -213,7 +213,7 @@ public abstract class ArrayUtils {
   @SafeVarargs
   public static @NotNull <T> Iterator<T> asIterator(T... array) {
 
-    return array == null ? Collections.emptyIterator() : new Iterator<T>() {
+    return array == null ? Collections.emptyIterator() : new Iterator<>() {
 
       private int index;
 
@@ -287,7 +287,7 @@ public abstract class ArrayUtils {
 
   /**
    * Deeply copies the given array into a new array of the same {@link Class type}.
-   *
+   * <p>
    * This function performs a deep copy by applying the provided {@link Function}
    * used to copy each element from the original array.
    *
@@ -357,7 +357,7 @@ public abstract class ArrayUtils {
 
     List<T> arrayList = Arrays.stream(array)
       .filter(predicate)
-      .collect(Collectors.toList());
+      .toList();
 
     T[] newArray = (T[]) Array.newInstance(array.getClass().getComponentType(), arrayList.size());
 

@@ -100,7 +100,7 @@ public class RegexFileFilter implements FileFilter, Filter<File> {
   /**
    * Determines whether the given {@link File} matches the {@literal Regular Expression (REGEX)} used by
    * this {@link FileFilter} to match and filter {@link File Files}.
-   *
+   * <p>
    * The {@link File File's} {@link File#getCanonicalPath()} or {@link File#getAbsolutePath()} are used in
    * the match against the {@literal Regular Expression (REGEX} {@link Pattern}.
    *

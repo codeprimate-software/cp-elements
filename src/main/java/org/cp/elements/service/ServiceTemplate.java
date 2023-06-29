@@ -213,7 +213,7 @@ public interface ServiceTemplate<T> {
   /**
    * Gets a reference to the {@link ProxyService} configured by this application.
    *
-   * @param <T> {@link Class type} of {@link Object Objects} that can be proxied by the {@link ProxyService}.
+   * @param <T> {@link Class type} of {@link Object Objects} that can be a proxy created by the {@link ProxyService}.
    * @return a reference to the configured {@link ProxyService}.
    * @see org.cp.elements.lang.reflect.ProxyService
    */

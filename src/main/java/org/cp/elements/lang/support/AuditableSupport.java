@@ -25,7 +25,7 @@ import org.cp.elements.lang.annotation.NotNull;
 import org.cp.elements.lang.annotation.Nullable;
 
 /**
- * {@link AuditableSupport} is an abstract base class supporting implementations of the {@link Auditable} interface.
+ * Abstract base class supporting implementations of the {@link Auditable} interface.
  *
  * @author John Blum
  * @param <USER> {@link Class type} used to track the user.
@@ -140,7 +140,7 @@ public abstract class AuditableSupport<USER, PROCESS, ID extends Comparable<ID>>
 
   /**
    * Returns the {@link String name} of the {@link USER} running the application.
-   *
+   * <p>
    * The {@link String name} of the {@link USER} can be defined by
    * the Java {@link System#getProperties() System property}, {@literal user.name}.
    *

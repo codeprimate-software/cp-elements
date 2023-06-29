@@ -34,7 +34,7 @@ import org.cp.elements.util.CollectionUtils;
 
 /**
  * The {@link CacheToMapAdapter} class is a {@link Map} implementation backed by a {@link Cache}.
- *
+ * <p>
  * This class adapts the {@link Cache} interface as an instance of a {@link Map}.
  *
  * @author John Blum
@@ -107,12 +107,12 @@ public class CacheToMapAdapter<KEY extends Comparable<KEY>, VALUE> extends Abstr
   @Override
   public Set<Map.Entry<KEY, VALUE>> entrySet() {
 
-    return new AbstractSet<Map.Entry<KEY, VALUE>>() {
+    return new AbstractSet<>() {
 
       @Override
       public Iterator<Map.Entry<KEY, VALUE>> iterator() {
 
-        return new Iterator<Map.Entry<KEY, VALUE>>() {
+        return new Iterator<>() {
 
           private final Iterator<KEY> keys = CollectionUtils.nullSafeSet(keySet()).iterator();
 
@@ -316,11 +316,9 @@ public class CacheToMapAdapter<KEY extends Comparable<KEY>, VALUE> extends Abstr
         return true;
       }
 
-      if (!(obj instanceof Map.Entry)) {
+      if (!(obj instanceof Map.Entry<?, ?> that)) {
         return false;
       }
-
-      Map.Entry<?, ?> that = (Map.Entry<?, ?>) obj;
 
       return this.getKey().equals(that.getKey());
     }

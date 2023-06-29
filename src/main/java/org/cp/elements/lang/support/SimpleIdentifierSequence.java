@@ -22,9 +22,9 @@ import org.cp.elements.lang.concurrent.ThreadSafe;
 
 /**
  * {@link IdentifierSequence} interface generating unique, {@link Long} typed identifiers.
- *
+ * <p>
  * This implementation uses the Thread-safe {@link AtomicLong} class, making this class Thread-safe.
- *
+ * <p>
  * While this maybe useful for testing purposes, it should not be used in distributed systems where multiple application
  * or system components may generate ID's using different instances of this class in separate JVMs.
  *

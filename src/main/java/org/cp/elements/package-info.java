@@ -16,11 +16,11 @@
 /**
  * Codeprimate Elements is a Java library and micro-framework used to simplify the development of software applications
  * written in Java.
- *
- * Elements packages several APIs into one library in order to address various application concerns and aspects
- * of software design and development collectively and conveniently. Elements is a highly simple, yet robust
- * and proven library built on solid OO principles, software design patterns and best practices to effectively
- * solve common and reoccurring problems in software development.
+ * <p>
+ * Elements packages several APIs into one library in order to address various application concerns and aspects of
+ * software design and development collectively and conveniently. Elements is a highly simple, yet robust and proven
+ * library built on solid OO principles, software design patterns and best practices to effectively solve common
+ * and reoccurring problems in software development.
  *
  * @author John Blum
  * @since 1.0.0

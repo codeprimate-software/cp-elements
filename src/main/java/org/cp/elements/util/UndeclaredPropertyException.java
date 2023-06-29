@@ -18,7 +18,7 @@ package org.cp.elements.util;
 /**
  * Java {@link RuntimeException} used to indicate that a Java property was not declared
  * in the Java application (program) configuration.
- *
+ * <p>
  * This {@link RuntimeException} is meant to imply the same meaning as a {@literal PropertyNotFoundException}
  * or {@literal NoSuchPropertyException}. Except, the {@link org.cp.elements.beans.PropertyNotFoundException}
  * class has been reserved for Elements JavaBeans support. This {@link RuntimeException} is reserved for

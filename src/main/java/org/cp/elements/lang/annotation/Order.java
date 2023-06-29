@@ -26,7 +26,7 @@ import java.lang.annotation.Target;
 import org.cp.elements.lang.Ordered;
 
 /**
- * Java {@link Annotation} used to define an order, priority or precedence for the {@link Object}
+ * Java {@link Annotation} used to define an order, precedence or priority for the {@link Object}
  * whose {@link Class type} is annotated with this {@link Annotation}.
  *
  * @author John Blum
@@ -45,7 +45,7 @@ public @interface Order {
 
   /**
    * Gets the {@link Object object's} declared order.
-   *
+   * <p>
    * Declared with a {@link Ordered#DEFAULT} order by default.
    *
    * @return the {@link Object object's} declared order.

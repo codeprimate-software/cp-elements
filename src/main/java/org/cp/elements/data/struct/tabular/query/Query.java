@@ -263,7 +263,7 @@ public class Query implements Runnable {
 
   /**
    * Resolve the {@link Predicate} used to filter {@link Row Rows} in the queried {@link View}.
-   *
+   * <p>
    * If the configured {@link Predicate} is {@literal null}, this method will return a {@link Predicate}
    * accepting all {@link Row Rows} contained in the queried {@link View}.
    *
@@ -341,7 +341,7 @@ public class Query implements Runnable {
 
   /**
    * Builder method used to specify the {@link Predicate} to filter the {@link Row Rows} from the {@link View}.
-   *
+   * <p>
    * The {@link Predicate} effectively defines the {@literal where clause} of this {@link Query}.
    *
    * @param predicate {@link Predicate} used to filter {@link Row Rows} from the {@link View}.
@@ -356,7 +356,7 @@ public class Query implements Runnable {
 
   /**
    * Returns a {@link String} representation of this {@link Query}.
-   *
+   * <p>
    * The {@link String} is written in {@literal ANSI SQL syntax}.
    *
    * @return a {@link String} describing this {@link Query}
