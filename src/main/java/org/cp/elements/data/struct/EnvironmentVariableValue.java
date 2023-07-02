@@ -34,7 +34,7 @@ import org.cp.elements.lang.concurrent.ThreadSafe;
 public class EnvironmentVariableValue extends StringBasedKeyValue {
 
   /**
-   * Factory method used to construct a new instance of {@link EnvironmentVariableValue} initialized with
+   * Factory method used to construct a new {@link EnvironmentVariableValue} initialized with
    * the given system environment variable.
    *
    * @param environmentVariable System environment variable; must not be {@literal null}.

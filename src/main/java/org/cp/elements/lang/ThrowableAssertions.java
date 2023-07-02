@@ -209,8 +209,9 @@ public abstract class ThrowableAssertions {
   public interface AssertThatThrowable {
 
     /**
-     * Factory method used to construct a new instance of {@link AssertThatThrowable} initialized with the given,
-     * expected {@link Class type} of the {@link Throwable} thrown along with the given, actual {@link Throwable cause}.
+     * Factory method used to construct a new {@link AssertThatThrowable} initialized with the given,
+     * expected {@link Class type} of the {@link Throwable} thrown along with the given,
+     * actual {@link Throwable cause}.
      *
      * @param type expected {@link Class type} of the {@link Throwable cause} to be thrown.
      * @param cause actual {@link Throwable cause} thrown.
@@ -445,8 +446,8 @@ public abstract class ThrowableAssertions {
   public interface ThrowableSource {
 
     /**
-     * Factory method used to construct a new instance of {@link ThrowableSource} initialized with the given, expected
-     * {@link Class type} of the {@link Throwable} thrown by the code to assert.
+     * Factory method used to construct a new {@link ThrowableSource} initialized with the given,
+     * expected {@link Class type} of the {@link Throwable} thrown by the code to assert.
      *
      * @param type expected {@link Class type} of the {@link Throwable} thrown by the code to assert;
      * must not be {@literal null}.

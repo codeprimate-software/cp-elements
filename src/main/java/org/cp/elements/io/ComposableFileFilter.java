@@ -62,8 +62,8 @@ public class ComposableFileFilter implements Composite<FileFilter>, FileFilter, 
   }
 
   /**
-   * Factory method used to construct a new instance of {@link ComposableFileFilter} composed of two {@link FileFilter}
-   * operands joined by the given {@link LogicalOperator}.
+   * Factory method used to construct a new {@link ComposableFileFilter} composed of two {@link FileFilter} operands
+   * joined by the given {@link LogicalOperator}.
    *
    * @param leftOperand {@link FileFilter} operand used in the left-hand side (lhs) of the logical expression.
    * @param rightOperand {@link FileFilter} operand used in the right-hand side (rhs) of the logical expression.

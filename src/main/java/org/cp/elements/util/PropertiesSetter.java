@@ -39,7 +39,7 @@ import org.cp.elements.lang.annotation.NotNull;
 public abstract class PropertiesSetter implements FluentApiExtension {
 
   /**
-   * Factory method used to construct a new instance of {@link PropertiesSetter} initialized with the given,
+   * Factory method used to construct a new {@link PropertiesSetter} initialized with the given,
    * required {@link String property name}.
    *
    * @param propertyName {@link String} containing the {@literal name} of the property to set;

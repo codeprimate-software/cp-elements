@@ -75,9 +75,9 @@ public class MapProperty extends AbstractIndexedProperty<Object> {
   }
 
   /**
-   * Factory method used to construct a new instance of {@link MapProperty} initialized with the given,
-   * required {@link BeanModel} modeling the bean containing the property along with the given, required
-   * {@link PropertyDescriptor} describing the {@link Map Map-typed} bean property.
+   * Factory method used to construct a new {@link MapProperty} initialized with the given, required {@link BeanModel}
+   * modeling the bean containing the property along with the given, required {@link PropertyDescriptor}
+   * describing the {@link Map Map-typed} bean property.
    *
    * @param beanModel {@link BeanModel} modeling the bean containing the property; must not be {@literal null}.
    * @param propertyDescriptor {@link PropertyDescriptor} describing the bean property; must not be {@literal null}.
@@ -95,8 +95,8 @@ public class MapProperty extends AbstractIndexedProperty<Object> {
   }
 
   /**
-   * Factory method used to construct a new instance of {@link MapProperty} initialized with the given, required
-   * {@link Property} modeling the {@link Map Map-typed} bean property.
+   * Factory method used to construct a new {@link MapProperty} initialized with the given, required {@link Property}
+   * modeling the {@link Map Map-typed} bean property.
    *
    * @param property {@link Property} of the bean.
    * @return a new {@link MapProperty}

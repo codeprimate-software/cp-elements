@@ -69,7 +69,7 @@ public class Properties implements Iterable<Property>, Streamable<Property> {
   }
 
   /**
-   * Factory method used to construct a new instance of {@link Properties} from the given, required {@link BeanModel}
+   * Factory method used to construct a new {@link Properties} from the given, required {@link BeanModel}
    * that contains {@link Property properties} of the bean.
    *
    * @param beanModel {@link BeanModel} model describing (modeling) the bean.
@@ -98,8 +98,7 @@ public class Properties implements Iterable<Property>, Streamable<Property> {
   }
 
   /**
-   * Factory method used to construct a new instance of {@link Properties}
-   * from the given array of {@link Property properties}.
+   * Factory method used to construct a new {@link Properties} from the given array of {@link Property properties}.
    *
    * @param properties array of {@link Property properties} contained by this collection.
    * @return a new {@link Properties} containing the array of {@link Property properties}.
@@ -113,8 +112,8 @@ public class Properties implements Iterable<Property>, Streamable<Property> {
   }
 
   /**
-   * Factory method used to construct a new instance of {@link Properties}
-   * from the given {@link Iterable} of {@link Property properties}.
+   * Factory method used to construct a new {@link Properties} from the given {@link Iterable}
+   * of {@link Property properties}.
    *
    * @param properties {@link Iterable} of {@link Property properties} contained by this collection.
    * @return a new {@link Properties} containing the {@link Iterable} of {@link Property properties}.
@@ -129,8 +128,8 @@ public class Properties implements Iterable<Property>, Streamable<Property> {
   }
 
   /**
-   * Factory method used to construct a new instance of {@link Properties}
-   * from the given {@link Stream} of {@link Property properties}.
+   * Factory method used to construct a new {@link Properties} from the given {@link Stream}
+   * of {@link Property properties}.
    *
    * @param properties {@link Stream} of {@link Property properties} contained by this collection.
    * @return a new {@link Properties} containing the {@link Stream} of {@link Property properties}.

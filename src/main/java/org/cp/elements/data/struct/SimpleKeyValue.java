@@ -43,7 +43,7 @@ public class SimpleKeyValue<KEY, VALUE> implements KeyValue<KEY, VALUE> {
   protected static final String KEY_VALUE_TO_STRING = "%1$s = %2$s";
 
   /**
-   * Factory method used to construct a new instance of {@link SimpleKeyValue} initialized from the given,
+   * Factory method used to construct a new {@link SimpleKeyValue} initialized from the given,
    * required {@link Map.Entry}.
    *
    * @param <KEY> {@link Class type} of the key.
@@ -62,8 +62,8 @@ public class SimpleKeyValue<KEY, VALUE> implements KeyValue<KEY, VALUE> {
   }
 
   /**
-   * Factory method used to construct a new instance of {@link SimpleKeyValue} initialized with
-   * the given, required {@link KEY key} and a {@literal null} value.
+   * Factory method used to construct a new {@link SimpleKeyValue} initialized with the given, required {@link KEY key}
+   * and a {@literal null} value.
    *
    * @param <KEY> {@link Class type} of the key.
    * @param <VALUE> {@link Class type} of the value.
@@ -78,8 +78,8 @@ public class SimpleKeyValue<KEY, VALUE> implements KeyValue<KEY, VALUE> {
   }
 
   /**
-   * Factory method used to construct a new instance of {@link SimpleKeyValue} initialized with
-   * the given, required {@link KEY key} and {@link VALUE value}.
+   * Factory method used to construct a new {@link SimpleKeyValue} initialized with the given, required {@link KEY key}
+   * and {@link VALUE value}.
    *
    * @param <KEY> {@link Class type} of the key.
    * @param <VALUE> {@link Class type} of the value.

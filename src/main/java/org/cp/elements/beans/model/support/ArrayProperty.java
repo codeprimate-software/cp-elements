@@ -73,9 +73,9 @@ public class ArrayProperty extends AbstractIndexedProperty<Integer> {
   }
 
   /**
-   * Factory method used to construct a new instance of {@link ArrayProperty} initialized with the given,
-   * required {@link BeanModel} modeling the bean containing this array property along with the given,
-   * required {@link PropertyDescriptor} describing this array property.
+   * Factory method used to construct a new {@link ArrayProperty} initialized with the given, required {@link BeanModel}
+   * modeling the bean containing this array property along with the given, required {@link PropertyDescriptor}
+   * describing this array property.
    *
    * @param beanModel {@link BeanModel} modeling the bean containing this property; must not be {@literal null}.
    * @param propertyDescriptor {@link PropertyDescriptor} describing the property; must not be {@literal null}.
@@ -93,8 +93,8 @@ public class ArrayProperty extends AbstractIndexedProperty<Integer> {
   }
 
   /**
-   * Factory method used to construct a new instance of {@link ArrayProperty} initialized with the given,
-   * required {@link Property} modeling the array-typed, bean property.
+   * Factory method used to construct a new {@link ArrayProperty} initialized with the given, required {@link Property}
+   * modeling the array-typed, bean property.
    *
    * @param property {@link Property} modeling the array-typed, bean property; must not be {@literal null}.
    * @return a new {@link ArrayProperty} initialized with the given {@link Property}.

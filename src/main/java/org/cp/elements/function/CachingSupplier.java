@@ -33,8 +33,8 @@ import org.cp.elements.lang.annotation.Nullable;
 public interface CachingSupplier<T> extends Supplier<T> {
 
   /**
-   * Factory method used to construct a new instance of {@link CachingSupplier} to wrap and {@literal decorate}
-   * the given, required {@link Supplier}.
+   * Factory method used to construct a new {@link CachingSupplier} to wrap and {@literal decorate} the given,
+   * required {@link Supplier}.
    *
    * @param <T> {@link Class type} of the {@link Supplier Supplier's} {@link Object return value}.
    * @param supplier {@link Supplier} to {@literal decorate} with caching capabilities; must not be {@literal null}.

@@ -34,8 +34,8 @@ import org.cp.elements.lang.concurrent.ThreadSafe;
 public class SystemPropertyValue extends StringBasedKeyValue {
 
   /**
-   * Factory method used to construct a new instance of {@link SystemPropertyValue} initialized with
-   * the given Java {@link String system property}.
+   * Factory method used to construct a new {@link SystemPropertyValue} initialized with the given Java
+   * {@link String system property}.
    *
    * @param systemProperty {@link String} containing the {@literal Java system property};
    * must not be {@literal null} or {@literal empty}.

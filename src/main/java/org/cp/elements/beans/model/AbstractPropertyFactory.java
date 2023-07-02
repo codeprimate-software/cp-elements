@@ -36,7 +36,7 @@ import org.cp.elements.lang.annotation.NotNull;
 public abstract class AbstractPropertyFactory {
 
   /**
-   * Factory method used to construct a new instance of a typed {@link Property} based on
+   * Factory method used to construct a new typed {@link Property} based on
    * the {@link Property Property's} {@link Class type}.
    *
    * @param beanModel {@link BeanModel} modeling the bean contain the property; must not be {@literal null}.

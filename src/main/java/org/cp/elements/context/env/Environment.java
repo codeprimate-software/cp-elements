@@ -73,7 +73,7 @@ public class Environment implements Iterable<String> {
   public static final String USER_NAME = "user.name";
 
   /**
-   * Factory method used to construct a new instance of {@link Environment} initialized from the given associative array
+   * Factory method used to construct a new {@link Environment} initialized from the given associative array
    * containing the initial system {@literal environment variable} configuration.
    *
    * @param associativeArray {@link String array} of key/value mappings of the form:
@@ -87,8 +87,8 @@ public class Environment implements Iterable<String> {
   }
 
   /**
-   * Factory method used to construct a new instance of {@link Environment} initialized from the given,
-   * required {@link Map} containing the initial system {@literal environment variable} configuration.
+   * Factory method used to construct a new {@link Environment} initialized from the given, required {@link Map}
+   * containing the initial system {@literal environment variable} configuration.
    *
    * @param map {@link Map} used to initialize the {@link Environment}; must not be {@literal null}.
    * @return a new {@link Environment} initialized with the given, required {@link Map}.
@@ -102,8 +102,8 @@ public class Environment implements Iterable<String> {
   }
 
   /**
-   * Factory method used to construct a new instance of {@link Environment} initialized from the given,
-   * required {@link Properties} containing the initial system {@literal environment variable} configuration.
+   * Factory method used to construct a new {@link Environment} initialized from the given, required {@link Properties}
+   * containing the initial system {@literal environment variable} configuration.
    *
    * @param properties {@link Properties} used to initialize the {@link Environment}; must not be {@literal null}.
    * @return a new {@link Environment} initialized with the given, required {@link Properties}.
@@ -117,7 +117,7 @@ public class Environment implements Iterable<String> {
   }
 
   /**
-   * Factory method used to construct a new instance of {@link Environment} initialized from
+   * Factory method used to construct a new {@link Environment} initialized from
    * the {@link System#getenv() System environment variables}.
    *
    * @return a new {@link Environment} initialized with {@link System#getenv() System environment variables}.

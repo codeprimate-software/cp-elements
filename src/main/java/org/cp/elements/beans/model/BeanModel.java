@@ -43,7 +43,7 @@ public class BeanModel {
   private static final Map<BeanModelCacheKey, BeanModel> beanModelCache = new WeakHashMap<>();
 
   /**
-   * Factory method used to construct a new instance of {@link BeanModel} used to model the given,
+   * Factory method used to construct a new {@link BeanModel} used to model the given,
    * required {@link BeanAdapter bean}.
    *
    * @param bean {@link BeanAdapter} to model; must not be {@literal null}.
@@ -160,8 +160,8 @@ public class BeanModel {
   protected static class BeanModelCacheKey {
 
     /**
-     * Factory method used to construct a new instance of {@link BeanModelCacheKey} initialized with
-     * the given, required {@link BeanAdapter bean}.
+     * Factory method used to construct a new {@link BeanModelCacheKey} initialized with the given,
+     * required {@link BeanAdapter bean}.
      *
      * @param bean {@link BeanAdapter} used as a key component in the {@link BeanModel} {@literal cache};
      * must not be {@literal null}.

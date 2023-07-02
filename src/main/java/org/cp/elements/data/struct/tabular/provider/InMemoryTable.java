@@ -66,8 +66,8 @@ public class InMemoryTable extends AbstractTable {
   private final List<Row> rows;
 
   /**
-   * Factory method used to construct a new instance of {@link InMemoryTable} initialized with
-   * the given, required array of {@link Column Columns}.
+   * Factory method used to construct a new {@link InMemoryTable} initialized with the given,
+   * required array of {@link Column Columns}.
    *
    * @param columns array of {@link Column Columns} defining the structure of the {@link Table}.
    * @return a new {@link InMemoryTable} initialized with the given, required {@link Column Columns}
@@ -82,8 +82,8 @@ public class InMemoryTable extends AbstractTable {
   }
 
   /**
-   * Factory method used to construct a new instance of {@link InMemoryTable} initialized with
-   * the given, required {@literal Iterable} of {@link Column Columns}.
+   * Factory method used to construct a new {@link InMemoryTable} initialized with the given,
+   * required {@literal Iterable} of {@link Column Columns}.
    *
    * @param columns {@link Iterable} of {@link Column Columns} defining the structure of the {@link Table}.
    * @return a new {@link InMemoryTable} initialized with the given, required {@link Column Columns}

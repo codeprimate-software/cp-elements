@@ -71,7 +71,7 @@ public class ScalableBloomFilter<T> implements BloomFilter<T>, Iterable<BloomFil
   private final BloomFilter<T>[] bloomFilters;
 
   /**
-   * Factory method used to construct a new instance of {@link ScalableBloomFilter} with a single {@link BloomFilter}.
+   * Factory method used to construct a new {@link ScalableBloomFilter} with a single {@link BloomFilter}.
    *
    * @param <T> {@link Class type} of elements added to this {@link BloomFilter}.
    * @return a new instance of {@link ScalableBloomFilter} with a single {@link BloomFilter}.

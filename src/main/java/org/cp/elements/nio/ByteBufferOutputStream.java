@@ -39,7 +39,7 @@ public class ByteBufferOutputStream extends OutputStream {
   private static final int MASK = 0x000000FF;
 
   /**
-   * Factory method used to construct a new instance of {@link ByteBufferOutputStream} to write data into the given,
+   * Factory method used to construct a new {@link ByteBufferOutputStream} to write data into the given,
    * required {@link ByteBuffer}.
    *
    * @param byteBuffer {@link ByteBuffer} into which this {@link OutputStream} will write data;

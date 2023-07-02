@@ -46,8 +46,7 @@ public class MapBuilder<KEY, VALUE> implements Builder<Map<KEY, VALUE>> {
   private final Map<KEY, VALUE> map;
 
   /**
-   * Factory method used to construct a new instance of {@link MapBuilder} initialized with
-   * a {@link ConcurrentMap} implementation.
+   * Factory method used to construct a new {@link MapBuilder} initialized with a {@link ConcurrentMap} implementation.
    *
    * @param <KEY> {@link Class type} of the {@link Map} key.
    * @param <VALUE> {@link Class type} of the {@link Map} value.
@@ -60,8 +59,7 @@ public class MapBuilder<KEY, VALUE> implements Builder<Map<KEY, VALUE>> {
   }
 
   /**
-   * Factory method used to construct a new instance of {@link MapBuilder} initialized with
-   * a {@link HashMap} implementation.
+   * Factory method used to construct a new {@link MapBuilder} initialized with a {@link HashMap} implementation.
    *
    * @param <KEY> {@link Class type} of the {@link Map} key.
    * @param <VALUE> {@link Class type} of the {@link Map} value.
@@ -74,8 +72,7 @@ public class MapBuilder<KEY, VALUE> implements Builder<Map<KEY, VALUE>> {
   }
 
   /**
-   * Factory method used to construct a new instance of {@link MapBuilder} initialized with
-   * a {@link SortedMap} implementation.
+   * Factory method used to construct a new {@link MapBuilder} initialized with a {@link SortedMap} implementation.
    *
    * @param <KEY> {@link Class type} of the {@link Map} key.
    * @param <VALUE> {@link Class type} of the {@link Map} value.

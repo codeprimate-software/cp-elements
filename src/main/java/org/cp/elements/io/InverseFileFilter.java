@@ -36,7 +36,7 @@ import org.cp.elements.lang.annotation.NotNull;
 public class InverseFileFilter implements FileFilter, Filter<File> {
 
   /**
-   * Factory method used to construct a new instance of {@link InverseFileFilter} initialized with the given,
+   * Factory method used to construct a new {@link InverseFileFilter} initialized with the given,
    * required {@link FileFilter} used as the delegate to invert and filter {@link File Files}.
    *
    * @param fileFilter {@link FileFilter} used as the delegate and filter for {@link File} objects;

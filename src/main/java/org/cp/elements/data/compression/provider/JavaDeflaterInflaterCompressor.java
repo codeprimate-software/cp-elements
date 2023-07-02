@@ -41,7 +41,7 @@ public class JavaDeflaterInflaterCompressor implements Compressor {
   protected static final int TEMP_BUFFER_SIZE = 512; // bytes
 
   /**
-   * Factory method used to construct a new instance of {@link JavaDeflaterInflaterCompressor} initialized
+   * Factory method used to construct a new {@link JavaDeflaterInflaterCompressor} initialized
    * for the {@link Deflater#BEST_COMPRESSION}.
    *
    * @return a new {@link JavaDeflaterInflaterCompressor}.
@@ -51,7 +51,7 @@ public class JavaDeflaterInflaterCompressor implements Compressor {
   }
 
   /**
-   * Factory method used to construct a new instance of {@link JavaDeflaterInflaterCompressor} initialized
+   * Factory method used to construct a new {@link JavaDeflaterInflaterCompressor} initialized
    * for the {@link Deflater#BEST_SPEED}.
    *
    * @return a new {@link JavaDeflaterInflaterCompressor}.

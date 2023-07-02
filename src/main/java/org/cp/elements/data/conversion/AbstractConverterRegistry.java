@@ -136,9 +136,8 @@ public abstract class AbstractConverterRegistry implements ConverterRegistry {
   protected static class ConverterDescriptor implements Comparable<ConverterDescriptor> {
 
     /**
-     * Factory method used to construct a new instance of {@link ConverterDescriptor} that describes
-     * the {@link Converter} in order to determine what type of conversion
-     * the {@link Converter} can perform.
+     * Factory method used to construct a new {@link ConverterDescriptor} that describes the {@link Converter}
+     * in order to determine what type of conversion the {@link Converter} can perform.
      *
      * @param converter {@link Converter} to describe.
      * @return a {@link ConverterDescriptor} describing the {@link Converter} and the type of conversion.

@@ -73,7 +73,7 @@ public class EchoClient extends AbstractClientServerSupport {
   }
 
   /**
-   * Factory method used to construct a new instance of the {@link EchoClient} initialized with the given {@code port}.
+   * Factory method used to construct a new {@link EchoClient} initialized with the given {@code port}.
    *
    * @param port {@link Integer} value indicating the port number on which the {@link EchoServer} is listening
    * for {@link EchoClient} connections.
@@ -85,8 +85,7 @@ public class EchoClient extends AbstractClientServerSupport {
   }
 
   /**
-   * Factory method used to construct a new instance of the {@link EchoClient} initialized with
-   * the given {@code host} and {@code port}.
+   * Factory method used to construct a new {@link EchoClient} initialized with the given {@code host} and {@code port}.
    *
    * @param host {@link String} specifying host on which the {@link EchoServer} is running.
    * @param port {@link Integer} value indicating the port number on which the {@link EchoServer} is listening

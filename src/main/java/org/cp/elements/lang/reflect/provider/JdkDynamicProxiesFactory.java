@@ -51,8 +51,8 @@ public class JdkDynamicProxiesFactory<T> extends ProxyFactory<T> {
   }
 
   /**
-   * Factory method used to construct a new instance of the {@link JdkDynamicProxiesFactory}
-   * to create JDK Dynamic Proxies for a given target {@link Object target}.
+   * Factory method used to construct a new {@link JdkDynamicProxiesFactory} to create JDK Dynamic Proxies
+   * for a given target {@link Object target}.
    *
    * @param <T> preferred {@link Class type} of the {@literal Proxy} object.
    * @return a new {@link JdkDynamicProxiesFactory} used to create JDK Dynamic Proxies.

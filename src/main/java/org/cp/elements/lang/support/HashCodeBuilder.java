@@ -52,8 +52,8 @@ public class HashCodeBuilder implements Builder<Integer> {
   private int hashValue;
 
   /**
-   * Factory method used to construct a new instance of {@link HashCodeBuilder} initialized with
-   * a default base value and multiplier.
+   * Factory method used to construct a new {@link HashCodeBuilder} initialized with a default base value
+   * and multiplier.
    *
    * @return a new {@link HashCodeBuilder}.
    * @see #HashCodeBuilder()
@@ -63,8 +63,8 @@ public class HashCodeBuilder implements Builder<Integer> {
   }
 
   /**
-   * Factory method used to construct a new instance of {@link HashCodeBuilder} initialized with
-   * the given base value and multiplier.
+   * Factory method used to construct a new {@link HashCodeBuilder} initialized with the given base value
+   * and multiplier.
    *
    * @param baseValue integer indicating the starting value of the hash code.
    * @param multiplier integer indicating the multiplier used in the individual factors.
@@ -77,8 +77,8 @@ public class HashCodeBuilder implements Builder<Integer> {
   }
 
   /**
-   * Factory method to construct a new instance of {@link HashCodeBuilder} used to compute the hash code
-   * of the given {@link Object}.
+   * Factory method to construct a new {@link HashCodeBuilder} used to compute the hash code of
+   * the given {@link Object}.
    *
    * This factory method can used to implement a {@code hashCode()} method for any object by simply
    * overriding the {@link Object#hashCode()} method on your class type and implementing as follows...

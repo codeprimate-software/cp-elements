@@ -366,8 +366,8 @@ public abstract class AbstractConfiguration implements Configuration, Conversion
   public static class FileConfigurationDescriptor extends AbstractConfigurationDescriptor<File> {
 
     /**
-     * Factory method used to construct a new instance of {@link FileConfigurationDescriptor} initialized with
-     * the given, required {@link File} used as the {@literal source} of the {@link Configuration}.
+     * Factory method used to construct a new {@link FileConfigurationDescriptor} initialized with the given,
+     * required {@link File} used as the {@literal source} of the {@link Configuration}.
      *
      * @param file {@link File} used as the source of the {@link Configuration}; must not be {@literal null}.
      * @return a new {@link FileConfigurationDescriptor}.
@@ -399,8 +399,8 @@ public abstract class AbstractConfiguration implements Configuration, Conversion
   public static class MapConfigurationDescriptor extends AbstractConfigurationDescriptor<Map<String, String>> {
 
     /**
-     * Factory method used to construct a new instance of {@link MapConfigurationDescriptor} initialized with
-     * the given, required {@link Map} used as the {@literal source} of the {@link Configuration}.
+     * Factory method used to construct a new {@link MapConfigurationDescriptor} initialized with the given,
+     * required {@link Map} used as the {@literal source} of the {@link Configuration}.
      *
      * @param map {@link Map} used as the source of the {@link Configuration}; must not be {@literal null}.
      * @return a new {@link MapConfigurationDescriptor}.
@@ -432,8 +432,8 @@ public abstract class AbstractConfiguration implements Configuration, Conversion
   public static class PropertiesConfigurationDescriptor extends AbstractConfigurationDescriptor<Properties> {
 
     /**
-     * Factory method used to construct a new instance of {@link PropertiesConfigurationDescriptor} initialized with
-     * the given, required {@link Properties} used as the {@literal source} of the {@link Configuration}.
+     * Factory method used to construct a new {@link PropertiesConfigurationDescriptor} initialized with the given,
+     * required {@link Properties} used as the {@literal source} of the {@link Configuration}.
      *
      * @param properties {@link Properties} used as the source of the {@link Configuration};
      * must not be {@literal null}.

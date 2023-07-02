@@ -124,7 +124,7 @@ public abstract class FunctionUtils {
   }
 
   /**
-   * Factory method used to construct a new instance of {@link Consumer} that does nothing.
+   * Factory method used to construct a new {@link Consumer} that does nothing.
    *
    * @param <T> {@link Class type} of {@link Object} processed by the {@link Consumer}.
    * @return a noop {@link Consumer}.
@@ -136,7 +136,7 @@ public abstract class FunctionUtils {
   }
 
   /**
-   * Factory method used to construct a new instance of {@link Supplier} that does nothing.
+   * Factory method used to construct a new {@link Supplier} that does nothing.
    *
    * @param <T> {@link Class type} of {@link Object} returned by the {@link Supplier}.
    * @return a noop {@link Supplier} that does nothing and returns {@literal null}.

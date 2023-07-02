@@ -51,8 +51,7 @@ import org.cp.elements.util.MapUtils;
 public class MapToCacheAdapter<KEY extends Comparable<KEY>, VALUE> extends AbstractCache<KEY, VALUE> {
 
   /**
-   * Factory method used to construct a new instance of {@link MapToCacheAdapter} initialized with
-   * the given, required {@link Map}.
+   * Factory method used to construct a new {@link MapToCacheAdapter} initialized with the given, required {@link Map}.
    *
    * @param <KEY> {@link Class type} of the keys used by this {@link Cache}.
    * @param <VALUE> {@link Class type} of the values stored by this {@link Cache}.

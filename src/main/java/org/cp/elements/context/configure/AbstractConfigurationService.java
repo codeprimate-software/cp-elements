@@ -330,8 +330,8 @@ public abstract class AbstractConfigurationService implements ConfigurationServi
   protected static class ConfigurationPropertiesInterfaceMethodInterceptor implements MethodInterceptor<Object> {
 
     /**
-     * Factory method used to construct a new instance of {@link ConfigurationPropertiesInterfaceMethodInterceptor}
-     * initialized with a reference to the {@link AbstractConfigurationService} and the {@link ConfigurationProperties}
+     * Factory method used to construct a new {@link ConfigurationPropertiesInterfaceMethodInterceptor} initialized with
+     * a reference to the {@link AbstractConfigurationService} and the {@link ConfigurationProperties}
      * annotated {@link Class interface} containing the configuration property accessor methods, where properties
      * are derived from the {@link Method#getName() method name} prefixed with the given,
      * required {@link String property prefix}.

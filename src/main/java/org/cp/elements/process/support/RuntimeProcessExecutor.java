@@ -53,8 +53,8 @@ import org.cp.elements.process.ProcessExecutor;
 public class RuntimeProcessExecutor implements ProcessExecutor<ProcessAdapter> {
 
   /**
-   * Factory method to construct a new instance of {@link RuntimeProcessExecutor} used to execute and run
-   * a {@link Process} with {@link Runtime#exec(String[], String[], File)}.
+   * Factory method to construct a new {@link RuntimeProcessExecutor} used to execute and run a {@link Process}
+   * with {@link Runtime#exec(String[], String[], File)}.
    *
    * @return a new instance of {@link RuntimeProcessExecutor}.
    * @see org.cp.elements.process.support.RuntimeProcessExecutor

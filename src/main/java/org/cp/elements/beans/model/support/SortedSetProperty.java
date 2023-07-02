@@ -84,9 +84,9 @@ public class SortedSetProperty extends AbstractIndexedProperty<Integer> {
   }
 
   /**
-   * Factory method used to construct a new instance of {@link SortedSetProperty} initialized with the given, required
-   * {@link BeanModel} modeling the bean containing the {@link SortedSet} property along with a given, required
-   * {@link PropertyDescriptor} describing the {@link SortedSet} property.
+   * Factory method used to construct a new {@link SortedSetProperty} initialized with the given,
+   * required {@link BeanModel} modeling the bean containing the {@link SortedSet} property along with a given,
+   * required {@link PropertyDescriptor} describing the {@link SortedSet} property.
    *
    * @param beanModel {@link BeanModel} modeling the bean containing the property; must not be {@literal null}.
    * @param propertyDescriptor {@link PropertyDescriptor} describing the property; must not be {@literal null}.
@@ -104,9 +104,9 @@ public class SortedSetProperty extends AbstractIndexedProperty<Integer> {
   }
 
   /**
-   * Factory method used to construct a new instance of {@link SortedSetProperty} initialized with the given, required
-   * {@link BeanModel} modeling the bean containing the {@link SortedSet} property along with a given, required
-   * {@link PropertyDescriptor} describing the {@link SortedSet} property.
+   * Factory method used to construct a new {@link SortedSetProperty} initialized with the given,
+   * required {@link BeanModel} modeling the bean containing the {@link SortedSet} property along with a given,
+   * required {@link PropertyDescriptor} describing the {@link SortedSet} property.
    *
    * @param property {@link Property} modeling the {@link SortedSet} bean property; must not be {@literal null}.
    * @return a new {@link SortedSetProperty} initialized with the given {@link Property}.

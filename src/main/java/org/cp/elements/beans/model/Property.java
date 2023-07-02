@@ -101,7 +101,7 @@ public class Property implements Comparable<Property>, Describable<PropertyDescr
   protected static final Predicate<AnnotatedElement> IS_TRANSIENT = IS_TRANSIENT_FIELD.or(IS_TRANSIENT_ANNOTATED);
 
   /**
-   * Factory method used to construct a new instance of {@link Property} from the given, required {@link BeanModel}
+   * Factory method used to construct a new {@link Property} from the given, required {@link BeanModel}
    * modeling the bean containing the property and a given, required {@link PropertyDescriptor}
    * describing the bean property.
    *

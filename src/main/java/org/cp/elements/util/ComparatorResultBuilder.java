@@ -41,7 +41,7 @@ public class ComparatorResultBuilder<T extends Comparable<T>>
     implements Builder<Integer>, Comparator<T>, Serializable {
 
   /**
-   * Factory method used to construct a new instance of {@link ComparatorResultBuilder}.
+   * Factory method used to construct a new {@link ComparatorResultBuilder}.
    *
    * @param <T> {@link Comparable} {@link Class type} of objects evaluated in the comparison operation.
    * @return a new {@link ComparatorResultBuilder}.

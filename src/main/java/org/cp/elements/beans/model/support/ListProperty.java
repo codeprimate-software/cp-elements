@@ -78,9 +78,9 @@ public class ListProperty extends AbstractIndexedProperty<Integer> {
   }
 
   /**
-   * Factory method used to construct a new instance of {@link ListProperty} initialized with
-   * the given, required {@link BeanModel} modeling the bean containing the {@link List} property
-   * along with the given, required {@link PropertyDescriptor} describing the {@link List} property.
+   * Factory method used to construct a new {@link ListProperty} initialized with the given, required {@link BeanModel}
+   * modeling the bean containing the {@link List} property along with the given, required {@link PropertyDescriptor}
+   * describing the {@link List} property.
    *
    * @param beanModel {@link BeanModel} modeling the bean containing the property; must not be {@literal null}.
    * @param propertyDescriptor {@link PropertyDescriptor} describing the property; must not be {@literal null}.
@@ -98,8 +98,8 @@ public class ListProperty extends AbstractIndexedProperty<Integer> {
   }
 
   /**
-   * Factory method used to construct a new instance of {@link ListProperty} initialized with
-   * the given, required {@link Property} modeling the {@link List List-based} bean property.
+   * Factory method used to construct a new {@link ListProperty} initialized with the given, required {@link Property}
+   * modeling the {@link List List-based} bean property.
    *
    * @param property {@link Property} modeling the {@link List List-based} bean property; must not be {@literal null}.
    * @return a new {@link ListProperty} initialized with the given {@link Property}.

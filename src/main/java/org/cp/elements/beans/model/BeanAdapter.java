@@ -38,8 +38,8 @@ import org.cp.elements.lang.annotation.Nullable;
 public class BeanAdapter {
 
   /**
-   * Factory method used to construct a new instance of {@link BeanAdapter} initialized with the given,
-   * required {@link Object POJO} to adapt as a {@literal JavaBean}.
+   * Factory method used to construct a new {@link BeanAdapter} initialized with the given, required {@link Object POJO}
+   * to adapt as a {@literal JavaBean}.
    *
    * @param target {@link Object} to adapt as a {@literal JavaBean}; must not be {@literal null}.
    * @return a new {@link BeanAdapter} initialized with the given, required {@link Object POJO}.

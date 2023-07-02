@@ -46,8 +46,8 @@ public abstract class PropertiesUtils {
   }
 
   /**
-   * Factory method used to construct a new instance of {@link Properties} as a {@literal Singleton} {@link Object},
-   * or simply a {@link Properties} instance containing only a single {@link String property} and {@link String value}.
+   * Factory method used to construct a new {@link Properties} as a {@literal Singleton} {@link Object}, or simply
+   * a {@link Properties} instance containing only a single {@link String property} and {@link String value}.
    *
    * @param propertyName {@link String} containing the {@literal name} of the property; must not be {@literal null}.
    * @param propertyValue {@link String} containing the {@literal value} for the property; must not be {@literal null}.

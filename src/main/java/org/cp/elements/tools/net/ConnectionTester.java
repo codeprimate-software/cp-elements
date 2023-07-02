@@ -70,7 +70,7 @@ public class ConnectionTester implements Condition, Tester {
   }
 
   /**
-   * Factory method used to construct a new instance of {@link ConnectionTester} in order to test a connection
+   * Factory method used to construct a new {@link ConnectionTester} in order to test a connection
    * to {@literal localhost} on the specified {@link Integer port}.
    *
    * @param port {@link Integer} value specifying the port number to which the connection is bound.
@@ -83,7 +83,7 @@ public class ConnectionTester implements Condition, Tester {
   }
 
   /**
-   * Factory method used to construct a new instance of {@link ConnectionTester} in order to test a connection
+   * Factory method used to construct a new {@link ConnectionTester} in order to test a connection
    * to the specified {@link String host} on the specified {@link Integer port}.
    *
    * @param host {@link String name} of the host to which the connection is bound.

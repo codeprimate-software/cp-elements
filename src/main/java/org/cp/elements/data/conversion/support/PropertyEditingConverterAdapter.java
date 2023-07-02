@@ -40,7 +40,7 @@ public class PropertyEditingConverterAdapter extends AbstractConverter<String, O
   private final PropertyEditor propertyEditor;
 
   /**
-   * Factory method used to construct a new instance of the {@link PropertyEditingConverterAdapter} initialized with
+   * Factory method used to construct a new {@link PropertyEditingConverterAdapter} initialized with
    * the given {@link PropertyEditor}.
    *
    * @param propertyEditor {@link PropertyEditor} backing this {@link Converter}.

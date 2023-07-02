@@ -49,8 +49,7 @@ import org.cp.elements.lang.annotation.Nullable;
 public class CachingTemplate<KEY extends Comparable<KEY>, VALUE> {
 
   /**
-   * Factory method used to construct a new instance of the {@link CachingTemplate}
-   * initialized with the given, required {@link Cache}.
+   * Factory method used to construct a new {@link CachingTemplate} initialized with the given, required {@link Cache}.
    *
    * @param <KEY> {@link Class type} of the {@link Cache} key.
    * @param <VALUE> {@link Class type} of the {@link Cache} value.

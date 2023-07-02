@@ -41,9 +41,9 @@ import org.cp.elements.util.CollectionUtils;
 public abstract class AbstractView implements View {
 
   /**
-   * Factory method used to construct a new instance of {@link AbstractView} initialized with the given,
-   * required {@link Iterable} of {@link Column Columns} defining the structure of the {@link View}
-   * and the given array of {@link Row Rows} constituting the data for the {@link View}.
+   * Factory method used to construct a new {@link AbstractView} initialized with the given, required {@link Iterable}
+   * of {@link Column Columns} defining the structure of the {@link View} and the given array of {@link Row Rows}
+   * constituting the data for the {@link View}.
    *
    * @param columns {@link Iterable} of {@link Column Columns} defining the projection or structure
    * of the new {@link View}; must not be {@literal null} or {@literal empty}.
@@ -61,7 +61,7 @@ public abstract class AbstractView implements View {
   }
 
   /**
-   * Factory method used to construct a new instance of {@link AbstractView} initialized with the given,
+   * Factory method used to construct a new {@link AbstractView} initialized with the given,
    * required {@link Column Columns} defining the structure of the {@link View} and the given {@link Row Rows}
    * constituting the data for the {@link View}.
    *

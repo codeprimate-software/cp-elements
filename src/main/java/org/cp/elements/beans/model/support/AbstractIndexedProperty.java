@@ -188,8 +188,8 @@ public abstract class AbstractIndexedProperty<INDEX> extends Property {
     protected static final String INDEXED_VALUE_TO_STRING = "Value [%s] at Index [%s]";
 
     /**
-     * Factory method used to construct a new instance of {@link IndexedValue} initialized with a
-     * {@literal null} {@link Object value} at the given, required {@link INDEX index}.
+     * Factory method used to construct a new {@link IndexedValue} initialized with a {@literal null}
+     * {@link Object value} at the given, required {@link INDEX index}.
      *
      * @param <INDEX> {@link Class type} of the index.
      * @param <VALUE> {@link Class type} of the value.
@@ -206,8 +206,8 @@ public abstract class AbstractIndexedProperty<INDEX> extends Property {
     }
 
     /**
-     * Factory method used to construct a new instance of {@link IndexedValue} initialized with a
-     * given {@link VALUE value} at the given, required {@link INDEX index}.
+     * Factory method used to construct a new {@link IndexedValue} initialized with a given {@link VALUE value}
+     * at the given, required {@link INDEX index}.
      *
      * @param <INDEX> {@link Class type} of the index.
      * @param <VALUE> {@link Class type} of the value.

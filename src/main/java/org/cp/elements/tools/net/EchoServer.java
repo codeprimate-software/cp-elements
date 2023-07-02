@@ -85,7 +85,7 @@ public class EchoServer extends AbstractClientServerSupport implements Runnable 
   }
 
   /**
-   * Factory method used to construct a new instance of the {@link EchoServer} initialized with the given {@code port}.
+   * Factory method used to construct a new {@link EchoServer} initialized with the given {@code port}.
    *
    * @param port {@link Integer} value indicating the port number on which the {@link EchoServer} will listen.
    * @return a new instance of the {@link EchoServer} initialized on the given {@code port}.

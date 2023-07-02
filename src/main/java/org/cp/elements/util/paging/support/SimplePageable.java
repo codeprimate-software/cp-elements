@@ -253,9 +253,8 @@ public class SimplePageable<T> implements Pageable<T> {
     private final SimplePageable<T> pageable;
 
     /**
-     * Factory method used to construct a new instance of {@link SimplePage} initialized with the source,
-     * underlying {@link SimplePageable} object containing this {@link Page} and this {@link Page Page's}
-     * page number.
+     * Factory method used to construct a new {@link SimplePage} initialized with the source,
+     * underlying {@link SimplePageable} object containing this {@link Page} and this {@link Page Page's} page number.
      * <p>
      * This factory method constructs a new {@link SimplePage} for the first {@link Page}
      * in the {@link Pageable} object.
@@ -273,9 +272,8 @@ public class SimplePageable<T> implements Pageable<T> {
     }
 
     /**
-     * Factory method used to construct a new instance of {@link SimplePage} initialized with the source,
-     * underlying {@link SimplePageable} object containing this {@link Page} and this {@link Page Page's}
-     * page number.
+     * Factory method used to construct a new {@link SimplePage} initialized with the source,
+     * underlying {@link SimplePageable} object containing this {@link Page} and this {@link Page Page's} page number.
      *
      * @param <T> {@link Class type} of the elements contained in this {@link Page}.
      * @param pageable reference to the {@link SimplePageable} object that contains this {@link Page}.

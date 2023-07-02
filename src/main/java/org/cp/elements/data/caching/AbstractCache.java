@@ -253,7 +253,7 @@ public abstract class AbstractCache<KEY extends Comparable<KEY>, VALUE> implemen
   public static class AttachedCacheEntry<KEY extends Comparable<KEY>, VALUE> extends AbstractEntry<KEY, VALUE> {
 
     /**
-     * Factory method used to construct a new instance of {@link AttachedCacheEntry} initialized with the given,
+     * Factory method used to construct a new {@link AttachedCacheEntry} initialized with the given,
      * required {@link Cache} used as the {@literal source} of this {@link Cache.Entry} along with the given,
      * required {@link KEY key}.
      *
@@ -301,7 +301,7 @@ public abstract class AbstractCache<KEY extends Comparable<KEY>, VALUE> implemen
   public static class SimpleCacheEntry<KEY extends Comparable<KEY>, VALUE> implements Cache.Entry<KEY, VALUE> {
 
     /**
-     * Factory method used to construct a new instance of {@link SimpleCacheEntry} initialized with the given,
+     * Factory method used to construct a new {@link SimpleCacheEntry} initialized with the given,
      * required {@link KEY key} and {@link VALUE value}.
      *
      * @param <KEY> {@link Class type} of the {@link Cache.Entry} key.

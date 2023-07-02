@@ -52,7 +52,7 @@ public class DelegatingMethodInterceptor<T> implements MethodInterceptor<T> {
   }
 
   /**
-   * Factory method used to construct a new instance of {@link DelegatingMethodInterceptor} initialized with
+   * Factory method used to construct a new {@link DelegatingMethodInterceptor} initialized with
    * the given {@link MethodInterceptor} used as the delegate in all {@link MethodInterceptor} operations.
    *
    * @param <T> {{@link Class type} of the {@link Object target}.

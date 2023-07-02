@@ -39,8 +39,8 @@ import org.cp.elements.lang.annotation.NullSafe;
 public abstract class FileLastModifiedFilter implements FileFilter, Filter<File> {
 
   /**
-   * Factory method used to construct a new instance of {@link FileLastModifiedFilter} initialized with
-   * the given, required {@link RelationalOperator} used in the evaluation and filtering of {@link File Files}
+   * Factory method used to construct a new {@link FileLastModifiedFilter} initialized with the given,
+   * required {@link RelationalOperator} used in the evaluation and filtering of {@link File Files}
    * {@link File#lastModified() last modified timestamp} when {@link #accept(File)} is called.
    *
    * @param operator {@link RelationalOperator} used to evaluate the {@link File}; must not be {@literal null}.
@@ -56,7 +56,7 @@ public abstract class FileLastModifiedFilter implements FileFilter, Filter<File>
   }
 
   /**
-   * Factory method used to construct a new instance of {@link FileLastModifiedFilter} initialized with the given,
+   * Factory method used to construct a new {@link FileLastModifiedFilter} initialized with the given,
    * required {@link RelationalOperator} used in the evaluation and filtering of {@link File Files}
    * by {@link File#lastModified() last modified timestamp}.
    * <p>
@@ -103,8 +103,8 @@ public abstract class FileLastModifiedFilter implements FileFilter, Filter<File>
   public abstract boolean accept(File file);
 
   /**
-   * Factory method used to construct a new instance of {@link FileLastModifiedFilter} that evaluates (matches)
-   * and filters {@link File Files} by a {@link File#lastModified() last modified timestamp} occurring {@literal after}
+   * Factory method used to construct a new {@link FileLastModifiedFilter} that evaluates (matches) and filters
+   * {@link File Files} by a {@link File#lastModified() last modified timestamp} occurring {@literal after}
    * the given date/time declared in {@link Long milliseconds since the epoch}.
    *
    * @param lastModified {@link Long date/time} declared in milliseconds since the epoch used to
@@ -118,8 +118,8 @@ public abstract class FileLastModifiedFilter implements FileFilter, Filter<File>
   }
 
   /**
-   * Factory method used to construct a new instance of {@link FileLastModifiedFilter} that evaluates (matches)
-   * and filters {@link File Files} by a {@link File#lastModified() last modified timestamp} occurring {@literal before}
+   * Factory method used to construct a new {@link FileLastModifiedFilter} that evaluates (matches) and filters
+   * {@link File Files} by a {@link File#lastModified() last modified timestamp} occurring {@literal before}
    * the given date/time declared in {@link Long milliseconds since the epoch}.
    *
    * @param lastModified {@link Long date/time} declared in milliseconds since the epoch used to
@@ -133,9 +133,9 @@ public abstract class FileLastModifiedFilter implements FileFilter, Filter<File>
   }
 
   /**
-   * Factory method used to construct a new instance of {@link FileLastModifiedFilter} that evaluates (matches)
-   * and filters {@link File Files} by {@link File#lastModified() last modified timestamp} occurring {@literal during}
-   * (between) the given dates and times declared in {@link Long milliseconds since the epoch}.
+   * Factory method used to construct a new {@link FileLastModifiedFilter} that evaluates (matches) and filters
+   * {@link File Files} by {@link File#lastModified() last modified timestamp} occurring {@literal during} (between)
+   * the given dates and times declared in {@link Long milliseconds since the epoch}.
    *
    * @param lastModifiedOnAfter {@link Long date/time} declared in milliseconds since the epoch used to
    * filter {@link File Files} by {@link File#lastModified() last modified timestamp} on or after the given date/time.
@@ -150,8 +150,8 @@ public abstract class FileLastModifiedFilter implements FileFilter, Filter<File>
   }
 
   /**
-   * Factory method used to construct a new instance of {@link FileLastModifiedFilter} that evaluates (matches)
-   * and filters {@link File Files} by a {@link File#lastModified() last modified timestamp} occurring {@literal on}
+   * Factory method used to construct a new {@link FileLastModifiedFilter} that evaluates (matches) and filters
+   * {@link File Files} by a {@link File#lastModified() last modified timestamp} occurring {@literal on}
    * the given date/time declared in {@link Long milliseconds since the epoch}.
    *
    * @param lastModified {@link Long date/time} declared in milliseconds since the epoch used to
@@ -165,8 +165,8 @@ public abstract class FileLastModifiedFilter implements FileFilter, Filter<File>
   }
 
   /**
-   * Factory method used to construct a new instance of {@link FileLastModifiedFilter} that evaluates (matches)
-   * and filters {@link File Files} by {@link File#lastModified() last modified timestamp} occurring {@literal outside}
+   * Factory method used to construct a new {@link FileLastModifiedFilter} that evaluates (matches) and filters
+   * {@link File Files} by {@link File#lastModified() last modified timestamp} occurring {@literal outside}
    * the given dates and times declared in {@link Long milliseconds since the epoch}.
    *
    * @param lastModifiedBefore {@link Long date/time} declared in milliseconds since the epoch used to

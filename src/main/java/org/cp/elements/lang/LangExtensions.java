@@ -112,8 +112,8 @@ public abstract class LangExtensions {
     private static final Object DUMMY = new Object();
 
     /**
-     * Factory method used to construct a new instance of {@link SafeNavigationHandler} initialized with
-     * the given, required {@link ProxyFactory} used to evaluate the next {@link Object} in the {@link Method}
+     * Factory method used to construct a new {@link SafeNavigationHandler} initialized with the given,
+     * required {@link ProxyFactory} used to evaluate the next {@link Object} in the {@link Method}
      * invocation call chain.
      *
      * @param <T> {@link Class type} of {@link Object} to proxy.
@@ -1258,7 +1258,7 @@ public abstract class LangExtensions {
   public static class AssertThatWrapper<T> implements AssertThat<T> {
 
     /**
-     * Factory method used to construct a new instance of {@link AssertThatWrapper} initialized with
+     * Factory method used to construct a new {@link AssertThatWrapper} initialized with
      * the given {@link AssertThat} object.
      *
      * @param <T> {@link Class type} of the {@link Object} to evaluate and make an assertion.

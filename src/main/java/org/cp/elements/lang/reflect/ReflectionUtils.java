@@ -833,8 +833,8 @@ public abstract class ReflectionUtils extends ClassUtils {
   public static class MethodResolver implements DslExtension, FluentApiExtension {
 
     /**
-     * Factory method used to construct a new instance of {@link MethodResolver} initialized with
-     * the given, required {@link Class type} used to resolve the {@link Method} by {@link String name}.
+     * Factory method used to construct a new {@link MethodResolver} initialized with the given,
+     * required {@link Class type} used to resolve the {@link Method} by {@link String name}.
      *
      * @param type {@link Class type} from which to resolve the {@link Method} by {@link String name};
      * must not be {@literal null}.

@@ -48,7 +48,7 @@ public interface Streamable<T> {
   }
 
   /**
-   * Factory method used to construct a new instance of {@link Streamable} from the given array of elements.
+   * Factory method used to construct a new {@link Streamable} from the given array of elements.
    *
    * @param <T> {@link Class type} of the elements in the array.
    * @param array array of {@link Object elements} to stream.
@@ -61,7 +61,7 @@ public interface Streamable<T> {
   }
 
   /**
-   * Factory method used to construct a new instance of {@link Streamable} initialized with the given {@link Iterable}
+   * Factory method used to construct a new {@link Streamable} initialized with the given {@link Iterable}
    * collection of elements.
    *
    * @param <T> {@link Class type} of the elements in the {@link Iterable}.

@@ -34,7 +34,7 @@ import org.cp.elements.lang.Transformer;
 public class FunctionToTransformerAdapter<T> implements Transformer<T> {
 
   /**
-   * Factory method use to construct a new instance of {@link FunctionToTransformerAdapter} initialized with
+   * Factory method use to construct a new {@link FunctionToTransformerAdapter} initialized with
    * the given {@link Function} to adapt as an instance of the {@link Transformer} interface.
    *
    * @param <T> {@link Class type} of {@link Object objects} processed by the {@link Function}.

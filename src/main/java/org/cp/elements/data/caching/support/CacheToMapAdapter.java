@@ -51,8 +51,8 @@ import org.cp.elements.util.CollectionUtils;
 public class CacheToMapAdapter<KEY extends Comparable<KEY>, VALUE> extends AbstractMap<KEY, VALUE> {
 
   /**
-   * Factory method used to construct a new instance of {@link CacheToMapAdapter} initialized with
-   * the given, required {@link Cache} adapted and used to back the returned {@link Map} implementation.
+   * Factory method used to construct a new {@link CacheToMapAdapter} initialized with the given, required {@link Cache}
+   * adapted and used to back the returned {@link Map} implementation.
    *
    * @param <KEY> {@link Class type} of keys used by the {@link Map}.
    * @param <VALUE> {@link Class type} of the values stored by the {@link Map}.
@@ -199,8 +199,8 @@ public class CacheToMapAdapter<KEY extends Comparable<KEY>, VALUE> extends Abstr
       implements Map.Entry<KEY, VALUE>, Sourced<Cache<KEY, VALUE>>, Comparable<Map.Entry<KEY, VALUE>> {
 
     /**
-     * Factory method used to construct a new instance of {@link CacheMapEntry} initialized with
-     * the given {@link KEY key} identifying the target {@link Cache.Entry} in the given {@link Cache}.
+     * Factory method used to construct a new {@link CacheMapEntry} initialized with the given {@link KEY key}
+     * identifying the target {@link Cache.Entry} in the given {@link Cache}.
      *
      * @param <KEY> {@link Comparable} {@link Class type} of the {@link Cache} key.
      * @param <VALUE> {@link Class type} of the {@link Cache} value.
