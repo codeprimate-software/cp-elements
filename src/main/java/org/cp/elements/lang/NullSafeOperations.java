@@ -26,17 +26,17 @@ import org.cp.elements.lang.annotation.Nullable;
 
 /**
  * Abstract base class for performing {@literal null-safe} operations.
- *
+ * <p>
  * The null-safe methods in this class can be used to replace operations such as the following:
- *
+ * <p>
  * <code>
  *   if (properties != null) {
  *     map.putAll(properties);
  *   }
  * </code>
- *
+ * <p>
  * Which can be written as:
- *
+ * <p>
  * <code>
  *   NullSafeOperations.ifNotNullDo(properties, map::putAll);
  * </code>

@@ -24,8 +24,7 @@ import org.cp.elements.lang.annotation.NullSafe;
 import org.cp.elements.lang.annotation.Nullable;
 
 /**
- * The {@link NumberUtils} class is an abstract utility class encapsulating common functionality
- * for working with {@link Number Numbers}.
+ * Abstract utility class encapsulating common functionality for processing {@link Number Numbers}.
  *
  * @author John J. Blum
  * @see java.lang.Number
@@ -185,7 +184,7 @@ public abstract class NumberUtils {
 
   /**
    * Gets the individual bytes of an {@link Integer value} or {@link Integer#TYPE int value}.
-   *
+   * <p>
    * An {@link Integer} is a 32-bit value consisting of 4 bytes where each byte of the {@link Integer}
    * is returned in an element of a 4-element byte array.
    *
@@ -221,7 +220,7 @@ public abstract class NumberUtils {
 
   /**
    * Determines whether the given {@link Number} is a {@literal decimal} or {@literal floating-point number}.
-   *
+   * <p>
    * The {@link Number} is considered a {@literal floating-point value} only if the {@link Number}
    * is an instance of {@link Double} or {@link Float}.
    *
@@ -239,7 +238,7 @@ public abstract class NumberUtils {
 
   /**
    * Determines whether the given {@link Long} is an even number.
-   *
+   * <p>
    * The {@link Long number} is evaluated using the {@literal modulus operator}, which determines that any number
    * divisible by {@literal 2} with a remainder of {@literal 0} is an even number.
    *
@@ -255,7 +254,7 @@ public abstract class NumberUtils {
 
   /**
    * Determines whether the specified {@link Long} is an even number.
-   *
+   * <p>
    * The {@link Long number} is evaluated using the {@literal bitwise AND operator}, which determines that any number
    * with a {@literal 0} in the {@literal 0 position} of the binary representation of the number is an even number.
    *
@@ -282,7 +281,7 @@ public abstract class NumberUtils {
 
   /**
    * Determines whether the given {@link Long} is an odd number.
-   *
+   * <p>
    * The {@link Long number} is evaluated using the {@literal modulus operator}, which determines that any number
    * divisible by {@literal 2} with a remainder of {@literal 1} is an odd number.
    *
@@ -298,7 +297,7 @@ public abstract class NumberUtils {
 
   /**
    * Determines whether the specified {@link Long} is an odd number.
-   *
+   * <p>
    * The {@link Long number} is evaluated using the {@literal bitwise AND operator}, which determines that any number
    * with a {@literal 1} in the {@literal 0 position} of the binary representation of the number is an odd number.
    *
@@ -395,10 +394,10 @@ public abstract class NumberUtils {
 
   /**
    * Determines whether the given {@link Number} is a {@link Byte}.
-   *
+   * <p>
    * If the given {@link Number} is not an instance of {@link Byte} then the numerical value
    * must be between {@link Byte#MIN_VALUE} and {@link Byte#MAX_VALUE} inclusive.
-   *
+   * <p>
    * If the given {@link Number} is a {@literal floating-point value}, then the {@link Number}
    * must be {@link #isWhole(Number) whole}.
    *
@@ -414,10 +413,10 @@ public abstract class NumberUtils {
 
   /**
    * Determines whether the given {@link Number} is a {@link Short}.
-   *
+   * <p>
    * If the given {@link Number} is not an instance of {@link Short} then the numerical value
    * must be between {@link Short#MIN_VALUE} and {@link Short#MAX_VALUE} inclusive.
-   *
+   * <p>
    * If the given {@link Number} is a {@literal floating-point value}, then the {@link Number}
    * must be {@link #isWhole(Number) whole}.
    *
@@ -433,10 +432,10 @@ public abstract class NumberUtils {
 
   /**
    * Determines whether the given {@link Number} is a {@link Integer}.
-   *
+   * <p>
    * If the given {@link Number} is not an instance of {@link Integer} then the numerical value
    * must be between {@link Integer#MIN_VALUE} and {@link Integer#MAX_VALUE} inclusive.
-   *
+   * <p>
    * If the given {@link Number} is a {@literal floating-point value}, then the {@link Number}
    * must be {@link #isWhole(Number) whole}.
    *
@@ -452,11 +451,11 @@ public abstract class NumberUtils {
 
   /**
    * Determines whether the given {@link Number} is a {@link Long}.
-   *
+   * <p>
    * The {@link Number} must be an instance of {@link Long}.
-   *
+   * <p>
    * If the given {@link Number} is a {@literal floating-point value}, then the {@link Number}
-   * must be {@link #isWhole(Number)} whole}.
+   * must be {@link #isWhole(Number) whole}.
    *
    * @param number {@link Number} to evaluate.
    * @return a boolean value indicating whether the given {@link Number} is a {@link Long}.
@@ -470,10 +469,10 @@ public abstract class NumberUtils {
 
   /**
    * Determines whether the given {@link Number} is a {@link Float}.
-   *
+   * <p>
    * If the given {@link Number} is not an instance of {@link Float} then the numerical value
    * must be between {@link Float#MIN_VALUE} and {@link Float#MAX_VALUE} inclusive.
-   *
+   * <p>
    * The given {@link Number} must contain a {@link #isDecimal(Number) decimal value}.
    *
    * @param number {@link Number} to evaluate.
@@ -488,7 +487,7 @@ public abstract class NumberUtils {
 
   /**
    * Determines whether the given {@link Number} is a {@link Double}.
-   *
+   * <p>
    * The {@link Number} must be an instance of {@link Double}
    * and contain a {@link #isDecimal(Number) decimal value}.
    *

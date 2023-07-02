@@ -16,8 +16,8 @@
 package org.cp.elements.lang;
 
 /**
- * The {@link Describable} interface defines a contract for {@link Object Objects} that can be described.
- *
+ * Interface defining a contract for {@link Object Objects} that can be described.
+ * <p>
  * The description can be any {@link Class type} the user decides.
  *
  * @author John Blum

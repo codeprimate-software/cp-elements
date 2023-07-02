@@ -20,12 +20,12 @@ import org.cp.elements.lang.annotation.NullSafe;
 import org.cp.elements.lang.annotation.Nullable;
 
 /**
- * The {@link Visitor} interface define a contract for {@link Object objects} who's {@link Class type} implements
- * {@literal this} interface in order to walk an {@link Object} graph to perform some operation or make some evaluation
- * of particular {@link Object objects} or {@link Class types} of {@link Object objects}.
- *
- * The Visitor interface is a definition of the {@literal Visitor Software Design Pattern}, used to separate algorithm
- * from {@link Object} structure.
+ * Interface defining a contract for {@link Object objects} whose {@link Class type} implements this interface
+ * in order to walk an {@link Object} graph to perform some operation or make some evaluation of particular
+ * {@link Object objects} or {@link Class types} of {@link Object objects}.
+ * <p>
+ * The {@link Visitor} interface is a definition of the {@literal Visitor Software Design Pattern}, used to
+ * separate algorithm from {@link Object} structure.
  *
  * @author John J. Blum
  * @see java.lang.FunctionalInterface
@@ -48,10 +48,10 @@ public interface Visitor {
   }
 
   /**
-   * Visits the {@link Visitable} object in order to perform a function or make an evaluation of
+   * Visits the {@link Visitable object} in order to perform a function or make an evaluation of
    * the target {@link Object}.
    *
-   * @param visitable {@link Visitable} object visited by {@literal this} {@link Visitor}.
+   * @param visitable {@link Visitable object} visited by this {@link Visitor}.
    * @see org.cp.elements.lang.Visitable
    */
   void visit(Visitable visitable);

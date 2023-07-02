@@ -74,10 +74,10 @@ public abstract class ObjectUtils extends ReflectionUtils {
   }
 
   /**
-   * Null-safe method to determine if any of the values in the array are null.
+   * Null-safe method to determine if any of the values in the array are {@literal null}.
    *
    * @param values an array of values being evaluated for null
-   * @return true if and only if the array is not null, not empty and contains 1 null element.
+   * @return true if and only if the array is not null, not empty and contains 1 {@literal null} element.
    * @see #areAllNull(Object...)
    */
   @NullSafe
@@ -371,13 +371,15 @@ public abstract class ObjectUtils extends ReflectionUtils {
   }
 
   /**
-   * Determines whether two objects are equal in value as determined by the Object.equals method in addition to
-   * guarding against null values.  Both objects are considered equal if and only if both are non-null
-   * and obj1.equals(obj2).
+   * Determines whether two {@link Object objects} are equal in value as determined by the {@link Object#equals(Object)}
+   * method in addition to guarding against {@literal null} values.
+   * <p>
+   * Both {@link Object objects} are considered equal if and only if both are {@literal non-null}
+   * and {@literal obj1.equals(obj2)}.
    *
-   * @param obj1 the first Object in the equality comparison.
-   * @param obj2 the second Object in the equality comparison.
-   * @return a boolean value indicating whether the two Objects are equal in value.
+   * @param obj1 first {@link Object} in the equality comparison.
+   * @param obj2 second {@link Object} in the equality comparison.
+   * @return a boolean value indicating whether the two {@link Object objects} are equal in value.
    * @see java.lang.Object#equals(Object)
    */
   @NullSafe
@@ -386,13 +388,16 @@ public abstract class ObjectUtils extends ReflectionUtils {
   }
 
   /**
-   * Determines whether two objects are equal in value as determined by the Object.equals method.  Both objects are
-   * considered equal if and only if both are null or obj1.equals(obj2).
+   * Determines whether two {@link Object objects} are equal in value as determined by
+   * the {@link Object#equals(Object)} method.
+   * <p>
+   * Both {@link Object objects} are considered equal if and only if both are {@literal null}
+   * or {@literal obj1.equals(obj2)}.
    *
-   * @param obj1 the first Object in the equality comparison.
-   * @param obj2 the second Object in the equality comparison.
-   * @return a boolean value indicating whether the two Objects are equal in value where two null Object references
-   * are considered equal as well.
+   * @param obj1 first {@link Object} in the equality comparison.
+   * @param obj2 second {@link Object} in the equality comparison.
+   * @return a boolean value indicating whether the two {@link Object objects} are equal in value;
+   * two {@literal null} {@link Object} references are considered equal as well.
    * @see java.lang.Object#equals(Object)
    */
   @NullSafe
@@ -417,8 +422,8 @@ public abstract class ObjectUtils extends ReflectionUtils {
    * Calculates the hash code of an object by invoking Object.hashCode for non-null objects and returning 0 if the
    * object is null.
    *
-   * @param obj the Object who's hash code is computed and returned.
-   * @return an integer value with the calculated hash code of the object.
+   * @param obj {@link Object} whose hash code is computed and returned.
+   * @return an {@link Integer value} with the computed hash code of the given {@link Object}.
    * @see java.lang.Object#hashCode()
    */
   @NullSafe
@@ -429,7 +434,7 @@ public abstract class ObjectUtils extends ReflectionUtils {
   /**
    * Computes the {@link Integer hash code} for all the given {@link Object elements} of the array
    * using the standard hash code algorithm.
-   *
+   * <p>
    * The {@link Object elements} in the array can represent the individual properties of an {@link Object}
    * that makes up the hash code.
    *

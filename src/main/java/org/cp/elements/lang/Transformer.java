@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.lang;
 
 import java.util.function.UnaryOperator;
@@ -21,20 +20,19 @@ import java.util.function.UnaryOperator;
 import org.cp.elements.data.conversion.Converter;
 
 /**
- * The {@link Transformer} interface defines a contract for implementing {@link Class classes}
- * who's {@link Object implementations} transform data from one value to another value
- * of the same {@link Class type}.
- *
+ * Interface defining a contract for implementing {@link Class classes} whose {@link Object implementations}
+ * transform data from one value to another value of the same {@link Class type}.
+ * <p>
  * The transformed value of {@link Class type T} could be a more qualified, precise or accurate {@link Object value}
  * than the {@link Object original value}.  For example, transforming an {@link Integer} into a {@link Double}
  * with more precision using a {@link Transformer Transformer&lt;Number&gt;}.
- *
+ * <p>
  * Another use case for a {@link Transformer} might be to {@literal Decorate}, or enhance the functionality
  * of an {@link Object} yet still retain the same {@link Class interface}.
- *
+ * <p>
  * Use a {@link Converter Converter&lt;S, T&gt;} if you want to "convert", or adapt a value from one {@link Class type}
  * to another {@link Class type}.
- *
+ * <p>
  * The {@link Transformer} interface is equivalent to the {@link UnaryOperator} in Java.
  *
  * @author John J. Blum

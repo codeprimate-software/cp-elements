@@ -23,7 +23,7 @@ import org.cp.elements.lang.annotation.Nullable;
 import org.cp.elements.util.ArrayUtils;
 
 /**
- * Abstract utility class providing methods for working with {@link Boolean} values.
+ * Abstract utility class providing methods for processing {@link Boolean values}.
  *
  * @author John J. Blum
  * @see java.lang.Boolean
@@ -33,9 +33,9 @@ import org.cp.elements.util.ArrayUtils;
 public abstract class BooleanUtils {
 
   /**
-   * Performs the logical AND operation on all {@link Boolean} values in the array, returning {@literal true}
-   * if and only if (iff) all {@link Boolean} values evaluate to {@literal true}, as determined by
-   * the {@link #valueOf(Boolean)} method for each {@link Boolean} value in the array.
+   * Performs the logical AND operation on all {@link Boolean values} in the array, returning {@literal true}
+   * if and only if (iff) all {@link Boolean values} evaluate to {@literal true}, as determined by
+   * the {@link #valueOf(Boolean)} method for each {@link Boolean value} in the array.
    *
    * If the {@literal Boolean} array is {@literal null}, then the result of this logical AND operation
    * is {@literal false}.
@@ -65,13 +65,13 @@ public abstract class BooleanUtils {
   }
 
   /**
-   * Negates the evaluation of the given {@link Boolean} value determined by the {@link #valueOf(Boolean)} method.
-   *
+   * Negates the evaluation of the given {@link Boolean value} determined by the {@link #valueOf(Boolean)} method.
+   * <p>
    * If the {@link Boolean} wrapper object is {@literal false}, then this method returns {@literal true}.
    * If the {@link Boolean} wrapper object is {@literal null} or {@literal true}, then this method
    * returns {@literal false}.
    *
-   * @param value {@link Boolean} value to negate.
+   * @param value {@link Boolean value} to negate.
    * @return a negated {@literal boolean} value for the given {@link Boolean} wrapper object.
    * @see #not(Boolean)
    */
@@ -81,14 +81,14 @@ public abstract class BooleanUtils {
   }
 
   /**
-   * Performs a logical NOT operation on the given {@link Boolean} value.
-   *
+   * Performs a logical NOT operation on the given {@link Boolean value}.
+   * <p>
    * If the {@link Boolean} wrapper object is {@literal false}, then this method returns {@literal true}.
    * If the {@link Boolean} wrapper object is {@literal null} or {@literal true}, then this method
    * returns {@literal false}.
    *
    * @param value {@link Boolean} wrapper object to evaluate.
-   * @return a logical NOT of the given {@link Boolean} value.
+   * @return a logical NOT of the given {@link Boolean value}.
    * @see #valueOf(Boolean)
    */
   @NullSafe
@@ -97,16 +97,16 @@ public abstract class BooleanUtils {
   }
 
   /**
-   * Performs the logical OR operation on all {@link Boolean} values in the array and returns {@literal true}
-   * if and only if (iff) at least one {@link Boolean} value from the array evaluates to {@literal true},
-   * as determined by the {@link #valueOf(Boolean)} method for each {@link Boolean} value in the array.
+   * Performs the logical OR operation on all {@link Boolean values} in the array and returns {@literal true}
+   * if and only if (iff) at least one {@link Boolean value} from the array evaluates to {@literal true},
+   * as determined by the {@link #valueOf(Boolean)} method for each {@link Boolean value} in the array.
    *
    * If the {@literal Boolean} array is {@literal null}, then the result of this logical OR operation
    * is {@literal false}.
    *
-   * @param values array of {@literal Boolean} values to evaluate with the logical OR operator.
-   * @return a {@literal boolean} value of {@literal true} if the {@link Boolean} array is not {@literal null}
-   * and at least one {@literal Boolean} value in the array evaluates to {@literal true}.
+   * @param values array of {@literal Boolean values} to evaluate with the logical OR operator.
+   * @return a {@literal boolean value} of {@literal true} if the {@link Boolean} array is not {@literal null}
+   * and at least one {@literal boolean value} in the array evaluates to {@literal true}.
    * @see #valueOf(Boolean)
    * @see #and(Boolean...)
    */
@@ -138,16 +138,16 @@ public abstract class BooleanUtils {
   }
 
   /**
-   * Returns a {@link String} representation of the given {@link Boolean} value.
-   *
-   * If the {@link Boolean} value is {@literal true}, then {@link String trueValue} is returned,
+   * Returns a {@link String} representation of the given {@link Boolean value}.
+   * <p>
+   * If the {@link Boolean value} is {@literal true}, then {@link String trueValue} is returned,
    * otherwise {@link String falseValue} is returned.
    *
-   * @param value {@link Boolean} value to evaluate and represent as one of two {@link String} values
+   * @param value {@link Boolean value} to evaluate and represent as one of two {@link String} values
    * representing {@literal true} and {@literal false}.
    * @param trueValue {@link String} value representing {@literal true}.
    * @param falseValue {@link String} value representing {@literal false}.
-   * @return a {@link String} representation for the given {@link Boolean} value customized with
+   * @return a {@link String} representation for the given {@link Boolean value} customized with
    * values for {@literal true} and {@literal false}.
    * @see #valueOf(Boolean)
    */
@@ -171,7 +171,7 @@ public abstract class BooleanUtils {
 
   /**
    * Determines the {@literal boolean} value of the given {@link Boolean} wrapper object.
-   *
+   * <p>
    * The {@literal boolean} value is {@literal true} if and only if (iff) the given value
    * is equal to {@link Boolean#TRUE}.
    *
@@ -185,13 +185,13 @@ public abstract class BooleanUtils {
   }
 
   /**
-   * Performs a logical exclusive OR operation on the array of {@link Boolean} values and returns {@literal true}
+   * Performs a logical exclusive OR operation on the array of {@link Boolean values} and returns {@literal true}
    * if and only if (iff) the {@link Boolean} array is not {@literal null} and 1 and only 1 {@link Boolean} wrapper
    * object evaluates to {@literal true}, as determined by the {@link #valueOf(Boolean)} method.
    *
-   * @param values array of {@link Boolean} values evaluated with the logical exclusive OR operator.
+   * @param values array of {@link Boolean values} evaluated with the logical exclusive OR operator.
    * @return a {@literal boolean} value of {@literal true} if and only if the {@link Boolean} array
-   * is not {@literal null} and 1 and only 1 of the {@link Boolean} values evaluates to {@literal true}.
+   * is not {@literal null} and 1 and only 1 of the {@link Boolean values} evaluates to {@literal true}.
    * @see #valueOf(Boolean)
    */
   @NullSafe

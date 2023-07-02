@@ -30,7 +30,7 @@ public abstract class CharacterUtils {
 
   /**
    * Determines whether the given {@link Character} is {@link Character#isWhitespace(char) blank}.
-   *
+   * <p>
    * A {@link Character} is considered {@literal blank} if it is one of the whitespace
    * characters or is the {@literal null} character/char value {@literal '\0'}.
    *
@@ -80,12 +80,12 @@ public abstract class CharacterUtils {
   }
 
   /**
-   * Gets the char primitive value for the given {@link Character} wrapper object.
-   *
+   * Gets the {@link Character#TYPE char primitive value} for the given {@link Character} wrapper object.
+   * <p>
    * Handles {@literal null} values by returning the {@literal null} char value {@literal '\0'}.
    *
-   * @param value {@link Character} to convert into an equivalent primitive char value.
-   * @return a primitive char value for the given {@link Character},
+   * @param value {@link Character} to convert into an equivalent {@link Character#TYPE primitive char value}.
+   * @return a {@link Character#TYPE primitive char value} for the given {@link Character},
    * or {@literal '\0'} for {@literal null}.
    * @see java.lang.Character
    */

@@ -16,9 +16,9 @@
 package org.cp.elements.lang;
 
 /**
- * The {@link Orderable} interface defines a contract for {@link Object objects} that can be organized
- * in an ordered context, such as an ordered data structure, like an array or {@link java.util.List}.
- *
+ * Interface defining a contract for {@link Object objects} that can be organized in an ordered context, such as
+ * an ordered data structure, like an array or {@link java.util.List}.
+ * <p>
  * In general, the order of {@link Object objects} can be applied in different ways including sort order,
  * prioritization, or to ascertain precedence between {@link Orderable} {@link Object objects}
  * of the same {@link Class type}.

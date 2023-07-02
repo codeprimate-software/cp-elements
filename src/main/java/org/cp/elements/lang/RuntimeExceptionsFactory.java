@@ -25,7 +25,7 @@ import org.cp.elements.lang.annotation.Nullable;
 /**
  * {@link Object} factory used to construct and initialize different types of {@link RuntimeException RuntimeExceptions}
  * with the added convenience of optional {@link Throwable causes} and message formatting.
- *
+ * <p>
  * This {@link Object} factory creates the most common {@link RuntimeException RuntimeExceptions}.
  *
  * @author John Blum
@@ -218,7 +218,7 @@ public abstract class RuntimeExceptionsFactory extends CheckedExceptionsFactory 
   public static @NotNull NoSuchElementException newNoSuchElementException(@Nullable Throwable cause,
       @NotNull String message, Object... args) {
 
-    return (NoSuchElementException) new NoSuchElementException(format(message, args)).initCause(cause);
+    return new NoSuchElementException(format(message, args), cause);
   }
 
   /**

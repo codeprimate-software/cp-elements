@@ -23,20 +23,20 @@ import org.cp.elements.lang.annotation.NullSafe;
 import org.cp.elements.lang.annotation.Nullable;
 
 /**
- * Abstract Data Type (ADT) defining an {@link Auditor} capable of {@literal auditing} an {@link Auditable} object.
+ * Abstract Data Type (ADT) defining an {@link Auditor} capable of {@literal auditing} an {@link Auditable object}.
  *
  * @author John Blum
  * @param <USER> {@link Class type} of the user used by the application for auditing.
  * @param <PROCESS> {@link Class type} of the process used by the application for auditing.
- * @see java.time.Instant
  * @see org.cp.elements.lang.Auditable
+ * @see java.time.Instant
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
 public interface Auditor<USER, PROCESS> {
 
   /**
-   * Gets the date and time (timestamp) used to mark an {@link Auditable} object when it changed.
+   * Gets the date and time (timestamp) used to mark an {@link Auditable object} when it changed.
    *
    * @return a new {@link Instant}.
    * @see java.util.function.Supplier
@@ -47,11 +47,11 @@ public interface Auditor<USER, PROCESS> {
   }
 
   /**
-   * Gets the process (application) responsible for changing the {@link Auditable} object.
-   *
+   * Gets the process (program) responsible for changing the {@link Auditable object}.
+   * <p>
    * Returns {@literal null} by default.
    *
-   * @return the process (application) responsible for changing the {@link Auditable} object.
+   * @return the process (program) responsible for changing the {@link Auditable object}.
    * @see java.util.function.Supplier
    */
   default @NotNull Supplier<PROCESS> getProcess() {
@@ -59,13 +59,13 @@ public interface Auditor<USER, PROCESS> {
   }
 
   /**
-   * Gets the user responsible for changing the {@link Auditable} object.
-   *
+   * Gets the user responsible for changing the {@link Auditable object}.
+   * <p>
    * By default, the {@literal user.name} {@link System#getProperties() System property} is used
    * to identify the user.
    *
    * @return a {@link String} containing the {@literal username}, as determined by the {@literal user.name}
-   * {@link System#getProperties() System property}, of the user responsible for changing the {@link Auditable} object.
+   * {@link System#getProperties() System property}, of the user responsible for changing the {@link Auditable object}.
    * @see java.lang.System#getProperty(String)
    * @see java.util.function.Supplier
    */
@@ -92,13 +92,13 @@ public interface Auditor<USER, PROCESS> {
   }
 
   /**
-   * Audits the given, required {@link Auditable} object.
+   * Audits the given, required {@link Auditable object}.
    *
-   * @param <T> {@link Class subtype} of {@link Auditable} object.
-   * @param <ID> {@link Class type} of the {@link Auditable} object's identifier.
-   * @param auditable {@link Auditable} object to audit.
-   * @return the given {@link Auditable} object.
-   * @throws IllegalArgumentException if the {@link Auditable} object is {@literal null}.
+   * @param <T> {@link Class subtype} of {@link Auditable object}.
+   * @param <ID> {@link Class type} of the {@link Auditable object}'s identifier.
+   * @param auditable {@link Auditable object} to audit.
+   * @return the given {@link Auditable object}.
+   * @throws IllegalArgumentException if the {@link Auditable object} is {@literal null}.
    * @throws IllegalStateException if the configured user is not set.
    * @see org.cp.elements.lang.Auditable
    * @see #getDateTime()
@@ -134,12 +134,12 @@ public interface Auditor<USER, PROCESS> {
   }
 
   /**
-   * Determines whether the created properties of the given, required {@link Auditable} object have been properly set.
-   *
+   * Determines whether the created properties of the given, required {@link Auditable object} have been properly set.
+   * <p>
    * Only the {@literal createdBy} and {@literal createdOn} properties are used to make the determination.
    *
-   * @param auditable {@link Auditable} object who's created properties are evaluated.
-   * @return a boolean value indicating whether the created properties of the given, required {@link Auditable} object
+   * @param auditable {@link Auditable object} who's created properties are evaluated.
+   * @return a boolean value indicating whether the created properties of the given, required {@link Auditable object}
    * have been properly set.
    * @see org.cp.elements.lang.Auditable
    */

@@ -18,8 +18,8 @@ package org.cp.elements.lang;
 import org.cp.elements.lang.annotation.NotNull;
 
 /**
- * The {@link Destroyable} interface defines a contract for {@link Object Objects} that can be destroyed,
- * releasing any resources held prior to destruction followed by garbage collection initiated by the JVM.
+ * Interface defining a contract for {@link Object Objects} that can be destroyed, releasing any resources held
+ * prior to destruction followed by garbage collection initiated by the JVM.
  *
  * @author John J. Blum
  * @see org.cp.elements.lang.Initable
@@ -30,7 +30,7 @@ public interface Destroyable {
 
   /**
    * Determines whether {@literal this} {@link Object} has been destroyed.
-   *
+   * <p>
    * The {@link Object} is considered destroyed when its {@link #destroy} method has been invoked and returns.
    *
    * @return a boolean value indicating whether {@literal this} {@link Object} has been destroyed or not.
@@ -50,7 +50,7 @@ public interface Destroyable {
   /**
    * Destroys {@literal this} {@link Object} by releasing any and all resources held by this {@link Destroyable Object}
    * during execution.
-   *
+   * <p>
    * The implementation must invoke the given {@link Runnable} at the end of the destruction operation.
    *
    * @param runnable {@link Runnable} callback to invoke at the end of the destruction operation.

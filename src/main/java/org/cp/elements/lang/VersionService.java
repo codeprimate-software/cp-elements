@@ -43,14 +43,14 @@ public interface VersionService<VERSION> {
   VERSION newVersion();
 
   /**
-   * Sets the {@link VERSION version} of the given {@link Versioned} object.
-   *
-   * Only sets the {@link VERSION} if the {@link Versioned} object is {@literal non-null}
+   * Sets the {@link VERSION version} of the given {@link Versioned object}.
+   * <p>
+   * Only sets the {@link VERSION} if the {@link Versioned object} is {@literal non-null}
    * and is a {@link AbstractVersionedObject}.
    *
-   * @param <T> {@link Class type} of the {@link Versioned} object.
-   * @param versionedObject {@link Versioned} object on which to set the version.
-   * @return the given {@link Versioned} object.
+   * @param <T> {@link Class type} of {@link Versioned object}.
+   * @param versionedObject {@link Versioned object} on which to set the version.
+   * @return the given {@link Versioned object}.
    * @see org.cp.elements.lang.Versioned
    * @see #newVersion()
    */

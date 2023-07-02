@@ -80,7 +80,7 @@ public abstract class StringUtils {
   };
 
   /**
-   * Capitalizes the first {@link Character letter} for the {@link String}.
+   * Capitalizes the first {@link Character letter} in the {@link String}.
    *
    * @param value {@link String} to capitalize.
    * @return the given {@link String} with the first {@link Character letter} capitalized.
@@ -96,11 +96,12 @@ public abstract class StringUtils {
   }
 
   /**
-   * Concatenates the array of Strings into a single String value delimited by a comma and space.
+   * Concatenates the array of {@link String Strings} into a single {@link String value} delimited by a comma and space.
    *
-   * @param values an array of Strings to concatenate.
-   * @return a single String value containing all Strings from the array concatenated by a comma and space.
-   * @throws NullPointerException if the String array is null.
+   * @param values array of {@link String Strings} to concatenate.
+   * @return a single {@link String value} containing all {@link String Strings} from the array concatenated by
+   * a comma and space.
+   * @throws NullPointerException if the given array of {@link String Strings} is {@literal null}.
    * @see #concat(String[], String)
    */
   public static String concat(String... values) {
@@ -108,12 +109,14 @@ public abstract class StringUtils {
   }
 
   /**
-   * Concatenates the array of Strings into a single String value delimited by the specified delimiter.
+   * Concatenates the array of {@link String Strings} into a single {@link String value} delimited by
+   * the given {@link String delimiter}.
    *
-   * @param values an array of Strings to concatenate.
-   * @param delimiter the String used as the delimiter separating the String values from the array.
-   * @return a single String value containing all Strings from the array concatenated by the specified delimiter.
-   * @throws NullPointerException if the String array is null.
+   * @param values array of {@link String Strings} to concatenate.
+   * @param delimiter {@link String} used as the delimiter separating the {@link String values} in the given array.
+   * @return a single {@link String value} containing all {@link String Strings} from the array concatenated by
+   * the given {@link String delimiter}.
+   * @throws NullPointerException if the array of {@link String Strings} is {@literal null}.
    * @see java.lang.StringBuilder
    */
   public static String concat(String[] values, String delimiter) {
@@ -131,11 +134,12 @@ public abstract class StringUtils {
   }
 
   /**
-   * Determines whether the String value contains the specified text, guarding against null values.
+   * Determines whether the {@link String value} contains the specified {@link String text},
+   * guarding against {@literal null} values.
    *
    * @param text {@link String} evaluated for value containment.
    * @param value {@link String} used to determine if the value is contained in the text.
-   * @return a boolean value if the {@link String} text contains the value.
+   * @return a boolean value if the {@link String text} contains the {@link String value}.
    * @see java.lang.String#contains(CharSequence)
    */
   @NullSafe
@@ -144,12 +148,12 @@ public abstract class StringUtils {
   }
 
   /**
-   * Determines whether the String value contains any digits, guarding against null values.
+   * Determines whether the {@link String value} contains any digits, guarding against {@literal null} values.
    *
-   * @param value the String value being evaluated for digits containment.
+   * @param value {@link String value} being evaluated for digits containment.
    * @return a boolean value indicating whether the String value contains any digits.
-   * @see #toCharArray(String)
    * @see java.lang.Character#isDigit(char)
+   * @see #toCharArray(String)
    */
   @NullSafe
   public static boolean containsDigits(@Nullable String value) {
@@ -164,12 +168,12 @@ public abstract class StringUtils {
   }
 
   /**
-   * Determines whether the String value contains any letters, guarding against null values.
+   * Determines whether the {@link String value} contains any letters, guarding against {@literal null} values.
    *
-   * @param value the String value being evaluated for letter containment.
-   * @return a boolean value indicating whether the String value contains any letters.
-   * @see #toCharArray(String)
+   * @param value {@link String value} being evaluated for letter containment.
+   * @return a boolean value indicating whether the {@link String value} contains any letters.
    * @see java.lang.Character#isLetter(char)
+   * @see #toCharArray(String)
    */
   @NullSafe
   public static boolean containsLetters(@Nullable String value) {
@@ -184,12 +188,12 @@ public abstract class StringUtils {
   }
 
   /**
-   * Determines whether the String value contains any whitespace, guarding against null values.
+   * Determines whether the {@link String value} contains any whitespace, guarding against {@literal null} values.
    *
-   * @param value the String value being evaluated for whitespace containment.
-   * @return a boolean value indicating whether the String value contains any whitespace.
-   * @see #toCharArray(String)
+   * @param value {@link String value} being evaluated for whitespace containment.
+   * @return a boolean value indicating whether the {@link String value} contains any whitespace.
    * @see java.lang.Character#isWhitespace(char)
+   * @see #toCharArray(String)
    */
   @NullSafe
   public static boolean containsWhitespace(@Nullable String value) {
@@ -204,13 +208,14 @@ public abstract class StringUtils {
   }
 
   /**
-   * Defaults the given String to the first non-blank default value if the given String is blank, otherwise returns
-   * the given String.
+   * Defaults the given {@link String} to the first non-blank {@link default value} if the given {@link String}
+   * is blank, otherwise returns the given {@link String}.
    *
-   * @param value the String to evaluate if blank.
-   * @param defaultValues an array of default String values to use if the given String is blank.
-   * @return the first non-blank default String value if the given String is blank.  If the given String
-   * and all default String values are blank, then the given String is returned.
+   * @param value {@link String} to evaluate.
+   * @param defaultValues array of {@link String default values} to use if the given {@link String} is blank.
+   * @return the first non-blank default {@link String value} if the given {@link String} is blank.
+   * If the given {@link String} and all {@link String default values} are blank, then the given {@link String}
+   * is returned.
    * @see #isBlank(String)
    * @see #hasText(String)
    */
@@ -228,11 +233,12 @@ public abstract class StringUtils {
   }
 
   /**
-   * Determines whether two String values are equal in value ignoring case and guarding against null values.
+   * Determines whether two {@link String values} are equal in value ignoring case
+   * and guarding against {@literal null} values.
    *
-   * @param stringOne the first String value in the case-insensitive equality comparison.
-   * @param stringTwo the second String value in the case-insensitive equality comparison.
-   * @return a boolean value indicating if the two String values are equal in value ignore case.
+   * @param stringOne first {@link String} in the case-insensitive equality comparison.
+   * @param stringTwo second {@link String} in the case-insensitive equality comparison.
+   * @return a boolean value indicating if the two {@link String values} are equal in value ignoring case.
    * @see java.lang.String#equalsIgnoreCase(String)
    */
   @NullSafe
@@ -287,12 +293,12 @@ public abstract class StringUtils {
   }
 
   /**
-   * Constructs a String with only spaces up to the specified length.
+   * Constructs a {@link String} with only spaces up to the specified length.
    *
-   * @param number an integer value indicating the number of spaces in the String.
-   * @return a String containing the specified number of spaces.
+   * @param number {@link Integer value} indicating the number of spaces in the returned {@link String}.
+   * @return a {@link String} containing the specified number of spaces.
    */
-  public static String getSpaces(int number) {
+  public static @NotNull String getSpaces(int number) {
 
     Assert.argument(number, argument -> argument >= 0,
       "The number [{0}] of desired spaces must be greater than equal to 0", number);
@@ -311,11 +317,13 @@ public abstract class StringUtils {
   }
 
   /**
-   * Determines whether the String value has text.  A String has text if it is not blank, implying the String is not
-   * null, is not the empty String and contains at least 1 non-whitespace character.
+   * Determines whether the {@link String} has text.
+   * <p>
+   * A {@link String} has {@link String text} if it is {@link String#isBlank() not blank}, implying the {@link String}
+   * is not {@literal null}, is not {@link String#isEmpty()} and contains at least 1 non-whitespace character.
    *
-   * @param value the String being evaluated for containing text.
-   * @return a boolean value if the String contains text.
+   * @param value {@link String} to evaluate.
+   * @return a boolean value if the {@link String} contains text.
    * @see #isBlank(String)
    */
   @NullSafe
@@ -324,13 +332,16 @@ public abstract class StringUtils {
   }
 
   /**
-   * Determines the index of the first occurrence of token in the String value.  This indexOf operation is null-safe
-   * and returns a -1 if the String value is null, or the token does not exist in the String value.
+   * Determines the {@link Integer index} of the first occurrence of token in the {@link String}.
+   * <p>
+   * This {@code indexOf} operation is null-safe and returns a {@literal -1} if the {@link String} is {@literal null},
+   * or the token does not exist in the {@link String}.
    *
-   * @param text the String value used to search for the token.
-   * @param value the text to search for in the String value.
-   * @return the index of the first occurrence of the token in the String value, or -1 if the token does not exist, or
-   * the String value is blank, empty or null.
+   * @param text {@link String text} to search.
+   * @param value {@link String value} to search for in the {@link String}.
+   * @return the {@link Integer index} of the first occurrence of the token in the {@link String}, or {@literal -1}
+   * if the token does not exist, or the {@link String} is {@link String#isBlank() blank},
+   * {@link String#isEmpty() empty} or {@literal null}.
    * @see java.lang.String#indexOf(String)
    * @see #lastIndexOf(String, String)
    */
@@ -340,11 +351,13 @@ public abstract class StringUtils {
   }
 
   /**
-   * Determines whether the String value is blank.  A String is blank if it is null, an empty String or contains only
-   * whitespace.
+   * Determines whether the {@link String} is blank.
+   * <p>
+   * A {@link String} is blank if it is {@literal null}, {@link String#isEmpty() empty} or contains only whitespace.
    *
-   * @param value the String being evaluated as a blank String value.
-   * @return a boolean value indicating whether the String value is blank.
+   * @param value {@link String} to evaluate.
+   * @return a boolean value indicating whether the {@link String} is blank.
+   * @see java.lang.String#isBlank()
    * @see #isEmpty(String)
    * @see #hasText(String)
    */
@@ -354,13 +367,13 @@ public abstract class StringUtils {
   }
 
   /**
-   * Determines whether the String value represents a number, i.e. consists entirely of digits.
+   * Determines whether the {@link String} represents a number, i.e. consists entirely of digits.
    *
-   * @param value the String value for determination as a number.
-   * @return a boolean value indicating if the String value represents a number.
+   * @param value {@link String} to evaluate.
+   * @return a boolean value indicating if the {@link String} represents a number.
    * @see java.lang.Character#isDigit(char)
-   * @see #hasText(String)
    * @see #toCharArray(String)
+   * @see #hasText(String)
    */
   @NullSafe
   public static boolean isDigits(@Nullable String value) {
@@ -375,13 +388,16 @@ public abstract class StringUtils {
   }
 
   /**
-   * Determines whether the String value is empty, which is true if and only if the String value is the empty String.
-   * This method guards against null.
+   * Determines whether the {@link String} is empty.
+   * <p>
+   * A {@link String} is empty iff the {@link String} is the {@link String#isEmpty() empty String}
+   * and not {@literal null}.
    *
-   * @param value the String being evaluated as the empty String.
-   * @return a boolean value indicating if the String value is the empty String.
-   * @see StringUtils#isBlank(String)
+   * @param value {@link String} to evaluate.
+   * @return a boolean value indicating if the {@link String} is empty.
    * @see java.lang.String#isEmpty()
+   * @see #isBlank(String)
+   * @see #hasText(String)
    */
   @NullSafe
   public static boolean isEmpty(@Nullable String value) {
@@ -389,13 +405,13 @@ public abstract class StringUtils {
   }
 
   /**
-   * Determines whether the String value consists entirely of letters.
+   * Determines whether the {@link String} represents letters; i.e. consists entirely of letters.
    *
-   * @param value the String value for determination as text.
-   * @return a boolean value indicating if the String value consists entirely of letters.
+   * @param value {@link String} to evaluate.
+   * @return a boolean value indicating if the {@link String} consists entirely of letters.
    * @see java.lang.Character#isLetter(char)
-   * @see #hasText(String)
    * @see #toCharArray(String)
+   * @see #hasText(String)
    */
   @NullSafe
   public static boolean isLetters(@Nullable String value) {
@@ -410,13 +426,16 @@ public abstract class StringUtils {
   }
 
   /**
-   * Determines the index of the last occurrence of token in the String value.  This lastIndexOf operation is null-safe
-   * and returns a -1 if the String value is null, or the token does not exist in the String value.
+   * Determines the {@link Integer index} of the last occurrence of token in the {@link String}.
+   * <p>
+   * This {@code lastIndexOf} operation is null-safe and returns a {@literal -1} if the {@link String}
+   * is {@literal null}, or the token does not exist in the {@link String}.
    *
-   * @param text the String value used to search for the token.
-   * @param value the text to search for in the String value.
-   * @return the index of the last occurrence of the token in the String value, or -1 if the token does not exist, or
-   * the String value is blank, empty or null.
+   * @param text {@link String text} to search.
+   * @param value {@link String value} to search for in the {@link String}.
+   * @return the {@link Integer index} of the last occurrence of the token in the {@link String}, or {@literal -1}
+   * if the token does not exist, or the {@link String} is {@link String#isBlank() blank},
+   * {@link String#isEmpty() empty} or {@literal null}.
    * @see java.lang.String#lastIndexOf(String)
    * @see #indexOf(String, String)
    */
@@ -426,11 +445,12 @@ public abstract class StringUtils {
   }
 
   /**
-   * Determines the length of the String value, which is based on the number of characters in the String.
-   * If the String value is null, then the length is zero.
+   * Determines the length of the {@link String} based on the number of characters in the {@link String}.
+   * <p>
+   * If the {@link String} is {@literal null}, then the length is {@literal zero}.
    *
-   * @param value the String who's length will be determined.
-   * @return a integer value indicating the number of characters in the String.
+   * @param value {@link String value} whose length is determined.
+   * @return a {@link Integer value} indicating the number of characters in the {@link String}.
    * @see java.lang.String#length()
    */
   @NullSafe
@@ -439,11 +459,11 @@ public abstract class StringUtils {
   }
 
   /**
-   * Pads the given String with the specified number of spaces to the right.
+   * Pads the given {@link String} with the specified {@link Integer number of spaces} to the right.
    *
-   * @param value the String to pad.
-   * @param length the total length of the given String with padding.
-   * @return the given String padded with spaces up to the specified length.
+   * @param value {@link String} to pad.
+   * @param length {@link Integer total length} of the given {@link String} with padding.
+   * @return the given {@link String} padded with spaces up to the specified {@link Integer length}.
    * @see #pad(String, char, int)
    */
   @NullSafe
@@ -452,13 +472,13 @@ public abstract class StringUtils {
   }
 
   /**
-   * Pads the given String with the specified number of characters to the right.
+   * Pads the given {@link String} with the specified number of characters to the right.
    *
-   * @param value the String to pad.
-   * @param padding the character used for padding.
-   * @param length the total length of the given String with padding.
-   * @return the given String padded with the specified character up to the specified length.
-   * @throws IllegalArgumentException if length is less than 0.
+   * @param value {@link String} to pad.
+   * @param padding {@link Character} used for padding.
+   * @param length the {@link Integer total length} of the given {@link String} with {@link Character padding}.
+   * @return the given {@link String} padded with the given {@link Character} up to the given {@link Integer length}.
+   * @throws IllegalArgumentException if {@link Integer length} is less than {@literal 0}.
    */
   @NullSafe
   @SuppressWarnings("all")
@@ -483,26 +503,26 @@ public abstract class StringUtils {
   }
 
   /**
-   * Null-safe method to replace the specified pattern in the given {@link String} value with
+   * Null-safe method to replace the specified {@link String pattern} in the given {@link String} with
    * the replacement {@link String}.
-   *
+   * <p>
    * For example, given the following String...
-   *
+   * <p>
    * <code>
    *   "///absolute//path/to/////some////file.ext"
    * </code>
-   *
+   * <p>
    * When 'pattern' is "/+" and 'replacement' is "/", the resulting, returned String value will be...
-   *
+   * <p>
    * <code>
    *   "/absolute/path/to/some/file.ext"
    * </code>
    *
-   * @param value the {@link String} value on which to perform the pattern search and replace operation.
-   * @param pattern the pattern of characters in the {@link String} value to replace.
+   * @param value {@link String} on which to perform the pattern search and replace operation.
+   * @param pattern {@link String pattern of characters} in the {@link String} to replace.
    * @param replacement the replacement {@link String} used to replace all occurrences of the pattern of characters.
-   * @return a modified {@link String} value with the pattern of characters replaced with the replacement.
-   * Returns the original {@link String} value if
+   * @return a modified {@link String} with the pattern of characters replaced with the replacement.
+   * Returns the original {@link String} if the pattern of characters is not present in the given {@link String}.
    * @see java.util.regex.Pattern#compile(String)
    * @see java.util.regex.Pattern#matcher(CharSequence)
    * @see java.util.regex.Matcher#replaceAll(String)
@@ -535,14 +555,14 @@ public abstract class StringUtils {
   }
 
   /**
-   * Single spaces the elements in the Object array and converts all values into a String representation using
-   * Object.toString to be placed in a single String.
+   * Single spaces the elements in the {@link Object array} and converts all values into a {@link String} representation
+   * using {@link Object#toString()} to be placed in a single {@link String}.
    *
-   * @param values an array of Object values to be converted and combined into a String.
-   * @return a String value containing all the Object values in String form single spaced.
-   * @throws NullPointerException if the values Object array reference is null!
-   * @see #concat(String[], String)
+   * @param values array of {@link Object values} to be converted and combined into a {@link String}.
+   * @return a {@link String} containing all the {@link Object values} in {@link String} form single spaced.
+   * @throws NullPointerException if the given {@link Object array} reference is {@literal null}.
    * @see java.lang.String#valueOf(Object)
+   * @see #concat(String[], String)
    */
   public static String singleSpaceObjects(Object... values) {
 
@@ -556,10 +576,13 @@ public abstract class StringUtils {
   }
 
   /**
-   * Single spaces the tokens in the specified String value.  A token is defined as any non-whitespace character.
+   * Single spaces the tokens in the given {@link String}.
+   * <p>
+   * A token is defined as any non-whitespace character.
    *
-   * @param value the String value for which the tokens will be single spaced.
-   * @return a modified String where the tokens in the String value have been single spaced.
+   * @param value {@link String value} from which the tokens will be single spaced.
+   * @return a modified {@link String} where the tokens in the original, given {@link String}
+   * have been single spaced.
    * @see #concat(String[], String)
    */
   public static String singleSpaceString(String value) {
@@ -570,14 +593,15 @@ public abstract class StringUtils {
   }
 
   /**
-   * Null-safe implementation to convert the String into an array of characters.
+   * Null-safe implementation to convert the {@link String} into an array of characters.
    *
-   * @param value the String value to convert to a character array.
-   * @return a character array for the String value or null if the String value is null.
+   * @param value {@link String value} to convert to an array of characters.
+   * @return an array of characters for the given {@link String} or return an empty array of characters
+   * if the {@link String} is {@literal null}.
    * @see java.lang.String#toCharArray()
    */
   @NullSafe
-  public static char[] toCharArray(String value) {
+  public static char[] toCharArray(@Nullable String value) {
     return value != null ? value.toCharArray() : EMPTY_CHAR_ARRAY;
   }
 
@@ -595,7 +619,7 @@ public abstract class StringUtils {
 
     Assert.notNull(characterIterator, "CharacterIterator is required");
 
-    return new Iterator<Character>() {
+    return new Iterator<>() {
 
       int index;
 
@@ -619,25 +643,30 @@ public abstract class StringUtils {
   }
 
   /**
-   * Converts the String value to all lower case characters.  toLowerCase is a null-safe operation.
+   * Converts the {@link String} to all lowercase characters.
+   * <p>
+   * {@code toLowerCase} is a null-safe operation.
    *
-   * @param value the String value who's characters are all converted to lower case.
-   * @return the String value with all lower case characters.
-   * @see #toUpperCase(String)
+   * @param value {@link String value} whose characters are all converted to lowercase.
+   * @return the given {@link String} in all lowercase characters.
    * @see java.lang.String#toLowerCase()
+   * @see #toUpperCase(String)
    */
   @NullSafe
-  public static String toLowerCase(String value) {
+  public static @Nullable String toLowerCase(@Nullable String value) {
     return value != null ? value.toLowerCase() : null;
   }
 
   /**
-   * Tokenizes the given delimited String into an array of individually trimmed Strings.  If String is blank,
-   * empty or null, then a 0 length String array is returned. If the String is not delimited with the specified
-   * delimiter then a String array of size 1 is returned with the given String value as the only element.
+   * Tokenizes the given, delimited {@link String} into an array of individually trimmed {@link String Strings}.
+   * <p>
+   * If {@link String} is {@link String#isBlank() blank}, {@link String#isEmpty() empty} or {@literal null},
+   * then a {@literal 0} length {@link String array} is returned. If the {@link String} is not delimited with
+   * the specified delimiter then a {@link String array} of size {@literal 1} is returned with
+   * the given {@link String} as the only element.
    *
-   * @param commaDelimitedValue the comma delimited String to tokenize.
-   * @return an array of individually tokenized and trimmed Strings from the given String.
+   * @param commaDelimitedValue comma-delimited {@link String} to tokenize.
+   * @return an array of individually tokenized and trimmed {@link String Strings} from the given {@link String}.
    * @see #toStringArray(String, String)
    */
   @NullSafe
@@ -646,17 +675,19 @@ public abstract class StringUtils {
   }
 
   /**
-   * Tokenizes the given delimited String into an array of individually trimmed Strings.  If String is blank,
-   * empty or null, then a 0 length String array is returned. If the String is not delimited with the specified
-   * delimiter then a String array of size 1 is returned with the given String value as the only element.
+   * Tokenizes the given delimited {@link String} into an array of individually trimmed {@link String Strings}.
+   * <p>
+   * If {@link String} is {@link String#isBlank() blank}, {@link String#isEmpty() empty} or {@literal null},
+   * then a {@literal 0} length {@link String array} is returned. If the {@link String} is not delimited with
+   * the specified delimiter then a {@link String array} of size {@literal 1} is returned with
+   * the given {@link String} as the only element.
    *
-   * @param delimitedValue the String to tokenize based on the delimiter.
-   * @param delimiter the delimiter used to tokenize the String value.
-   * @return an array of individually tokenized and trimmed Strings from the given String.
-   * @see java.lang.String#split(String)
+   * @param delimitedValue {@link String} to tokenize based on the delimiter.
+   * @param delimiter the delimiter used to tokenize the {@link String}.
+   * @return an array of individually tokenized and trimmed {@link String Strings} from the given {@link String}.
    * @see org.cp.elements.lang.ObjectUtils#returnFirstNonNullValue(Object[])
    * @see org.cp.elements.util.ArrayUtils#transform(Object[], Transformer)
-   * @see #defaultIfBlank(String, String...)
+   * @see java.lang.String#split(String)
    * @see #trim(String)
    */
   @NullSafe
@@ -667,23 +698,25 @@ public abstract class StringUtils {
   }
 
   /**
-   * Converts the String value to all UPPER case characters.  toUpperCase is a null-safe operation.
+   * Converts the {@link String} to all uppercase characters.
+   * <p>
+   * {@code toUpperCase} is a null-safe operation.
    *
-   * @param value the String value who's characters are all converted to UPPER case.
-   * @return the String value with all UPPER case characters.
-   * @see #toLowerCase(String)
+   * @param value {@link String value} whose characters are all converted to uppercase.
+   * @return the given {@link String} in all uppercase characters.
    * @see java.lang.String#toUpperCase()
+   * @see #toLowerCase(String)
    */
   @NullSafe
-  public static String toUpperCase(String value) {
+  public static @Nullable String toUpperCase(@Nullable String value) {
     return value != null ? value.toUpperCase() : null;
   }
 
   /**
-   * Trims the specified String value, removing any whitespace from the beginning or end of a String.
+   * Trims the {@link String}, removing any and all whitespace from the beginning and end of the {@link String}.
    *
-   * @param value the String value to trim.
-   * @return a trimmed version of the specified String value.
+   * @param value {@link String} to trim.
+   * @return a trimmed version of the given {@link String}.
    * @see java.lang.String#trim()
    */
   @NullSafe
@@ -692,11 +725,12 @@ public abstract class StringUtils {
   }
 
   /**
-   * Trims all whitespace characters from the String value.  The whitespace can occur in any position (beginning, end,
-   * between characters) within th String value.
+   * Trims all whitespace characters in the {@link String}.
+   * <p>
+   * The whitespace can occur in any position (beginning, end, or between characters) within the {@link String}.
    *
-   * @param value the String value to fully trim.
-   * @return a String value containing now whitespace.
+   * @param value {@link String} to trim.
+   * @return a {@link String} containing no whitespace.
    * @see java.lang.Character#isWhitespace(char)
    */
   @NullSafe
@@ -719,14 +753,17 @@ public abstract class StringUtils {
   }
 
   /**
-   * Truncates the given String to the desired length.  If the String is blank, empty or null, then value is returned,
-   * otherwise the String is truncated to the maximum length determined by the value's length and desired length.
+   * Truncates the {@link String} to the desired {@link Integer length}.
+   * <p>
+   * If the {@link String} is {@link String#isBlank() blank}, {@link String#isEmpty() empty} or {@literal null},
+   * then {@link String} is returned, otherwise the {@link String} is truncated to the maximum {@link Integer length}
+   * determined by the value's {@link String#length() length} and desired {@link Integer length}.
    *
-   * @param value the String to truncate.
-   * @param length an integer specifying the length to truncate the String to.
-   * @return the given String truncated to length, or the entire String if the desired length exceeds
-   * the String's length.
-   * @throws IllegalArgumentException if length is less than 0.
+   * @param value {@link String} to truncate.
+   * @param length {@link Integer} specifying the length to truncate the {@link String} to.
+   * @return the given {@link String} truncated to {@link Integer length}, or the entire {@link String}
+   * if the desired {@link Integer length} exceeds the {@link String#length() String's length}.
+   * @throws IllegalArgumentException if {@link Integer length} is less than {@literal 0}.
    * @see java.lang.String#substring(int, int)
    * @see java.lang.String#length()
    */
@@ -740,16 +777,18 @@ public abstract class StringUtils {
   }
 
   /**
-   * Wraps a line of text to no longer than the specified width, measured by the number of characters in each line,
-   * indenting all subsequent lines with the indent.  If the indent is null, then an empty String is used.
+   * Wraps a line of {@link String text} to no longer than the specified {@link Integer width}, measured by
+   * the number of characters in each {@link String line}, indenting all subsequent lines with an {@link String indent}.
+   * <p>
+   * If the {@link String indent} is {@literal null}, then an empty {@link String} is used.
    *
-   * @param line a String containing the line of text to wrap.
-   * @param widthInCharacters an integer value indicating the width of each line measured by the number of characters.
-   * @param indent the String value used to indent all subsequent lines.
-   * @return the line of text wrapped.
-   * @throws IndexOutOfBoundsException if widthInCharacters is less than 0, or there are no word boundaries within
-   * the given width on any given split.
-   * @throws NullPointerException if the line of text is null.
+   * @param line {@link String} containing the line of text to wrap.
+   * @param widthInCharacters {@lnk Integer} indicating the width of each line measured by the number of characters.
+   * @param indent {@link String} used to indent all subsequent lines.
+   * @return the {@link String line of text} wrapped.
+   * @throws IndexOutOfBoundsException if given {@code widthInCharacters} is less than {@literal 0},
+   * or there are no word boundaries within the given width on any given split.
+   * @throws NullPointerException if the given {@link String line of text} is {@literal null}.
    */
   @SuppressWarnings("all")
   public static String wrap(String line, int widthInCharacters, String indent) {

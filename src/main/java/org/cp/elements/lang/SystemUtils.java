@@ -29,8 +29,7 @@ import org.cp.elements.lang.annotation.Nullable;
 import org.cp.elements.util.ArrayUtils;
 
 /**
- * {@link SystemUtils} is an abstract utility class designed to interact with and access properties
- * of the Java {@link java.lang.System} class.
+ * Abstract utility class designed to interact with and access properties of the Java {@link java.lang.System} class.
  *
  * @author John J. Blum
  * @see java.lang.System
@@ -76,7 +75,7 @@ public abstract class SystemUtils {
   /**
    * Utility method used to determine if the installed Java Runtime Environment (JRE)
    * meets the minimum expected version requirement.
-   *
+   * <p>
    * Java versions are typically of the form {@literal "1.8.0_66"}. The Java version is determined by
    * the {@literal "java.version"} {@link System#getProperties() System property}.
    *
@@ -92,10 +91,10 @@ public abstract class SystemUtils {
   }
 
   /**
-   * Utility method to determine if this Java application process is executing on the Apple JVM.
+   * Utility method to determine if this Java application process is executing on an Apple JVM.
    *
    * @return a boolean value indicating whether the Java application process is executing and running
-   * on the Apple JVM.
+   * on an Apple JVM.
    * @see #isJvmMake(String)
    * @see #APPLE_JVM_VENDOR
    */
@@ -104,10 +103,10 @@ public abstract class SystemUtils {
   }
 
   /**
-   * Utility method to determine if this Java application process is executing on the IBM JVM.
+   * Utility method to determine if this Java application process is executing on an IBM JVM.
    *
    * @return a boolean value indicating whether the Java application process is executing and running
-   * on the IBM JVM.
+   * on an IBM JVM.
    * @see #isJvmMake(String)
    * @see #IBM_JVM_VENDOR
    */
@@ -116,10 +115,10 @@ public abstract class SystemUtils {
   }
 
   /**
-   * Utility method to determine if this Java application process is executing on the Oracle JVM.
+   * Utility method to determine if this Java application process is executing on an Oracle JVM.
    *
    * @return a boolean value indicating whether the Java application process is executing and running
-   * on the Oracle JVM.
+   * on an Oracle JVM.
    * @see #isJvmMake(String)
    * @see #ORACLE_JVM_VENDOR
    */
@@ -128,10 +127,11 @@ public abstract class SystemUtils {
   }
 
   /**
-   * Determines whether this Java Virtual Machine (JVM) is the expected make (vendor).  The current JVM is determined
-   * by the "java.vm.vendor" System property.
+   * Determines whether this Java Virtual Machine (JVM) is the expected make (vendor).
+   * <p>
+   * The current JVM is determined by the {@literal java.vm.vendor} System property.
    *
-   * @param expectedJvmVendor a String indicating the expected JVM vendor (make).
+   * @param expectedJvmVendor {@link String} indicating the expected JVM vendor (make).
    * @return a boolean value indicating whether this JVM is the expected make.
    * @see java.lang.System#getProperty(String)
    */
@@ -175,10 +175,11 @@ public abstract class SystemUtils {
   }
 
   /**
-   * Determines whether this Java Virtual Machine (JVM) is the expected model.  The current JVM is determined
-   * by the "java.vm.name" System property.
+   * Determines whether this Java Virtual Machine (JVM) is the expected model.
+   * <p>
+   * The current JVM is determined by the {@literal java.vm.name} System property.
    *
-   * @param expectedJvmName a String indicating the name of the expected JVM model.
+   * @param expectedJvmName {@link String} indicating the name of the expected JVM model.
    * @return a boolean determining whether this JVM is the expected model.
    * @see java.lang.System#getProperty(String)
    */
@@ -198,10 +199,10 @@ public abstract class SystemUtils {
   }
 
   /**
-   * Utility method to determine if this Java application process is executing in a Apple Mac OSX operating system
+   * Utility method to determine if this Java application process is executing in an Apple macOS operating system
    * environment.
    *
-   * @return a boolean value indicating whether this Java application process is executing in Mac OSX.
+   * @return a boolean value indicating whether this Java application process is executing in macOS.
    * @see #isOS(String)
    * @see #MAC_OSX_NAME
    */
@@ -233,10 +234,11 @@ public abstract class SystemUtils {
   }
 
   /**
-   * Determines wheehr this Operating System is the expected Operating System environment.  The current OS is determined
-   * by the "os.name" System property.
+   * Determines whether this Operating System is the expected Operating System environment.
+   * <p>
+   * The current OS is determined by the {@literal os.name} System property.
    *
-   * @param expectedOsName a String indicating the name of the expected OS environment.
+   * @param expectedOsName {@link String} indicating the name of the expected OS environment.
    * @return a boolean value indicating whether this OS is the expected OS.
    * @see java.lang.System#getProperty(String)
    */
@@ -261,7 +263,7 @@ public abstract class SystemUtils {
   /**
    * Gets the configured {@link String classpath} for the given, required {@link ClassLoader}
    * as an {@link Optional} value.
-   *
+   * <p>
    * This method only works when the Java {@link ClassLoader} is a {@link URLClassLoader}. For more powerful logic
    * determining the {@link String classpath} of a Java {@link ClassLoader} use {@literal ClassGraph}.
    *
@@ -281,8 +283,8 @@ public abstract class SystemUtils {
       .filter(URLClassLoader.class::isInstance)
       .map(URLClassLoader.class::cast)
       .map(URLClassLoader::getURLs)
-      .map(Stream::of)
-      .orElseGet(Stream::empty)
+      .stream()
+      .flatMap(Stream::of)
       .filter(Objects::nonNull)
       .map(URL::getFile)
       .toArray(String[]::new);
@@ -310,7 +312,7 @@ public abstract class SystemUtils {
    * {@link Thread#getContextClassLoader() context ClassLoadder} as an {@link Optional} value.
    *
    * @return the configured {@link String classpath} for the {@link Thread#currentThread() current Thread's}
-   * {@link Thread#getContextClassLoader() context ClassLoadder}
+   * {@link Thread#getContextClassLoader() context ClassLoader}
    * @see java.lang.Thread#getContextClassLoader()
    * @see java.util.Optional
    */
@@ -324,6 +326,6 @@ public abstract class SystemUtils {
   @SuppressWarnings("RegexpSinglelineJava")
   public static void promptPressEnterToExit() {
     System.err.println("Press <enter> to exit...");
-    new Scanner(System.in, Charset.defaultCharset().name()).nextLine();
+    new Scanner(System.in, Charset.defaultCharset()).nextLine();
   }
 }

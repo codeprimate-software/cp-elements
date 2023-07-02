@@ -21,7 +21,7 @@ import org.cp.elements.lang.annotation.NotNull;
 import org.cp.elements.lang.annotation.NullSafe;
 
 /**
- * {@link MathUtils} is an abstract utility class encapsulating common mathematical operations and calculations.
+ * Abstract utility class encapsulating common mathematical operations and calculations.
  *
  * @author John J. Blum
  * @see java.lang.Math
@@ -43,7 +43,7 @@ public abstract class MathUtils {
 
   /**
    * Calculates the area of a circle.
-   *
+   * <p>
    * {@literal A = π * radius^2}.
    *
    * @param radius {@link Double value} declaring the radius of the circle.
@@ -56,7 +56,7 @@ public abstract class MathUtils {
 
   /**
    * Calculates the circumference of a circle.
-   *
+   * <p>
    * {@literal C = 2πr = 2 * π * radius}.
    *
    * @param radius {@link Double value} declaring the radius of the circle.
@@ -69,7 +69,7 @@ public abstract class MathUtils {
 
   /**
    * Calculates the diameter of a circle.
-   *
+   * <p>
    * {@literal C = 2r = 2 * radius}.
    *
    * @param radius {@link Double value} declaring the radius of the circle.
@@ -81,7 +81,7 @@ public abstract class MathUtils {
 
   /**
    * Calculates the volume of a cone.
-   *
+   * <p>
    * {@literal V = π * radius^2 * height / 3.0}.
    *
    * @param radius {@link Double value} declaring the radius of the cone's base.
@@ -110,7 +110,7 @@ public abstract class MathUtils {
 
   /**
    * Calculates the surface area of a cube.
-   *
+   * <p>
    * {@literal A = 6.0 * sideLength^2}.
    *
    * @param sideLength {@link Double value} declaring the length of a side in the cube.
@@ -123,7 +123,7 @@ public abstract class MathUtils {
 
   /**
    * Calculates the volume of a cube.
-   *
+   * <p>
    * {@literal A = sideLength^3}.
    *
    * @param sideLength {@link Double value} declaring the length of a side in the cube.
@@ -136,7 +136,7 @@ public abstract class MathUtils {
 
   /**
    * Calculates the surface area of a cylinder.
-   *
+   * <p>
    * {@literal A = 2πrh + 2πr^2 = 2 * π * radius * height + 2 * π * radius^2}.
    *
    * @param radius {@link Double value} declaring the radius of the cylinder.
@@ -151,7 +151,7 @@ public abstract class MathUtils {
 
   /**
    * Calculates the volume of a cylinder.
-   *
+   * <p>
    * {@literal V = πr^2h = π * radius^2 * height}.
    *
    * @param radius {@link Double value} declaring the radius of the cylinder's end(s).
@@ -166,7 +166,7 @@ public abstract class MathUtils {
 
   /**
    * Calculates the area of an ellipse.
-   *
+   * <p>
    * {@literal A = πab = π * length radius * height radius}.
    *
    * @param lengthRadius {@link Double value} declaring the (length) radius of the ellipse (x-axis).
@@ -180,7 +180,7 @@ public abstract class MathUtils {
 
   /**
    * Calculates the volume of an ellipse.
-   *
+   * <p>
    * {@literal V = 4/3 * π * A * B * C}, Where A, B and C are the length (x-axis), height (y-axis) and width (z-axis)
    * radius values from the center reaching out to the surface of the ellipsoid in 3D space.
    *
@@ -195,8 +195,8 @@ public abstract class MathUtils {
   }
 
   /**
-   * Calculates the area of a equilateral triangle.
-   *
+   * Calculates the area of an equilateral triangle.
+   * <p>
    * {@literal A = sqrt(3.0) / 4.0 * sideLength^2}.
    *
    * @param sideLength {@link Double value} declaring the length of a side in the equilateral triangle.
@@ -284,7 +284,7 @@ public abstract class MathUtils {
 
   /**
    * Calculates the volume of an irregular prism.
-   *
+   * <p>
    * {@literal Volume = base * height}.
    *
    * @param base {@link Double value} declaring the base width of the prism.
@@ -366,7 +366,7 @@ public abstract class MathUtils {
 
   /**
    * Calculates the area of a parallelogram.
-   *
+   * <p>
    * {@literal Area = base * height}.
    *
    * @param base {@link Double value} declaring the base length of the parallelogram.
@@ -380,7 +380,7 @@ public abstract class MathUtils {
 
   /**
    * Calculates the volume of a pyramid.
-   *
+   * <p>
    * {@literal Volume = baseLength * baseWidth * height}.
    *
    * @param baseLength {@link Double value} declaring the base length of the pyramid.
@@ -394,7 +394,7 @@ public abstract class MathUtils {
 
   /**
    * Calculates the {@literal Pythagorean Theorem}.
-   *
+   * <p>
    * {@literal c^2 = a^2 + b^2}.
    *
    * @param a {@link Double value} for {@literal operand A}.
@@ -409,7 +409,7 @@ public abstract class MathUtils {
 
   /**
    * Calculates the area of a rectangle.
-   *
+   * <p>
    * {@literal Area = length * height}.
    *
    * @param length {@link Double value} declaring the length of the rectangle.
@@ -422,7 +422,7 @@ public abstract class MathUtils {
 
   /**
    * Calculates the surface area of a rectangular prism.
-   *
+   * <p>
    * {@literal Area = 2 * ((length * height) + (length * width) + (height * width))}.
    *
    * @param length {@link Double value} declaring the length of the rectangular prism (x-axis).
@@ -437,7 +437,7 @@ public abstract class MathUtils {
 
   /**
    * Calculates the volume of a rectangular prism.
-   *
+   * <p>
    * {@literal Volume = length * width * height}.
    *
    * @param length {@link Double value} declaring the length of the rectangular prism (x-axis).
@@ -488,7 +488,7 @@ public abstract class MathUtils {
 
   /**
    * Calculates the surface area of a sphere.
-   *
+   * <p>
    * {@literal A = 4πr^2 = 4 * π * radius^2}.
    *
    * @param radius {@link Double value} declaring the radius of the sphere.
@@ -502,7 +502,7 @@ public abstract class MathUtils {
 
   /**
    * Calculates the volume of a sphere.
-   *
+   * <p>
    * {@literal V = 4/3πr^3 = 4/3 * π * radius^3}.
    *
    * @param radius {@link Double value} declaring the radius of the sphere.
@@ -516,7 +516,7 @@ public abstract class MathUtils {
 
   /**
    * Calculates the area of a square.
-   *
+   * <p>
    * {@literal A = side^2}.
    *
    * @param side {@link Double value} declaring the length of a side of the square.
@@ -549,7 +549,7 @@ public abstract class MathUtils {
 
   /**
    * Calculates the area of a trapezoid.
-   *
+   * <p>
    * {@literal A = (a + b) / 2 * height}.
    *
    * @param height {@link Double value} declaring the height of the trapezoid.
@@ -563,7 +563,7 @@ public abstract class MathUtils {
 
   /**
    * Calculates the area of a triangle.
-   *
+   * <p>
    * {@literal A = (base * height) / 2}.
    *
    * @param base {@link Double value} declaring the length of the triangle's base.

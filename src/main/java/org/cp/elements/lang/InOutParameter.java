@@ -19,10 +19,10 @@ import org.cp.elements.lang.annotation.Nullable;
 
 /**
  * Abstract Data Type (ADT) used to create methods with in/out parameters.
- *
+ * <p>
  * This class is a wrapper around the value it encapsulates. In essence, an instance of this class is the same as
- * the {@link Object value} itself, as determined by the {@literal equals} and {@literal hashCode} methods
- * and so this class also serves as {@link Object value holder}.
+ * the value itself, as determined by the {@literal equals} and {@literal hashCode} methods and so this class
+ * also serves as value holder.
  *
  * @author John J. Blum
  * @param <T> {@link Class type} of the in/out parameter's {@link Object value}.
@@ -35,23 +35,23 @@ public class InOutParameter<T> {
   private volatile T value;
 
   /**
-   * Default constructor creating an instance of InOutParameter initialized with a null value.
+   * Default constructor creating a new {@link InOutParameter} initialized with a {@literal null} {@link Object value}.
    */
   public InOutParameter() { }
 
   /**
-   * Constructs an instance of InOutParameter with the specified value.
+   * Constructs a new {@link InOutParameter} with the given {@link Object value}.
    *
-   * @param value initial value of this parameter.
+   * @param value {@link Object initial value} of this parameter.
    */
   public InOutParameter(@Nullable T value) {
     this.value = value;
   }
 
   /**
-   * Gets the value of this in/out parameter.
+   * Gets the {@link Object value} of this in/out parameter.
    *
-   * @return the value of this in/out parameter.
+   * @return the {@link Object value} of this in/out parameter.
    * @see #setValue(Object)
    */
   public T getValue() {
@@ -59,9 +59,9 @@ public class InOutParameter<T> {
   }
 
   /**
-   * Sets the value of this in/out parameter.
+   * Sets the {@link Object value} of this in/out parameter.
    *
-   * @param value the Object value to set this in/out parameter to.
+   * @param value {@link Object value} to set this in/out parameter to.
    * @see #getValue()
    */
   public void setValue(T value) {
@@ -69,13 +69,13 @@ public class InOutParameter<T> {
   }
 
   /**
-   * Determines whether the in/out parameter is equal in value to the specified Object.
-   *
+   * Determines whether the in/out parameter is equal in value to the given {@link Object}.
+   * <p>
    * Note, this is not a typical or recommended equals method implementation, but then this is not
    * your typical class either!
    *
-   * @param obj the Object value being evaluated for equality with this in/out parameter value.
-   * @return boolean value indicating whether this in/out parameter value is equal in value to the specified Object.
+   * @param obj {@link Object value} being evaluated for equality with this in/out parameter.
+   * @return boolean value indicating whether this in/out parameter is equal in value to the given {@link Object}.
    * @see java.lang.Object#equals(Object)
    */
   @Override
@@ -97,7 +97,7 @@ public class InOutParameter<T> {
   /**
    * Computes the hash code of this in/out parameter.
    *
-   * @return an integer value constituting the computed hash code of this in/out parameter.
+   * @return the computed {@link Integer value} of the hash code for this in/out parameter.
    * @see java.lang.Object#hashCode()
    */
   @Override
@@ -106,9 +106,9 @@ public class InOutParameter<T> {
   }
 
   /**
-   * Gets the String representation of this in/out parameter.
+   * Gets the {@link String} representation of this in/out parameter.
    *
-   * @return a String describing this in/out parameter.
+   * @return a {@link String} describing this in/out parameter.
    * @see java.lang.Object#toString()
    */
   @Override

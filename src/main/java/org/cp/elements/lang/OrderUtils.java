@@ -33,13 +33,13 @@ public abstract class OrderUtils {
 
   /**
    * Determines the given {@link Object Object's} {@link Integer order}.
-   *
+   * <p>
    * Order is first determined by whether the {@link Object} is {@link Orderable} and if the {@literal order} returned
    * from the {@link Orderable#getOrder()} method is a {@link Number}. If not, then order is next determined by whether
    * the {@link Object} is {@link Ordered} and returning the {@literal order} from {@link Ordered#getIndex()}. If not,
    * then order is next determined by whether the {@link Object} is {@link Order} annotated and returning the
    * {@literal order} from the declared, annotated {@link Order#value()}.
-   *
+   * <p>
    * If none of the above is {@literal true} or the {@link Object} reference is {@literal null},
    * then {@link Ordered#DEFAULT} is returned.
    *

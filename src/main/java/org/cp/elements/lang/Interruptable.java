@@ -16,8 +16,8 @@
 package org.cp.elements.lang;
 
 /**
- * The {@link Interruptable} interface defines a contract for {@link Object Objects} that perform some complex
- * or long-running computation that can be interrupted while processing.
+ * Interface defining a contract for {@link Object Objects} that perform some complex or long-running computation
+ * that can be interrupted while processing.
  *
  * @author John J. Blum
  * @see java.lang.Runnable
@@ -38,10 +38,10 @@ public interface Interruptable {
 
   /**
    * Interrupts {@literal this} {@link Object} during execution.
-   *
+   * <p>
    * The interrupt could be issued by another {@link Thread} while {@literal this} {@link Object} is performing
    * a complex, long-running and intensive computation.
-   *
+   * <p>
    * This method has no effect if {@literal this} {@link Object} is not blocked in execution. This method
    * is also idempotent.
    */
