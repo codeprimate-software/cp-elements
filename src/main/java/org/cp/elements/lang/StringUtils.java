@@ -208,7 +208,7 @@ public abstract class StringUtils {
   }
 
   /**
-   * Defaults the given {@link String} to the first non-blank {@link default value} if the given {@link String}
+   * Defaults the given {@link String} to the first non-blank {@link String default value} if the given {@link String}
    * is blank, otherwise returns the given {@link String}.
    *
    * @param value {@link String} to evaluate.
@@ -783,7 +783,7 @@ public abstract class StringUtils {
    * If the {@link String indent} is {@literal null}, then an empty {@link String} is used.
    *
    * @param line {@link String} containing the line of text to wrap.
-   * @param widthInCharacters {@lnk Integer} indicating the width of each line measured by the number of characters.
+   * @param widthInCharacters {@link Integer} indicating the width of each line measured by the number of characters.
    * @param indent {@link String} used to indent all subsequent lines.
    * @return the {@link String line of text} wrapped.
    * @throws IndexOutOfBoundsException if given {@code widthInCharacters} is less than {@literal 0},
