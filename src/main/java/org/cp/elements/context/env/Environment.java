@@ -737,9 +737,11 @@ public class Environment implements Iterable<String> {
       return true;
     }
 
-    if (!(obj instanceof Environment that)) {
+    if (!(obj instanceof Environment)) {
       return false;
     }
+
+    Environment that = (Environment) obj;
 
     return this.environmentVariables().equals(that.environmentVariables());
   }

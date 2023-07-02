@@ -15,7 +15,6 @@
  */
 package org.cp.elements.lang.support;
 
-import java.io.Serial;
 import java.io.Serializable;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -64,7 +63,6 @@ import org.cp.elements.util.stream.StreamUtils;
 @FluentApi
 public class SmartComparator implements Comparator<Object>, Iterable<ComparatorDescriptor>, Serializable {
 
-  @Serial
   private static final long serialVersionUID = -1851003770115084180L;
 
   /**
@@ -469,9 +467,11 @@ public class SmartComparator implements Comparator<Object>, Iterable<ComparatorD
         return true;
       }
 
-      if (!(obj instanceof ComparatorDescriptor that)) {
+      if (!(obj instanceof ComparatorDescriptor)) {
         return false;
       }
+
+      ComparatorDescriptor that = (ComparatorDescriptor) obj;
 
       return ObjectUtils.equals(this.getComparator(), that.getComparator())
         && ObjectUtils.equalsIgnoreNull(this.lazyResolvedType.get(), that.lazyResolvedType.get());
@@ -557,7 +557,6 @@ public class SmartComparator implements Comparator<Object>, Iterable<ComparatorD
       return objectOne.compareTo(objectTwo);
     }
 
-    @Serial
     private @NotNull Object readResolve() {
       return INSTANCE;
     }
@@ -580,7 +579,6 @@ public class SmartComparator implements Comparator<Object>, Iterable<ComparatorD
       return Integer.compare(ObjectUtils.hashCode(objectOne), ObjectUtils.hashCode(objectTwo));
     }
 
-    @Serial
     private @NotNull Object readResolve() {
       return INSTANCE;
     }

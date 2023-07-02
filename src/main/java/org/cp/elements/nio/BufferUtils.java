@@ -125,9 +125,9 @@ public abstract class BufferUtils {
 
   private static @NotNull ByteBuffer prepareByteBufferToCopy(@NotNull ByteBuffer buffer) {
 
-    return buffer.position() > 0
+    return (ByteBuffer) (buffer.position() > 0
       ? buffer.limit(buffer.position()).rewind()
-      : buffer.limit(buffer.capacity());
+      : buffer.limit(buffer.capacity()));
   }
 
   /**

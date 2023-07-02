@@ -412,9 +412,11 @@ public abstract class JavaVersion implements Comparable<JavaVersion> {
       return true;
     }
 
-    if (!(obj instanceof JavaVersion that)) {
+    if (!(obj instanceof JavaVersion)) {
       return false;
     }
+
+    JavaVersion that = (JavaVersion) obj;
 
     return this.getMajor().equals(that.getMajor())
       && this.getMinor().equals(that.getMinor())

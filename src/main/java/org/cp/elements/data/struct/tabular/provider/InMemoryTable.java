@@ -379,9 +379,11 @@ public class InMemoryTable extends AbstractTable {
         return true;
       }
 
-      if (!(obj instanceof Column<?> that)) {
+      if (!(obj instanceof Column<?>)) {
         return false;
       }
+
+      Column<?> that = (Column<?>) obj;
 
       return ObjectUtils.equals(this.getName(), that.getName())
         && ObjectUtils.isNullOrEqualTo(that.getView().orElse(null), this.getView().orElse(null));

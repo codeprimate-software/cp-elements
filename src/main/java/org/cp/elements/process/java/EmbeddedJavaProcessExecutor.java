@@ -32,7 +32,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.List;
+import java.util.Collections;
 import java.util.Optional;
 import java.util.concurrent.Callable;
 
@@ -58,8 +58,10 @@ import org.cp.elements.process.ProcessExecutor;
 @SuppressWarnings({ "rawtypes", "unused" })
 public class EmbeddedJavaProcessExecutor implements ProcessExecutor<Void> {
 
-  protected static final Collection<JavaClassExecutor> JAVA_CLASS_EXECUTORS =
-    List.of(new ExecutableExecutor<>(), new RunnableExecutor<>(), new CallableExecutor<>(), new MainMethodExecutor<>());
+  protected static final Collection<JavaClassExecutor> JAVA_CLASS_EXECUTORS = Collections.unmodifiableList(
+    Arrays.asList(new ExecutableExecutor<>(), new RunnableExecutor<>(), new CallableExecutor<>(),
+      new MainMethodExecutor<>()));
+
 
   /**
    * Factory method used to construct a new {@link EmbeddedJavaProcessExecutor}, which is used to

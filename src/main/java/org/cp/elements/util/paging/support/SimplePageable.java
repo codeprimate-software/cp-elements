@@ -181,7 +181,7 @@ public class SimplePageable<T> implements Pageable<T> {
   @Override
   public Iterator<Page<T>> iterator() {
 
-    return new Iterator<>() {
+    return new Iterator<Page<T>>() {
 
       int currentIndex;
       int currentPageNumber = 1;

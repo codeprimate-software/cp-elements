@@ -158,7 +158,7 @@ public class Property implements Comparable<Property>, Describable<PropertyDescr
       @Nullable Map<T, Set<Annotation>> annotatedElementAnnotations) {
 
     return annotatedElementAnnotations != null ? annotatedElementAnnotations
-      : new AbstractMap<>() {
+      : new AbstractMap<T, Set<Annotation>>() {
 
           // Key is never cached; Value is always computed with the given Function.
           @Override
@@ -794,9 +794,11 @@ public class Property implements Comparable<Property>, Describable<PropertyDescr
       return true;
     }
 
-    if (!(obj instanceof Property that)) {
+    if (!(obj instanceof Property)) {
       return false;
     }
+
+    Property that = (Property) obj;
 
     return ObjectUtils.equals(this.getName(), that.getName());
   }

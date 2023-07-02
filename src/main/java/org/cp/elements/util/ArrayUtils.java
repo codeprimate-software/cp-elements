@@ -165,7 +165,7 @@ public abstract class ArrayUtils {
   @SafeVarargs
   public static @NotNull <T> Enumeration<T> asEnumeration(T... array) {
 
-    return array == null ? Collections.emptyEnumeration() : new Enumeration<>() {
+    return array == null ? Collections.emptyEnumeration() : new Enumeration<T>() {
 
       private int index;
 
@@ -213,7 +213,7 @@ public abstract class ArrayUtils {
   @SafeVarargs
   public static @NotNull <T> Iterator<T> asIterator(T... array) {
 
-    return array == null ? Collections.emptyIterator() : new Iterator<>() {
+    return array == null ? Collections.emptyIterator() : new Iterator<T>() {
 
       private int index;
 
@@ -357,7 +357,7 @@ public abstract class ArrayUtils {
 
     List<T> arrayList = Arrays.stream(array)
       .filter(predicate)
-      .toList();
+      .collect(Collectors.toList());
 
     T[] newArray = (T[]) Array.newInstance(array.getClass().getComponentType(), arrayList.size());
 

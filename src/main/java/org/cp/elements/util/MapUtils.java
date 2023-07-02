@@ -273,7 +273,7 @@ public abstract class MapUtils {
    */
   public static @NotNull <K, V> Map.Entry<K, V> newMapEntry(K key, V value) {
 
-    return new Map.Entry<>() {
+    return new Map.Entry<K, V>() {
 
       @Override
       public K getKey() {

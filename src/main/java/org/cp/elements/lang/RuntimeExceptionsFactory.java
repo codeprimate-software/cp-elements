@@ -218,7 +218,7 @@ public abstract class RuntimeExceptionsFactory extends CheckedExceptionsFactory 
   public static @NotNull NoSuchElementException newNoSuchElementException(@Nullable Throwable cause,
       @NotNull String message, Object... args) {
 
-    return new NoSuchElementException(format(message, args), cause);
+    return (NoSuchElementException) new NoSuchElementException(format(message, args)).initCause(cause);
   }
 
   /**

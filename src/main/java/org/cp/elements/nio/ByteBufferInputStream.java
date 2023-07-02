@@ -67,7 +67,7 @@ public class ByteBufferInputStream extends InputStream {
 
   private @NotNull ByteBuffer prepareForReading(@NotNull ByteBuffer byteBuffer) {
 
-    return (byteBuffer.position() > 0
+    return (ByteBuffer) (byteBuffer.position() > 0
       ? byteBuffer.limit(byteBuffer.position()).rewind().mark()
       : byteBuffer.limit(byteBuffer.capacity())).mark();
   }

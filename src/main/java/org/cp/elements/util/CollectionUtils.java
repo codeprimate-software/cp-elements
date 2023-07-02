@@ -127,7 +127,7 @@ public abstract class CollectionUtils {
   @NullSafe
   public static @NotNull <T> Enumeration<T> asEnumeration(@Nullable Iterator<T> iterator) {
 
-    return iterator == null ? Collections.emptyEnumeration() : new Enumeration<>() {
+    return iterator == null ? Collections.emptyEnumeration() : new Enumeration<T>() {
 
       @Override
       public boolean hasMoreElements() {
@@ -185,7 +185,7 @@ public abstract class CollectionUtils {
   @NullSafe
   public static @NotNull <T> Iterator<T> asIterator(@Nullable Enumeration<T> enumeration) {
 
-    return enumeration == null ? Collections.emptyIterator() : new Iterator<>() {
+    return enumeration == null ? Collections.emptyIterator() : new Iterator<T>() {
 
       @Override
       public boolean hasNext() {
@@ -812,7 +812,7 @@ public abstract class CollectionUtils {
 
     Assert.notNull(iterator, "Iterator is required");
 
-    return new Iterator<>() {
+    return new Iterator<T>() {
 
       @Override
       public boolean hasNext() {

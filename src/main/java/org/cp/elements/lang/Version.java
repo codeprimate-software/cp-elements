@@ -485,9 +485,11 @@ public class Version implements Comparable<Version> {
       return true;
     }
 
-    if (!(obj instanceof Version that)) {
+    if (!(obj instanceof Version)) {
       return false;
     }
+
+    Version that = (Version) obj;
 
     return ObjectUtils.equals(this.getBuildNumber(), that.getBuildNumber())
       && ObjectUtils.equals(this.getMajor(), that.getMajor())

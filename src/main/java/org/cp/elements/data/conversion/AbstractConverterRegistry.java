@@ -308,9 +308,11 @@ public abstract class AbstractConverterRegistry implements ConverterRegistry {
         return true;
       }
 
-      if (!(obj instanceof ConverterDescriptor that)) {
+      if (!(obj instanceof ConverterDescriptor)) {
         return false;
       }
+
+      ConverterDescriptor that = (ConverterDescriptor) obj;
 
       return ObjectUtils.equals(this.getFromType(), that.getFromType())
         && ObjectUtils.equals(this.getToType(), that.getToType());

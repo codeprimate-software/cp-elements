@@ -19,7 +19,6 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.ObjectStreamException;
-import java.io.Serial;
 import java.io.Serializable;
 
 import org.cp.elements.lang.annotation.NotNull;
@@ -69,7 +68,7 @@ public class ValueHolder<T> {
     Assert.isInstanceOf(value, Cloneable.class, "Value [%s] is not Cloneable",
       ObjectUtils.getClassName(value));
 
-    return new ValueHolder<>(ObjectUtils.clone(value)) {
+    return new ValueHolder<T>(ObjectUtils.clone(value)) {
 
       @Override
       public @NotNull T getValue() {
@@ -96,7 +95,7 @@ public class ValueHolder<T> {
 
     Assert.notNull(value, "Value is required");
 
-    return new ValueHolder<>(value) {
+    return new ValueHolder<T>(value) {
 
       @Override
       public void setValue(@NotNull T value) {
@@ -160,9 +159,11 @@ public class ValueHolder<T> {
       return true;
     }
 
-    if (!(obj instanceof ValueHolder<?> that)) {
+    if (!(obj instanceof ValueHolder<?>)) {
       return false;
     }
+
+    ValueHolder<?> that = (ValueHolder<?>) obj;
 
     return ObjectUtils.equalsIgnoreNull(this.getValue(), that.getValue());
   }
@@ -215,7 +216,6 @@ public class ValueHolder<T> {
    */
   public static class SerializableValueHolder<T extends Serializable> extends ValueHolder<T> implements Serializable {
 
-    @Serial
     private static final long serialVersionUID = 421081248;
 
     /**
@@ -234,18 +234,15 @@ public class ValueHolder<T> {
       super(value);
     }
 
-    @Serial
     @SuppressWarnings("unchecked")
     private void readObject(@NotNull ObjectInputStream in) throws ClassNotFoundException, IOException {
       setValue((T) in.readObject());
     }
 
-    @Serial
     private void readObjectNoData() throws ObjectStreamException {
       setValue(null);
     }
 
-    @Serial
     private void writeObject(@NotNull ObjectOutputStream out) throws IOException {
       out.writeObject(getValue());
     }

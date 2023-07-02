@@ -107,12 +107,12 @@ public class CacheToMapAdapter<KEY extends Comparable<KEY>, VALUE> extends Abstr
   @Override
   public Set<Map.Entry<KEY, VALUE>> entrySet() {
 
-    return new AbstractSet<>() {
+    return new AbstractSet<Map.Entry<KEY, VALUE>>() {
 
       @Override
       public Iterator<Map.Entry<KEY, VALUE>> iterator() {
 
-        return new Iterator<>() {
+        return new Iterator<Map.Entry<KEY, VALUE>>() {
 
           private final Iterator<KEY> keys = CollectionUtils.nullSafeSet(keySet()).iterator();
 
@@ -316,9 +316,11 @@ public class CacheToMapAdapter<KEY extends Comparable<KEY>, VALUE> extends Abstr
         return true;
       }
 
-      if (!(obj instanceof Map.Entry<?, ?> that)) {
+      if (!(obj instanceof Map.Entry<?, ?>)) {
         return false;
       }
+
+      Map.Entry<?, ?> that = (Entry<?, ?>) obj;
 
       return this.getKey().equals(that.getKey());
     }

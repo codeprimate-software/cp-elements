@@ -283,8 +283,8 @@ public abstract class SystemUtils {
       .filter(URLClassLoader.class::isInstance)
       .map(URLClassLoader.class::cast)
       .map(URLClassLoader::getURLs)
-      .stream()
-      .flatMap(Stream::of)
+      .map(Stream::of)
+      .orElseGet(Stream::empty)
       .filter(Objects::nonNull)
       .map(URL::getFile)
       .toArray(String[]::new);
@@ -326,6 +326,6 @@ public abstract class SystemUtils {
   @SuppressWarnings("RegexpSinglelineJava")
   public static void promptPressEnterToExit() {
     System.err.println("Press <enter> to exit...");
-    new Scanner(System.in, Charset.defaultCharset()).nextLine();
+    new Scanner(System.in, Charset.defaultCharset().name()).nextLine();
   }
 }

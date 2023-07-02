@@ -619,7 +619,7 @@ public abstract class StringUtils {
 
     Assert.notNull(characterIterator, "CharacterIterator is required");
 
-    return new Iterator<>() {
+    return new Iterator<Character>() {
 
       int index;
 

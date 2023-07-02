@@ -445,9 +445,11 @@ public class PropertiesAdapter implements Iterable<String> {
       return true;
     }
 
-    if (!(obj instanceof PropertiesAdapter that)) {
+    if (!(obj instanceof PropertiesAdapter)) {
       return false;
     }
+
+    PropertiesAdapter that = (PropertiesAdapter) obj;
 
     return this.getProperties().equals(that.getProperties());
   }

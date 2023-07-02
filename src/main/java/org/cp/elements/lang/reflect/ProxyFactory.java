@@ -22,6 +22,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.cp.elements.lang.ClassUtils;
 import org.cp.elements.lang.annotation.NotNull;
@@ -117,7 +118,7 @@ public abstract class ProxyFactory<T> {
 
     allImplementedInterfaces.addAll(Arrays.stream(ArrayUtils.nullSafeArray(interfaces, Class.class))
       .filter(ClassUtils::isInterface)
-      .toList());
+      .collect(Collectors.toList()));
 
     return allImplementedInterfaces.toArray(new Class<?>[0]);
   }
