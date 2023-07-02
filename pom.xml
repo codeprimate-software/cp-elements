@@ -145,6 +145,28 @@
 
   <profiles>
     <profile>
+      <id>oracle-jdk-20</id>
+      <activation>
+        <jdk>[20,)</jdk>
+      </activation>
+      <properties>
+        <java.version>20</java.version>
+        <maven.compiler.release>${java.version}</maven.compiler.release>
+<!--
+        <mockito.version>5.2.0</mockito.version>
+-->
+        <mockito-inline.version>5.2.0</mockito-inline.version>
+      </properties>
+      <dependencies>
+        <dependency>
+          <groupId>org.mockito</groupId>
+          <artifactId>mockito-inline</artifactId>
+          <version>${mockito-inline.version}</version>
+          <scope>test</scope>
+        </dependency>
+      </dependencies>
+    </profile>
+    <profile>
       <id>oracle-jdk-18</id>
       <activation>
         <jdk>[18,19)</jdk>
