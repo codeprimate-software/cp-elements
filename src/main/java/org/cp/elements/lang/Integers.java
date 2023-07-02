@@ -67,7 +67,7 @@ public abstract class Integers {
   /**
    * Converts a {@link Integer positive number} into a {@link Integer negative number}
    * and converts a {@link Integer negative number} into a {@link Integer positive number}.
-   *
+   * <p>
    * If the given {@link Integer number} is {@literal 0}, then {@literal 0} is returned.
    *
    * @param number {@link Integer} to invert.

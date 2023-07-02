@@ -89,9 +89,8 @@ public abstract class JavaVersion implements Comparable<JavaVersion> {
   }
 
   /**
-   * Factory method used to construct a new instance of {@link JavaVersion} with
-   * the given {@link Integer#TYPE major}, {@link Integer#TYPE minor}
-   * and {@link Integer#TYPE patch} version numbers.
+   * Factory method used to construct a new {@link JavaVersion} with the given {@link Integer#TYPE major},
+   * {@link Integer#TYPE minor} and {@link Integer#TYPE patch} version numbers.
    *
    * @param major {@link Integer#TYPE} for the {@literal major} version number.
    * @param minor {@link Integer#TYPE} for the {@literal minor} version number.
@@ -105,7 +104,7 @@ public abstract class JavaVersion implements Comparable<JavaVersion> {
   }
 
   /**
-   * Factory method used to construct a new instance of {@link JavaVersion} with the given {@link Integer#TYPE major},
+   * Factory method used to construct a new {@link JavaVersion} with the given {@link Integer#TYPE major},
    * {@link Integer#TYPE minor}, {@link Integer#TYPE patch} version numbers
    * and version {@link Integer#TYPE build number}.
    *
@@ -284,7 +283,7 @@ public abstract class JavaVersion implements Comparable<JavaVersion> {
 
   /**
    * Determines whether {@literal this} {@link JavaVersion} is newer than or equal to the given {@link JavaVersion}.
-   *
+   * <p>
    * {@literal This} {@link JavaVersion} is considered newer if it comes after the given {@link JavaVersion};
    * that is {@literal this} {@link JavaVersion} has a higher version number (for example: 2.0.0 vs 1.0.0).
    *
@@ -300,7 +299,7 @@ public abstract class JavaVersion implements Comparable<JavaVersion> {
 
   /**
    * Determines whether {@literal this} {@link JavaVersion} is older than the given {@link JavaVersion}.
-   *
+   * <p>
    * {@literal This} {@link JavaVersion} is considered older if it comes before the given {@link JavaVersion};
    * that is {@literal this} {@link JavaVersion} has a lower version number (for example: 1.0.0 vs 2.0.0).
    *
@@ -316,7 +315,7 @@ public abstract class JavaVersion implements Comparable<JavaVersion> {
 
   /**
    * Determines whether {@literal this} {@literal JavaVersion} is {@literal undetermined}.
-   *
+   * <p>
    * A {@link JavaVersion} is {@literal undetermined} if the {@literal major}, {@literal minor} and {@literal patch}
    * version numbers are all {@literal 0}.
    *
@@ -413,11 +412,9 @@ public abstract class JavaVersion implements Comparable<JavaVersion> {
       return true;
     }
 
-    if (!(obj instanceof JavaVersion)) {
+    if (!(obj instanceof JavaVersion that)) {
       return false;
     }
-
-    JavaVersion that = (JavaVersion) obj;
 
     return this.getMajor().equals(that.getMajor())
       && this.getMinor().equals(that.getMinor())
@@ -432,14 +429,7 @@ public abstract class JavaVersion implements Comparable<JavaVersion> {
    */
   @Override
   public int hashCode() {
-
-    int hashValue = 17;
-
-    hashValue = 37 * hashValue + ObjectUtils.hashCode(getMajor());
-    hashValue = 37 * hashValue + ObjectUtils.hashCode(getMinor());
-    hashValue = 37 * hashValue + ObjectUtils.hashCode(getPatch());
-
-    return hashValue;
+    return ObjectUtils.hashCodeOf(getMajor(), getMinor(), getPatch());
   }
 
   /**

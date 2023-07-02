@@ -20,12 +20,13 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 
+import org.cp.elements.lang.annotation.Dsl;
+import org.cp.elements.lang.annotation.FluentApi;
 import org.cp.elements.lang.annotation.NotNull;
 
 /**
- * The {@link Auditable} interface defines a contract for {@link Object Objects} that need to be audited,
- * enabling changes to be tracked in fine-grained detail by capturing who, when and what made changes to
- * {@literal this} {@link Object}.
+ * Interface defining a contract for {@link Object Objects} that need to be audited, enabling changes to be recorded
+ * in fine-grained detail by capturing who, when and what made changes to {@literal this} {@link Object}.
  *
  * @author John J. Blum
  * @param <USER> {@link Class type} used to track the user.
@@ -36,8 +37,10 @@ import org.cp.elements.lang.annotation.NotNull;
  * @see java.time.LocalDateTime
  * @see java.time.ZonedDateTime
  * @see org.cp.elements.lang.Identifiable
+ * @see org.cp.elements.lang.annotation.FluentApi
  * @since 1.0.0
  */
+@FluentApi
 @SuppressWarnings("unused")
 public interface Auditable<USER, PROCESS, ID extends Comparable<ID>> extends Identifiable<ID> {
 
@@ -72,16 +75,16 @@ public interface Auditable<USER, PROCESS, ID extends Comparable<ID>> extends Ide
   void setCreatedOn(Instant createdOn);
 
   /**
-   * Gets the process (application) used by the user to create this object.
+   * Gets the process (program) used by the user to create this object.
    *
-   * @return an object representing the process (application) used by the user to create this object.
+   * @return an object representing the process (program) used by the user to create this object.
    */
   PROCESS getCreatedWith();
 
   /**
-   * Sets the process (application) used by the user to create this object.
+   * Sets the process (program) used by the user to create this object.
    *
-   * @param process object representing the process (application) used by the user to create this object.
+   * @param process object representing the process (program) used by the user to create this object.
    */
   void setCreatedWith(PROCESS process);
 
@@ -101,15 +104,15 @@ public interface Auditable<USER, PROCESS, ID extends Comparable<ID>> extends Ide
   Instant getLastModifiedOn();
 
   /**
-   * Gets the last process (application) used by the user to modify this object.
+   * Gets the last process (program) used by the user to modify this object.
    *
-   * @return an object representing the last process (application) used by the user to modify this object.
+   * @return an object representing the last process (program) used by the user to modify this object.
    */
   PROCESS getLastModifiedWith();
 
   /**
    * Determines whether this object has been modified.
-   *
+   * <p>
    * One particular implementation suggests that if the last modified date and time does not match
    * the current modified date and time, then this {@link Auditable} object has been modified concurrently.
    * Of course, if any property value of this object has changed, then the object has been modified.
@@ -121,8 +124,8 @@ public interface Auditable<USER, PROCESS, ID extends Comparable<ID>> extends Ide
 
   /**
    * Determines whether the specified property of this object has been modified.
-   *
-   * The property has been changed if the old value is not equal in valud to the new value.
+   * <p>
+   * The property has been changed if the old value is not equal in value to the new value.
    *
    * @param propertyName {@link String} specifying the name of the property to check for modification.
    * @return a boolean value indicating whether the specified property of {@literal this} {@link Auditable} object,
@@ -162,16 +165,16 @@ public interface Auditable<USER, PROCESS, ID extends Comparable<ID>> extends Ide
   void setModifiedOn(Instant modifiedOn);
 
   /**
-   * Gets the process (application) used by the user to modify this object.
+   * Gets the process (program) used by the user to modify this object.
    *
-   * @return an object representing the process (application) used by the user to modify this object.
+   * @return an object representing the process (program) used by the user to modify this object.
    */
   PROCESS getModifiedWith();
 
   /**
-   * Sets the process (application) used by the user to modify this object.
+   * Sets the process (program) used by the user to modify this object.
    *
-   * @param process object representing the process (application) used by the user to modify this object.
+   * @param process object representing the process (program) used by the user to modify this object.
    */
   void setModifiedWith(PROCESS process);
 
@@ -184,8 +187,9 @@ public interface Auditable<USER, PROCESS, ID extends Comparable<ID>> extends Ide
    * @return this {@link Auditable} object.
    * @see #setCreatedBy(Object)
    */
+  @Dsl
   @SuppressWarnings("unchecked")
-  default <S extends Auditable<USER, PROCESS, ID>> S createdBy(USER user) {
+  default @NotNull <S extends Auditable<USER, PROCESS, ID>> S createdBy(USER user) {
     setCreatedBy(user);
     return (S) this;
   }
@@ -200,8 +204,9 @@ public interface Auditable<USER, PROCESS, ID extends Comparable<ID>> extends Ide
    * @see #setCreatedOn(Instant)
    * @see java.time.Instant
    */
+  @Dsl
   @SuppressWarnings("unchecked")
-  default <S extends Auditable<USER, PROCESS, ID>> S createdOn(Instant createdOn) {
+  default @NotNull <S extends Auditable<USER, PROCESS, ID>> S createdOn(Instant createdOn) {
     setCreatedOn(createdOn);
     return (S) this;
   }
@@ -216,7 +221,8 @@ public interface Auditable<USER, PROCESS, ID extends Comparable<ID>> extends Ide
    * @see #createdOn(ZonedDateTime)
    * @see java.time.LocalDateTime
    */
-  default <S extends Auditable<USER, PROCESS, ID>> S createdOn(@NotNull LocalDateTime createdOn) {
+  @Dsl
+  default @NotNull <S extends Auditable<USER, PROCESS, ID>> S createdOn(@NotNull LocalDateTime createdOn) {
     Assert.notNull(createdOn, "createdOn LocalDateTime is required");
     return createdOn(ZonedDateTime.of(createdOn, ZoneId.systemDefault()));
   }
@@ -231,22 +237,24 @@ public interface Auditable<USER, PROCESS, ID extends Comparable<ID>> extends Ide
    * @see #createdOn(Instant)
    * @see java.time.ZonedDateTime
    */
-  default <S extends Auditable<USER, PROCESS, ID>> S createdOn(@NotNull ZonedDateTime createdOn) {
+  @Dsl
+  default @NotNull <S extends Auditable<USER, PROCESS, ID>> S createdOn(@NotNull ZonedDateTime createdOn) {
     Assert.notNull(createdOn, "createdOn ZonedDateTime is required");
     return createdOn(createdOn.toInstant());
   }
 
   /**
-   * Builder method used to set the process (application) used by the user to create this object.
+   * Builder method used to set the process (program) used by the user to create this object.
    *
    * @param <S> {@link Class Subclass type} of {@literal this} {@link Object}
    * implementing the {@link Auditable} interface.
-   * @param process application used by the user to create this object.
+   * @param process program used by the user to create this object.
    * @return this {@link Auditable} object.
    * @see #setCreatedWith(Object)
    */
+  @Dsl
   @SuppressWarnings("unchecked")
-  default <S extends Auditable<USER, PROCESS, ID>> S createdWith(PROCESS process) {
+  default @NotNull <S extends Auditable<USER, PROCESS, ID>> S createdWith(PROCESS process) {
     setCreatedWith(process);
     return (S) this;
   }
@@ -260,8 +268,9 @@ public interface Auditable<USER, PROCESS, ID extends Comparable<ID>> extends Ide
    * @return this {@link Auditable} object.
    * @see #setModifiedBy(Object)
    */
+  @Dsl
   @SuppressWarnings("unchecked")
-  default <S extends Auditable<USER, PROCESS, ID>> S modifiedBy(USER user) {
+  default @NotNull <S extends Auditable<USER, PROCESS, ID>> S modifiedBy(USER user) {
     setModifiedBy(user);
     return (S) this;
   }
@@ -276,8 +285,9 @@ public interface Auditable<USER, PROCESS, ID extends Comparable<ID>> extends Ide
    * @see #setModifiedOn(Instant)
    * @see java.time.Instant
    */
+  @Dsl
   @SuppressWarnings("unchecked")
-  default <S extends Auditable<USER, PROCESS, ID>> S modifiedOn(Instant modifiedOn) {
+  default @NotNull <S extends Auditable<USER, PROCESS, ID>> S modifiedOn(Instant modifiedOn) {
     setModifiedOn(modifiedOn);
     return (S) this;
   }
@@ -292,7 +302,8 @@ public interface Auditable<USER, PROCESS, ID extends Comparable<ID>> extends Ide
    * @see #modifiedOn(ZonedDateTime)
    * @see java.time.LocalDateTime
    */
-  default <S extends Auditable<USER, PROCESS, ID>> S modifiedOn(@NotNull LocalDateTime modifiedOn) {
+  @Dsl
+  default @NotNull <S extends Auditable<USER, PROCESS, ID>> S modifiedOn(@NotNull LocalDateTime modifiedOn) {
     Assert.notNull(modifiedOn, "modifiedOn LocalDateTime is required");
     return modifiedOn(ZonedDateTime.of(modifiedOn, ZoneId.systemDefault()));
   }
@@ -307,22 +318,24 @@ public interface Auditable<USER, PROCESS, ID extends Comparable<ID>> extends Ide
    * @see #modifiedOn(Instant)
    * @see java.time.ZonedDateTime
    */
-  default <S extends Auditable<USER, PROCESS, ID>> S modifiedOn(@NotNull ZonedDateTime modifiedOn) {
+  @Dsl
+  default @NotNull <S extends Auditable<USER, PROCESS, ID>> S modifiedOn(@NotNull ZonedDateTime modifiedOn) {
     Assert.notNull(modifiedOn, "modifiedOn ZonedDateTime is required");
     return modifiedOn(modifiedOn.toInstant());
   }
 
   /**
-   * Builder method used to set the process (application) used by the user to modify this object.
+   * Builder method used to set the process (program) used by the user to modify this object.
    *
    * @param <S> {@link Class Subclass type} of {@literal this} {@link Object}
    * implementing the {@link Auditable} interface.
-   * @param process application used by the user to modify this object.
+   * @param process program used by the user to modify this object.
    * @return this {@link Auditable} object.
    * @see #setModifiedWith(Object)
    */
+  @Dsl
   @SuppressWarnings("unchecked")
-  default <S extends Auditable<USER, PROCESS, ID>> S modifiedWith(PROCESS process) {
+  default @NotNull <S extends Auditable<USER, PROCESS, ID>> S modifiedWith(PROCESS process) {
     setModifiedWith(process);
     return (S) this;
   }

@@ -49,8 +49,8 @@ public interface Condition {
   }
 
   /**
-   * Evaluates the criteria of this {@link Condition} to determine whether the still criteria holds.
-   *
+   * Evaluates the criteria of this {@link Condition} to determine whether the criteria still holds.
+   * <p>
    * {@link Condition} evaluation can be dynamic. Therefore, it is possible, during the runtime of the program,
    * that the conditions satisfying the criteria of this {@link Condition} change and therefore may no longer hold,
    * or the conditions switch from unsatisfied to now being upheld. This might change several times during runtime

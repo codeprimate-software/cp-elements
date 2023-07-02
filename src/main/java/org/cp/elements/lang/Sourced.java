@@ -17,7 +17,7 @@ package org.cp.elements.lang;
 
 /**
  * Java {@link FunctionalInterface} defining a contract for {@link Object Objects} that have a {@literal source}.
- *
+ * <p>
  * For instance, {@link java.util.Properties} might be sourced from a {@link java.io.File}.
  * A {@link java.sql.Connection} is created from a {@link javax.sql.DataSource}.
  * And, a {@link java.util.Map.Entry} is sourced from the {@link java.util.Map} from which it originated.

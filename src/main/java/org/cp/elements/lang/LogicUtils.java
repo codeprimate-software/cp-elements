@@ -26,7 +26,7 @@ public abstract class LogicUtils {
 
   /**
    * Implementation of {@literal exclusive OR (XOR)}.
-   *
+   * <p>
    * In {@literal exclusive OR (XOR)}, one, and only one, value can be {@literal true}. If both values
    * are {@literal true} or both values are {@literal false}, then the {@link Boolean result} of {@literal XOR}
    * is {@literal false}.

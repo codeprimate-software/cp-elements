@@ -26,7 +26,7 @@ import org.cp.elements.lang.annotation.Nullable;
 import org.cp.elements.util.ComparatorResultBuilder;
 
 /**
- * The {@link Version} class models a software version number.
+ * Abstract Data Type (ADT) modeling a software version number.
  *
  * @author John Blum
  * @see java.time.LocalDateTime
@@ -34,6 +34,8 @@ import org.cp.elements.util.ComparatorResultBuilder;
  */
 @SuppressWarnings("unused")
 public class Version implements Comparable<Version> {
+
+  private static final String VERSION_TO_STRING = "%1$d.%2$d.%3$d%4$s%5$s%6$s";
 
   protected static final int DEFAULT_BUILD_NUMBER = 0;
   protected static final int DEFAULT_QUALIFIER_NUMBER = 0;
@@ -43,8 +45,7 @@ public class Version implements Comparable<Version> {
   protected static final String VERSION_NUMBER_SEPARATOR = "\\.";
 
   /**
-   * Factory method used to construct a new instance of {@link Version} initialized with major and minor
-   * version numbers.
+   * Factory method used to construct a new {@link Version} initialized with major and minor version numbers.
    *
    * @param major major version number.
    * @param minor minor version number.
@@ -58,8 +59,8 @@ public class Version implements Comparable<Version> {
   }
 
   /**
-   * Factory method used to construct a new instance of {@link Version} initialized with major, minor
-   * and maintenance version numbers.
+   * Factory method used to construct a new {@link Version} initialized with major, minor and maintenance
+   * version numbers.
    *
    * @param major major version number.
    * @param minor minor version number.
@@ -75,8 +76,8 @@ public class Version implements Comparable<Version> {
   }
 
   /**
-   * Factory method used to construct a new instance of {@link Version} initialized with major, minor
-   * and maintenance version numbers along with a version qualifier (e.g. RELEASE).
+   * Factory method used to construct a new {@link Version} initialized with major, minor and maintenance
+   * version numbers along with a version qualifier (for example: {@literal RELEASE}).
    *
    * @param major major version number.
    * @param minor minor version number.
@@ -96,8 +97,8 @@ public class Version implements Comparable<Version> {
   }
 
   /**
-   * Factory method used to construct a new instance of {@link Version} initialized with major, minor
-   * and maintenance version numbers along with a version qualifier (e.g. RELEASE) and a qualifier number.
+   * Factory method used to construct a new {@link Version} initialized with major, minor and maintenance
+   * version numbers along with a version qualifier (for example: {@literal RELEASE}) and a qualifier number.
    *
    * @param major major version number.
    * @param minor minor version number.
@@ -118,7 +119,7 @@ public class Version implements Comparable<Version> {
   }
 
   /**
-   * Factory method used to parse a version {@link String} into a fully-qualified instance of {@link Version}.
+   * Factory method used to parse a {@link String version} into a fully-qualified instance of {@link Version}.
    *
    * @param version {@link String} representation of the version; must not be {@literal null} or {@literal empty}.
    * @return a new instance of {@link Version} initialized with the given, required version {@link String}.
@@ -150,11 +151,11 @@ public class Version implements Comparable<Version> {
   }
 
   /**
-   * Parses the given {@link String} value into a integer.
+   * Parses the given {@link String} into an {@link Integer}.
    *
-   * @param value {@link String} to parse as an integer.
-   * @return an integer from the {@link String} value.
-   * @throws NumberFormatException if the {@link String} value is not parse-able as an integer.
+   * @param value {@link String} to parse as an {@link Integer}.
+   * @return an {@link Integer} from the given {@link String}.
+   * @throws NumberFormatException if the {@link String} is not parse-able as an {@link Integer}.
    * @see org.cp.elements.lang.StringUtils#getDigits(String)
    * @see java.lang.Integer#parseInt(String)
    */
@@ -202,7 +203,7 @@ public class Version implements Comparable<Version> {
   }
 
   /**
-   * Parses the version qualifier into an instance of {@link Version.Qualifier}.
+   * Parses the {@link String version qualifier} into an instance of {@link Version.Qualifier}.
    *
    * @param qualifier {@link String} containing the version qualifier.
    * @return a {@link Version.Qualifier} instance representing the given {@link String}.
@@ -409,7 +410,7 @@ public class Version implements Comparable<Version> {
   }
 
   /**
-   * Returns this {@link Version Version's} qualifier.
+   * Returns this {@link Version Version's} {@link Version.Qualifier}.
    *
    * @return the {@link Qualifier} for this {@link Version}.
    * @see org.cp.elements.lang.Version.Qualifier
@@ -441,13 +442,13 @@ public class Version implements Comparable<Version> {
   }
 
   /**
-   * Compares this {@link Version} to the given {@link Version} to determine sort order, or order of precedence.
-   *
+   * Compares this {@link Version} to the given {@link Version} to determine relative ordering.
+   * <p>
    * In this case, the {@link Comparable#compareTo(Object)} method determines earlier and later
    * {@link Version versions}.
    *
    * @param version given {@link Version} used in the comparison.
-   * @return an integer indicating the sort order, or order of predence.
+   * @return an integer indicating the sort order, or order of precedence.
    * @see org.cp.elements.util.ComparatorResultBuilder
    * @see #getMajor()
    * @see #getMinor()
@@ -481,11 +482,9 @@ public class Version implements Comparable<Version> {
       return true;
     }
 
-    if (!(obj instanceof Version)) {
+    if (!(obj instanceof Version that)) {
       return false;
     }
-
-    Version that = (Version) obj;
 
     return ObjectUtils.equals(this.getBuildNumber(), that.getBuildNumber())
       && ObjectUtils.equals(this.getMajor(), that.getMajor())
@@ -503,17 +502,8 @@ public class Version implements Comparable<Version> {
    */
   @Override
   public int hashCode() {
-
-    int hashValue = 17;
-
-    hashValue = 37 * hashValue + ObjectUtils.hashCode(getBuildNumber());
-    hashValue = 37 * hashValue + ObjectUtils.hashCode(getMajor());
-    hashValue = 37 * hashValue + ObjectUtils.hashCode(getMinor());
-    hashValue = 37 * hashValue + ObjectUtils.hashCode(getMaintenance());
-    hashValue = 37 * hashValue + ObjectUtils.hashCode(getQualifier());
-    hashValue = 37 * hashValue + ObjectUtils.hashCode(getQualifierNumber());
-
-    return hashValue;
+    return ObjectUtils.hashCodeOf(getBuildNumber(), getMajor(), getMinor(), getMaintenance(),
+      getQualifier(), getQualifierNumber());
   }
 
   /**
@@ -524,7 +514,7 @@ public class Version implements Comparable<Version> {
    */
   @Override
   public @NotNull String toString() {
-    return String.format("%1$d.%2$d.%3$d%4$s%5$s%6$s", getMajor(), getMinor(), getMaintenance(),
+    return String.format(VERSION_TO_STRING, getMajor(), getMinor(), getMaintenance(),
       toQualifierString(), toBuildNumberString(), toReleaseDateTimeString());
   }
 

@@ -60,7 +60,7 @@ public abstract class PrimitiveTypeUtils {
 
   /**
    * Gets a {@link Function} that converts {@link Class primitive types} to {@link Class wrapper types}.
-   *
+   * <p>
    * For example, if the returned {@link Function} is given {@link Integer#TYPE}, then the {@link Function}
    * will return {@link Integer} {@link Class}.
    *
@@ -76,7 +76,7 @@ public abstract class PrimitiveTypeUtils {
 
   /**
    * Gets a {@link Function} that converts {@link Class wrapper types} to {@link Class primitive types}.
-   *
+   * <p>
    * For example, if the returned {@link Function} is given the {@link Integer} {@link Class},
    * then the {@link Function} will return {@link Integer#TYPE}.
    *
@@ -104,7 +104,7 @@ public abstract class PrimitiveTypeUtils {
      * required primitive type and associated wrapper type.
      *
      * @param primitiveType Java primitive type; must not be {@literal null}.
-     * @param wrapperType Java wrappter type; must not be {@literal null}.
+     * @param wrapperType Java wrapper type; must not be {@literal null}.
      */
     protected PrimitiveToWrapperTypeAssociation(@NotNull Class<?> primitiveType, @NotNull Class<?> wrapperType) {
 
@@ -133,12 +133,12 @@ public abstract class PrimitiveTypeUtils {
     }
 
     /**
-     * Builder used to construct and initialize a new instance of {@link PrimitiveToWrapperTypeAssociation}.
+     * Builder used to construct and initialize a new {@link PrimitiveToWrapperTypeAssociation}.
      */
     public static class Builder {
 
       /**
-       * Factory method used to construct a new instance of this {@link Builder} used to construct and initialize
+       * Factory method used to construct a new {@link Builder} used to construct and initialize
        * a new {@link PrimitiveToWrapperTypeAssociation}.
        *
        * @param primitiveType Java primitive type.
@@ -151,7 +151,7 @@ public abstract class PrimitiveTypeUtils {
       private final Class<?> primitiveType;
 
       /**
-       * Constructs a new this {@link Builder} used to construct and initialize
+       * Constructs a new {@link Builder} used to construct and initialize
        * a new {@link PrimitiveToWrapperTypeAssociation}.
        *
        * @param primitiveType Java primitive type.

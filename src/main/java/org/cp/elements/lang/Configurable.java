@@ -16,13 +16,13 @@
 package org.cp.elements.lang;
 
 /**
- * The {@link Configurable} interface defines a contract for {@link Object Objects} that can be configured.
- *
+ * Interface defining a contract for {@link Object Objects} that can be configured.
+ * <p>
  * This {@link Class interface} allows implementers to define parameters under which their {@link Object Objects}
  * will operate. Configuration metadata can be specific to application context, environment or runtime.
  *
  * @author John J. Blum
- * @param <T> {@link Class} type of configuration metadata and settings.
+ * @param <T> {@link Class type} of configuration metadata and settings.
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
@@ -30,7 +30,7 @@ public interface Configurable<T> {
 
   /**
    * Determines whether {@literal this} {@link Object} has been properly configured.
-   *
+   * <p>
    * An {@link Object} is configured when it's {@link #configure} method is invoked with a configuration parameter.
    *
    * @return a boolean value indicating whether {@literal this} {@link Object} has been properly configured.

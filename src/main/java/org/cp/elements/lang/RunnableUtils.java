@@ -35,8 +35,8 @@ public abstract class RunnableUtils {
   /**
    * Runs the given {@link Runnable} object and then causes the current, calling {@link Thread} to sleep
    * for the given number of milliseconds.
-   *
-   * This utility method can be used to simulate a long running, expensive operation.
+   * <p>
+   * This utility method can be used to simulate a long-running, expensive operation.
    *
    * @param milliseconds a long value with the number of milliseconds for the current {@link Thread} to sleep.
    * @param runnable {@link Runnable} object to run; must not be {@literal null}.
@@ -58,8 +58,8 @@ public abstract class RunnableUtils {
   /**
    * Runs the given {@link Runnable} object and then causes the current, calling {@link Thread} to sleep
    * for the given number of milliseconds.
-   *
-   * This utility method can be used to simulate a long running, expensive operation.
+   * <p>
+   * This utility method can be used to simulate a long-running, expensive operation.
    *
    * @param milliseconds a long value with the number of milliseconds for the current {@link Thread} to sleep.
    * @param runnable {@link Runnable} object to run; must not be {@literal null}.
@@ -86,11 +86,11 @@ public abstract class RunnableUtils {
   /**
    * Runs the given {@link Runnable} object and then causes the current, calling {@link Thread} to sleep
    * for the given number of milliseconds.
-   *
+   * <p>
    * This utility method sleeps uninterrupted, resetting the interrupt bit if the current, calling {@link Thread}
    * is interrupted during sleep.
-   *
-   * This utility method can be used to simulate a long running, expensive operation.
+   * <p>
+   * This utility method can be used to simulate a long-running, expensive operation.
    *
    * @param milliseconds a long value with the number of milliseconds for the current {@link Thread} to sleep.
    * @param runnable {@link Runnable} object to run; must not be {@literal null}.
@@ -112,8 +112,8 @@ public abstract class RunnableUtils {
   /**
    * Runs the given {@link ReturningRunnable} object and then causes the current, calling {@link Thread} to sleep
    * for the given number of milliseconds before returning a value.
-   *
-   * This utility method can be used to simulate a long running, expensive operation.
+   * <p>
+   * This utility method can be used to simulate a long-running, expensive operation.
    *
    * @param <T> {{@link Class} type of the {@link ReturningRunnable} return value.
    * @param milliseconds a long value with the number of milliseconds for the current {@link Thread} to sleep.
@@ -137,8 +137,8 @@ public abstract class RunnableUtils {
   /**
    * Runs the given {@link ReturningRunnable} object and then causes the current, calling {@link Thread} to sleep
    * for the given number of milliseconds before returning a value.
-   *
-   * This utility method can be used to simulate a long running, expensive operation.
+   * <p>
+   * This utility method can be used to simulate a long-running, expensive operation.
    *
    * @param <T> {{@link Class} type of the {@link ReturningRunnable} return value.
    * @param milliseconds a long value with the number of milliseconds for the current {@link Thread} to sleep.
@@ -165,11 +165,11 @@ public abstract class RunnableUtils {
   /**
    * Runs the given {@link ReturningRunnable} object and then causes the current, calling {@link Thread} to sleep
    * for the given number of milliseconds before returning a value.
-   *
+   * <p>
    * This utility method sleeps uninterrupted, resetting the interrupt bit if the current, calling {@link Thread}
    * is interrupted during sleep.
-   *
-   * This utility method can be used to simulate a long running, expensive operation.
+   * <p>
+   * This utility method can be used to simulate a long-running, expensive operation.
    *
    * @param <T> {{@link Class} type of the {@link ReturningRunnable} return value.
    * @param milliseconds a long value with the number of milliseconds for the current {@link Thread} to sleep.
@@ -192,7 +192,7 @@ public abstract class RunnableUtils {
 
   /**
    * Safely sleeps for the given amount of milliseconds.
-   *
+   * <p>
    * If the {@link Thread#currentThread() current Thread} is {@link Thread#isInterrupted() interrupted} while
    * {@link Thread#sleep(long, int) sleeping}, then the {@link Thread#currentThread() current Thread} will continue
    * to {@link Thread#sleep(long, int) sleep} until the given number of milliseconds have expired and the interrupt bit
@@ -244,10 +244,10 @@ public abstract class RunnableUtils {
   }
 
   /**
-   * The {@link ReturningRunnable} interface defines a contract for implementing objects that run a computation
-   * and return a value.
+   * Interface defining a contract for implementing objects that run a computation and return a value.
    *
-   * @param <T> {@link Class} type of the return value.
+   * @param <T> {@link Class type} of the {@link Object return value}.
+   * @see java.lang.FunctionalInterface
    */
   @FunctionalInterface
   public interface ReturningRunnable<T> {
@@ -262,22 +262,21 @@ public abstract class RunnableUtils {
   }
 
   /**
-   * The {@link SleepDeprivedException} is a {@link RuntimeException} that is thrown when a {@link Thread}
-   * did not get all of its {@link Thread#sleep(long, int) sleep}.
+   * {@link RuntimeException} thrown when a {@link Thread} did not get all of its {@link Thread#sleep(long, int) sleep}.
    *
    * @see java.lang.RuntimeException
    */
   public static final class SleepDeprivedException extends RuntimeException {
 
     /**
-     * Construct a new instance of the {@link SleepDeprivedException} with no {@link String message} or no known
-     * {@link Throwable cause}.
+     * Construct a new i{@link SleepDeprivedException} with no {@link String message}
+     * and no known {@link Throwable cause}.
      */
     public SleepDeprivedException() {
     }
 
     /**
-     * Construct a new instance of the {@link SleepDeprivedException} initialized with given {@link String message}
+     * Construct a new {@link SleepDeprivedException} initialized with given {@link String message}
      * describing the reason for this exception.
      *
      * @param message {@link String} describing the reason for this exception.
@@ -287,8 +286,7 @@ public abstract class RunnableUtils {
     }
 
     /**
-     * Construct a new instance of the {@link SleepDeprivedException} initialized with given {@link Throwable cause}
-     * of this exception.
+     * Construct a new {@link SleepDeprivedException} initialized with given {@link Throwable cause} of this exception.
      *
      * @param cause {@link Throwable} object as the underlying cause of this exception.
      * @see java.lang.Throwable
@@ -298,7 +296,7 @@ public abstract class RunnableUtils {
     }
 
     /**
-     * Construct a new instance of the {@link SleepDeprivedException} initialized with given {@link String message}
+     * Construct a new {@link SleepDeprivedException} initialized with given {@link String message}
      * describing the reason for this exception along with the underlying {@link Throwable cause} of this exception.
      *
      * @param message {@link String} describing the reason for this exception.

@@ -29,7 +29,7 @@ import org.cp.elements.lang.annotation.Nullable;
 
 /**
  * Operation capable of throwing a {@link Throwable} during execution.
- *
+ * <p>
  * Implementation of the {@link Callable}, {@link Consumer}, {@link Runnable} and {@link Supplier} interfaces.
  *
  * @author John Blum
@@ -48,8 +48,8 @@ public interface ThrowableOperation<T> {
   ThrowableOperation<Object> NO_OP = args -> null;
 
   /**
-   * Factory method used to construct a new instance of {@link ThrowableOperation} initialized from
-   * (adapting/wrapping) the given, required {@link Callable}.
+   * Factory method used to construct a new {@link ThrowableOperation} initialized from (adapting/wrapping) the given,
+   * required {@link Callable}.
    *
    * @param <T> {@link Class type} of the {@link Callable Callable's} {@link Object return value}.
    * @param callable {@link Callable} to adapt/wrap as an instance of {@link ThrowableOperation};
@@ -65,8 +65,8 @@ public interface ThrowableOperation<T> {
   }
 
   /**
-   * Factory method used to construct a new instance of {@link ThrowableOperation} initialized from
-   * (adapting/wrapping) the given, required {@link Consumer}.
+   * Factory method used to construct a new {@link ThrowableOperation} initialized from (adapting/wrapping) the given,
+   * required {@link Consumer}.
    *
    * @param <T> {@link Class type} of the {@link Consumer Consumer's} {@link Object return value};
    * defaults to {@literal null}.
@@ -87,8 +87,8 @@ public interface ThrowableOperation<T> {
   }
 
   /**
-   * Factory method used to construct a new instance of {@link ThrowableOperation} initialized from
-   * (adapting/wrapping) the given, required {@link Function}.
+   * Factory method used to construct a new {@link ThrowableOperation} initialized from (adapting/wrapping) the given,
+   * required {@link Function}.
    *
    * @param <T> {@link Class type} of the {@link Function} {@link Object return value}.
    * @param function {@link Function} to adapt/wrap as an instance of {@link ThrowableOperation};
@@ -103,8 +103,8 @@ public interface ThrowableOperation<T> {
   }
 
   /**
-   * Factory method used to construct a new instance of {@link ThrowableOperation} initialized from
-   * (adapting/wrapping) the given, required {@link Predicate}.
+   * Factory method used to construct a new {@link ThrowableOperation} initialized from (adapting/wrapping) the given,
+   * required {@link Predicate}.
    *
    * @param predicate {@link Predicate} to adapt/wrap as an instance of {@link ThrowableOperation};
    * must not be {@literal null}.
@@ -118,10 +118,10 @@ public interface ThrowableOperation<T> {
   }
 
   /**
-   * Factory method used to construct a new instance of {@link ThrowableOperation} initialized from
-   * (adapting/wrapping) the given, required {@link Runnable}.
+   * Factory method used to construct a new {@link ThrowableOperation} initialized from (adapting/wrapping) the given,
+   * required {@link Runnable}.
    *
-   * @param <T> {@link Class type} of the {@link Runnable Runnable's} {@link Object return value};
+   * @param <T> {@link Class type} of the {@link Runnable} object's {@link Object return value};
    * defaults to {@literal null}.
    * @param runnable {@link Runnable} to adapt/wrap as an instance of {@link ThrowableOperation};
    * must not be {@literal null}.
@@ -140,8 +140,8 @@ public interface ThrowableOperation<T> {
   }
 
   /**
-   * Factory method used to construct a new instance of {@link ThrowableOperation} initialized from
-   * (adapting/wrapping) the given, required {@link Supplier}.
+   * Factory method used to construct a new {@link ThrowableOperation} initialized from (adapting/wrapping) the given,
+   * required {@link Supplier}.
    *
    * @param <T> {@link Class type} of the {@link Supplier Supplier's} {@link Object return value}.
    * @param supplier {@link Supplier} to adapt/wrap as an instance of {@link ThrowableOperation};
@@ -156,8 +156,8 @@ public interface ThrowableOperation<T> {
   }
 
   /**
-   * Factory method used to construct a new instance of {@link ThrowableOperation} initialized from
-   * (adapting/wrapping) the given, required {@link VoidReturningThrowableOperation}.
+   * Factory method used to construct a new {@link ThrowableOperation} initialized from (adapting/wrapping) the given,
+   * required {@link VoidReturningThrowableOperation}.
    *
    * @param <T> {@link Class type} of the {@link Object return value}.
    * @param operation {@link VoidReturningThrowableOperation} to adapt/wrap as a {@link ThrowableOperation};

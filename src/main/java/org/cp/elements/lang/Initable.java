@@ -16,7 +16,7 @@
 package org.cp.elements.lang;
 
 /**
- * The {@link Initable} interface defines a contract for {@link Object Objects} that can be initialized.
+ * Interface defining a contract for {@link Object Objects} that can be initialized.
  *
  * @author John J. Blum
  * @see org.cp.elements.lang.Destroyable
@@ -27,8 +27,8 @@ public interface Initable {
 
   /**
    * Determines whether {@literal this} {@link Object} has been initialized.
-   *
-   * This {@link Object} gets initialized when it's {@link #init} method is invoked.
+   * <p>
+   * This {@link Object} gets initialized when its {@link #init} method is invoked.
    *
    * @return a boolean value indicating whether {@literal this} {@link Object} has been initialized or not.
    */

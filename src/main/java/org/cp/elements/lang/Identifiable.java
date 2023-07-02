@@ -44,11 +44,11 @@ public interface Identifiable<ID extends Comparable<ID>> extends ImmutableIdenti
   }
 
   /**
-   * Determines whether {@literal this} {@link Identifiable} object is {@literal new}.
-   *
+   * Determines whether {@literal this} {@link Identifiable object} is {@literal new}.
+   * <p>
    * This {@link Object} is considered {@literal new} if the identifier is {@literal null}.
    *
-   * @return a boolean value indicating whether {@literal this} {@link Identifiable} object is {@literal new}.
+   * @return a boolean value indicating whether {@literal this} {@link Identifiable object} is {@literal new}.
    * @see #isNotNew()
    */
   default boolean isNew() {
@@ -56,11 +56,11 @@ public interface Identifiable<ID extends Comparable<ID>> extends ImmutableIdenti
   }
 
   /**
-   * Determines whether {@literal this} {@link Identifiable} object is {@literal not new}.
-   *
+   * Determines whether {@literal this} {@link Identifiable object} is {@literal not new}.
+   * <p>
    * This {@link Object} is considered {@literal not new} if the identifier is not {@literal null}.
    *
-   * @return a boolean value indicating whether {@literal this} {@link Identifiable} object is {@literal not new}.
+   * @return a boolean value indicating whether {@literal this} {@link Identifiable object} is {@literal not new}.
    * @see #isNew()
    */
   default boolean isNotNew() {
@@ -68,10 +68,10 @@ public interface Identifiable<ID extends Comparable<ID>> extends ImmutableIdenti
   }
 
   /**
-   * Builder method used to set this {@link Identifiable} object's identifier (ID).
+   * Builder method used to set this {@link Identifiable object's} identifier (ID).
    *
-   * @param <IDX> {@link Class Subclass type} of {@literal this} {@link Identifiable} object.
-   * @param id value of {@link Class type ID} assigned as this {@link Identifiable} object's unique identifier.
+   * @param <IDX> {@link Class Subclass type} of {@literal this} {@link Identifiable object}.
+   * @param id value of {@link Class type ID} assigned as this {@link Identifiable object's} unique identifier.
    * @return {@literal this} {@link Identifiable} object.
    * @see #setId(Comparable)
    */

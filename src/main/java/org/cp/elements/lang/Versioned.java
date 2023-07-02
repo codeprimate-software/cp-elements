@@ -17,7 +17,7 @@ package org.cp.elements.lang;
 
 /**
  * Interface defining a contract for {@link Object Objects} that can be {@literal versioned}.
- *
+ * <p>
  * The {@link Versioned} interface can serve as an alternative to {@link Auditable} object metadata in transactional,
  * optimistic locking use cases.
  *

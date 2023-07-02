@@ -18,13 +18,13 @@ package org.cp.elements.lang;
 import java.util.concurrent.Callable;
 
 /**
- * The {@link Executable} interface defines a contract for {@link Object Objects} that can be executed.
- *
+ * Interface defining a contract for {@link Object Objects} that can be executed.
+ * <p>
  * This {@link Class interface} is similar in purpose and function to the {@link java.lang.Runnable}
- * and {@link java.util.concurrent.Callable} {@link Class interfaces}.
+ * and {@link java.util.concurrent.Callable} Java {@link Class interfaces}.
  *
  * @author John Blum
- * @param <T> {@link Class type} of the execution's return value.
+ * @param <T> {@link Class type} of the execution's {@link Object return value}.
  * @see java.lang.FunctionalInterface
  * @see java.lang.Runnable
  * @see java.util.concurrent.Callable

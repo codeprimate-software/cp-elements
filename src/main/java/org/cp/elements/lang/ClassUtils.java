@@ -88,14 +88,16 @@ public abstract class ClassUtils {
   public static final String SETTER_METHOD_NAME_PREFIX = "set";
 
   /**
-   * Determines whether a given Class type is assignable to a declared Class type.  A given Class type is assignable to
-   * a declared Class type if it is in the same Class type hierarchy, i.e. the given Class type is a subclass,
-   * or sub-interface of the declared Class type.  Null is also assignable to the declared (to) Class type.
+   * Determines whether a given {@link Class type} is assignable to a declared {@link Class type}.
+   * <p>
+   * A given {@link Class type} is assignable to a declared {@link Class type} if it is in the same {@link Class type}
+   * hierarchy, i.e. the given {@link Class type} is a {@link Class subclass}, or sub-interface of the declared
+   * {@link Class type}. {@literal Null} is also assignable to the declared (to) {@link Class type}.
    *
-   * @param fromType the Class type evaluated for assignment compatibility with the declared Class type.
-   * @param toType the declared Class type defining the type hierarchy, or bounds on the given Class type for
-   * assignment compatibility.
-   * @return a boolean value indicating given Class type is assignable to the declared Class type.
+   * @param fromType {@link Class type} evaluated for assignment compatibility with the declared {@link Class type}.
+   * @param toType declared {@link Class type} defining the type hierarchy, or bounds on the given {@link Class type}
+   * for assignment compatibility.
+   * @return a boolean value indicating given {@link Class type} is assignable to the declared {@link Class type}.
    * @see java.lang.Class#isAssignableFrom(Class)
    * @see #instanceOf(Object, Class)
    */
@@ -106,8 +108,8 @@ public abstract class ClassUtils {
 
   /**
    * Casts the given {@link Object} to the given, required {@link Class type}.
-   *
-   * It is safe to cast {@literal null} to an instance of the give, required {@link Class type}.
+   * <p>
+   * It is safe to cast {@literal null} to an {@literal instance of} the given, required {@link Class type}.
    *
    * @param <T> {@link Class type} of the cast.
    * @param target {@link Object} to cast as an instance of the given, required {@link Class type}.
@@ -156,10 +158,12 @@ public abstract class ClassUtils {
   }
 
   /**
-   * Get the Class type of the specified Object.  Returns null if the Object reference is null.
+   * Get the {@link Class type} of the specified {@link Object}.
+   * <p>
+   * Returns {@literal null} if the {@link Object} reference is {@literal null}.
    *
-   * @param obj the Object who's Class type is being determined.
-   * @return a Class object signifying the type of the specified Object.
+   * @param obj {@link Object} who's {@link Object#getClass() type} is being determined.
+   * @return a {@link Class} classifying the type of the given {@link Object}.
    * @see java.lang.Object#getClass()
    */
   @NullSafe
@@ -168,13 +172,14 @@ public abstract class ClassUtils {
   }
 
   /**
-   * Gets the fully-qualified name of the Class type for the specified Object.  Returns null if the Object reference
-   * is null.
+   * Gets the {@link String fully-qualified name} of the {@link Class type} for the given {@link Object}.
+   * <p>
+   * Returns {@literal null} if the {@link Object} reference is {@literal null}.
    *
-   * @param obj the Object who's class name is determined.
-   * @return a String value specifying the fully qualified class name of the Object.
-   * @see java.lang.Class#getName()
+   * @param obj {@link Object} who's {@link Class#getName() class name} is determined.
+   * @return a {@link String} specifying the {@link Class#getName() fully-qualified class name} of the {@link Object}.
    * @see java.lang.Object#getClass()
+   * @see java.lang.Class#getName()
    */
   @NullSafe
   public static @Nullable String getClassName(@Nullable Object obj) {
@@ -182,11 +187,13 @@ public abstract class ClassUtils {
   }
 
   /**
-   * Gets the unqualified, simple name of the Class type for the specified Object.  Returns null if the Object reference
-   * is null.
+   * Gets the {@link Class#getSimpleName() unqualified, simple name} of the {@link Class type}
+   * for the given {@link Object}.
+   * <p>
+   * Returns {@literal null} if the {@link Object} reference is {@literal null}.
    *
-   * @param obj the Object who's simple class name is determined.
-   * @return a String value indicating the simple class name of the Object.
+   * @param obj {@link Object} who's {@link Class#getSimpleName() simple class name} is determined.
+   * @return a {@link String} specifying the {@link Class#getSimpleName() simple class name} of the {@link Object}.
    * @see java.lang.Class#getSimpleName()
    * @see java.lang.Object#getClass()
    */
@@ -196,8 +203,8 @@ public abstract class ClassUtils {
   }
 
   /**
-   * Determines all the interfaces implemented by the given object's {@link Class} type.
-   *
+   * Determines all interfaces implemented by the given {@link Object}'s {@link Class type}.
+   * <p>
    * This method performs a deep analysis of the object's {@link Class} along with all interfaces
    * implemented by the object's {@link Class superclass}, up the {@link Class} hierarchy until
    * the {@link Object} class is reached.
@@ -215,14 +222,14 @@ public abstract class ClassUtils {
   }
 
   /**
-   * Determines all the interfaces implemented by the given {@link Class} type.
-   *
+   * Determines all the interfaces implemented by the given {@link Class type}.
+   * <p>
    * This method performs a deep analysis of all the interfaces implemented by the given {@link Class} type
    * along with interfaces implemented by the {@link Class Class's} {@link Class superclass},
    * up the {@link Class} hierarchy until the {@link Object} class is reached.
    *
    * @param type {@link Class} to evaluate.
-   * @return all interfaces implemented by the given {@link Class} and its superclass.
+   * @return all interfaces implemented by the given {@link Class} and its {@link Class superclass}.
    * Returns an empty {@link Set} if the given {@link Class} does not implement any interfaces.
    * @see #getInterfaces(Class, Set)
    * @see java.lang.Class
@@ -236,15 +243,15 @@ public abstract class ClassUtils {
   }
 
   /**
-   * Determines all the interfaces implemented by the given {@link Class} type.
-   *
+   * Determines all the interfaces implemented by the given, required {@link Class type}.
+   * <p>
    * This method performs a deep analysis of all the interfaces implemented by the given {@link Class} type
    * along with interfaces implemented by the {@link Class Class's} {@link Class superclass},
    * up the {@link Class} hierarchy until the {@link Object} class is reached.
    *
-   * @param type {@link Class} to evaluate.
+   * @param type {@link Class} to evaluate; must not be {@literal null}.
    * @param interfaces {@link Set} containing all the {@link Class interfaces} implemented by
-   * the given {@link Class} type.
+   * the given {@link Class} type; must not be {@literal null}.
    * @return all interfaces implemented by the given {@link Class} and its superclass.
    * Returns an empty {@link Set} if the given {@link Class} does not implement any interfaces.
    * @see java.lang.Class
@@ -266,16 +273,17 @@ public abstract class ClassUtils {
   }
 
   /**
-   * Attempts to find a compatible constructor on the given class type with a signature having parameter types
-   * satisfying the specified arguments.
+   * Attempts to find a compatible {@link Constructor} on the given {@link Class type} with a signature
+   * having {@link Class parameter types} satisfying the given {@link Object arguments}.
    *
-   * @param <T> the generic class type to search for the constructor.
-   * @param type the Class type to search for the desired constructor.
-   * @param arguments an array of Object arguments used to match the constructor's signature.
-   * @return a Constructor from the given class type whose signature matches the specified arguments.
-   * @see java.lang.Class
+   * @param <T> generic {@link Class type} to search for the {@link Constructor}.
+   * @param type {@link Class type} to search for the desired {@link Constructor}.
+   * @param arguments an array of {@link Object arguments} used to match the {@link Constructor}'s signature.
+   * @return a {@link Constructor} from the given {@link Class type} whose signature matches
+   * the given {@link Object arguments}.
    * @see java.lang.Class#getDeclaredConstructors()
    * @see java.lang.reflect.Constructor
+   * @see java.lang.Class
    */
   @SuppressWarnings({ "unchecked" })
   public static @Nullable <T> Constructor<T> findConstructor(@NotNull Class<T> type, Object... arguments) {
@@ -322,15 +330,15 @@ public abstract class ClassUtils {
   }
 
   /**
-   * Gets the constructor with the specified signature from the given class type.
+   * Gets the {@link Constructor} with the given signature from the given {@link Class type}.
    *
-   * @param <T> the generic class type from which to get the constructor.
-   * @param type the Class type from which to get the Constructor.
-   * @param parameterTypes an array of class types indicating the constructor signature.
-   * @return a Constructor from the given class type with a matching signature.
-   * @see java.lang.Class
+   * @param <T> generic {@link Class type} from which to get the {@link Constructor}.
+   * @param type {@link Class type} from which to get the {@link Constructor}.
+   * @param parameterTypes array of {@link Class parameter types} matching the {@link Constructor} signature.
+   * @return a {@link Constructor} from the given {@link Class type} with a matching signature.
    * @see java.lang.Class#getDeclaredConstructor(Class[])
    * @see java.lang.reflect.Constructor
+   * @see java.lang.Class
    */
   public static @NotNull <T> Constructor<T> getConstructor(@NotNull Class<T> type, Class<?>... parameterTypes) {
 
@@ -343,19 +351,20 @@ public abstract class ClassUtils {
   }
 
   /**
-   * Attempts to resolve the constructor from the given class type based on the constructor's exact signature,
-   * otherwise finds a constructor who's signature parameter types satisfy the array of Object arguments.
+   * Attempts to resolve the {@link Constructor} from the given {@link Class type} based on the {@link Constructor}'s
+   * exact signature, otherwise finds a {@link Constructor} having a signature with the given
+   * {@link Class parameter types} satisfying the given array of {@link Object arguments}.
    *
-   * @param <T> the generic class type from which to resolve the constructor.
-   * @param type the Class type from which to resolve the constructor.
-   * @param parameterTypes an array of Class types indicating the desired constructor's signature.
-   * @param arguments an array of Object arguments used to match the constructor's signature.
-   * @return a Constructor from the given class type who's signature either matches the parameter types
-   * or satisfies the array of arguments.
+   * @param <T> generic {@link Class type} from which to resolve the {@link Constructor}.
+   * @param type {@link Class type} from which to resolve the {@link Constructor}; must not be {@literal null}.
+   * @param parameterTypes array of {@link Class types} specifying the desired {@link Constructor}'s signature.
+   * @param arguments array of {@link Object arguments} used to match the {@link Constructor}'s signature.
+   * @return a {@link Constructor} from the given {@link Class type} whose signature either matches
+   * the given {@link Class parameter types} or satisfies the array of {@link Object arguments}.
    * @see #getConstructor(Class, Class[])
    * @see #findConstructor(Class, Object...)
-   * @see java.lang.Class
    * @see java.lang.reflect.Constructor
+   * @see java.lang.Class
    */
   public static @NotNull <T> Constructor<T> resolveConstructor(@NotNull Class<T> type, Class<?>[] parameterTypes,
       Object... arguments) {
@@ -391,7 +400,7 @@ public abstract class ClassUtils {
 
   /**
    * Gets all the declared {@link Field fields} on the given {@link Class type}.
-   *
+   * <p>
    * This method recursively searches up the {@link Class} hierarchy from the given {@link Class type},
    * introspecting each {@link Class superclass types} until the {@link Object} {@link Class} is reached.
    *
@@ -417,7 +426,7 @@ public abstract class ClassUtils {
 
   /**
    * Gets a {@link Field} object representing the {@link String named field} of the given {@link Class}.
-   *
+   * <p>
    * This method recursively searches up the {@link Class} hierarchy of the given {@link Class}
    * until the {@link Object} class is reached. If the named field is found then a {@link Field} object
    * representing the {@link Class} field is returned, otherwise a {@link FieldNotFoundException} is thrown.
@@ -563,7 +572,7 @@ public abstract class ClassUtils {
    * @param methodName a String indicating the name of the method to resolve.
    * @param parameterTypes an array of Class objects used to resolve the exact signature of the method.
    * @param arguments an array of Objects used in a method invocation serving as a fallback search/lookup strategy
-   * if the method cannot be resolved using it's parameter types.  Maybe null.
+   * if the method cannot be resolved using its parameter types. Maybe {@literal null}.
    * @param returnType the declared class type of the method's return value (used only for Exception message purposes).
    * @return the resolved method from the given class type given the name, parameter types (signature)
    * and calling arguments, if any.
@@ -593,10 +602,10 @@ public abstract class ClassUtils {
   }
 
   /**
-   * Builds the signature of a method based on a java.lang.reflect.Method object.
+   * Builds the signature of a given {@link Method}.
    *
-   * @param method the Method object to build an method signature of.
-   * @return the signature of the Method as a String.
+   * @param method {@link Method} used to build a {@link String method signature}; must not be {@literal null}.
+   * @return the {@link String signature} of the given {@link Method}.
    * @see #getMethodSignature(String, Class[], Class)
    */
   protected static @NotNull String getMethodSignature(@NotNull Method method) {
@@ -604,12 +613,14 @@ public abstract class ClassUtils {
   }
 
   /**
-   * Builds the signature of a method based on the method's name, parameter types and return type.
+   * Builds the signature of a given {@link Method} based on the {@link Method#getName() method's name},
+   * {@link Class parameter types} and {@link Class return type}.
    *
-   * @param methodName a String indicating the name of the method.
-   * @param parameterTypes an array of Class objects indicating the type of each method parameter.
+   * @param methodName {@link String} containing the {@literal name} of the {@link Method}.
+   * @param parameterTypes array of {@link Class types} specifying the {@link Class type}
+   * of each {@link Method} parameter.
    * @param returnType a Class object indicating the methods return type.
-   * @return the signature of the method as a String.
+   * @return the {@link String signature} of the {@link Method}.
    * @see #getSimpleName(Class)
    */
   protected static @NotNull String getMethodSignature(@NotNull String methodName,
@@ -636,10 +647,10 @@ public abstract class ClassUtils {
   }
 
   /**
-   * Gets the fully-qualified name of the Class.
+   * Gets the {@link Class#getName() fully-qualified name} of the {@link Class}.
    *
-   * @param type the Class type to return the fully-qualified name of.
-   * @return a String value with the fully-qualified name of the Class.
+   * @param type {@link Class type} from which to return the {@link String fully-qualified name}.
+   * @return a {@link String} containing the {@link Class#getName() fully-qualified name} of the {@link Class}.
    * @see java.lang.Class#getName()
    */
   @NullSafe
@@ -648,17 +659,20 @@ public abstract class ClassUtils {
   }
 
   /**
-   * Gets the resource name of the given {@link Class} type.  The resource name of a given {@link Class} is
-   * the pathname of the class file defining the {@link Class} type relative to the CLASSPATH.
-   *
-   * For instance, if the {@link Class} type were java.lang.Object.class, then the resource name would be...
-   *
+   * Gets the {@link String resource name} of the given {@link Class type}.
+   * <p>
+   * The {@link String resource name} of a given {@link Class} is the {@link String pathname} of the class file
+   * defining the {@link Class type} relative to the {@literal CLASSPATH} used by the {@literal JVM}.
+   * <p>
+   * For instance, if the {@link Class type} were {@literal java.lang.Object.class},
+   * then the {@link String resource name} would be:
+   * <p>
    * <code>
    *   java/lang/Object.class.
    * </code>
    *
-   * @param type the {@link Class} type from which to construct the resource name.
-   * @return a String indicating the resource name of the given {@link Class} type.
+   * @param type {@link Class} type from which to construct the {@link String resource name}.
+   * @return a {@link String} specifying the {@literal resource name} of the given {@link Class type}.
    * @see java.lang.Class
    */
   @NullSafe
@@ -670,10 +684,10 @@ public abstract class ClassUtils {
   }
 
   /**
-   * Gets the simple name of the Class.
+   * Gets the {@link Class#getSimpleName() simple name} of the {@link Class}.
    *
-   * @param type the Class type to return the simple name of.
-   * @return a String value with the simple name of the Class.
+   * @param type {@link Class type} from which to return the {@link String unqualified, simple name}.
+   * @return a {@link String} with the {@link Class#getSimpleName() simple name} of the {@link Class}.
    * @see java.lang.Class#getSimpleName()
    */
   @NullSafe
@@ -713,10 +727,10 @@ public abstract class ClassUtils {
   }
 
   /**
-   * Determines whether the given {@link Class} type implements any {@link Class interfaces}.
+   * Determines whether the given {@link Class type} implements any {@link Class interfaces}.
    *
-   * @param type {@link Class} type to evaluate.
-   * @return a boolean value indicating whether the given {@link Class} type implements any {@link Class interfaces}.
+   * @param type {@link Class type} to evaluate.
+   * @return a boolean value indicating whether the given {@link Class type} implements any {@link Class interfaces}.
    * @see #getInterfaces(Class)
    * @see java.lang.Class
    */
@@ -726,12 +740,14 @@ public abstract class ClassUtils {
   }
 
   /**
-   * Determines whether the given Object is an instance of the specified Class.  Note, an Object cannot be an
-   * instance of null, so this method returns false if the Class type is null or the Object is null.
+   * Determines whether the given {@link Object} is an instance of the given {@link Class}.
+   * <p>
+   * Note, an {@link Object} cannot be an instance of {@literal null}, so this method returns {@literal false}
+   * if the {@link Class type} is {@literal null} or the {@link Object} is {@literal null}.
    *
-   * @param obj the Object to test as an instance of the specified Class type.
-   * @param type the Class type used in the instanceof operation.
-   * @return a boolean value indicating whether the Object is an instance of the Class type.
+   * @param obj {@link Object} to test as an instance of the given {@link Class type}.
+   * @param type {@link Class type} used in the {@literal instanceof} operation.
+   * @return a boolean value indicating whether the {@link Object} is an instance of the given {@link Class}.
    * @see java.lang.Class#isInstance(Object)
    * @see #assignableTo(Class, Class)
    */
@@ -741,10 +757,11 @@ public abstract class ClassUtils {
   }
 
   /**
-   * Determines whether the specified Class object represents an annotation type.
+   * Determines whether the given {@link Class} represents an {@link Annotation}.
    *
-   * @param type the Class object tested as an annotation type.
-   * @return true iff the Class object is not null and represents an annotation type.
+   * @param type {@link Class} to evaluate.
+   * @return {@literal true} iff the {@link Class} is not {@literal null} and represents an {@link Annotation}.
+   * @see java.lang.annotation.Annotation
    * @see java.lang.Class#isAnnotation()
    */
   @NullSafe
@@ -753,14 +770,15 @@ public abstract class ClassUtils {
   }
 
   /**
-   * Determines whether the specified Annotation meta-data is present on the given "annotated" members,
+   * Determines whether the given {@link Annotation} metadata is present on the given "annotated" members,
    * such as fields and methods.
    *
-   * @param annotation the Annotation used in the detection for presence on the given members.
-   * @param elements the members of a class type or object to inspect for the presence of the specified Annotation.
-   * @return a boolean value indicating whether the specified Annotation is present on any of the given members.
-   * @see java.lang.annotation.Annotation
+   * @param annotation {@link Annotation} used in the detection for presence on the given members.
+   * @param elements members of a {@link Class} or {@link Object} to inspect for the presence of
+   * the given {@link Annotation}.
+   * @return a boolean value indicating whether the given {@link Annotation} is present on any of the given members.
    * @see java.lang.reflect.AccessibleObject#isAnnotationPresent(Class)
+   * @see java.lang.annotation.Annotation
    */
   @NullSafe
   public static boolean isAnnotationPresent(@Nullable Class<? extends Annotation> annotation,
@@ -771,10 +789,10 @@ public abstract class ClassUtils {
   }
 
   /**
-   * Determines whether the specified Class object represents an array type.
+   * Determines whether the given {@link Class} represents an array type.
    *
-   * @param type the Class object tested as an array type.
-   * @return true iff the Class object is not null and represents an array type.
+   * @param type {@link Class} to evaluate.
+   * @return {@literal true} iff the {@link Class} is not {@literal null} and represents an array type.
    * @see java.lang.Class#isArray()
    */
   @NullSafe
@@ -783,11 +801,12 @@ public abstract class ClassUtils {
   }
 
   /**
-   * Determines whether the specified Class object represents an actual class, and not an Annotation, Array, Enum,
-   * Interface or Primitive type.
+   * Determines whether the given {@link Class} represents an actual class, and not an {@link Annotation}, Array,
+   * {@link Enum}, Interface or primitive type.
    *
-   * @param type the Class object tested as an actual class.
-   * @return true iff the Class object is not null and represents an actual class.
+   * @param type {@link Class} to evaluate.
+   * @return {@literal true} iff the {@link Class} is not {@literal null} and represents an actual class.
+   * @see java.lang.Class
    */
   @NullSafe
   public static boolean isClass(@Nullable Class<?> type) {
@@ -797,16 +816,16 @@ public abstract class ClassUtils {
   }
 
   /**
-   * Null-safe method to determine whether the given {@link Constructor} accepts a single argument
-   * of type {@link Object array} used to pass arguments much like a Java {@link Class} {@literal main} method.
-   *
+   * Null-safe method used to determine whether the given {@link Constructor} accepts a single argument
+   * of type {@link Object array} used to pass arguments much like a Java {@link Class} {@literal main} {@link Method}.
+   * <p>
    * This determination makes no effort to distinguish {@link Constructor Constructors} that accept an arbitrary
    * array of {@link Object objects} that do not represent arguments. Therefore, this method should only be used
-   * when the developer knows such a constructor exists for his/her particular UC.
+   * when the developer knows such a {@link Constructor} exists for his/her particular UC.
    *
    * @param constructor {@link Constructor} to evaluate.
-   * @return a boolean value indicating whether the given {@link Constructor} accepts
-   * an array of {@link Object arguments}.
+   * @return a boolean value indicating whether the given {@link Constructor}
+   * accepts an array of {@link Object arguments}.
    * @see java.lang.reflect.Constructor
    */
   @NullSafe
@@ -818,12 +837,13 @@ public abstract class ClassUtils {
   }
 
   /**
-   * Determines whether the given {@link Constructor} is a default constructor.
-   *
-   * A {@link Constructor} is the default constructor if it is public and has no parameters.
+   * Determines whether the given {@link Constructor} is a {@literal default} {@link Constructor}.
+   * <p>
+   * A {@link Constructor} is the {@literal default} {@link Constructor} if it is public and has no parameters.
    *
    * @param constructor {@link Constructor} to evaluate.
-   * @return a boolean value indicating whether the given {@link Constructor} is the default constructor.
+   * @return a boolean value indicating whether the given {@link Constructor}
+   * is the {@literal default} {@link Constructor}.
    * @see java.lang.reflect.Constructor
    */
   @NullSafe
@@ -832,11 +852,12 @@ public abstract class ClassUtils {
   }
 
   /**
-   * Determines whether the specified Class object represents an enum type.
+   * Determines whether the given {@link Class} represents an {@link Enum}.
    *
-   * @param type the Class object tested as an enum type.
-   * @return true iff the Class object is not null and represents an enum type.
+   * @param type {@link Class} to evaluate.
+   * @return {@literal true‘} iff the {@link Class} is not {@literal null} and represents an {@link Enum}.
    * @see java.lang.Class#isEnum()
+   * @see java.lang.Enum
    */
   @NullSafe
   public static boolean isEnum(@Nullable Class<?> type) {
@@ -844,10 +865,10 @@ public abstract class ClassUtils {
   }
 
   /**
-   * Determines whether the specified Class object represents an interface.
+   * Determines whether the {@link Class} represents an interface.
    *
-   * @param type the Class object tested as an interface.
-   * @return true iff the Class object is not null and represents an interface.
+   * @param type {@link Class} to evaluate.
+   * @return {@literal true} iff the {@link Class} is not {@literal null} and represents an interface.
    * @see java.lang.Class#isInterface()
    */
   @NullSafe
@@ -877,10 +898,11 @@ public abstract class ClassUtils {
   }
 
   /**
-   * Determines whether the specified class identified by name is available and present on the application classpath.
+   * Determines whether the specified class identified by {@link String name} is available and present
+   * on the application classpath.
    *
-   * @param className the fully qualified name of the class to determine the presence of.
-   * @return a boolean value indicating whether the class identified by name is in the classpath.
+   * @param className {@link String fully qualified name} of the {@link Class} from which to determine the presence.
+   * @return a boolean value indicating whether the class identified by {@link String name} is in the classpath.
    * @see #loadClass(String)
    */
   @SuppressWarnings("all")
@@ -895,10 +917,10 @@ public abstract class ClassUtils {
   }
 
   /**
-   * Determines whether the specified Class object represents a primitive type.
+   * Determines whether the given {@link Class} represents a primitive type.
    *
-   * @param type the Class object tested as a primitive type.
-   * @return true iff the Class object is not null and represents a primitive type.
+   * @param type {@link Class} to evaluate.
+   * @return {@literal true} iff the {@link Class} is not {@literal null} and represents a primitive type.
    * @see java.lang.Class#isPrimitive()
    */
   @NullSafe
@@ -907,17 +929,19 @@ public abstract class ClassUtils {
   }
 
   /**
-   * Loads the {@link Class} object for the specified, {@link String fully qualified class name} using
+   * Loads the {@link Class} for the given, {@link String fully-qualified class name} using
    * the {@link Thread#currentThread() current Thread's} {@link Thread#getContextClassLoader() context ClassLoader},
-   * followed by initializing the class.
+   * followed by initializing the {@link Class}.
    *
-   * @param <T> {@link Class} type of T.
-   * @param fullyQualifiedClassName a String value indicating the fully qualified class name of the Class to load.
-   * @return a Class object for the specified, fully-qualified class name.
-   * @throws TypeNotFoundException if the Class identified by the fully qualified class name could not be found.
-   * @see #loadClass(String, boolean, ClassLoader)
+   * @param <T> {@link Class type} of T.
+   * @param fullyQualifiedClassName {@link String} containing the fully-qualified class name
+   * of the {@link Class} to load.
+   * @return a {@link Class} for the given, {@link String fully-qualified class name}.
+   * @throws TypeNotFoundException if the {@link Class} identified by the {@link String fully-qualified class name}
+   * could not be found.
    * @see java.lang.Thread#currentThread()
    * @see java.lang.Thread#getContextClassLoader()
+   * @see #loadClass(String, boolean, ClassLoader)
    */
   public static @NotNull <T> Class<T> loadClass(@NotNull String fullyQualifiedClassName) {
     return loadClass(fullyQualifiedClassName, DEFAULT_INITIALIZE_LOADED_CLASS,
@@ -925,16 +949,20 @@ public abstract class ClassUtils {
   }
 
   /**
-   * Loads the Class object for the specified, fully qualified class name using the provided ClassLoader and the option
-   * to initialize the class (calling any static initializers) once loaded.
+   * Loads the {@link Class} for the given, {@link String fully-qualified class name}
+   * using the provided {@link ClassLoader} with an option to initialize the class (calling any static initializers)
+   * once loaded.
    *
-   * @param <T> {@link Class} type of T.
-   * @param fullyQualifiedClassName a String indicating the fully qualified class name of the Class to load.
-   * @param initialize a boolean value indicating whether to initialize the class after loading.
-   * @param classLoader the ClassLoader used to load the class.
-   * @return a Class object for the specified, fully-qualified class name.
+   * @param <T> {@link Class type} of T.
+   * @param fullyQualifiedClassName {@link String} indicating the {@link String fully-qualified class name}
+   * of the {@link Class} to load.
+   * @param initialize a boolean value indicating whether to initialize the {@link Class} after loading.
+   * @param classLoader {@link ClassLoader} used to load the {@link Class}.
+   * @return a {@link Class} for the given, {@link String fully-qualified class name}.
    * @throws TypeNotFoundException if the Class identified by the fully qualified class name could not be found.
    * @see java.lang.Class#forName(String, boolean, ClassLoader)
+   * @see java.lang.ClassLoader
+   * @see java.lang.Class
    */
   @SuppressWarnings("unchecked")
   public static @NotNull <T> Class<T> loadClass(@NotNull String fullyQualifiedClassName, boolean initialize,
@@ -951,7 +979,8 @@ public abstract class ClassUtils {
   /**
    * Locates the class file resource given the binary name of the {@link Class}.
    *
-   * @param binaryName a String with the binary name of the {@link Class} that's class file resource will be located.
+   * @param binaryName {@link String} with the binary name of the {@link Class} that's class file resource
+   * will be located.
    * @return a {@link URL} with the location of the class file resource containing the {@link Class} definition
    * for the given binary name.
    * @see #locateClass(String, ClassLoader)
@@ -962,14 +991,17 @@ public abstract class ClassUtils {
   }
 
   /**
-   * Locates the class file resource given the binary name of the {@link Class}.  The {@link ClassLoader} used
-   * to search class file resource for the {@link Class} with the given binary name.
+   * Locates the class file resource given the binary name of the {@link Class}.
+   * <p>
+   * The {@link ClassLoader} used to search class file resource for the {@link Class} with the given binary name.
    *
-   * @param binaryName a String with the binary name of the {@link Class} that's class file resource will be located.
-   * @param classLoader the {@link ClassLoader} used to locate the class file resource for the {@link Class}
+   * @param binaryName {@link String} with the binary name of the {@link Class} that's class file resource
+   * will be located.
+   * @param classLoader {@link ClassLoader} used to locate the class file resource for the {@link Class}
    * with the given binary name.
    * @return a {@link URL} with the location of the class file resource containing the {@link Class} definition
    * for the given binary name.
+   * @see java.lang.ClassLoader
    * @see java.net.URL
    */
   public static @Nullable URL locateClass(@NotNull String binaryName, @NotNull ClassLoader classLoader) {
@@ -986,11 +1018,13 @@ public abstract class ClassUtils {
   }
 
   /**
-   * Determines whether the Object is an instance of any of the Class types and returns false if it is.
+   * Determines whether the {@link Object} is an instance of any of the {@link Class types}
+   * and returns {@literal false} if it is.
    *
-   * @param obj the Object of the instanceof comparison.
-   * @param types an array of Class types used in the instanceof comparison.
-   * @return a true boolean value iff the Object is not an instance of any of the Class types.
+   * @param obj {@link Object} passed to the {@literal instanceof} comparison.
+   * @param types array of {@link Class types} used in the {@literal instanceof} comparison.
+   * @return a {@literal true} boolean value iff the {@link Object} is not an instance of
+   * any of the {@link Class types}.
    * @see #instanceOf(Object, Class)
    */
   @NullSafe
@@ -1007,11 +1041,11 @@ public abstract class ClassUtils {
   }
 
   /**
-   * Resolves the {@link Class} type of {@link Type}.
+   * Resolves the {@link Class type} of {@link Type}.
    *
    * @param type {@link Type} to resolve as a {@link Class}.
-   * @return the resolved {@link Class} type {@link Type}.
-   * @throws IllegalArgumentException if the given {@link Type} cannot be resolved as a {@link Class} type.
+   * @return the resolved {@link Class type} of {@link Type}.
+   * @throws IllegalArgumentException if the given {@link Type} cannot be resolved as a {@link Class type}.
    * @see java.lang.reflect.ParameterizedType
    * @see java.lang.reflect.Type
    */
