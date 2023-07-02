@@ -28,7 +28,8 @@ import org.cp.elements.lang.annotation.NullSafe;
 import org.cp.elements.lang.annotation.Nullable;
 
 /**
- * Abstract Data Type (ADT) and extension of {@link Property} used to model an array-typed bean property.
+ * Abstract Data Type (ADT) and extension of {@link Property} used to model an {@literal array-typed}
+ * {@link Object bean} property.
  *
  * @author John Blum
  * @see java.beans.PropertyDescriptor

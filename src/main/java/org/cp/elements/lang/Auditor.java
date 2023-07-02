@@ -23,7 +23,7 @@ import org.cp.elements.lang.annotation.NullSafe;
 import org.cp.elements.lang.annotation.Nullable;
 
 /**
- * Abstract Data Type (ADT) defining an {@link Auditor} capable of {@literal auditing} an {@link Auditable object}.
+ * Interface defining a contract for an {@link Auditor} capable of {@literal auditing} an {@link Auditable object}.
  *
  * @author John Blum
  * @param <USER> {@link Class type} of the user used by the application for auditing.

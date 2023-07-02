@@ -238,8 +238,7 @@ public class SimplePageable<T> implements Pageable<T> {
   }
 
   /**
-   * {@link SimplePage} is an Abstract Data Type (ADT) modeling a single {@link Page} contained by
-   * this {@link SimplePageable} object.
+   * Abstract Data Type (ADT) modeling a single {@link Page} contained by this {@link SimplePageable object}.
    *
    * @param <T> {@link Class type} of the elements contained in this {@link Page}.
    * @see org.cp.elements.util.paging.Page

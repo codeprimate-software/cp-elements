@@ -18,7 +18,7 @@ package org.cp.elements.lang;
 import org.cp.elements.lang.annotation.Nullable;
 
 /**
- * Abstract Data Type (ADT) used to create methods with in/out parameters.
+ * Abstract Data Type (ADT) used to model and create methods with in/out parameters.
  * <p>
  * This class is a wrapper around the value it encapsulates. In essence, an instance of this class is the same as
  * the value itself, as determined by the {@literal equals} and {@literal hashCode} methods and so this class

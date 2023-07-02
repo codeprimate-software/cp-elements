@@ -19,8 +19,7 @@ import org.cp.elements.lang.Identifiable;
 import org.cp.elements.lang.Nameable;
 
 /**
- * The {@link User} interface is an Abstract Data Type (ADT) defining and modeling a user
- * of an application or a system.
+ * Abstract Data Type (ADT) defining and modeling a user of an application, program or system.
  *
  * @author John Blum
  * @param <ID> {@link Class type} of the identifier.

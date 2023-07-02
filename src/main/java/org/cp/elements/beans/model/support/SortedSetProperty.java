@@ -33,7 +33,7 @@ import org.cp.elements.util.CollectionUtils;
 
 /**
  * Abstract Data Type (ADT) and extension of {@link Property} used to model a {@link SortedSet SortedSet-typed}
- * bean property.
+ * {@link Object bean} property.
  *
  * @author John Blum
  * @see java.beans.PropertyDescriptor

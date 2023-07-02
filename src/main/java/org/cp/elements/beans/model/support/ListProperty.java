@@ -31,7 +31,8 @@ import org.cp.elements.lang.annotation.Nullable;
 import org.cp.elements.util.CollectionUtils;
 
 /**
- * Abstract Data Type (ADT) and extension of {@link Property} used to model a {@link List List-typed} bean property.
+ * Abstract Data Type (ADT) and extension of {@link Property} used to model a {@link List List-typed}
+ * {@link Object bean} property.
  *
  * @author John Blum
  * @see java.beans.PropertyDescriptor

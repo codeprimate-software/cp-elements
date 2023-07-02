@@ -38,7 +38,7 @@ import org.cp.elements.lang.annotation.NullSafe;
 import org.cp.elements.lang.annotation.Nullable;
 
 /**
- * Abstract Data Type (ADT) modeling an {@literal indexed} bean property.
+ * Abstract Data Type (ADT) modeling an {@literal indexed} {@link Object bean} property.
  * <p>
  * The primary function of this ADT is to model {@literal ordered}, index-based bean properties, such as an array,
  * {@link List} or {@link Map}, where the property's collection of values can be individually referenced with

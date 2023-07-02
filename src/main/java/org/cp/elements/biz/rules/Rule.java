@@ -18,7 +18,7 @@ package org.cp.elements.biz.rules;
 import org.cp.elements.lang.Identifiable;
 
 /**
- * Abstract Data Type (ADT) for modeling a {@literal business rule}.
+ * Abstract Data Type (ADT) modeling a {@literal business rule}.
  *
  * @author John J. Blum
  * @param <T> {@link Class type} of {@link Object objects} evaluated by this {@literal business rule}.

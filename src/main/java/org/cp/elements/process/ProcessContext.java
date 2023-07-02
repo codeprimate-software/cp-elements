@@ -34,7 +34,7 @@ import org.cp.elements.lang.annotation.NotNull;
 import org.cp.elements.lang.annotation.NullSafe;
 
 /**
- * Abstract Data Type (ADT) used to capture details about the operating environment (context)
+ * Abstract Data Type (ADT) used to model and capture details about the operating environment (context)
  * in which a {@link Process} is running.
  *
  * @author John Blum

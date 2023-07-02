@@ -28,7 +28,7 @@ import org.cp.elements.lang.annotation.NotNull;
 import org.cp.elements.lang.annotation.Nullable;
 
 /**
- * Abstract Data Type (ADT) and model for a {@link Object POJO} represented as a JavaBean.
+ * Abstract Data Type (ADT) and model for a {@link Object POJO} represented as a {@literal JavaBean}.
  *
  * @author John Blum
  * @see java.beans.BeanInfo

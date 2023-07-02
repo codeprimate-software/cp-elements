@@ -28,7 +28,8 @@ import org.cp.elements.lang.annotation.NullSafe;
 import org.cp.elements.lang.annotation.Nullable;
 
 /**
- * Abstract Data Type (ADT) and extension of {@link Property} used to model a {@link Map Map-typed} bean property.
+ * Abstract Data Type (ADT) and extension of {@link Property} used to model a {@link Map Map-typed}
+ * {@link Object bean} property.
  *
  * @author John Blum
  * @see java.beans.PropertyDescriptor

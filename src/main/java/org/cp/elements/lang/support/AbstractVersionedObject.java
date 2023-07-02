@@ -23,7 +23,7 @@ import org.cp.elements.lang.annotation.NotNull;
 import org.cp.elements.lang.annotation.Nullable;
 
 /**
- * Abstract Data Type (ADT) supporting versioning of an {@link Object application domain model object}
+ * Abstract Data Type (ADT) used to support {@literal versioning} for an {@link Object application domain model object}
  * or {@literal POJO}.
  *
  * @author John Blum

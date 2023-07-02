@@ -31,7 +31,7 @@ import org.cp.elements.lang.annotation.Nullable;
 import org.cp.elements.util.ArrayUtils;
 
 /**
- * Abstract Data Type (ADT) used to encapsulate all the necessary information to invoke a {@link Method}
+ * Abstract Data Type (ADT) used to encapsulate all information necessary to invoke a {@link Method}
  * on a given target {@link Object}.
  *
  * @author John Blum

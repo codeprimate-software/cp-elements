@@ -126,7 +126,7 @@ public abstract class AbstractConverterRegistry implements ConverterRegistry {
   }
 
   /**
-   * Abstract Data Type used to encapsulate metadata describing the {@link Class from type} {@link Class to type}
+   * Abstract Data Type (ADT) used to encapsulate metadata describing the {@link Class from type} {@link Class to type}
    * conversion performed by the {@link Converter}.
    *
    * @see org.cp.elements.data.conversion.Converter

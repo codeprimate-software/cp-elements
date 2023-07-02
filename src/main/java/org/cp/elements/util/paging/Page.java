@@ -21,8 +21,8 @@ import static java.util.stream.StreamSupport.stream;
 import java.util.Comparator;
 
 /**
- * The {@link Page} interface defines an Abstract Data Type (ADT) modeling an individual page
- * in a {@link Pageable} object and is a collection of elements or items contained on the page.
+ * Abstract Data Type (ADT) modeling an individual page in a {@link Pageable object} and is a collection of elements
+ * or items contained on the page.
  *
  * @author John J. Blum
  * @param <T> {@link Class type} of the elements or items contained in this {@link Page}.

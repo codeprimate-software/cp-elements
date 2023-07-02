@@ -289,8 +289,8 @@ public abstract class AbstractCache<KEY extends Comparable<KEY>, VALUE> implemen
   }
 
   /**
-   * Abstract Data Type (ADT) modeling a simple, {@literal detached} {@link Cache.Entry}, that is not associated
-   * with or backed by any {@link Cache}.
+   * Abstract Data Type (ADT) modeling a simple, {@literal detached} {@link Cache.Entry} that is not associated with
+   * or backed by any {@link Cache}.
    *
    * @param <KEY> {@link Class type} of the {@link Cache.Entry} key.
    * @param <VALUE> {@link Class type} of the {@link Cache.Entry} value.
