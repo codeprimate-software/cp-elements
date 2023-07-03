@@ -19,7 +19,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
 import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
@@ -27,8 +27,10 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 
-import org.cp.elements.util.ArrayUtils;
 import org.junit.jupiter.api.Test;
+
+import org.cp.elements.lang.annotation.NotNull;
+import org.cp.elements.util.ArrayUtils;
 
 /**
  * Unit Tests for {@link ByteBufferOutputStream}.
@@ -43,23 +45,43 @@ import org.junit.jupiter.api.Test;
  */
 public class ByteBufferOutputStreamUnitTests {
 
+  private static final int CAPACITY = 1;
+
+  private @NotNull ByteBuffer allocateHeapByteBuffer() {
+
+    ByteBuffer byteBuffer = ByteBuffer.allocate(CAPACITY);
+
+    assertThat(byteBuffer).isNotNull();
+    assertThat(byteBuffer.capacity()).isEqualTo(CAPACITY);
+    assertThat(byteBuffer.limit()).isEqualTo(CAPACITY);
+    assertThat(byteBuffer.position()).isZero();
+    assertThat(byteBuffer.remaining()).isEqualTo(CAPACITY);
+
+    return byteBuffer;
+  }
+
+  private @NotNull ByteBuffer mockByteBuffer() {
+    return spy(allocateHeapByteBuffer());
+  }
+
   @Test
   public void constructNewByteBufferOutputStreamWithNonNullByteBuffer() {
 
-    ByteBuffer mockByteBuffer = mock(ByteBuffer.class);
+    ByteBuffer mockByteBuffer = mockByteBuffer();
 
     doReturn(false).when(mockByteBuffer).isReadOnly();
 
-    ByteBufferOutputStream outputStream = new ByteBufferOutputStream(mockByteBuffer);
-
-    assertThat(outputStream).isNotNull();
-    assertThat(outputStream.getByteBuffer()).isEqualTo(mockByteBuffer);
+    try (ByteBufferOutputStream outputStream = new ByteBufferOutputStream(mockByteBuffer)) {
+      assertThat(outputStream).isNotNull();
+      assertThat(outputStream.getByteBuffer()).isEqualTo(mockByteBuffer);
+    }
 
     verify(mockByteBuffer, times(1)).isReadOnly();
     verifyNoMoreInteractions(mockByteBuffer);
   }
 
   @Test
+  @SuppressWarnings("all")
   public void constructNewByteBufferOutputStreamWithNullByteBuffer() {
 
     assertThatIllegalArgumentException()
@@ -69,9 +91,10 @@ public class ByteBufferOutputStreamUnitTests {
   }
 
   @Test
+  @SuppressWarnings("all")
   public void constructNewByteBufferOutputStreamWithReadOnlyByteBuffer() {
 
-    ByteBuffer mockByteBuffer = mock(ByteBuffer.class);
+    ByteBuffer mockByteBuffer = mockByteBuffer();
 
     doReturn(true).when(mockByteBuffer).isReadOnly();
 
@@ -87,7 +110,7 @@ public class ByteBufferOutputStreamUnitTests {
   @Test
   public void intoIsCorrect() {
 
-    ByteBuffer mockByteBuffer = mock(ByteBuffer.class);
+    ByteBuffer mockByteBuffer = mockByteBuffer();
 
     doReturn(false).when(mockByteBuffer).isReadOnly();
 
@@ -103,7 +126,7 @@ public class ByteBufferOutputStreamUnitTests {
   @Test
   public void closeClosedTheOutputStream() {
 
-    ByteBuffer mockByteBuffer = mock(ByteBuffer.class);
+    ByteBuffer mockByteBuffer = mockByteBuffer();
 
     doReturn(false).when(mockByteBuffer).isReadOnly();
 
@@ -125,7 +148,7 @@ public class ByteBufferOutputStreamUnitTests {
   @Test
   public void closePreventsOutputStreamWriteOperations() {
 
-    ByteBuffer mockByteBuffer = mock(ByteBuffer.class);
+    ByteBuffer mockByteBuffer = mockByteBuffer();
 
     doReturn(false).when(mockByteBuffer).isReadOnly();
 
@@ -150,7 +173,7 @@ public class ByteBufferOutputStreamUnitTests {
   @Test
   public void gettingByteBufferClosesOutputStream() {
 
-    ByteBuffer mockByteBuffer = mock(ByteBuffer.class);
+    ByteBuffer mockByteBuffer = mockByteBuffer();
 
     doReturn(false).when(mockByteBuffer).isReadOnly();
 
@@ -170,7 +193,7 @@ public class ByteBufferOutputStreamUnitTests {
   @Test
   public void convertToByteIsCorrect() {
 
-    ByteBuffer mockByteBuffer = mock(ByteBuffer.class);
+    ByteBuffer mockByteBuffer = mockByteBuffer();
 
     doReturn(false).when(mockByteBuffer).isReadOnly();
 
