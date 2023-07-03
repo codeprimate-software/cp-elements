@@ -34,6 +34,7 @@ import org.cp.elements.data.conversion.ConversionException;
 import org.cp.elements.data.mapping.MappingException;
 import org.cp.elements.data.serialization.DeserializationException;
 import org.cp.elements.data.serialization.SerializationException;
+import org.cp.elements.function.FunctionException;
 import org.cp.elements.io.NoSuchFileException;
 import org.cp.elements.lang.factory.NoSuchConstructorException;
 import org.cp.elements.lang.factory.ObjectInstantiationException;
@@ -74,7 +75,8 @@ import org.cp.elements.util.search.SearchException;
 import org.cp.elements.util.sort.SortException;
 
 /**
- * An object factory used to construct and initialized common and useful Elements API {@link RuntimeException} classes.
+ * An abstract object factory used to construct and initialize common and useful Elements API
+ * {@link RuntimeException} classes.
  *
  * @author John Blum
  * @see org.cp.elements.beans.BeansException
@@ -94,6 +96,7 @@ import org.cp.elements.util.sort.SortException;
  * @see org.cp.elements.data.serialization.DeserializationException
  * @see org.cp.elements.data.serialization.SerializationException
  * @see org.cp.elements.data.mapping.MappingException
+ * @see org.cp.elements.function.FunctionException
  * @see org.cp.elements.io.NoSuchFileException
  * @see org.cp.elements.lang.AssertionException
  * @see org.cp.elements.lang.CloneException
@@ -663,6 +666,36 @@ public abstract class ElementsExceptionsFactory {
    */
   public static MappingException newMappingException(Throwable cause, String message, Object... args) {
     return new MappingException(format(message, args), cause);
+  }
+
+  // package org.cp.elements.function
+
+  /**
+   * Constructs a new {@link FunctionException} initialized with the given {@link String message}
+   * to describe the exception.
+   *
+   * @param message {@link String} containing a message to describe the exception.
+   * @param args optional array of {@link Object arguments} used to replace the placeholders in the message.
+   * @return a new {@link FunctionException}.
+   * @see #newMappingException(Throwable, String, Object...)
+   * @see org.cp.elements.function.FunctionException
+   */
+  public static FunctionException newFunctionException(String message, Object... args) {
+    return newFunctionException(null, message, args);
+  }
+
+  /**
+   * Constructs a new {@link FunctionException} initialized with the given {@link String message}
+   * to describe the exception along with a {@link Throwable cause} used as the reason the exception was thrown.
+   *
+   * @param cause {@link Throwable} used as the cause of the exception.
+   * @param message {@link String} containing a message to describe the exception.
+   * @param args optional array of {@link Object arguments} used to replace the placeholders in the message.
+   * @return a new {@link FunctionException}.
+   * @see org.cp.elements.function.FunctionException
+   */
+  public static FunctionException newFunctionException(Throwable cause, String message, Object... args) {
+    return new FunctionException(format(message, args), cause);
   }
 
   // package org.cp.elements.io
