@@ -39,7 +39,7 @@ import org.cp.elements.test.TestException;
 import org.mockito.InOrder;
 
 /**
- * Unit Tests for {@link ByteBufferInputStream}.
+ * Integration Tests for {@link ByteBufferInputStream}.
  *
  * @author John Blum
  * @see java.io.InputStream
@@ -49,7 +49,7 @@ import org.mockito.InOrder;
  * @see org.cp.elements.nio.ByteBufferInputStream
  * @since 1.0.0
  */
-public class ByteBufferInputStreamUnitTests {
+public class ByteBufferInputStreamIntegrationTests {
 
   private static final int CAPACITY = 1;
 
