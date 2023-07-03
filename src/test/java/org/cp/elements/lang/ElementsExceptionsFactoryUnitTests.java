@@ -40,6 +40,7 @@ import static org.cp.elements.lang.ElementsExceptionsFactory.newFieldAccessExcep
 import static org.cp.elements.lang.ElementsExceptionsFactory.newFieldNotFoundException;
 import static org.cp.elements.lang.ElementsExceptionsFactory.newFormatException;
 import static org.cp.elements.lang.ElementsExceptionsFactory.newFunctionException;
+import static org.cp.elements.lang.ElementsExceptionsFactory.newFunctionExecutionException;
 import static org.cp.elements.lang.ElementsExceptionsFactory.newHungTestException;
 import static org.cp.elements.lang.ElementsExceptionsFactory.newIdentityException;
 import static org.cp.elements.lang.ElementsExceptionsFactory.newIllegalPropertyValueException;
@@ -107,6 +108,7 @@ import org.cp.elements.data.mapping.MappingException;
 import org.cp.elements.data.serialization.DeserializationException;
 import org.cp.elements.data.serialization.SerializationException;
 import org.cp.elements.function.FunctionException;
+import org.cp.elements.function.FunctionExecutionException;
 import org.cp.elements.io.NoSuchFileException;
 import org.cp.elements.lang.factory.NoSuchConstructorException;
 import org.cp.elements.lang.factory.ObjectInstantiationException;
@@ -373,6 +375,17 @@ public class ElementsExceptionsFactoryUnitTests {
   public void newFunctionExceptionWithFormattedMessageAndCause() {
     assertThrowable(newFunctionException(this.mockCause, "%s is a {1}", "This", "test"),
       FunctionException.class, "This is a test", this.mockCause);
+  }
+
+  @Test
+  public void newFunctionExecutionExceptionWithMessage() {
+    assertThrowable(newFunctionExecutionException("test"), FunctionExecutionException.class, "test");
+  }
+
+  @Test
+  public void newFunctionExecutionExceptionWithFormattedMessageAndCause() {
+    assertThrowable(newFunctionExecutionException(this.mockCause, "%s is a {1}", "This", "test"),
+      FunctionExecutionException.class, "This is a test", this.mockCause);
   }
 
   @Test
