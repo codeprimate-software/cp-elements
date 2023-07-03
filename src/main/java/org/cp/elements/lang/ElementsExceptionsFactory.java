@@ -159,7 +159,7 @@ public abstract class ElementsExceptionsFactory {
    * Constructs a new {@link BeansException} initialized with the given {@link String message}
    * to describe the {@link BeansException}.
    *
-   * @param message {@link String} containing a message to describe the {@link BeansException}.
+   * @param message {@link String} containing a message to describe the exception.
    * @param args optional array of {@link Object arguments} used to replace the placeholders in the message.
    * @return a new {@link BeansException}.
    * @see #newBeansException(Throwable, String, Object...)
@@ -174,8 +174,8 @@ public abstract class ElementsExceptionsFactory {
    * to describe the {@link BeansException} along with a {@link Throwable cause} used as the reason
    * why the {@link BeansException} was thrown.
    *
-   * @param cause {@link Throwable} used as the cause of the {@link BeansException}.
-   * @param message {@link String} containing a message to describe the {@link BeansException}.
+   * @param cause {@link Throwable} used as the cause of the exception.
+   * @param message {@link String} containing a message to describe the exception.
    * @param args optional array of {@link Object arguments} used to replace the placeholders in the message.
    * @return a new {@link BeansException}.
    * @see org.cp.elements.beans.BeansException
@@ -188,7 +188,7 @@ public abstract class ElementsExceptionsFactory {
    * Constructs a new {@link IllegalPropertyValueException} initialized with
    * the given {@link String message} to describe the {@link IllegalPropertyValueException}.
    *
-   * @param message {@link String} containing a message to describe the {@link IllegalPropertyValueException}.
+   * @param message {@link String} containing a message to describe the exception.
    * @param args optional array of {@link Object arguments} used to replace the placeholders in the message.
    * @return a new {@link IllegalPropertyValueException}.
    * @see #newIllegalPropertyValueException(Throwable, String, Object...)
@@ -203,8 +203,8 @@ public abstract class ElementsExceptionsFactory {
    * the given {@link String message} to describe the {@link IllegalPropertyValueException} along with
    * a {@link Throwable cause} used as the reason why the {@link IllegalPropertyValueException} was thrown.
    *
-   * @param cause {@link Throwable} used as the cause of the {@link IllegalPropertyValueException}.
-   * @param message {@link String} containing a message to describe the {@link IllegalPropertyValueException}.
+   * @param cause {@link Throwable} used as the cause of the exception.
+   * @param message {@link String} containing a message to describe the exception.
    * @param args optional array of {@link Object arguments} used to replace the placeholders in the message.
    * @return a new {@link IllegalPropertyValueException}.
    * @see org.cp.elements.beans.IllegalPropertyValueException
@@ -219,7 +219,7 @@ public abstract class ElementsExceptionsFactory {
    * Constructs a new {@link PropertyNotFoundException} initialized with the given {@link String message}
    * to describe the {@link PropertyNotFoundException}.
    *
-   * @param message {@link String} containing a message to describe the {@link PropertyNotFoundException}.
+   * @param message {@link String} containing a message to describe the exception.
    * @param args optional array of {@link Object arguments} used to replace the placeholders in the message.
    * @return a new {@link PropertyNotFoundException}.
    * @see #newPropertyNotFoundException(Throwable, String, Object...)
@@ -234,8 +234,8 @@ public abstract class ElementsExceptionsFactory {
    * to describe the {@link PropertyNotFoundException} along with a {@link Throwable cause} used as the reason
    * why the {@link PropertyNotFoundException} was thrown.
    *
-   * @param cause {@link Throwable} used as the cause of the {@link PropertyNotFoundException}.
-   * @param message {@link String} containing a message to describe the {@link PropertyNotFoundException}.
+   * @param cause {@link Throwable} used as the cause of the exception.
+   * @param message {@link String} containing a message to describe the exception.
    * @param args optional array of {@link Object arguments} used to replace the placeholders in the message.
    * @return a new {@link PropertyNotFoundException}.
    * @see org.cp.elements.beans.PropertyNotFoundException
@@ -250,7 +250,7 @@ public abstract class ElementsExceptionsFactory {
    * Constructs a new {@link PropertyNotSetException} initialized with
    * the given {@link String message} to describe the {@link PropertyNotSetException}.
    *
-   * @param message {@link String} containing a message to describe the {@link PropertyNotSetException}.
+   * @param message {@link String} containing a message to describe the exception.
    * @param args optional array of {@link Object arguments} used to replace the placeholders in the message.
    * @return a new {@link PropertyNotSetException}.
    * @see #newPropertyNotSetException(Throwable, String, Object...)
@@ -265,8 +265,8 @@ public abstract class ElementsExceptionsFactory {
    * the given {@link String message} to describe the {@link PropertyNotSetException} along with
    * a {@link Throwable cause} used as the reason why the {@link PropertyNotSetException} was thrown.
    *
-   * @param cause {@link Throwable} used as the cause of the {@link PropertyNotSetException}.
-   * @param message {@link String} containing a message to describe the {@link PropertyNotSetException}.
+   * @param cause {@link Throwable} used as the cause of the exception.
+   * @param message {@link String} containing a message to describe the exception.
    * @param args optional array of {@link Object arguments} used to replace the placeholders in the message.
    * @return a new {@link PropertyNotSetException}.
    * @see org.cp.elements.beans.PropertyNotSetException
@@ -281,7 +281,7 @@ public abstract class ElementsExceptionsFactory {
    * Constructs a new {@link PropertyReadException} initialized with the given {@link String message}
    * to describe the {@link PropertyReadException}.
    *
-   * @param message {@link String} containing a message to describe the {@link PropertyReadException}.
+   * @param message {@link String} containing a message to describe the exception.
    * @param args optional array of {@link Object arguments} used to replace the placeholders in the message.
    * @return a new {@link PropertyReadException}.
    * @see #newPropertyReadException(Throwable, String, Object...)
@@ -296,8 +296,8 @@ public abstract class ElementsExceptionsFactory {
    * to describe the {@link PropertyReadException} along with a {@link Throwable cause} used as the reason
    * why the {@link PropertyReadException} was thrown.
    *
-   * @param cause {@link Throwable} used as the cause of the {@link PropertyReadException}.
-   * @param message {@link String} containing a message to describe the {@link PropertyReadException}.
+   * @param cause {@link Throwable} used as the cause of the exception.
+   * @param message {@link String} containing a message to describe the exception.
    * @param args optional array of {@link Object arguments} used to replace the placeholders in the message.
    * @return a new {@link PropertyReadException}.
    * @see org.cp.elements.beans.PropertyReadException
@@ -310,7 +310,7 @@ public abstract class ElementsExceptionsFactory {
    * Constructs a new {@link PropertyWriteException} initialized with the given {@link String message}
    * to describe the {@link PropertyWriteException}.
    *
-   * @param message {@link String} containing a message to describe the {@link PropertyWriteException}.
+   * @param message {@link String} containing a message to describe the exception.
    * @param args optional array of {@link Object arguments} used to replace the placeholders in the message.
    * @return a new {@link PropertyWriteException}.
    * @see #newPropertyWriteException(Throwable, String, Object...)
@@ -325,8 +325,8 @@ public abstract class ElementsExceptionsFactory {
    * to describe the {@link PropertyWriteException} along with a {@link Throwable cause} used as the reason
    * why the {@link PropertyWriteException} was thrown.
    *
-   * @param cause {@link Throwable} used as the cause of the {@link PropertyWriteException}.
-   * @param message {@link String} containing a message to describe the {@link PropertyWriteException}.
+   * @param cause {@link Throwable} used as the cause of the exception.
+   * @param message {@link String} containing a message to describe the exception.
    * @param args optional array of {@link Object arguments} used to replace the placeholders in the message.
    * @return a new {@link PropertyWriteException}.
    * @see org.cp.elements.beans.PropertyWriteException
@@ -341,7 +341,7 @@ public abstract class ElementsExceptionsFactory {
    * Constructs a new {@link RuleException} initialized with the given {@link String message}
    * to describe the {@link RuleException}.
    *
-   * @param message {@link String} containing a message to describe the {@link RuleException}.
+   * @param message {@link String} containing a message to describe the exception.
    * @param args optional array of {@link Object arguments} used to replace the placeholders in the message.
    * @return a new {@link RuleException}.
    * @see #newRuleException(Throwable, String, Object...)
@@ -356,8 +356,8 @@ public abstract class ElementsExceptionsFactory {
    * to describe the {@link RuleException} along with a {@link Throwable cause} used as the reason
    * why the {@link RuleException} was thrown.
    *
-   * @param cause {@link Throwable} used as the cause of the {@link RuleException}.
-   * @param message {@link String} containing a message to describe the {@link RuleException}.
+   * @param cause {@link Throwable} used as the cause of the exception.
+   * @param message {@link String} containing a message to describe the exception.
    * @param args optional array of {@link Object arguments} used to replace the placeholders in the message.
    * @return a new {@link RuleException}.
    * @see org.cp.elements.biz.rules.RuleException
@@ -372,7 +372,7 @@ public abstract class ElementsExceptionsFactory {
    * Constructs a new {@link ConfigurationException} initialized with the given {@link String message}
    * to describe the {@link ConfigurationException}.
    *
-   * @param message {@link String} containing a message to describe the {@link ConfigurationException}.
+   * @param message {@link String} containing a message to describe the exception.
    * @param args optional array of {@link Object arguments} used to replace the placeholders in the message.
    * @return a new {@link ConfigurationException}.
    * @see #newConfigurationException(Throwable, String, Object...)
@@ -387,8 +387,8 @@ public abstract class ElementsExceptionsFactory {
    * to describe the {@link ConfigurationException} along with a {@link Throwable cause} used as the reason
    * why the {@link ConfigurationException} was thrown.
    *
-   * @param cause {@link Throwable} used as the cause of the {@link ConfigurationException}.
-   * @param message {@link String} containing a message to describe the {@link ConfigurationException}.
+   * @param cause {@link Throwable} used as the cause of the exception.
+   * @param message {@link String} containing a message to describe the exception.
    * @param args optional array of {@link Object arguments} used to replace the placeholders in the message.
    * @return a new {@link ConfigurationException}.
    * @see org.cp.elements.context.configure.ConfigurationException
@@ -403,7 +403,7 @@ public abstract class ElementsExceptionsFactory {
    * Constructs a new {@link DataAccessException} initialized with the given {@link String message}
    * to describe the {@link DataAccessException}.
    *
-   * @param message {@link String} containing a message to describe the {@link DataAccessException}.
+   * @param message {@link String} containing a message to describe the exception.
    * @param args optional array of {@link Object arguments} used to replace the placeholders in the message.
    * @return a new {@link DataAccessException}.
    * @see #newDataAccessException(Throwable, String, Object...)
@@ -418,8 +418,8 @@ public abstract class ElementsExceptionsFactory {
    * to describe the {@link DataAccessException} along with a {@link Throwable cause} used as the reason
    * why the {@link DataAccessException} was thrown.
    *
-   * @param cause {@link Throwable} used as the cause of the {@link DataAccessException}.
-   * @param message {@link String} containing a message to describe the {@link DataAccessException}.
+   * @param cause {@link Throwable} used as the cause of the exception.
+   * @param message {@link String} containing a message to describe the exception.
    * @param args optional array of {@link Object arguments} used to replace the placeholders in the message.
    * @return a new {@link DataAccessException}.
    * @see org.cp.elements.dao.DataAccessException
@@ -434,7 +434,7 @@ public abstract class ElementsExceptionsFactory {
    * Constructs a new {@link CacheException} initialized with the given {@link String message}
    * to describe the {@link CacheException}.
    *
-   * @param message {@link String} containing a message to describe the {@link CacheException}.
+   * @param message {@link String} containing a message to describe the exception.
    * @param args optional array of {@link Object arguments} used to replace the placeholders in the message.
    * @return a new {@link CacheException}.
    * @see #newCacheException(Throwable, String, Object...)
@@ -449,8 +449,8 @@ public abstract class ElementsExceptionsFactory {
    * to describe the {@link CacheException} along with a {@link Throwable cause} used as the reason
    * why the {@link CacheException} was thrown.
    *
-   * @param cause {@link Throwable} used as the cause of the {@link CacheException}.
-   * @param message {@link String} containing a message to describe the {@link CacheException}.
+   * @param cause {@link Throwable} used as the cause of the exception.
+   * @param message {@link String} containing a message to describe the exception.
    * @param args optional array of {@link Object arguments} used to replace the placeholders in the message.
    * @return a new {@link CacheException}.
    * @see org.cp.elements.data.caching.CacheException
@@ -463,7 +463,7 @@ public abstract class ElementsExceptionsFactory {
    * Constructs a new {@link CacheNotFoundException} initialized with the given {@link String message}
    * to describe the {@link CacheNotFoundException}.
    *
-   * @param message {@link String} containing a message to describe the {@link CacheNotFoundException}.
+   * @param message {@link String} containing a message to describe the exception.
    * @param args optional array of {@link Object arguments} used to replace the placeholders in the message.
    * @return a new {@link CacheNotFoundException}.
    * @see #newCacheException(Throwable, String, Object...)
@@ -478,8 +478,8 @@ public abstract class ElementsExceptionsFactory {
    * to describe the {@link CacheNotFoundException} along with a {@link Throwable cause} used as the reason
    * why the {@link CacheNotFoundException} was thrown.
    *
-   * @param cause {@link Throwable} used as the cause of the {@link CacheNotFoundException}.
-   * @param message {@link String} containing a message to describe the {@link CacheNotFoundException}.
+   * @param cause {@link Throwable} used as the cause of the exception.
+   * @param message {@link String} containing a message to describe the exception.
    * @param args optional array of {@link Object arguments} used to replace the placeholders in the message.
    * @return a new {@link CacheNotFoundException}.
    * @see org.cp.elements.data.caching.CacheNotFoundException
@@ -492,7 +492,7 @@ public abstract class ElementsExceptionsFactory {
    * Constructs a new {@link CompressionException} initialized with the given {@link String message}
    * to describe the {@link CompressionException}.
    *
-   * @param message {@link String} containing a message to describe the {@link CompressionException}.
+   * @param message {@link String} containing a message to describe the exception.
    * @param args optional array of {@link Object arguments} used to replace the placeholders
    * in the {@link String message}.
    * @return a new {@link CompressionException}.
@@ -508,8 +508,8 @@ public abstract class ElementsExceptionsFactory {
    * to describe the {@link CompressionException} along with a {@link Throwable cause} used as the reason
    * why the {@link CompressionException} was thrown.
    *
-   * @param cause {@link Throwable} used as the cause of the {@link CompressionException}.
-   * @param message {@link String} containing a message to describe the {@link CompressionException}.
+   * @param cause {@link Throwable} used as the cause of the exception.
+   * @param message {@link String} containing a message to describe the exception.
    * @param args optional array of {@link Object arguments} used to replace the placeholders
    * in the {@link String message}.
    * @return a new {@link CompressionException}.
@@ -523,7 +523,7 @@ public abstract class ElementsExceptionsFactory {
    * Constructs a new {@link DecompressionException} initialized with the given {@link String message}
    * to describe the {@link DecompressionException}.
    *
-   * @param message {@link String} containing a message to describe the {@link DecompressionException}.
+   * @param message {@link String} containing a message to describe the exception.
    * @param args optional array of {@link Object arguments} used to replace the placeholders
    * in the {@link String message}.
    * @return a new {@link DecompressionException}.
@@ -539,8 +539,8 @@ public abstract class ElementsExceptionsFactory {
    * to describe the {@link DecompressionException} along with a {@link Throwable cause} used as the reason
    * why the {@link DecompressionException} was thrown.
    *
-   * @param cause {@link Throwable} used as the cause of the {@link DecompressionException}.
-   * @param message {@link String} containing a message to describe the {@link DecompressionException}.
+   * @param cause {@link Throwable} used as the cause of the exception.
+   * @param message {@link String} containing a message to describe the exception.
    * @param args optional array of {@link Object arguments} used to replace the placeholders
    * in the {@link String message}.
    * @return a new {@link DecompressionException}.
@@ -554,7 +554,7 @@ public abstract class ElementsExceptionsFactory {
    * Constructs a new {@link ConversionException} initialized with the given {@link String message}
    * to describe the {@link ConversionException}.
    *
-   * @param message {@link String} containing a message to describe the {@link ConversionException}.
+   * @param message {@link String} containing a message to describe the exception.
    * @param args optional array of {@link Object arguments} used to replace the placeholders in the message.
    * @return a new {@link ConversionException}.
    * @see #newConversionException(Throwable, String, Object...)
@@ -569,8 +569,8 @@ public abstract class ElementsExceptionsFactory {
    * to describe the {@link ConversionException} along with a {@link Throwable cause} used as the reason
    * why the {@link ConversionException} was thrown.
    *
-   * @param cause {@link Throwable} used as the cause of the {@link ConversionException}.
-   * @param message {@link String} containing a message to describe the {@link ConversionException}.
+   * @param cause {@link Throwable} used as the cause of the exception.
+   * @param message {@link String} containing a message to describe the exception.
    * @param args optional array of {@link Object arguments} used to replace the placeholders in the message.
    * @return a new {@link ConversionException}.
    * @see org.cp.elements.data.conversion.ConversionException
@@ -583,7 +583,7 @@ public abstract class ElementsExceptionsFactory {
    * Constructs a new {@link DeserializationException} initialized with the given {@link String message}
    * to describe the {@link DeserializationException}.
    *
-   * @param message {@link String} containing a message to describe the {@link DeserializationException}.
+   * @param message {@link String} containing a message to describe the exception.
    * @param args optional array of {@link Object arguments} used to replace the placeholders
    * in the {@link String message}.
    * @return a new {@link DeserializationException}.
@@ -599,8 +599,8 @@ public abstract class ElementsExceptionsFactory {
    * to describe the {@link DeserializationException} along with a {@link Throwable cause} used as the reason
    * why the {@link DeserializationException} was thrown.
    *
-   * @param cause {@link Throwable} used as the cause of the {@link DeserializationException}.
-   * @param message {@link String} containing a message to describe the {@link DeserializationException}.
+   * @param cause {@link Throwable} used as the cause of the exception.
+   * @param message {@link String} containing a message to describe the exception.
    * @param args optional array of {@link Object arguments} used to replace the placeholders
    * in the {@link String message}.
    * @return a new {@link DeserializationException}.
@@ -614,7 +614,7 @@ public abstract class ElementsExceptionsFactory {
    * Constructs a new {@link SerializationException} initialized with the given {@link String message}
    * to describe the {@link SerializationException}.
    *
-   * @param message {@link String} containing a message to describe the {@link SerializationException}.
+   * @param message {@link String} containing a message to describe the exception.
    * @param args optional array of {@link Object arguments} used to replace the placeholders
    * in the {@link String message}.
    * @return a new {@link SerializationException}.
@@ -630,8 +630,8 @@ public abstract class ElementsExceptionsFactory {
    * to describe the {@link SerializationException} along with a {@link Throwable cause} used as the reason
    * why the {@link SerializationException} was thrown.
    *
-   * @param cause {@link Throwable} used as the cause of the {@link SerializationException}.
-   * @param message {@link String} containing a message to describe the {@link SerializationException}.
+   * @param cause {@link Throwable} used as the cause of the exception.
+   * @param message {@link String} containing a message to describe the exception.
    * @param args optional array of {@link Object arguments} used to replace the placeholders
    * in the {@link String message}.
    * @return a new {@link SerializationException}.
@@ -645,7 +645,7 @@ public abstract class ElementsExceptionsFactory {
    * Constructs a new {@link MappingException} initialized with the given {@link String message}
    * to describe the {@link MappingException}.
    *
-   * @param message {@link String} containing a message to describe the {@link MappingException}.
+   * @param message {@link String} containing a message to describe the exception.
    * @param args optional array of {@link Object arguments} used to replace the placeholders in the message.
    * @return a new {@link MappingException}.
    * @see #newMappingException(Throwable, String, Object...)
@@ -660,8 +660,8 @@ public abstract class ElementsExceptionsFactory {
    * to describe the {@link MappingException} along with a {@link Throwable cause} used as the reason
    * why the {@link MappingException} was thrown.
    *
-   * @param cause {@link Throwable} used as the cause of the {@link MappingException}.
-   * @param message {@link String} containing a message to describe the {@link MappingException}.
+   * @param cause {@link Throwable} used as the cause of the exception.
+   * @param message {@link String} containing a message to describe the exception.
    * @param args optional array of {@link Object arguments} used to replace the placeholders in the message.
    * @return a new {@link MappingException}.
    * @see org.cp.elements.data.mapping.MappingException
@@ -736,7 +736,7 @@ public abstract class ElementsExceptionsFactory {
    * Constructs a new {@link NoSuchFileException} initialized with the given {@link String message}
    * to describe the {@link NoSuchFileException}.
    *
-   * @param message {@link String} containing a message to describe the {@link NoSuchFileException}.
+   * @param message {@link String} containing a message to describe the exception.
    * @param args optional array of {@link Object arguments} used to replace the placeholders in the message.
    * @return a new {@link NoSuchFileException}.
    * @see #newNoSuchFileException(Throwable, String, Object...)
@@ -751,8 +751,8 @@ public abstract class ElementsExceptionsFactory {
    * to describe the {@link NoSuchFileException} along with a {@link Throwable cause} used as the reason
    * why the {@link NoSuchFileException} was thrown.
    *
-   * @param cause {@link Throwable} used as the cause of the {@link NoSuchFileException}.
-   * @param message {@link String} containing a message to describe the {@link NoSuchFileException}.
+   * @param cause {@link Throwable} used as the cause of the exception.
+   * @param message {@link String} containing a message to describe the exception.
    * @param args optional array of {@link Object arguments} used to replace the placeholders in the message.
    * @return a new {@link NoSuchFileException}.
    * @see org.cp.elements.io.NoSuchFileException
@@ -767,7 +767,7 @@ public abstract class ElementsExceptionsFactory {
    * Constructs a new {@link AssertionException} initialized with the given {@link String message}
    * to describe the {@link AssertionException}.
    *
-   * @param message {@link String} containing a message to describe the {@link AssertionException}.
+   * @param message {@link String} containing a message to describe the exception.
    * @param args optional array of {@link Object arguments} used to replace the placeholders in the message.
    * @return a new {@link AssertionException}.
    * @see #newAssertionException(Throwable, String, Object...)
@@ -782,8 +782,8 @@ public abstract class ElementsExceptionsFactory {
    * to describe the {@link AssertionException} along with a {@link Throwable cause} used as the reason
    * why the {@link AssertionException} was thrown.
    *
-   * @param cause {@link Throwable} used as the cause of the {@link AssertionException}.
-   * @param message {@link String} containing a message to describe the {@link AssertionException}.
+   * @param cause {@link Throwable} used as the cause of the exception.
+   * @param message {@link String} containing a message to describe the exception.
    * @param args optional array of {@link Object arguments} used to replace the placeholders in the message.
    * @return a new {@link AssertionException}.
    * @see org.cp.elements.lang.AssertionException
@@ -796,7 +796,7 @@ public abstract class ElementsExceptionsFactory {
    * Constructs a new {@link CloneException} initialized with the given {@link String message}
    * to describe the {@link CloneException}.
    *
-   * @param message {@link String} containing a message to describe the {@link CloneException}.
+   * @param message {@link String} containing a message to describe the exception.
    * @param args optional array of {@link Object arguments} used to replace the placeholders in the message.
    * @return a new {@link CloneException}.
    * @see #newCloneException(Throwable, String, Object...)
@@ -811,8 +811,8 @@ public abstract class ElementsExceptionsFactory {
    * to describe the {@link CloneException} along with a {@link Throwable cause} used as the reason
    * why the {@link CloneException} was thrown.
    *
-   * @param cause {@link Throwable} used as the cause of the {@link CloneException}.
-   * @param message {@link String} containing a message to describe the {@link CloneException}.
+   * @param cause {@link Throwable} used as the cause of the exception.
+   * @param message {@link String} containing a message to describe the exception.
    * @param args optional array of {@link Object arguments} used to replace the placeholders in the message.
    * @return a new {@link CloneException}.
    * @see org.cp.elements.lang.CloneException
@@ -825,7 +825,7 @@ public abstract class ElementsExceptionsFactory {
    * Constructs a new {@link ComparisonException} initialized with the given {@link String message}
    * to describe the {@link ComparisonException}.
    *
-   * @param message {@link String} containing a message to describe the {@link ComparisonException}.
+   * @param message {@link String} containing a message to describe the exception.
    * @param args optional array of {@link Object arguments} used to replace the placeholders in the message.
    * @return a new {@link ComparisonException}.
    * @see #newComparisonException(Throwable, String, Object...)
@@ -840,8 +840,8 @@ public abstract class ElementsExceptionsFactory {
    * to describe the {@link ComparisonException} along with a {@link Throwable cause} used as the reason
    * why the {@link ComparisonException} was thrown.
    *
-   * @param cause {@link Throwable} used as the cause of the {@link ComparisonException}.
-   * @param message {@link String} containing a message to describe the {@link ComparisonException}.
+   * @param cause {@link Throwable} used as the cause of the exception.
+   * @param message {@link String} containing a message to describe the exception.
    * @param args optional array of {@link Object arguments} used to replace the placeholders in the message.
    * @return a new {@link ComparisonException}.
    * @see org.cp.elements.lang.ComparisonException
@@ -854,7 +854,7 @@ public abstract class ElementsExceptionsFactory {
    * Constructs a new {@link EqualityException} initialized with the given {@link String message}
    * to describe the {@link EqualityException}.
    *
-   * @param message {@link String} containing a message to describe the {@link EqualityException}.
+   * @param message {@link String} containing a message to describe the exception.
    * @param args optional array of {@link Object arguments} used to replace the placeholders in the message.
    * @return a new {@link EqualityException}.
    * @see #newEqualityException(Throwable, String, Object...)
@@ -869,8 +869,8 @@ public abstract class ElementsExceptionsFactory {
    * to describe the {@link EqualityException} along with a {@link Throwable cause} used as the reason
    * why the {@link EqualityException} was thrown.
    *
-   * @param cause {@link Throwable} used as the cause of the {@link EqualityException}.
-   * @param message {@link String} containing a message to describe the {@link EqualityException}.
+   * @param cause {@link Throwable} used as the cause of the exception.
+   * @param message {@link String} containing a message to describe the exception.
    * @param args optional array of {@link Object arguments} used to replace the placeholders in the message.
    * @return a new {@link EqualityException}.
    * @see org.cp.elements.lang.EqualityException
@@ -883,7 +883,7 @@ public abstract class ElementsExceptionsFactory {
    * Constructs a new {@link ExpectationException} initialized with the given {@link String message}
    * to describe the {@link ExpectationException}.
    *
-   * @param message {@link String} containing a message to describe the {@link ExpectationException}.
+   * @param message {@link String} containing a message to describe the exception.
    * @param args optional array of {@link Object arguments} used to replace the placeholders in the message.
    * @return a new {@link ExpectationException}.
    * @see #newExpectationException(Throwable, String, Object...)
@@ -898,8 +898,8 @@ public abstract class ElementsExceptionsFactory {
    * to describe the {@link ExpectationException} along with a {@link Throwable cause} used as the reason
    * why the {@link ExpectationException} was thrown.
    *
-   * @param cause {@link Throwable} used as the cause of the {@link ExpectationException}.
-   * @param message {@link String} containing a message to describe the {@link ExpectationException}.
+   * @param cause {@link Throwable} used as the cause of the exception.
+   * @param message {@link String} containing a message to describe the exception.
    * @param args optional array of {@link Object arguments} used to replace the placeholders in the message.
    * @return a new {@link ExpectationException}.
    * @see org.cp.elements.lang.ExpectationException
@@ -912,7 +912,7 @@ public abstract class ElementsExceptionsFactory {
    * Constructs a new {@link IdentityException} initialized with the given {@link String message}
    * to describe the {@link IdentityException}.
    *
-   * @param message {@link String} containing a message to describe the {@link IdentityException}.
+   * @param message {@link String} containing a message to describe the exception.
    * @param args optional array of {@link Object arguments} used to replace the placeholders in the message.
    * @return a new {@link IdentityException}.
    * @see #newIdentityException(Throwable, String, Object...)
@@ -927,8 +927,8 @@ public abstract class ElementsExceptionsFactory {
    * to describe the {@link IdentityException} along with a {@link Throwable cause} used as the reason
    * why the {@link IdentityException} was thrown.
    *
-   * @param cause {@link Throwable} used as the cause of the {@link IdentityException}.
-   * @param message {@link String} containing a message to describe the {@link IdentityException}.
+   * @param cause {@link Throwable} used as the cause of the exception.
+   * @param message {@link String} containing a message to describe the exception.
    * @param args optional array of {@link Object arguments} used to replace the placeholders in the message.
    * @return a new {@link IdentityException}.
    * @see org.cp.elements.lang.IdentityException
@@ -941,7 +941,7 @@ public abstract class ElementsExceptionsFactory {
    * Constructs a new {@link IllegalTypeException} initialized with the given {@link String message}
    * to describe the {@link IllegalTypeException}.
    *
-   * @param message {@link String} containing a message to describe the {@link IllegalTypeException}.
+   * @param message {@link String} containing a message to describe the exception.
    * @param args optional array of {@link Object arguments} used to replace the placeholders in the message.
    * @return a new {@link IllegalTypeException}.
    * @see #newIllegalTypeException(Throwable, String, Object...)
@@ -956,8 +956,8 @@ public abstract class ElementsExceptionsFactory {
    * to describe the {@link IllegalTypeException} along with a {@link Throwable cause} used as the reason
    * why the {@link IllegalTypeException} was thrown.
    *
-   * @param cause {@link Throwable} used as the cause of the {@link IllegalTypeException}.
-   * @param message {@link String} containing a message to describe the {@link IllegalTypeException}.
+   * @param cause {@link Throwable} used as the cause of the exception.
+   * @param message {@link String} containing a message to describe the exception.
    * @param args optional array of {@link Object arguments} used to replace the placeholders in the message.
    * @return a new {@link IllegalTypeException}.
    * @see org.cp.elements.lang.IllegalTypeException
@@ -970,7 +970,7 @@ public abstract class ElementsExceptionsFactory {
    * Constructs a new {@link ImmutableObjectException} initialized with the given {@link String message}
    * to describe the {@link ImmutableObjectException}.
    *
-   * @param message {@link String} containing a message to describe the {@link ImmutableObjectException}.
+   * @param message {@link String} containing a message to describe the exception.
    * @param args optional array of {@link Object arguments} used to replace the placeholders in the message.
    * @return a new {@link ImmutableObjectException}.
    * @see #newImmutableObjectException(Throwable, String, Object...)
@@ -985,8 +985,8 @@ public abstract class ElementsExceptionsFactory {
    * to describe the {@link ImmutableObjectException} along with a {@link Throwable cause} used as the reason
    * why the {@link ImmutableObjectException} was thrown.
    *
-   * @param cause {@link Throwable} used as the cause of the {@link ImmutableObjectException}.
-   * @param message {@link String} containing a message to describe the {@link ImmutableObjectException}.
+   * @param cause {@link Throwable} used as the cause of the exception.
+   * @param message {@link String} containing a message to describe the exception.
    * @param args optional array of {@link Object arguments} used to replace the placeholders in the message.
    * @return a new {@link ImmutableObjectException}.
    * @see org.cp.elements.lang.ImmutableObjectException
@@ -999,7 +999,7 @@ public abstract class ElementsExceptionsFactory {
    * Constructs a new {@link InitializationException} initialized with the given {@link String message}
    * to describe the {@link InitializationException}.
    *
-   * @param message {@link String} containing a message to describe the {@link InitializationException}.
+   * @param message {@link String} containing a message to describe the exception.
    * @param args optional array of {@link Object arguments} used to replace the placeholders in the message.
    * @return a new {@link InitializationException}.
    * @see #newInitializationException(Throwable, String, Object...)
@@ -1014,8 +1014,8 @@ public abstract class ElementsExceptionsFactory {
    * to describe the {@link InitializationException} along with a {@link Throwable cause} used as the reason
    * why the {@link InitializationException} was thrown.
    *
-   * @param cause {@link Throwable} used as the cause of the {@link InitializationException}.
-   * @param message {@link String} containing a message to describe the {@link InitializationException}.
+   * @param cause {@link Throwable} used as the cause of the exception.
+   * @param message {@link String} containing a message to describe the exception.
    * @param args optional array of {@link Object arguments} used to replace the placeholders in the message.
    * @return a new {@link InitializationException}.
    * @see org.cp.elements.lang.InitializationException
@@ -1028,7 +1028,7 @@ public abstract class ElementsExceptionsFactory {
    * Constructs a new {@link ObjectNotFoundException} initialized with the given {@link String message}
    * to describe the {@link ObjectNotFoundException}.
    *
-   * @param message {@link String} containing a message to describe the {@link ObjectNotFoundException}.
+   * @param message {@link String} containing a message to describe the exception.
    * @param args optional array of {@link Object arguments} used to replace the placeholders in the message.
    * @return a new {@link ObjectNotFoundException}.
    * @see #newObjectNotFoundException(Throwable, String, Object...)
@@ -1043,8 +1043,8 @@ public abstract class ElementsExceptionsFactory {
    * to describe the {@link ObjectNotFoundException} along with a {@link Throwable cause} used as the reason
    * why the {@link ObjectNotFoundException} was thrown.
    *
-   * @param cause {@link Throwable} used as the cause of the {@link ObjectNotFoundException}.
-   * @param message {@link String} containing a message to describe the {@link ObjectNotFoundException}.
+   * @param cause {@link Throwable} used as the cause of the exception.
+   * @param message {@link String} containing a message to describe the exception.
    * @param args optional array of {@link Object arguments} used to replace the placeholders in the message.
    * @return a new {@link ObjectNotFoundException}.
    * @see org.cp.elements.lang.ObjectNotFoundException
@@ -1057,7 +1057,7 @@ public abstract class ElementsExceptionsFactory {
    * Constructs a new {@link ResourceNotFoundException} initialized with the given {@link String message}
    * to describe the {@link ResourceNotFoundException}.
    *
-   * @param message {@link String} containing a message to describe the {@link ResourceNotFoundException}.
+   * @param message {@link String} containing a message to describe the exception.
    * @param args optional array of {@link Object arguments} used to replace the placeholders in the message.
    * @return a new {@link ResourceNotFoundException}.
    * @see #newResourceNotFoundException(Throwable, String, Object...)
@@ -1072,8 +1072,8 @@ public abstract class ElementsExceptionsFactory {
    * to describe the {@link ResourceNotFoundException} along with a {@link Throwable cause} used as the reason
    * why the {@link ResourceNotFoundException} was thrown.
    *
-   * @param cause {@link Throwable} used as the cause of the {@link ResourceNotFoundException}.
-   * @param message {@link String} containing a message to describe the {@link ResourceNotFoundException}.
+   * @param cause {@link Throwable} used as the cause of the exception.
+   * @param message {@link String} containing a message to describe the exception.
    * @param args optional array of {@link Object arguments} used to replace the placeholders in the message.
    * @return a new {@link ResourceNotFoundException}.
    * @see org.cp.elements.lang.ResourceNotFoundException
@@ -1088,7 +1088,7 @@ public abstract class ElementsExceptionsFactory {
    * Constructs a new {@link ThrowableOperationException} initialized with the given {@link String message}
    * to describe the {@link ThrowableOperationException}.
    *
-   * @param message {@link String} containing a message to describe the {@link ThrowableOperationException}.
+   * @param message {@link String} containing a message to describe the exception.
    * @param args optional array of {@link Object arguments} used to replace the placeholders in the message.
    * @return a new {@link ThrowableOperationException}.
    * @see #newThrowableOperationException(Throwable, String, Object...)
@@ -1103,8 +1103,8 @@ public abstract class ElementsExceptionsFactory {
    * to describe the {@link ThrowableOperationException} along with a {@link Throwable cause} used as the reason
    * why the {@link ThrowableOperationException} was thrown.
    *
-   * @param cause {@link Throwable} used as the cause of the {@link ThrowableOperationException}.
-   * @param message {@link String} containing a message to describe the {@link ThrowableOperationException}.
+   * @param cause {@link Throwable} used as the cause of the exception.
+   * @param message {@link String} containing a message to describe the exception.
    * @param args optional array of {@link Object arguments} used to replace the placeholders in the message.
    * @return a new {@link ThrowableOperationException}.
    * @see org.cp.elements.lang.ThrowableOperationException
@@ -1119,7 +1119,7 @@ public abstract class ElementsExceptionsFactory {
    * Constructs a new {@link TypeNotFoundException} initialized with the given {@link String message}
    * to describe the {@link TypeNotFoundException}.
    *
-   * @param message {@link String} containing a message to describe the {@link TypeNotFoundException}.
+   * @param message {@link String} containing a message to describe the exception.
    * @param args optional array of {@link Object arguments} used to replace the placeholders in the message.
    * @return a new {@link TypeNotFoundException}.
    * @see #newTypeNotFoundException(Throwable, String, Object...)
@@ -1134,8 +1134,8 @@ public abstract class ElementsExceptionsFactory {
    * to describe the {@link TypeNotFoundException} along with a {@link Throwable cause} used as the reason
    * why the {@link TypeNotFoundException} was thrown.
    *
-   * @param cause {@link Throwable} used as the cause of the {@link TypeNotFoundException}.
-   * @param message {@link String} containing a message to describe the {@link TypeNotFoundException}.
+   * @param cause {@link Throwable} used as the cause of the exception.
+   * @param message {@link String} containing a message to describe the exception.
    * @param args optional array of {@link Object arguments} used to replace the placeholders in the message.
    * @return a new {@link TypeNotFoundException}.
    * @see org.cp.elements.lang.TypeNotFoundException
@@ -1150,7 +1150,7 @@ public abstract class ElementsExceptionsFactory {
    * Constructs a new {@link NoSuchConstructorException} initialized with the given {@link String message}
    * to describe the {@link NoSuchConstructorException}.
    *
-   * @param message {@link String} containing a message to describe the {@link NoSuchConstructorException}.
+   * @param message {@link String} containing a message to describe the exception.
    * @param args optional array of {@link Object arguments} used to replace the placeholders in the message.
    * @return a new {@link NoSuchConstructorException}.
    * @see #newNoSuchConstructorException(Throwable, String, Object...)
@@ -1165,8 +1165,8 @@ public abstract class ElementsExceptionsFactory {
    * to describe the {@link NoSuchConstructorException} along with a {@link Throwable cause} used as the reason
    * why the {@link NoSuchConstructorException} was thrown.
    *
-   * @param cause {@link Throwable} used as the cause of the {@link NoSuchConstructorException}.
-   * @param message {@link String} containing a message to describe the {@link NoSuchConstructorException}.
+   * @param cause {@link Throwable} used as the cause of the exception.
+   * @param message {@link String} containing a message to describe the exception.
    * @param args optional array of {@link Object arguments} used to replace the placeholders in the message.
    * @return a new {@link NoSuchConstructorException}.
    * @see org.cp.elements.lang.factory.NoSuchConstructorException
@@ -1181,7 +1181,7 @@ public abstract class ElementsExceptionsFactory {
    * Constructs a new {@link ObjectInstantiationException} initialized with the given {@link String message}
    * to describe the {@link ObjectInstantiationException}.
    *
-   * @param message {@link String} containing a message to describe the {@link ObjectInstantiationException}.
+   * @param message {@link String} containing a message to describe the exception.
    * @param args optional array of {@link Object arguments} used to replace the placeholders in the message.
    * @return a new {@link ObjectInstantiationException}.
    * @see #newObjectInstantiationException(Throwable, String, Object...)
@@ -1196,8 +1196,8 @@ public abstract class ElementsExceptionsFactory {
    * to describe the {@link ObjectInstantiationException} along with a {@link Throwable cause} used as the reason
    * why the {@link ObjectInstantiationException} was thrown.
    *
-   * @param cause {@link Throwable} used as the cause of the {@link ObjectInstantiationException}.
-   * @param message {@link String} containing a message to describe the {@link ObjectInstantiationException}.
+   * @param cause {@link Throwable} used as the cause of the exception.
+   * @param message {@link String} containing a message to describe the exception.
    * @param args optional array of {@link Object arguments} used to replace the placeholders in the message.
    * @return a new {@link ObjectInstantiationException}.
    * @see org.cp.elements.lang.factory.ObjectInstantiationException
@@ -1214,7 +1214,7 @@ public abstract class ElementsExceptionsFactory {
    * Constructs a new {@link ConstructorNotFoundException} initialized with the given {@link String message}
    * to describe the {@link ConstructorNotFoundException}.
    *
-   * @param message {@link String} containing a message to describe the {@link ConstructorNotFoundException}.
+   * @param message {@link String} containing a message to describe the exception.
    * @param args optional array of {@link Object arguments} used to replace the placeholders in the message.
    * @return a new {@link ConstructorNotFoundException}.
    * @see #newObjectInstantiationException(Throwable, String, Object...)
@@ -1229,8 +1229,8 @@ public abstract class ElementsExceptionsFactory {
    * to describe the {@link ConstructorNotFoundException} along with a {@link Throwable cause} used as the reason
    * why the {@link ConstructorNotFoundException} was thrown.
    *
-   * @param cause {@link Throwable} used as the cause of the {@link ConstructorNotFoundException}.
-   * @param message {@link String} containing a message to describe the {@link ConstructorNotFoundException}.
+   * @param cause {@link Throwable} used as the cause of the exception.
+   * @param message {@link String} containing a message to describe the exception.
    * @param args optional array of {@link Object arguments} used to replace the placeholders in the message.
    * @return a new {@link ConstructorNotFoundException}.
    * @see org.cp.elements.lang.reflect.ConstructorNotFoundException
@@ -1245,7 +1245,7 @@ public abstract class ElementsExceptionsFactory {
    * Constructs a new {@link FieldAccessException} initialized with the given {@link String message}
    * to describe the {@link FieldAccessException}.
    *
-   * @param message {@link String} containing a message to describe the {@link FieldAccessException}.
+   * @param message {@link String} containing a message to describe the exception.
    * @param args optional array of {@link Object arguments} used to replace the placeholders in the message.
    * @return a new {@link FieldAccessException}.
    * @see #newFieldAccessException(Throwable, String, Object...)
@@ -1260,8 +1260,8 @@ public abstract class ElementsExceptionsFactory {
    * to describe the {@link FieldAccessException} along with a {@link Throwable cause} used as the reason
    * why the {@link FieldAccessException} was thrown.
    *
-   * @param cause {@link Throwable} used as the cause of the {@link FieldAccessException}.
-   * @param message {@link String} containing a message to describe the {@link FieldAccessException}.
+   * @param cause {@link Throwable} used as the cause of the exception.
+   * @param message {@link String} containing a message to describe the exception.
    * @param args optional array of {@link Object arguments} used to replace the placeholders in the message.
    * @return a new {@link FieldAccessException}.
    * @see org.cp.elements.lang.reflect.FieldAccessException
@@ -1274,7 +1274,7 @@ public abstract class ElementsExceptionsFactory {
    * Constructs a new {@link FieldNotFoundException} initialized with the given {@link String message}
    * to describe the {@link FieldNotFoundException}.
    *
-   * @param message {@link String} containing a message to describe the {@link FieldNotFoundException}.
+   * @param message {@link String} containing a message to describe the exception.
    * @param args optional array of {@link Object arguments} used to replace the placeholders in the message.
    * @return a new {@link FieldNotFoundException}.
    * @see #newFieldNotFoundException(Throwable, String, Object...)
@@ -1289,8 +1289,8 @@ public abstract class ElementsExceptionsFactory {
    * to describe the {@link FieldNotFoundException} along with a {@link Throwable cause} used as the reason
    * why the {@link FieldNotFoundException} was thrown.
    *
-   * @param cause {@link Throwable} used as the cause of the {@link FieldNotFoundException}.
-   * @param message {@link String} containing a message to describe the {@link FieldNotFoundException}.
+   * @param cause {@link Throwable} used as the cause of the exception.
+   * @param message {@link String} containing a message to describe the exception.
    * @param args optional array of {@link Object arguments} used to replace the placeholders in the message.
    * @return a new {@link FieldNotFoundException}.
    * @see org.cp.elements.lang.reflect.FieldNotFoundException
@@ -1303,7 +1303,7 @@ public abstract class ElementsExceptionsFactory {
    * Constructs a new {@link MethodInvocationException} initialized with the given {@link String message}
    * to describe the {@link MethodInvocationException}.
    *
-   * @param message {@link String} containing a message to describe the {@link MethodInvocationException}.
+   * @param message {@link String} containing a message to describe the exception.
    * @param args optional array of {@link Object arguments} used to replace the placeholders in the message.
    * @return a new {@link MethodInvocationException}.
    * @see #newMethodInvocationException(Throwable, String, Object...)
@@ -1318,8 +1318,8 @@ public abstract class ElementsExceptionsFactory {
    * to describe the {@link MethodInvocationException} along with a {@link Throwable cause} used as the reason
    * why the {@link MethodInvocationException} was thrown.
    *
-   * @param cause {@link Throwable} used as the cause of the {@link MethodInvocationException}.
-   * @param message {@link String} containing a message to describe the {@link MethodInvocationException}.
+   * @param cause {@link Throwable} used as the cause of the exception.
+   * @param message {@link String} containing a message to describe the exception.
    * @param args optional array of {@link Object arguments} used to replace the placeholders in the message.
    * @return a new {@link MethodInvocationException}.
    * @see org.cp.elements.lang.reflect.MethodInvocationException
@@ -1334,7 +1334,7 @@ public abstract class ElementsExceptionsFactory {
    * Constructs a new {@link MethodNotFoundException} initialized with the given {@link String message}
    * to describe the {@link MethodNotFoundException}.
    *
-   * @param message {@link String} containing a message to describe the {@link MethodNotFoundException}.
+   * @param message {@link String} containing a message to describe the exception.
    * @param args optional array of {@link Object arguments} used to replace the placeholders in the message.
    * @return a new {@link MethodNotFoundException}.
    * @see #newMethodNotFoundException(Throwable, String, Object...)
@@ -1349,8 +1349,8 @@ public abstract class ElementsExceptionsFactory {
    * to describe the {@link MethodNotFoundException} along with a {@link Throwable cause} used as the reason
    * why the {@link MethodNotFoundException} was thrown.
    *
-   * @param cause {@link Throwable} used as the cause of the {@link MethodNotFoundException}.
-   * @param message {@link String} containing a message to describe the {@link MethodNotFoundException}.
+   * @param cause {@link Throwable} used as the cause of the exception.
+   * @param message {@link String} containing a message to describe the exception.
    * @param args optional array of {@link Object arguments} used to replace the placeholders in the message.
    * @return a new {@link MethodNotFoundException}.
    * @see org.cp.elements.lang.reflect.MethodNotFoundException
@@ -1363,7 +1363,7 @@ public abstract class ElementsExceptionsFactory {
    * Constructs a new {@link UnhandledMethodInvocationException} initialized with
    * the given {@link String message} to describe the {@link UnhandledMethodInvocationException}.
    *
-   * @param message {@link String} containing a message to describe the {@link UnhandledMethodInvocationException}.
+   * @param message {@link String} containing a message to describe the exception.
    * @param args optional array of {@link Object arguments} used to replace the placeholders in the message.
    * @return a new {@link UnhandledMethodInvocationException}.
    * @see #newUnhandledMethodInvocationException(Throwable, String, Object...)
@@ -1380,8 +1380,8 @@ public abstract class ElementsExceptionsFactory {
    * the given {@link String message} to describe the {@link UnhandledMethodInvocationException} along with
    * a {@link Throwable cause} used as the reason why the {@link UnhandledMethodInvocationException} was thrown.
    *
-   * @param cause {@link Throwable} used as the cause of the {@link UnhandledMethodInvocationException}.
-   * @param message {@link String} containing a message to describe the {@link UnhandledMethodInvocationException}.
+   * @param cause {@link Throwable} used as the cause of the exception.
+   * @param message {@link String} containing a message to describe the exception.
    * @param args optional array of {@link Object arguments} used to replace the placeholders in the message.
    * @return a new {@link UnhandledMethodInvocationException}.
    * @see org.cp.elements.lang.reflect.UnhandledMethodInvocationException
@@ -1398,7 +1398,7 @@ public abstract class ElementsExceptionsFactory {
    * Constructs a new {@link NetworkException} initialized with the given {@link String message}
    * to describe the {@link NetworkException}.
    *
-   * @param message {@link String} containing a message to describe the {@link NetworkException}.
+   * @param message {@link String} containing a message to describe the exception.
    * @param args optional array of {@link Object arguments} used to replace the placeholders in the message.
    * @return a new {@link NetworkException}.
    * @see #newNetworkException(Throwable, String, Object...)
@@ -1413,8 +1413,8 @@ public abstract class ElementsExceptionsFactory {
    * to describe the {@link NetworkException} along with a {@link Throwable cause} used as the reason
    * why the {@link NetworkException} was thrown.
    *
-   * @param cause {@link Throwable} used as the cause of the {@link NetworkException}.
-   * @param message {@link String} containing a message to describe the {@link NetworkException}.
+   * @param cause {@link Throwable} used as the cause of the exception.
+   * @param message {@link String} containing a message to describe the exception.
    * @param args optional array of {@link Object arguments} used to replace the placeholders in the message.
    * @return a new {@link NetworkException}.
    * @see org.cp.elements.net.NetworkException
@@ -1427,7 +1427,7 @@ public abstract class ElementsExceptionsFactory {
    * Constructs a new {@link NoAvailablePortException} initialized with the given {@link String message}
    * to describe the {@link NoAvailablePortException}.
    *
-   * @param message {@link String} containing a message to describe the {@link NoAvailablePortException}.
+   * @param message {@link String} containing a message to describe the exception.
    * @param args optional array of {@link Object arguments} used to replace the placeholders in the message.
    * @return a new {@link NoAvailablePortException}.
    * @see #newNoAvailablePortException(Throwable, String, Object...)
@@ -1442,8 +1442,8 @@ public abstract class ElementsExceptionsFactory {
    * to describe the {@link NoAvailablePortException} along with a {@link Throwable cause} used as the reason
    * why the {@link NoAvailablePortException} was thrown.
    *
-   * @param cause {@link Throwable} used as the cause of the {@link NoAvailablePortException}.
-   * @param message {@link String} containing a message to describe the {@link NoAvailablePortException}.
+   * @param cause {@link Throwable} used as the cause of the exception.
+   * @param message {@link String} containing a message to describe the exception.
    * @param args optional array of {@link Object arguments} used to replace the placeholders in the message.
    * @return a new {@link NoAvailablePortException}.
    * @see org.cp.elements.net.NoAvailablePortException
@@ -1458,7 +1458,7 @@ public abstract class ElementsExceptionsFactory {
    * Constructs a new {@link EmbeddedProcessExecutionException} initialized with
    * the given {@link String message} to describe the {@link EmbeddedProcessExecutionException}.
    *
-   * @param message {@link String} containing a message to describe the {@link EmbeddedProcessExecutionException}.
+   * @param message {@link String} containing a message to describe the exception.
    * @param args optional array of {@link Object arguments} used to replace the placeholders in the message.
    * @return a new {@link EmbeddedProcessExecutionException}.
    * @see #newEmbeddedProcessExecutionException(Throwable, String, Object...)
@@ -1473,8 +1473,8 @@ public abstract class ElementsExceptionsFactory {
    * the given {@link String message} to describe the {@link EmbeddedProcessExecutionException} along with
    * a {@link Throwable cause} used as the reason why the {@link EmbeddedProcessExecutionException} was thrown.
    *
-   * @param cause {@link Throwable} used as the cause of the {@link EmbeddedProcessExecutionException}.
-   * @param message {@link String} containing a message to describe the {@link EmbeddedProcessExecutionException}.
+   * @param cause {@link Throwable} used as the cause of the exception.
+   * @param message {@link String} containing a message to describe the exception.
    * @param args optional array of {@link Object arguments} used to replace the placeholders in the message.
    * @return a new {@link EmbeddedProcessExecutionException}.
    * @see org.cp.elements.process.EmbeddedProcessExecutionException
@@ -1489,7 +1489,7 @@ public abstract class ElementsExceptionsFactory {
    * Constructs a new {@link PidUnknownException} initialized with the given {@link String message}
    * to describe the {@link PidUnknownException}.
    *
-   * @param message {@link String} containing a message to describe the {@link PidUnknownException}.
+   * @param message {@link String} containing a message to describe the exception.
    * @param args optional array of {@link Object arguments} used to replace the placeholders in the message.
    * @return a new {@link PidUnknownException}.
    * @see #newPidUnknownException(Throwable, String, Object...)
@@ -1504,8 +1504,8 @@ public abstract class ElementsExceptionsFactory {
    * to describe the {@link PidUnknownException} along with a {@link Throwable cause} used as the reason
    * why the {@link PidUnknownException} was thrown.
    *
-   * @param cause {@link Throwable} used as the cause of the {@link PidUnknownException}.
-   * @param message {@link String} containing a message to describe the {@link PidUnknownException}.
+   * @param cause {@link Throwable} used as the cause of the exception.
+   * @param message {@link String} containing a message to describe the exception.
    * @param args optional array of {@link Object arguments} used to replace the placeholders in the message.
    * @return a new {@link PidUnknownException}.
    * @see org.cp.elements.process.PidUnknownException
@@ -1518,7 +1518,7 @@ public abstract class ElementsExceptionsFactory {
    * Constructs a new {@link ProcessException} initialized with the given {@link String message}
    * to describe the {@link ProcessException}.
    *
-   * @param message {@link String} containing a message to describe the {@link ProcessException}.
+   * @param message {@link String} containing a message to describe the exception.
    * @param args optional array of {@link Object arguments} used to replace the placeholders in the message.
    * @return a new {@link ProcessException}.
    * @see #newProcessException(Throwable, String, Object...)
@@ -1533,8 +1533,8 @@ public abstract class ElementsExceptionsFactory {
    * to describe the {@link ProcessException} along with a {@link Throwable cause} used as the reason
    * why the {@link ProcessException} was thrown.
    *
-   * @param cause {@link Throwable} used as the cause of the {@link ProcessException}.
-   * @param message {@link String} containing a message to describe the {@link ProcessException}.
+   * @param cause {@link Throwable} used as the cause of the exception.
+   * @param message {@link String} containing a message to describe the exception.
    * @param args optional array of {@link Object arguments} used to replace the placeholders in the message.
    * @return a new {@link ProcessException}.
    * @see org.cp.elements.process.ProcessException
@@ -1547,7 +1547,7 @@ public abstract class ElementsExceptionsFactory {
    * Constructs a new {@link ProcessExecutionException} initialized with the given {@link String message}
    * to describe the {@link ProcessExecutionException}.
    *
-   * @param message {@link String} containing a message to describe the {@link ProcessExecutionException}.
+   * @param message {@link String} containing a message to describe the exception.
    * @param args optional array of {@link Object arguments} used to replace the placeholders in the message.
    * @return a new {@link ProcessExecutionException}.
    * @see #newProcessExecutionException(Throwable, String, Object...)
@@ -1562,8 +1562,8 @@ public abstract class ElementsExceptionsFactory {
    * to describe the {@link ProcessExecutionException} along with a {@link Throwable cause} used as the reason
    * why the {@link ProcessExecutionException} was thrown.
    *
-   * @param cause {@link Throwable} used as the cause of the {@link ProcessExecutionException}.
-   * @param message {@link String} containing a message to describe the {@link ProcessExecutionException}.
+   * @param cause {@link Throwable} used as the cause of the exception.
+   * @param message {@link String} containing a message to describe the exception.
    * @param args optional array of {@link Object arguments} used to replace the placeholders in the message.
    * @return a new {@link ProcessExecutionException}.
    * @see org.cp.elements.process.ProcessExecutionException
@@ -1578,7 +1578,7 @@ public abstract class ElementsExceptionsFactory {
    * Constructs a new {@link ProcessNotRespondingException} initialized with
    * the given {@link String message} to describe the {@link ProcessNotRespondingException}.
    *
-   * @param message {@link String} containing a message to describe the {@link ProcessNotRespondingException}.
+   * @param message {@link String} containing a message to describe the exception.
    * @param args optional array of {@link Object arguments} used to replace the placeholders in the message.
    * @return a new {@link ProcessNotRespondingException}.
    * @see #newProcessNotRespondingException(Throwable, String, Object...)
@@ -1593,8 +1593,8 @@ public abstract class ElementsExceptionsFactory {
    * the given {@link String message} to describe the {@link ProcessNotRespondingException} along with
    * a {@link Throwable cause} used as the reason why the {@link ProcessNotRespondingException} was thrown.
    *
-   * @param cause {@link Throwable} used as the cause of the {@link ProcessNotRespondingException}.
-   * @param message {@link String} containing a message to describe the {@link ProcessNotRespondingException}.
+   * @param cause {@link Throwable} used as the cause of the exception.
+   * @param message {@link String} containing a message to describe the exception.
    * @param args optional array of {@link Object arguments} used to replace the placeholders in the message.
    * @return a new {@link ProcessNotRespondingException}.
    * @see org.cp.elements.process.ProcessNotRespondingException
@@ -1611,7 +1611,7 @@ public abstract class ElementsExceptionsFactory {
    * Constructs a new {@link AuthenticationException} initialized with the given {@link String message}
    * to describe the {@link AuthenticationException}.
    *
-   * @param message {@link String} containing a message to describe the {@link AuthenticationException}.
+   * @param message {@link String} containing a message to describe the exception.
    * @param args optional array of {@link Object arguments} used to replace the placeholders in the message.
    * @return a new {@link AuthenticationException}.
    * @see #newAuthenticationException(Throwable, String, Object...)
@@ -1626,8 +1626,8 @@ public abstract class ElementsExceptionsFactory {
    * to describe the {@link AuthenticationException} along with a {@link Throwable cause} used as the reason
    * why the {@link AuthenticationException} was thrown.
    *
-   * @param cause {@link Throwable} used as the cause of the {@link AuthenticationException}.
-   * @param message {@link String} containing a message to describe the {@link AuthenticationException}.
+   * @param cause {@link Throwable} used as the cause of the exception.
+   * @param message {@link String} containing a message to describe the exception.
    * @param args optional array of {@link Object arguments} used to replace the placeholders in the message.
    * @return a new {@link AuthenticationException}.
    * @see org.cp.elements.security.AuthenticationException
@@ -1640,7 +1640,7 @@ public abstract class ElementsExceptionsFactory {
    * Constructs a new {@link AuthorizationException} initialized with the given {@link String message}
    * to describe the {@link AuthorizationException}.
    *
-   * @param message {@link String} containing a message to describe the {@link AuthorizationException}.
+   * @param message {@link String} containing a message to describe the exception.
    * @param args optional array of {@link Object arguments} used to replace the placeholders in the message.
    * @return a new {@link AuthorizationException}.
    * @see #newAuthorizationException(Throwable, String, Object...)
@@ -1655,8 +1655,8 @@ public abstract class ElementsExceptionsFactory {
    * to describe the {@link AuthorizationException} along with a {@link Throwable cause} used as the reason
    * why the {@link AuthorizationException} was thrown.
    *
-   * @param cause {@link Throwable} used as the cause of the {@link AuthorizationException}.
-   * @param message {@link String} containing a message to describe the {@link AuthorizationException}.
+   * @param cause {@link Throwable} used as the cause of the exception.
+   * @param message {@link String} containing a message to describe the exception.
    * @param args optional array of {@link Object arguments} used to replace the placeholders in the message.
    * @return a new {@link AuthorizationException}.
    * @see org.cp.elements.security.AuthorizationException
@@ -1669,7 +1669,7 @@ public abstract class ElementsExceptionsFactory {
    * Constructs a new {@link AbstractSecurityException} initialized with the given {@link String message}
    * to describe the {@link AbstractSecurityException}.
    *
-   * @param message {@link String} containing a message to describe the {@link AbstractSecurityException}.
+   * @param message {@link String} containing a message to describe the exception.
    * @param args optional array of {@link Object arguments} used to replace the placeholders in the message.
    * @return a new {@link AbstractSecurityException}.
    * @see #newSecurityException(Throwable, String, Object...)
@@ -1684,8 +1684,8 @@ public abstract class ElementsExceptionsFactory {
    * to describe the {@link AbstractSecurityException} along with a {@link Throwable cause} used as the reason
    * why the {@link AbstractSecurityException} was thrown.
    *
-   * @param cause {@link Throwable} used as the cause of the {@link AbstractSecurityException}.
-   * @param message {@link String} containing a message to describe the {@link AbstractSecurityException}.
+   * @param cause {@link Throwable} used as the cause of the exception.
+   * @param message {@link String} containing a message to describe the exception.
    * @param args optional array of {@link Object arguments} used to replace the placeholders in the message.
    * @return a new {@link AbstractSecurityException}.
    * @see AbstractSecurityException
@@ -1701,7 +1701,7 @@ public abstract class ElementsExceptionsFactory {
    * Constructs a new {@link ServiceException} initialized with the given {@link String message}
    * to describe the {@link ServiceException}.
    *
-   * @param message {@link String} containing a message to describe the {@link ServiceException}.
+   * @param message {@link String} containing a message to describe the exception.
    * @param args optional array of {@link Object arguments} used to replace the placeholders in the message.
    * @return a new {@link ServiceException}.
    * @see org.cp.elements.service.ServiceException
@@ -1716,8 +1716,8 @@ public abstract class ElementsExceptionsFactory {
    * to describe the {@link ServiceException} along with a {@link Throwable cause} used as the reason
    * the {@link ServiceInvocationException} was thrown.
    *
-   * @param cause {@link Throwable} used as the cause of the {@link ServiceException}.
-   * @param message {@link String} containing a message to describe the {@link ServiceException}.
+   * @param cause {@link Throwable} used as the cause of the exception.
+   * @param message {@link String} containing a message to describe the exception.
    * @param args optional array of {@link Object arguments} used to replace the placeholders in the message.
    * @return a new {@link ServiceException}.
    * @see org.cp.elements.service.ServiceException
@@ -1730,7 +1730,7 @@ public abstract class ElementsExceptionsFactory {
    * Constructs a new {@link ServiceInvocationException} initialized with the given {@link String message}
    * to describe the {@link ServiceInvocationException}.
    *
-   * @param message {@link String} containing a message to describe the {@link ServiceInvocationException}.
+   * @param message {@link String} containing a message to describe the exception.
    * @param args optional array of {@link Object arguments} used to replace the placeholders in the message.
    * @return a new {@link ServiceInvocationException}.
    * @see #newServiceInvocationException(Throwable, String, Object...)
@@ -1745,8 +1745,8 @@ public abstract class ElementsExceptionsFactory {
    * to describe the {@link ServiceInvocationException} along with a {@link Throwable cause} used as the reason
    * the {@link ServiceInvocationException} was thrown.
    *
-   * @param cause {@link Throwable} used as the cause of the {@link ServiceInvocationException}.
-   * @param message {@link String} containing a message to describe the {@link ServiceInvocationException}.
+   * @param cause {@link Throwable} used as the cause of the exception.
+   * @param message {@link String} containing a message to describe the exception.
    * @param args optional array of {@link Object arguments} used to replace the placeholders in the message.
    * @return a new {@link ServiceInvocationException}.
    * @see org.cp.elements.service.ServiceInvocationException
@@ -1761,7 +1761,7 @@ public abstract class ElementsExceptionsFactory {
    * Constructs a new {@link ServiceUnavailableException} initialized with the given {@link String message}
    * to describe the {@link ServiceUnavailableException}.
    *
-   * @param message {@link String} containing a message to describe the {@link ServiceUnavailableException}.
+   * @param message {@link String} containing a message to describe the exception.
    * @param args optional array of {@link Object arguments} used to replace the placeholders in the message.
    * @return a new {@link ServiceUnavailableException}.
    * @see org.cp.elements.service.ServiceUnavailableException
@@ -1776,8 +1776,8 @@ public abstract class ElementsExceptionsFactory {
    * to describe the {@link ServiceUnavailableException} along with a {@link Throwable cause} used as the reason
    * the {@link ServiceUnavailableException} was thrown.
    *
-   * @param cause {@link Throwable} used as the cause of the {@link ServiceUnavailableException}.
-   * @param message {@link String} containing a message to describe the {@link ServiceUnavailableException}.
+   * @param cause {@link Throwable} used as the cause of the exception.
+   * @param message {@link String} containing a message to describe the exception.
    * @param args optional array of {@link Object arguments} used to replace the placeholders in the message.
    * @return a new {@link ServiceUnavailableException}.
    * @see org.cp.elements.service.ServiceUnavailableException
@@ -1794,7 +1794,7 @@ public abstract class ElementsExceptionsFactory {
    * Constructs a new {@link FailedTestException} initialized with the given {@link String message}
    * to describe the {@link FailedTestException}.
    *
-   * @param message {@link String} containing a message to describe the {@link FailedTestException}.
+   * @param message {@link String} containing a message to describe the exception.
    * @param args optional array of {@link Object arguments} used to replace the placeholders in the message.
    * @return a new {@link FailedTestException}.
    * @see #newFailedTestException(Throwable, String, Object...)
@@ -1809,8 +1809,8 @@ public abstract class ElementsExceptionsFactory {
    * to describe the {@link FailedTestException} along with a {@link Throwable cause} used as the reason
    * why the {@link FailedTestException} was thrown.
    *
-   * @param cause {@link Throwable} used as the cause of the {@link FailedTestException}.
-   * @param message {@link String} containing a message to describe the {@link FailedTestException}.
+   * @param cause {@link Throwable} used as the cause of the exception.
+   * @param message {@link String} containing a message to describe the exception.
    * @param args optional array of {@link Object arguments} used to replace the placeholders in the message.
    * @return a new {@link FailedTestException}.
    * @see org.cp.elements.test.FailedTestException
@@ -1823,7 +1823,7 @@ public abstract class ElementsExceptionsFactory {
    * Constructs a new {@link HungTestException} initialized with the given {@link String message}
    * to describe the {@link HungTestException}.
    *
-   * @param message {@link String} containing a message to describe the {@link HungTestException}.
+   * @param message {@link String} containing a message to describe the exception.
    * @param args optional array of {@link Object arguments} used to replace the placeholders in the message.
    * @return a new {@link HungTestException}.
    * @see #newHungTestException(Throwable, String, Object...)
@@ -1838,8 +1838,8 @@ public abstract class ElementsExceptionsFactory {
    * to describe the {@link HungTestException} along with a {@link Throwable cause} used as the reason
    * why the {@link HungTestException} was thrown.
    *
-   * @param cause {@link Throwable} used as the cause of the {@link HungTestException}.
-   * @param message {@link String} containing a message to describe the {@link HungTestException}.
+   * @param cause {@link Throwable} used as the cause of the exception.
+   * @param message {@link String} containing a message to describe the exception.
    * @param args optional array of {@link Object arguments} used to replace the placeholders in the message.
    * @return a new {@link HungTestException}.
    * @see org.cp.elements.test.HungTestException
@@ -1852,7 +1852,7 @@ public abstract class ElementsExceptionsFactory {
    * Constructs a new {@link TestException} initialized with the given {@link String message}
    * to describe the {@link TestException}.
    *
-   * @param message {@link String} containing a message to describe the {@link TestException}.
+   * @param message {@link String} containing a message to describe the exception.
    * @param args optional array of {@link Object arguments} used to replace the placeholders in the message.
    * @return a new {@link TestException}.
    * @see #newTestException(Throwable, String, Object...)
@@ -1867,8 +1867,8 @@ public abstract class ElementsExceptionsFactory {
    * to describe the {@link TestException} along with a {@link Throwable cause} used as the reason
    * why the {@link TestException} was thrown.
    *
-   * @param cause {@link Throwable} used as the cause of the {@link TestException}.
-   * @param message {@link String} containing a message to describe the {@link TestException}.
+   * @param cause {@link Throwable} used as the cause of the exception.
+   * @param message {@link String} containing a message to describe the exception.
    * @param args optional array of {@link Object arguments} used to replace the placeholders in the message.
    * @return a new {@link TestException}.
    * @see org.cp.elements.test.TestException
@@ -1883,7 +1883,7 @@ public abstract class ElementsExceptionsFactory {
    * Constructs a new {@link FormatException} initialized with the given {@link String message}
    * to describe the {@link FormatException}.
    *
-   * @param message {@link String} containing a message to describe the {@link FormatException}.
+   * @param message {@link String} containing a message to describe the exception.
    * @param args optional array of {@link Object arguments} used to replace the placeholders in the message.
    * @return a new {@link FormatException}.
    * @see #newFormatException(Throwable, String, Object...)
@@ -1898,8 +1898,8 @@ public abstract class ElementsExceptionsFactory {
    * to describe the {@link FormatException} along with a {@link Throwable cause} used as the reason
    * why the {@link FormatException} was thrown.
    *
-   * @param cause {@link Throwable} used as the cause of the {@link FormatException}.
-   * @param message {@link String} containing a message to describe the {@link FormatException}.
+   * @param cause {@link Throwable} used as the cause of the exception.
+   * @param message {@link String} containing a message to describe the exception.
    * @param args optional array of {@link Object arguments} used to replace the placeholders in the message.
    * @return a new {@link FormatException}.
    * @see org.cp.elements.text.FormatException
@@ -1912,7 +1912,7 @@ public abstract class ElementsExceptionsFactory {
    * Constructs a new {@link ParseException} initialized with the given {@link String message}
    * to describe the {@link ParseException}.
    *
-   * @param message {@link String} containing a message to describe the {@link ParseException}.
+   * @param message {@link String} containing a message to describe the exception.
    * @param args optional array of {@link Object arguments} used to replace the placeholders in the message.
    * @return a new {@link ParseException}.
    * @see #newParseException(Throwable, String, Object...)
@@ -1927,8 +1927,8 @@ public abstract class ElementsExceptionsFactory {
    * to describe the {@link ParseException} along with a {@link Throwable cause} used as the reason
    * why the {@link ParseException} was thrown.
    *
-   * @param cause {@link Throwable} used as the cause of the {@link ParseException}.
-   * @param message {@link String} containing a message to describe the {@link ParseException}.
+   * @param cause {@link Throwable} used as the cause of the exception.
+   * @param message {@link String} containing a message to describe the exception.
    * @param args optional array of {@link Object arguments} used to replace the placeholders in the message.
    * @return a new {@link ParseException}.
    * @see org.cp.elements.text.ParseException
@@ -1943,7 +1943,7 @@ public abstract class ElementsExceptionsFactory {
    * Constructs a new {@link ApplicationException} initialized with the given {@link String message}
    * to describe the {@link ApplicationException}.
    *
-   * @param message {@link String} containing a message to describe the {@link ApplicationException}.
+   * @param message {@link String} containing a message to describe the exception.
    * @param args optional array of {@link Object arguments} used to replace the placeholders in the message.
    * @return a new {@link ApplicationException}.
    * @see #newApplicationException(Throwable, String, Object...)
@@ -1958,8 +1958,8 @@ public abstract class ElementsExceptionsFactory {
    * to describe the {@link ApplicationException} along with a {@link Throwable cause} used as the reason
    * why the {@link ApplicationException} was thrown.
    *
-   * @param cause {@link Throwable} used as the cause of the {@link ApplicationException}.
-   * @param message {@link String} containing a message to describe the {@link ApplicationException}.
+   * @param cause {@link Throwable} used as the cause of the exception.
+   * @param message {@link String} containing a message to describe the exception.
    * @param args optional array of {@link Object arguments} used to replace the placeholders in the message.
    * @return a new {@link ApplicationException}.
    * @see org.cp.elements.util.ApplicationException
@@ -1972,7 +1972,7 @@ public abstract class ElementsExceptionsFactory {
    * Constructs a new {@link LoserException} initialized with the given {@link String message}
    * to describe the {@link LoserException}.
    *
-   * @param message {@link String} containing a message to describe the {@link LoserException}.
+   * @param message {@link String} containing a message to describe the exception.
    * @param args optional array of {@link Object arguments} used to replace the placeholders in the message.
    * @return a new {@link LoserException}.
    * @see #newLoserException(Throwable, String, Object...)
@@ -1987,8 +1987,8 @@ public abstract class ElementsExceptionsFactory {
    * to describe the {@link LoserException} along with a {@link Throwable cause} used as the reason
    * why the {@link LoserException} was thrown.
    *
-   * @param cause {@link Throwable} used as the cause of the {@link LoserException}.
-   * @param message {@link String} containing a message to describe the {@link LoserException}.
+   * @param cause {@link Throwable} used as the cause of the exception.
+   * @param message {@link String} containing a message to describe the exception.
    * @param args optional array of {@link Object arguments} used to replace the placeholders in the message.
    * @return a new {@link LoserException}.
    * @see org.cp.elements.util.LoserException
@@ -2001,7 +2001,7 @@ public abstract class ElementsExceptionsFactory {
    * Constructs a new {@link ReadOnlyException} initialized with the given {@link String message}
    * to describe the {@link ReadOnlyException}.
    *
-   * @param message {@link String} containing a message to describe the {@link ReadOnlyException}.
+   * @param message {@link String} containing a message to describe the exception.
    * @param args optional array of {@link Object arguments} used to replace the placeholders in the message.
    * @return a new {@link ReadOnlyException}.
    * @see #newReadOnlyException(Throwable, String, Object...)
@@ -2016,8 +2016,8 @@ public abstract class ElementsExceptionsFactory {
    * to describe the {@link ReadOnlyException} along with a {@link Throwable cause} used as the reason
    * why the {@link ReadOnlyException} was thrown.
    *
-   * @param cause {@link Throwable} used as the cause of the {@link ReadOnlyException}.
-   * @param message {@link String} containing a message to describe the {@link ReadOnlyException}.
+   * @param cause {@link Throwable} used as the cause of the exception.
+   * @param message {@link String} containing a message to describe the exception.
    * @param args optional array of {@link Object arguments} used to replace the placeholders in the message.
    * @return a new {@link ReadOnlyException}.
    * @see org.cp.elements.util.ReadOnlyException
@@ -2030,7 +2030,7 @@ public abstract class ElementsExceptionsFactory {
    * Constructs a new {@link SystemException} initialized with the given {@link String message}
    * to describe the {@link SystemException}.
    *
-   * @param message {@link String} containing a message to describe the {@link SystemException}.
+   * @param message {@link String} containing a message to describe the exception.
    * @param args optional array of {@link Object arguments} used to replace the placeholders in the message.
    * @return a new {@link SystemException}.
    * @see #newReadOnlyException(Throwable, String, Object...)
@@ -2045,8 +2045,8 @@ public abstract class ElementsExceptionsFactory {
    * to describe the {@link SystemException} along with a {@link Throwable cause} used as the reason
    * why the {@link SystemException} was thrown.
    *
-   * @param cause {@link Throwable} used as the cause of the {@link SystemException}.
-   * @param message {@link String} containing a message to describe the {@link SystemException}.
+   * @param cause {@link Throwable} used as the cause of the exception.
+   * @param message {@link String} containing a message to describe the exception.
    * @param args optional array of {@link Object arguments} used to replace the placeholders in the message.
    * @return a new {@link SystemException}.
    * @see org.cp.elements.util.SystemException
@@ -2059,7 +2059,7 @@ public abstract class ElementsExceptionsFactory {
    * Constructs a new {@link UndeclaredPropertyException} initialized with the given {@link String message}
    * to describe the {@link UndeclaredPropertyException}.
    *
-   * @param message {@link String} containing a message to describe the {@link UndeclaredPropertyException}.
+   * @param message {@link String} containing a message to describe the exception.
    * @param args optional array of {@link Object arguments} used to replace the placeholders in the message.
    * @return a new {@link UndeclaredPropertyException}.
    * @see #newUndeclaredPropertyException(String, Object...)
@@ -2074,8 +2074,8 @@ public abstract class ElementsExceptionsFactory {
    * to describe the {@link UndeclaredPropertyException} along with a {@link Throwable cause} used as the reason
    * why the {@link UndeclaredPropertyException} was thrown.
    *
-   * @param cause {@link Throwable} used as the cause of the {@link UndeclaredPropertyException}.
-   * @param message {@link String} containing a message to describe the {@link UndeclaredPropertyException}.
+   * @param cause {@link Throwable} used as the cause of the exception.
+   * @param message {@link String} containing a message to describe the exception.
    * @param args optional array of {@link Object arguments} used to replace the placeholders in the message.
    * @return a new {@link UndeclaredPropertyException}.
    * @see org.cp.elements.util.UndeclaredPropertyException
@@ -2090,7 +2090,7 @@ public abstract class ElementsExceptionsFactory {
    * Constructs a new {@link UndefinedPropertyException} initialized with the given {@link String message}
    * to describe the {@link UndefinedPropertyException}.
    *
-   * @param message {@link String} containing a message to describe the {@link UndefinedPropertyException}.
+   * @param message {@link String} containing a message to describe the exception.
    * @param args optional array of {@link Object arguments} used to replace the placeholders in the message.
    * @return a new {@link UndefinedPropertyException}.
    * @see #newUndefinedPropertyException(Throwable, String, Object...)
@@ -2105,8 +2105,8 @@ public abstract class ElementsExceptionsFactory {
    * to describe the {@link UndefinedPropertyException} along with a {@link Throwable cause} used as the reason
    * why the {@link UndefinedPropertyException} was thrown.
    *
-   * @param cause {@link Throwable} used as the cause of the {@link UndefinedPropertyException}.
-   * @param message {@link String} containing a message to describe the {@link UndefinedPropertyException}.
+   * @param cause {@link Throwable} used as the cause of the exception.
+   * @param message {@link String} containing a message to describe the exception.
    * @param args optional array of {@link Object arguments} used to replace the placeholders in the message.
    * @return a new {@link UndefinedPropertyException}.
    * @see org.cp.elements.util.UndefinedPropertyException
@@ -2121,7 +2121,7 @@ public abstract class ElementsExceptionsFactory {
    * Constructs a new {@link UserException} initialized with the given {@link String message}
    * to describe the {@link UserException}.
    *
-   * @param message {@link String} containing a message to describe the {@link UserException}.
+   * @param message {@link String} containing a message to describe the exception.
    * @param args optional array of {@link Object arguments} used to replace the placeholders in the message.
    * @return a new {@link UserException}.
    * @see #newUserException(Throwable, String, Object...)
@@ -2136,8 +2136,8 @@ public abstract class ElementsExceptionsFactory {
    * to describe the {@link UserException} along with a {@link Throwable cause} used as the reason
    * why the {@link UserException} was thrown.
    *
-   * @param cause {@link Throwable} used as the cause of the {@link UserException}.
-   * @param message {@link String} containing a message to describe the {@link UserException}.
+   * @param cause {@link Throwable} used as the cause of the exception.
+   * @param message {@link String} containing a message to describe the exception.
    * @param args optional array of {@link Object arguments} used to replace the placeholders in the message.
    * @return a new {@link UserException}.
    * @see org.cp.elements.util.UserException
@@ -2150,7 +2150,7 @@ public abstract class ElementsExceptionsFactory {
    * Constructs a new {@link WriteOnlyException} initialized with the given {@link String message}
    * to describe the {@link WriteOnlyException}.
    *
-   * @param message {@link String} containing a message to describe the {@link WriteOnlyException}.
+   * @param message {@link String} containing a message to describe the exception.
    * @param args optional array of {@link Object arguments} used to replace the placeholders in the message.
    * @return a new {@link WriteOnlyException}.
    * @see #newWriteOnlyException(Throwable, String, Object...)
@@ -2165,8 +2165,8 @@ public abstract class ElementsExceptionsFactory {
    * to describe the {@link WriteOnlyException} along with a {@link Throwable cause} used as the reason
    * why the {@link WriteOnlyException} was thrown.
    *
-   * @param cause {@link Throwable} used as the cause of the {@link WriteOnlyException}.
-   * @param message {@link String} containing a message to describe the {@link WriteOnlyException}.
+   * @param cause {@link Throwable} used as the cause of the exception.
+   * @param message {@link String} containing a message to describe the exception.
    * @param args optional array of {@link Object arguments} used to replace the placeholders in the message.
    * @return a new {@link WriteOnlyException}.
    * @see org.cp.elements.util.WriteOnlyException
@@ -2179,7 +2179,7 @@ public abstract class ElementsExceptionsFactory {
    * Constructs a new {@link PageNotFoundException} initialized with the given {@link String message}
    * to describe the {@link PageNotFoundException}.
    *
-   * @param message {@link String} containing a message to describe the {@link PageNotFoundException}.
+   * @param message {@link String} containing a message to describe the exception.
    * @param args optional array of {@link Object arguments} used to replace the placeholders in the message.
    * @return a new {@link PageNotFoundException}.
    * @see #newPageNotFoundException(Throwable, String, Object...)
@@ -2194,8 +2194,8 @@ public abstract class ElementsExceptionsFactory {
    * to describe the {@link PageNotFoundException} along with a {@link Throwable cause} used as the reason
    * why the {@link PageNotFoundException} was thrown.
    *
-   * @param cause {@link Throwable} used as the cause of the {@link PageNotFoundException}.
-   * @param message {@link String} containing a message to describe the {@link PageNotFoundException}.
+   * @param cause {@link Throwable} used as the cause of the exception.
+   * @param message {@link String} containing a message to describe the exception.
    * @param args optional array of {@link Object arguments} used to replace the placeholders in the message.
    * @return a new {@link PageNotFoundException}.
    * @see org.cp.elements.util.paging.PageNotFoundException
@@ -2208,7 +2208,7 @@ public abstract class ElementsExceptionsFactory {
    * Constructs a new {@link SearchException} initialized with the given {@link String message}
    * to describe the {@link SearchException}.
    *
-   * @param message {@link String} containing a message to describe the {@link SearchException}.
+   * @param message {@link String} containing a message to describe the exception.
    * @param args optional array of {@link Object arguments} used to replace the placeholders in the message.
    * @return a new {@link SearchException}.
    * @see #newSearchException(Throwable, String, Object...)
@@ -2223,8 +2223,8 @@ public abstract class ElementsExceptionsFactory {
    * to describe the {@link SearchException} along with a {@link Throwable cause} used as the reason
    * why the {@link SearchException} was thrown.
    *
-   * @param cause {@link Throwable} used as the cause of the {@link SearchException}.
-   * @param message {@link String} containing a message to describe the {@link SearchException}.
+   * @param cause {@link Throwable} used as the cause of the exception.
+   * @param message {@link String} containing a message to describe the exception.
    * @param args optional array of {@link Object arguments} used to replace the placeholders in the message.
    * @return a new {@link SearchException}.
    * @see org.cp.elements.util.search.SearchException
@@ -2237,7 +2237,7 @@ public abstract class ElementsExceptionsFactory {
    * Constructs a new {@link SortException} initialized with the given {@link String message}
    * to describe the {@link SortException}.
    *
-   * @param message {@link String} containing a message to describe the {@link SortException}.
+   * @param message {@link String} containing a message to describe the exception.
    * @param args optional array of {@link Object arguments} used to replace the placeholders in the message.
    * @return a new {@link SortException}.
    * @see #newSortException(Throwable, String, Object...)
@@ -2252,8 +2252,8 @@ public abstract class ElementsExceptionsFactory {
    * to describe the {@link SortException} along with a {@link Throwable cause} used as the reason
    * why the {@link SortException} was thrown.
    *
-   * @param cause {@link Throwable} used as the cause of the {@link SortException}.
-   * @param message {@link String} containing a message to describe the {@link SortException}.
+   * @param cause {@link Throwable} used as the cause of the exception.
+   * @param message {@link String} containing a message to describe the exception.
    * @param args optional array of {@link Object arguments} used to replace the placeholders in the message.
    * @return a new {@link SortException}.
    * @see org.cp.elements.util.sort.SortException
