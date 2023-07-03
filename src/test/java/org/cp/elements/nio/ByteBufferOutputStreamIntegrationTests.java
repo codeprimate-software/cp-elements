@@ -33,7 +33,7 @@ import org.cp.elements.lang.annotation.NotNull;
 import org.cp.elements.util.ArrayUtils;
 
 /**
- * Unit Tests for {@link ByteBufferOutputStream}.
+ * Integration Tests for {@link ByteBufferOutputStream}.
  *
  * @author John Blum
  * @see java.io.OutputStream
@@ -43,7 +43,7 @@ import org.cp.elements.util.ArrayUtils;
  * @see org.cp.elements.nio.ByteBufferOutputStream
  * @since 1.0.0
  */
-public class ByteBufferOutputStreamUnitTests {
+public class ByteBufferOutputStreamIntegrationTests {
 
   private static final int CAPACITY = 1;
 
