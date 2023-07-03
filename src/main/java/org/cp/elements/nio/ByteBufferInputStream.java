@@ -43,8 +43,8 @@ public class ByteBufferInputStream extends InputStream {
    * required {@link ByteBuffer}.
    *
    * @param byteBuffer {@link ByteBuffer} used to back the {@link InputStream}; must not be {@literal null}.
-   * @return a new {@link ByteBufferInputStream} initialized with the given, required {@link ByteBuffer}.
-   * @throws IllegalArgumentException if the {@link ByteBuffer} is {@literal null}.
+   * @return a new {@link ByteBufferInputStream} initialized with the given {@link ByteBuffer}.
+   * @throws IllegalArgumentException if the given {@link ByteBuffer} is {@literal null}.
    * @see #ByteBufferInputStream(ByteBuffer)
    * @see java.nio.ByteBuffer
    */
@@ -57,7 +57,7 @@ public class ByteBufferInputStream extends InputStream {
   /**
    * Constructs a new {@link ByteBufferInputStream} backed by the given, required {@link ByteBuffer}.
    *
-   * @param byteBuffer {@link ByteBuffer} used to back the {@link InputStream}; must not be {@literal null}.
+   * @param byteBuffer {@link ByteBuffer} used to back this {@link InputStream}; must not be {@literal null}.
    * @throws IllegalArgumentException if the {@link ByteBuffer} is {@literal null}.
    * @see java.nio.ByteBuffer
    */
@@ -128,8 +128,8 @@ public class ByteBufferInputStream extends InputStream {
   }
 
   /**
-   * Reads at most {@code length} bytes from the backing {@link ByteBuffer} using this {@link InputStream}
-   * into the given, required byte array starting at the given offset.
+   * Reads at most {@link Integer length} bytes from the backing {@link ByteBuffer} using this {@link InputStream}
+   * into the given, required byte array starting at the given {@link Integer offset}.
    *
    * @param buffer byte array written from the bytes read from this {@link InputStream}; must not be {@literal null}.
    * @param offset {@link Integer} referring to the index in the byte array to start writing bytes.
@@ -186,7 +186,7 @@ public class ByteBufferInputStream extends InputStream {
   }
 
   /**
-   * Skips the given number of bytes read from this {@link InputStream}.
+   * Skips the given {@link Integer number of bytes} read from this {@link InputStream}.
    * <p>
    * Effectively moves the {@link ByteBuffer#position()} ahead by the number of available or given number of bytes,
    * which ever is smaller.
