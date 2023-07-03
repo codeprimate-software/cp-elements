@@ -18,26 +18,25 @@ package org.cp.elements.nio;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.assertj.core.api.Assertions.assertThatNullPointerException;
-import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.inOrder;
-import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.mockito.Mockito.withSettings;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
 
 import org.junit.jupiter.api.Test;
 
+import org.cp.elements.function.FunctionException;
+import org.cp.elements.function.ThrowableFunction;
 import org.cp.elements.lang.ThrowableAssertions;
 import org.cp.elements.lang.annotation.NotNull;
-
+import org.cp.elements.test.TestException;
 import org.mockito.InOrder;
-import org.mockito.quality.Strictness;
 
 /**
  * Unit Tests for {@link ByteBufferInputStream}.
@@ -54,21 +53,44 @@ public class ByteBufferInputStreamUnitTests {
 
   private static final int CAPACITY = 1;
 
-  // TODO: Refactor mockByteBuffer since all the mocked Buffer methods are final.
-  private @NotNull ByteBuffer mockByteBuffer() {
+  private @NotNull ByteBuffer allocateHeapByteBuffer(int capacity) {
 
-    ByteBuffer mockByteBuffer = mock(ByteBuffer.class, withSettings().strictness(Strictness.LENIENT));
+    ByteBuffer buffer = ByteBuffer.allocate(capacity);
 
-    doReturn(CAPACITY).when(mockByteBuffer).capacity();
-    doReturn(CAPACITY).when(mockByteBuffer).limit();
-    doReturn(0).when(mockByteBuffer).position();
-    doReturn(mockByteBuffer).when(mockByteBuffer).limit(anyInt());
-    doReturn(mockByteBuffer).when(mockByteBuffer).mark();
-    doReturn(mockByteBuffer).when(mockByteBuffer).reset();
-    doReturn(mockByteBuffer).when(mockByteBuffer).rewind();
+    assertThat(buffer).isNotNull();
+    assertThat(buffer.capacity()).isEqualTo(capacity);
+    assertThat(buffer.limit()).isEqualTo(capacity);
+    assertThat(buffer.position()).isZero();
+    assertThat(buffer.remaining()).isEqualTo(capacity);
 
-    return mockByteBuffer;
+    return spy(buffer);
+  }
 
+  private @NotNull ByteBuffer emptyByteBuffer() {
+    return allocateHeapByteBuffer(0);
+  }
+
+  // NOTE: ByteBuffer from Java 19+ is a Sealed Class and cannot be mocked.
+  private @NotNull ByteBuffer singleByteByteBuffer() {
+    return allocateHeapByteBuffer(1);
+  }
+
+  private @NotNull ByteBuffer sizedByteBuffer(int capacity) {
+    return allocateHeapByteBuffer(capacity);
+  }
+
+  private <T> T tryWithResource(@NotNull ByteBuffer buffer,
+      @NotNull ThrowableFunction<ByteBufferInputStream, T> operation) throws Throwable {
+
+    try (ByteBufferInputStream in = ByteBufferInputStream.from(buffer)) {
+      return operation.apply(in);
+    }
+    catch (FunctionException cause) {
+      throw cause.getCause();
+    }
+    catch (IOException cause) {
+      throw new TestException("Failed to close the ByteBufferInputStream", cause);
+    }
   }
 
   @SuppressWarnings("all")
@@ -103,32 +125,31 @@ public class ByteBufferInputStreamUnitTests {
   }
 
   @Test
-  public void constructNewByteBufferInputStreamWithNonNullByteBuffer() {
+  public void constructNewByteBufferInputStreamWithNonNullByteBuffer() throws IOException {
 
-    ByteBuffer mockByteBuffer = mockByteBuffer();
+    ByteBuffer byteBuffer = singleByteByteBuffer();
 
-    ByteBufferInputStream inputStream = new ByteBufferInputStream(mockByteBuffer);
+    try (ByteBufferInputStream inputStream = new ByteBufferInputStream(byteBuffer)) {
+      assertThat(inputStream.getByteBuffer()).isEqualTo(byteBuffer);
+    }
 
-    assertThat(inputStream.getByteBuffer()).isEqualTo(mockByteBuffer);
-
-    verifyZeroPositionedByteBufferInteractions(mockByteBuffer);
+    verifyZeroPositionedByteBufferInteractions(byteBuffer);
   }
 
   @Test
-  public void constructNewByteBufferInputStreamWithNonPositionedByteBuffer() {
+  public void constructNewByteBufferInputStreamWithNonPositionedByteBuffer() throws IOException {
 
-    ByteBuffer mockByteBuffer = mockByteBuffer();
+    ByteBuffer byteBuffer = sizedByteBuffer(16);
 
-    doReturn(16).when(mockByteBuffer).capacity();
+    try (ByteBufferInputStream inputStream = new ByteBufferInputStream(byteBuffer)) {
+      assertThat(inputStream.getByteBuffer()).isEqualTo(byteBuffer);
+    }
 
-    ByteBufferInputStream inputStream = new ByteBufferInputStream(mockByteBuffer);
-
-    assertThat(inputStream.getByteBuffer()).isEqualTo(mockByteBuffer);
-
-    verifyZeroPositionedByteBufferInteractions(mockByteBuffer, 16);
+    verifyZeroPositionedByteBufferInteractions(byteBuffer, 16);
   }
 
   @Test
+  @SuppressWarnings("all")
   public void constructNewByteBufferInputStreamWithNullByteBuffer() {
 
     assertThatIllegalArgumentException()
@@ -138,15 +159,15 @@ public class ByteBufferInputStreamUnitTests {
   }
 
   @Test
-  public void constructNewByteBufferInputStreamWithPositionedByteBuffer() {
+  public void constructNewByteBufferInputStreamWithPositionedByteBuffer() throws IOException {
 
-    ByteBuffer mockByteBuffer = mockByteBuffer();
+    ByteBuffer mockByteBuffer = sizedByteBuffer(5);
 
     doReturn(5).when(mockByteBuffer).position();
 
-    ByteBufferInputStream inputStream = new ByteBufferInputStream(mockByteBuffer);
-
-    assertThat(inputStream.getByteBuffer()).isEqualTo(mockByteBuffer);
+    try (ByteBufferInputStream inputStream = new ByteBufferInputStream(mockByteBuffer)) {
+      assertThat(inputStream.getByteBuffer()).isEqualTo(mockByteBuffer);
+    }
 
     verifyPositionedByteBufferInteractions(mockByteBuffer, 5);
   }
@@ -154,14 +175,14 @@ public class ByteBufferInputStreamUnitTests {
   @Test
   public void fromByteBufferIsSuccessful() {
 
-    ByteBuffer mockByteBuffer = mockByteBuffer();
+    ByteBuffer mockByteBuffer = emptyByteBuffer();
 
     ByteBufferInputStream inputStream = ByteBufferInputStream.from(mockByteBuffer);
 
     assertThat(inputStream).isNotNull();
     assertThat(inputStream.getByteBuffer()).isEqualTo(mockByteBuffer);
 
-    verifyZeroPositionedByteBufferInteractions(mockByteBuffer);
+    verifyZeroPositionedByteBufferInteractions(mockByteBuffer, 0);
   }
 
   @Test
@@ -237,8 +258,8 @@ public class ByteBufferInputStreamUnitTests {
   }
 
   @Test
-  public void markSupportedReturnsTrue() {
-    assertThat(ByteBufferInputStream.from(mockByteBuffer()).markSupported()).isTrue();
+  public void markSupportedReturnsTrue() throws Throwable {
+    assertThat(tryWithResource(singleByteByteBuffer(), ByteBufferInputStream::markSupported)).isTrue();
   }
 
   @Test
@@ -266,22 +287,22 @@ public class ByteBufferInputStreamUnitTests {
   @Test
   public void readIntoByteArrayWithAvailableBytesReturnsActualNumberOfBytesRead() throws IOException {
 
-    byte[] array = { 1, 2, 3 };
-    byte[] buffer = new byte[array.length * 10];
+    byte[] data = { 1, 2, 3 };
+    byte[] buffer = new byte[data.length * 10];
 
-    ByteBuffer byteBuffer = ByteBuffer.wrap(array);
+    ByteBuffer byteBuffer = ByteBuffer.wrap(data);
 
     ByteBufferInputStream inputStream = ByteBufferInputStream.from(byteBuffer);
 
     assertThat(inputStream).isNotNull();
     assertThat(inputStream.getByteBuffer()).isEqualTo(byteBuffer);
-    assertThat(inputStream.available()).isEqualTo(array.length);
-    assertThat(inputStream.read(buffer)).isEqualTo(array.length);
+    assertThat(inputStream.available()).isEqualTo(data.length);
+    assertThat(inputStream.read(buffer)).isEqualTo(data.length);
     assertThat(inputStream.available()).isZero();
 
     for (int index = 0; index < buffer.length; index++) {
-      if (index < array.length) {
-        assertThat(buffer[index]).isEqualTo(array[index]);
+      if (index < data.length) {
+        assertThat(buffer[index]).isEqualTo(data[index]);
       }
       else {
         assertThat(buffer[index]).isZero();
@@ -318,7 +339,7 @@ public class ByteBufferInputStreamUnitTests {
   @Test
   public void readIntoByteArrayWithUnavailableBytesReturnsMinusOne() throws IOException {
 
-    ByteBuffer mockByteBuffer = mockByteBuffer();
+    ByteBuffer mockByteBuffer = emptyByteBuffer();
 
     doReturn(0).when(mockByteBuffer).remaining();
 
@@ -329,13 +350,13 @@ public class ByteBufferInputStreamUnitTests {
     assertThat(inputStream.read(new byte[10], 0, 5)).isEqualTo(-1);
 
     verify(mockByteBuffer, times(1)).remaining();
-    verifyZeroPositionedByteBufferInteractions(mockByteBuffer);
+    verifyZeroPositionedByteBufferInteractions(mockByteBuffer, 0);
   }
 
   @Test
-  public void readIntoZeroLengthByteArrayReturnsZero() throws IOException {
+  public void readIntoZeroLengthByteArrayWithAvailableBytesReturnsZero() throws IOException {
 
-    ByteBuffer mockByteBuffer = mockByteBuffer();
+    ByteBuffer mockByteBuffer = singleByteByteBuffer();
 
     ByteBufferInputStream inputStream = ByteBufferInputStream.from(mockByteBuffer);
 
@@ -350,7 +371,7 @@ public class ByteBufferInputStreamUnitTests {
   public void readIntoByteArrayWithInvalidOffset() {
 
     ThrowableAssertions.assertThatIndexOutOfBoundsException()
-      .isThrownBy(args -> ByteBufferInputStream.from(mockByteBuffer()).read(new byte[5], 7, 5))
+      .isThrownBy(args -> tryWithResource(singleByteByteBuffer(), in -> in.read(new byte[5], 7, 5)))
       .havingMessage("Offset [7] must be greater than equal to 0 and less than [5]")
       .withNoCause();
   }
@@ -359,7 +380,7 @@ public class ByteBufferInputStreamUnitTests {
   public void readIntoByteArrayWithNegativeOffset() {
 
     ThrowableAssertions.assertThatIndexOutOfBoundsException()
-      .isThrownBy(args -> ByteBufferInputStream.from(mockByteBuffer()).read(new byte[10], -5, 5))
+      .isThrownBy(args -> tryWithResource(singleByteByteBuffer(), in -> in.read(new byte[10], -5, 5)))
       .havingMessage("Offset [-5] must be greater than equal to 0 and less than [10]")
       .withNoCause();
   }
@@ -368,7 +389,7 @@ public class ByteBufferInputStreamUnitTests {
   public void readIntoByteArrayWithInvalidLength() {
 
     ThrowableAssertions.assertThatIndexOutOfBoundsException()
-      .isThrownBy(args -> ByteBufferInputStream.from(mockByteBuffer()).read(new byte[10], 6, 5))
+      .isThrownBy(args -> tryWithResource(singleByteByteBuffer(), in -> in.read(new byte[10], 6, 5)))
       .havingMessage("Length [5] must be greater than equal to 0 and less than equal to [4]")
       .withNoCause();
   }
@@ -377,7 +398,7 @@ public class ByteBufferInputStreamUnitTests {
   public void readIntoByteArrayWithNegativeLength() {
 
     ThrowableAssertions.assertThatIndexOutOfBoundsException()
-      .isThrownBy(args -> ByteBufferInputStream.from(mockByteBuffer()).read(new byte[10], 5, -5))
+      .isThrownBy(args -> tryWithResource(singleByteByteBuffer(), in -> in.read(new byte[10], 5, -5)))
       .havingMessage("Length [-5] must be greater than equal to 0 and less than equal to [5]")
       .withNoCause();
   }
@@ -387,7 +408,7 @@ public class ByteBufferInputStreamUnitTests {
   public void readIntoNullByteArrayThrowsNullPointerException() {
 
     assertThatNullPointerException()
-      .isThrownBy(() -> ByteBufferInputStream.from(mockByteBuffer()).read(null, 0, 10))
+      .isThrownBy(() -> tryWithResource(singleByteByteBuffer(), in -> in.read(null, 0, 10)))
       .withMessage("Byte array cannot be null")
       .withNoCause();
   }
