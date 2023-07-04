@@ -3,6 +3,24 @@ Codeprimate Elements changelog.txt
 https://github.com/codeprimate-software/cp-elements/blob/master/changelog.txt
 
 
+1.0.3 (SR3) - 2023-July-05
+--------------------------
+Release Codeprimate Elements 1.0.3, third maintenance (patch) release of 1.0 GA!
+
+* Built with Oracle Java (JDK) 8; 1.8.0_361.
+* Builds and supports Codeprimate Elements on Java 8, Java 11, Java 14 and Java 17.
+* Builds and supports Codeprimate Elements on Gradle 8.2.
+* Adds the isPrime(:int) utility method to the o.c.elements.lang.NumberUtils class.
+* Edits all Javadoc replacing empty lines with <p> HTML tags, correcting grammar and spelling errors
+and fixing syntax errors in Javadoc tags (for example {@literal xyz}).
+* Upgrades to Codeprimate Build 2.0.0-M3.
+* Upgrades to FreeFair Lombok Gradle Plugin 8.1.0.
+* Upgrades to Gradle 8.2.
+* Upgrades to Lombok 1.18.28.
+* Upgrades to Maven 3.9.3.
+* Upgrades to Maven Wrapper 3.2.0.
+
+
 2.0.0-M1 - 2023-May-23
 ----------------------
 Release Codeprimate Elements 2.0.0-M1 based on Java 17.
