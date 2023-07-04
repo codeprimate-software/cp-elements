@@ -3,6 +3,29 @@ Codeprimate Elements changelog.txt
 https://github.com/codeprimate-software/cp-elements/blob/master/changelog.txt
 
 
+2.0.0-M2 - 2023-July-04
+-----------------------
+Release Codeprimate Elements 2.0.0-M2 with Javadoc improvements.
+
+* Built on Oracle Java (JDK) 17.0.7 2023-April-18 LTS (build 17.0.7+8-LTS-224).
+* Builds and supports Elements on (up to) Java (JDK) 20.0.1 2023-April-18 (build 20.0.1+9-29).
+* Adds JMH Benchmarks for Elements AbstractBean and the Cache (Service Provider Implementation) classes.
+* Adds the isPrime(:int) utility method to the o.c.elements.lang.NumberUtils class.
+* Defines the ThrowableFunction interface and extension of java.util.function.Function in the org.cp.elements.function
+package to implement Functions whose operations can throw an exception.
+* Defines the FunctionException and FunctionExecutionException, Java RuntimeException classes
+in the org.cp.elements.function package to classify runtime exceptions thrown from Functions.
+* Edits all Javadoc replacing empty lines with <p> HTML tags, correcting grammar and spelling errors
+and fixing syntax errors in Javadoc tags (for example {@literal xyz}).
+* Refactors source code to apply Java 17 syntax and features, such as the use of pattern variables in overridden
+Object.equals(:Object) methods, enhanced switch statements and try-with-resources blocks.
+* Renames the Maven project artifactId to 'elements'.
+* Upgrades to Codeprimate Build 2.0.0-M3.
+* Upgrades to the Build-Helper Maven Plugin 3.4.0.
+* Upgrades to Maven 3.9.3.
+* Upgrades to Maven Wrapper 3.2.0.
+
+
 1.0.3 (SR3) - 2023-July-05
 --------------------------
 Release Codeprimate Elements 1.0.3, third maintenance (patch) release of 1.0 GA!
@@ -47,9 +70,10 @@ with JUnit 5 Jupiter @AfterAll, @AfterEach, @BeforeAll, and @BeforeEach annotati
 * Replaces use of Class.newInstance() calls with Elements ObjectUtils.construct(:Class, :Object[]) method.
 * Upgrades to Codeprimate Build 2.0.0-M2.
 
+
 1.0.2 (SR2) - 2023-May-15
 -------------------------
-Release Codeprimate Elements 1.0.2, second patch (maintenance) release of 1.0 GA!
+Release Codeprimate Elements 1.0.2, second maintenance (patch) release of 1.0 GA!
 
 * Built on Oracle Java (JDK) 8; 1.8.0_362.
 * Builds and supports Codeprimate Elements on Java 8, Java 11, Java 14, Java 17 and Java 18.
@@ -74,10 +98,9 @@ in the org.cp.elements.data.struct.tabular package.
 * Upgrades to Gradle 8.1.1.
 
 
-
 1.0.1 (SR1) - 2023-February-02
 ------------------------------
-Release Codeprimate Elements 1.0.1, first patch (maintenance) release of the 1.0 GA!
+Release Codeprimate Elements 1.0.1, first maintenance (patch) release of the 1.0 GA!
 
 * Built on Oracle Java (JDK) 8; 1.8.0_361.
 * Builds and supports Codeprimate Elements on Java 8, Java 11, Java 14, Java 17 and Java 18.
