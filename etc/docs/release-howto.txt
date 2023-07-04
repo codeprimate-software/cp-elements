@@ -1,11 +1,11 @@
 To perform a release of the Codeprimate Elements (cp-elements) project, run the following script:
 
-0. Set the project's 'Major, Minor, Maintenance and Version Qualifier' for the release (e.g. 1.0.0.RELEASE)
-in both pom.xml and gradle.properties.
+0. Set the project's 'Major, Minor, Maintenance and Version Qualifier' for the release (e.g. 1.0.0-RELEASE)
+in both pom.xml, ivy.xml and gradle.properties.
 
-Version Qualifier maybe 1 of: M# (Milestone #; e.g. M2), RC# (Release Candidate #; e.g. RC1) or RELEASE.
+Version Qualifier maybe 1 of: M# (Milestone #; e.g. M2), RC# (Release Candidate #; e.g. RC1) or (optionally) RELEASE.
 
-1. Build with all supported JDK [LTS] versions from baseline forward, for example: [JDK 8, JDK 11, JDK14, JDK17, JDK18].
+1. Build with all supported JDK [LTS] versions from baseline forward, for example: [JDK 8, JDK 11, JDK14, JDK17].
 
 2. `mvn -P code-analysis,prepare-release clean install site`
 
@@ -13,7 +13,7 @@ Version Qualifier maybe 1 of: M# (Milestone #; e.g. M2), RC# (Release Candidate 
 
 4. Copy 'cp-elements/target/site' to 'cp-core-workspace/etc/releases/cp-elements-<major>.<minor>.<maint>.<version-qualifier>/'.
 
-5. Copy 'cp-elements/build/reports' to 'cp-core-workspace/etc/releases/cp-elements-<major>.<minor>.<maint>.<version-qualifier>/'.
+5. Copy 'cp-elements/build/reports' and 'cp-elements/build/test-results' to 'cp-core-workspace/etc/releases/cp-elements-<major>.<minor>.<maint>.<version-qualifier>/'.
 
 6. Copy 'cp-elements/target/apidocs' to 'cp-core-workspace/etc/releases/cp-elements-<major>.<minor>.<maint>.<version-qualifier>/'.
 
