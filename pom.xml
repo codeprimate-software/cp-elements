@@ -176,12 +176,6 @@
       </properties>
     </profile>
     <profile>
-      <id>oracle-jdk-9-jigsaw-and-later</id>
-      <activation>
-        <jdk>[1.9,)</jdk>
-      </activation>
-    </profile>
-    <profile>
       <id>oracle-jdk-8</id>
       <activation>
         <jdk>(, 8]</jdk>
