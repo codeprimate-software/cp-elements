@@ -173,9 +173,9 @@
                   <type>date</type>
                   <dates>
                     <!-- Begin Date is inclusive -->
-                    <date implementation="java.lang.String">2023-05-16</date>
-                    <!-- End Date is exclusive -->
                     <date implementation="java.lang.String">2023-05-24</date>
+                    <!-- End Date is exclusive -->
+                    <date implementation="java.lang.String">2023-07-05</date>
                   </dates>
                   <dateFormat>yyyy-MM-dd</dateFormat>
                 </configuration>
