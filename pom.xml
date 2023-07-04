@@ -155,15 +155,6 @@
       </properties>
     </profile>
     <profile>
-      <id>oracle-jdk-17</id>
-      <activation>
-        <jdk>[17,18)</jdk>
-      </activation>
-      <properties>
-        <java.version>17</java.version>
-      </properties>
-    </profile>
-    <profile>
       <id>prepare-release</id>
       <!-- $ mvn -P prepare-release install site -->
       <properties>
