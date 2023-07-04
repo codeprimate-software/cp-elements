@@ -16,7 +16,7 @@
     <dependency org="org.jmock" name="jmock-junit4" rev="2.12.0" transitive="true"/>
     <dependency org="org.jmock" name="jmock-legacy" rev="2.12.0" transitive="true"/>
     <dependency org="org.easymock" name="easymock" rev="5.1.0"/>
-    <dependency org="org.projectlombok" name="lombok" rev="1.18.26"/>
+    <dependency org="org.projectlombok" name="lombok" rev="1.18.28"/>
     <dependency org="edu.umd.cs.mtc" name="multithreadedtc" rev="1.01"/>
   </dependencies>
 </ivy-module>
