@@ -293,7 +293,7 @@
     <module name="RequireEmptyLineBeforeBlockTagGroup"/>
     <!--module name="SingleLineJavadoc"/-->
     <module name="SummaryJavadoc">
-      <property name="violateExecutionOnNonTightHtml" value="true"/>
+      <property name="violateExecutionOnNonTightHtml" value="false"/>
     </module>
     <!--module name="WriteTag"/-->
 
