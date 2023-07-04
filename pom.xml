@@ -145,7 +145,7 @@
 
   <profiles>
     <profile>
-      <id>oracle-jdk-20</id>
+      <id>java20</id>
       <activation>
         <jdk>[20,)</jdk>
       </activation>
