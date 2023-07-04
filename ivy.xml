@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ivy-module version="2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
             xsi:noNamespaceSchemaLocation="http://ant.apache.org/ivy/schemas/ivy.xsd">
-  <info organisation="org.codeprimate" module="cp-elements" revision="1.0.3" branch="trunk" status="integration">
+  <info organisation="org.codeprimate" module="cp-elements" revision="1.0.4-SNAPSHOT" branch="trunk" status="integration">
 
     <ivyauthor name="Codeprimate, LLC" url="www.codeprimate.org"/>
     <description>
