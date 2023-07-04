@@ -11,7 +11,7 @@
     <version>2.0.0-M3</version>
   </parent>
 
-  <artifactId>cp-elements</artifactId>
+  <artifactId>elements</artifactId>
   <version>2.0.0-SNAPSHOT</version>
   <packaging>jar</packaging>
 
