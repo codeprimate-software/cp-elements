@@ -319,8 +319,8 @@ public abstract class StringUtils {
   /**
    * Determines whether the {@link String} has text.
    * <p>
-   * A {@link String} has {@link String text} if it is {@link String#isBlank() not blank}, implying the {@link String}
-   * is not {@literal null}, is not {@link String#isEmpty()} and contains at least 1 non-whitespace character.
+   * A {@link String} has {@link String text} if it is {@literal not blank}, implying the {@link String}
+   * is not {@literal null}, is not {@link String#isEmpty() empty} and contains at least 1 non-whitespace character.
    *
    * @param value {@link String} to evaluate.
    * @return a boolean value if the {@link String} contains text.
@@ -340,8 +340,8 @@ public abstract class StringUtils {
    * @param text {@link String text} to search.
    * @param value {@link String value} to search for in the {@link String}.
    * @return the {@link Integer index} of the first occurrence of the token in the {@link String}, or {@literal -1}
-   * if the token does not exist, or the {@link String} is {@link String#isBlank() blank},
-   * {@link String#isEmpty() empty} or {@literal null}.
+   * if the token does not exist, or the {@link String} is {@literal blank}, {@link String#isEmpty() empty}
+   * or {@literal null}.
    * @see java.lang.String#indexOf(String)
    * @see #lastIndexOf(String, String)
    */
@@ -357,7 +357,6 @@ public abstract class StringUtils {
    *
    * @param value {@link String} to evaluate.
    * @return a boolean value indicating whether the {@link String} is blank.
-   * @see java.lang.String#isBlank()
    * @see #isEmpty(String)
    * @see #hasText(String)
    */
@@ -434,8 +433,8 @@ public abstract class StringUtils {
    * @param text {@link String text} to search.
    * @param value {@link String value} to search for in the {@link String}.
    * @return the {@link Integer index} of the last occurrence of the token in the {@link String}, or {@literal -1}
-   * if the token does not exist, or the {@link String} is {@link String#isBlank() blank},
-   * {@link String#isEmpty() empty} or {@literal null}.
+   * if the token does not exist, or the {@link String} is {@literal blank}, {@link String#isEmpty() empty}
+   * or {@literal null}.
    * @see java.lang.String#lastIndexOf(String)
    * @see #indexOf(String, String)
    */
@@ -660,10 +659,9 @@ public abstract class StringUtils {
   /**
    * Tokenizes the given, delimited {@link String} into an array of individually trimmed {@link String Strings}.
    * <p>
-   * If {@link String} is {@link String#isBlank() blank}, {@link String#isEmpty() empty} or {@literal null},
-   * then a {@literal 0} length {@link String array} is returned. If the {@link String} is not delimited with
-   * the specified delimiter then a {@link String array} of size {@literal 1} is returned with
-   * the given {@link String} as the only element.
+   * If {@link String} is {@literal blank}, {@link String#isEmpty() empty} or {@literal null}, then a {@literal 0}
+   * length {@link String array} is returned. If the {@link String} is not delimited with the specified delimiter
+   * then a {@link String array} of size {@literal 1} is returned with the given {@link String} as the only element.
    *
    * @param commaDelimitedValue comma-delimited {@link String} to tokenize.
    * @return an array of individually tokenized and trimmed {@link String Strings} from the given {@link String}.
@@ -677,10 +675,9 @@ public abstract class StringUtils {
   /**
    * Tokenizes the given delimited {@link String} into an array of individually trimmed {@link String Strings}.
    * <p>
-   * If {@link String} is {@link String#isBlank() blank}, {@link String#isEmpty() empty} or {@literal null},
-   * then a {@literal 0} length {@link String array} is returned. If the {@link String} is not delimited with
-   * the specified delimiter then a {@link String array} of size {@literal 1} is returned with
-   * the given {@link String} as the only element.
+   * If {@link String} is {@literal blank}, {@link String#isEmpty() empty} or {@literal null}, then a {@literal 0}
+   * length {@link String array} is returned. If the {@link String} is not delimited with the specified delimiter
+   * then a {@link String array} of size {@literal 1} is returned with the given {@link String} as the only element.
    *
    * @param delimitedValue {@link String} to tokenize based on the delimiter.
    * @param delimiter the delimiter used to tokenize the {@link String}.
@@ -755,9 +752,9 @@ public abstract class StringUtils {
   /**
    * Truncates the {@link String} to the desired {@link Integer length}.
    * <p>
-   * If the {@link String} is {@link String#isBlank() blank}, {@link String#isEmpty() empty} or {@literal null},
-   * then {@link String} is returned, otherwise the {@link String} is truncated to the maximum {@link Integer length}
-   * determined by the value's {@link String#length() length} and desired {@link Integer length}.
+   * If the {@link String} is {@literal blank}, {@link String#isEmpty() empty} or {@literal null}, then {@link String}
+   * is returned, otherwise the {@link String} is truncated to the maximum {@link Integer length} determined by
+   * the value's {@link String#length() length} and desired {@link Integer length}.
    *
    * @param value {@link String} to truncate.
    * @param length {@link Integer} specifying the length to truncate the {@link String} to.

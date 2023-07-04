@@ -161,7 +161,6 @@ public abstract class ClassUtils {
    * Get the {@link Class type} of the specified {@link Object}.
    * <p>
    * Returns {@literal null} if the {@link Object} reference is {@literal null}.
->>>>>>> d23c5ac7 (Replace all empty lines with <p> HTML tags in Javadoc.)
    *
    * @param obj {@link Object} who's {@link Object#getClass() type} is being determined.
    * @return a {@link Class} classifying the type of the given {@link Object}.
@@ -332,7 +331,6 @@ public abstract class ClassUtils {
 
   /**
    * Gets the {@link Constructor} with the given signature from the given {@link Class type}.
->>>>>>> d23c5ac7 (Replace all empty lines with <p> HTML tags in Javadoc.)
    *
    * @param <T> generic {@link Class type} from which to get the {@link Constructor}.
    * @param type {@link Class type} from which to get the {@link Constructor}.
