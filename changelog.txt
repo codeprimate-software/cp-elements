@@ -24,7 +24,7 @@ Release Codeprimate Elements 2.0.0-M1 based on Java 17.
 * Replaces all JUnit 4 @org.junit.Test annotations with the JUnit 5 Jupiter @org.junit.jupiter.api.Test annotation.
 * Replaces all uses of the JUnit 4 @RunWith annotation with the JUnit 5 Jupiter @ExtendsWith annotation.
 * Replaces all uses of JUnit 4 @After, @AfterClass, @Before and @BeforeClass annotations
-with JUnit 5 Jupiter @AfterAll, @AfterEach, @BeforeAll, each @BeforeEach annotations.
+with JUnit 5 Jupiter @AfterAll, @AfterEach, @BeforeAll, and @BeforeEach annotations.
 * Replaces all uses of the Mockito 4 MockitoJUnitRunner with Mockito 5's MockitoExtension.
 * Replaces use of Class.newInstance() calls with Elements ObjectUtils.construct(:Class, :Object[]) method.
 * Upgrades to Codeprimate Build 2.0.0-M2.
@@ -58,7 +58,7 @@ in the org.cp.elements.data.struct.tabular package.
 
 
 1.0.1 (SR1) - 2023-February-02
------------------------------
+------------------------------
 Release Codeprimate Elements 1.0.1, first patch (maintenance) release of the 1.0 GA!
 
 * Built on Oracle Java (JDK) 8; 1.8.0_361.
