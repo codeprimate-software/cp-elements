@@ -48,7 +48,7 @@ public class FunctionException extends RuntimeException {
    * Constructs a new {@link FunctionException} with the given {@link Throwable cause}
    * as the reason this exception was thrown.
    *
-   * @param cause {@link Throwable} uses as the underlying reason this exception was thrown.
+   * @param cause {@link Throwable} used as the underlying reason this exception was thrown.
    */
   public FunctionException(Throwable cause) {
     super(cause);
@@ -59,7 +59,7 @@ public class FunctionException extends RuntimeException {
    * along with the given {@link Throwable cause} as the reason this exception was thrown.
    *
    * @param message {@link String} containing a description of the exception.
-   * @param cause {@link Throwable} uses as the underlying reason this exception was thrown.
+   * @param cause {@link Throwable} used as the underlying reason this exception was thrown.
    */
   public FunctionException(String message, Throwable cause) {
     super(message, cause);
