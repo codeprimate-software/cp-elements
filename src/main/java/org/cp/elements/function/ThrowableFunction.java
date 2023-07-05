@@ -48,9 +48,9 @@ public interface ThrowableFunction<T, R> extends Function<T, R> {
    *
    * @param input {@link Object} of {@link T type T} passed as the argument to this {@link Function}.
    * @return the {@link R computation (result)} of this {@link Function}.
-   * @throws Throwable if the {@link Function} execution fails.
+   * @throws Exception if the {@link Function} execution fails.
    * @see #apply(Object)
    */
-  R applyWithThrows(T input) throws Throwable;
+  R applyWithThrows(T input) throws Exception;
 
 }
