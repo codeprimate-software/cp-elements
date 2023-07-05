@@ -26,6 +26,7 @@ import org.cp.elements.beans.PropertyWriteException;
 import org.cp.elements.biz.rules.RuleException;
 import org.cp.elements.context.configure.ConfigurationException;
 import org.cp.elements.dao.DataAccessException;
+import org.cp.elements.data.caching.CacheEntryException;
 import org.cp.elements.data.caching.CacheException;
 import org.cp.elements.data.caching.CacheNotFoundException;
 import org.cp.elements.data.compression.CompressionException;
@@ -90,6 +91,7 @@ import org.cp.elements.util.sort.SortException;
  * @see org.cp.elements.context.configure.ConfigurationException
  * @see org.cp.elements.dao.DataAccessException
  * @see org.cp.elements.data.caching.CacheException
+ * @see org.cp.elements.data.caching.CacheEntryException
  * @see org.cp.elements.data.caching.CacheNotFoundException
  * @see org.cp.elements.data.compression.CompressionException
  * @see org.cp.elements.data.compression.DecompressionException
@@ -486,6 +488,34 @@ public abstract class ElementsExceptionsFactory {
    */
   public static CacheNotFoundException newCacheNotFoundException(Throwable cause, String message, Object... args) {
     return new CacheNotFoundException(format(message, args), cause);
+  }
+
+  /**
+   * Constructs a new {@link CacheEntryException} initialized with the given {@link String message}
+   * to describe the exception.
+   *
+   * @param message {@link String} containing a message to describe the exception.
+   * @param args optional array of {@link Object arguments} used to replace the placeholders in the message.
+   * @return a new {@link CacheEntryException}.
+   * @see #newCacheEntryException(Throwable, String, Object...)
+   * @see org.cp.elements.data.caching.CacheEntryException
+   */
+  public static CacheEntryException newCacheEntryException(String message, Object... args) {
+    return newCacheEntryException(null, message, args);
+  }
+
+  /**
+   * Constructs a new {@link CacheEntryException} initialized with the given {@link String message}
+   * to describe the exception along with a {@link Throwable cause} used as the reason why the exception was thrown.
+   *
+   * @param cause {@link Throwable} used as the cause of the exception.
+   * @param message {@link String} containing a message to describe the exception.
+   * @param args optional array of {@link Object arguments} used to replace the placeholders in the message.
+   * @return a new {@link CacheEntryException}.
+   * @see org.cp.elements.data.caching.CacheEntryException
+   */
+  public static CacheEntryException newCacheEntryException(Throwable cause, String message, Object... args) {
+    return new CacheEntryException(format(message, args), cause);
   }
 
   /**
