@@ -143,9 +143,15 @@ public class Version implements Comparable<Version> {
         };
         return parseMajorMinor(majorMinorVersionNumbers);
       }
-      case 2 -> { return parseMajorMinor(versionNumbers); }
-      case 3 -> { return parseMajorMinorMaintenance(versionNumbers); }
-      case 4 -> { return parseMajorMinorMaintenanceQualifier(versionNumbers); }
+      case 2 -> {
+        return parseMajorMinor(versionNumbers);
+      }
+      case 3 -> {
+        return parseMajorMinorMaintenance(versionNumbers);
+      }
+      case 4 -> {
+        return parseMajorMinorMaintenanceQualifier(versionNumbers);
+      }
       default -> throw new IllegalArgumentException(String.format("Unrecognized format for version [%s]", version));
     }
   }
