@@ -20,6 +20,7 @@ import static org.cp.elements.lang.ElementsExceptionsFactory.newApplicationExcep
 import static org.cp.elements.lang.ElementsExceptionsFactory.newAssertionException;
 import static org.cp.elements.lang.ElementsExceptionsFactory.newAuthenticationException;
 import static org.cp.elements.lang.ElementsExceptionsFactory.newAuthorizationException;
+import static org.cp.elements.lang.ElementsExceptionsFactory.newBeanIntrospectionException;
 import static org.cp.elements.lang.ElementsExceptionsFactory.newBeansException;
 import static org.cp.elements.lang.ElementsExceptionsFactory.newCacheEntryException;
 import static org.cp.elements.lang.ElementsExceptionsFactory.newCacheEntryNotFoundException;
@@ -92,6 +93,7 @@ import static org.cp.elements.lang.ElementsExceptionsFactory.newWriteOnlyExcepti
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
+import org.cp.elements.beans.BeanIntrospectionException;
 import org.cp.elements.beans.BeansException;
 import org.cp.elements.beans.IllegalPropertyValueException;
 import org.cp.elements.beans.PropertyNotFoundException;
@@ -192,6 +194,17 @@ public class ElementsExceptionsFactoryUnitTests {
   public void newBeansExceptionWithFormattedMessageAndCause() {
     assertThrowable(newBeansException(this.mockCause, "%s is a {1}", "This", "test"),
       BeansException.class, "This is a test", this.mockCause);
+  }
+
+  @Test
+  public void newBeanIntrospectionExceptionWithMessage() {
+    assertThrowable(newBeanIntrospectionException("test"), BeanIntrospectionException.class, "test");
+  }
+
+  @Test
+  public void newBeanIntrospectionExceptionWithFormattedMessageAndCause() {
+    assertThrowable(newBeanIntrospectionException(this.mockCause, "%s is a {1}", "This", "test"),
+      BeanIntrospectionException.class, "This is a test", this.mockCause);
   }
 
   @Test

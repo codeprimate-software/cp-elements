@@ -17,6 +17,7 @@ package org.cp.elements.lang;
 
 import static org.cp.elements.text.FormatUtils.format;
 
+import org.cp.elements.beans.BeanIntrospectionException;
 import org.cp.elements.beans.BeansException;
 import org.cp.elements.beans.IllegalPropertyValueException;
 import org.cp.elements.beans.PropertyNotFoundException;
@@ -83,6 +84,7 @@ import org.cp.elements.util.sort.SortException;
  *
  * @author John Blum
  * @see org.cp.elements.beans.BeansException
+ * @see org.cp.elements.beans.BeanIntrospectionException
  * @see org.cp.elements.beans.IllegalPropertyValueException
  * @see org.cp.elements.beans.PropertyNotFoundException
  * @see org.cp.elements.beans.PropertyNotSetException
@@ -161,7 +163,7 @@ public abstract class ElementsExceptionsFactory {
 
   /**
    * Constructs a new {@link BeansException} initialized with the given {@link String message}
-   * to describe the {@link BeansException}.
+   * to describe the exception.
    *
    * @param message {@link String} containing a message to describe the exception.
    * @param args optional array of {@link Object arguments} used to replace the placeholders in the message.
@@ -175,8 +177,7 @@ public abstract class ElementsExceptionsFactory {
 
   /**
    * Constructs a new {@link BeansException} initialized with the given {@link String message}
-   * to describe the {@link BeansException} along with a {@link Throwable cause} used as the reason
-   * why the {@link BeansException} was thrown.
+   * to describe the exception along with a {@link Throwable cause} used as the reason why the exception was thrown.
    *
    * @param cause {@link Throwable} used as the cause of the exception.
    * @param message {@link String} containing a message to describe the exception.
@@ -186,6 +187,34 @@ public abstract class ElementsExceptionsFactory {
    */
   public static BeansException newBeansException(Throwable cause, String message, Object... args) {
     return new BeansException(format(message, args), cause) { };
+  }
+
+  /**
+   * Constructs a new {@link BeanIntrospectionException} initialized with the given {@link String message}
+   * to describe the exception.
+   *
+   * @param message {@link String} containing a message to describe the exception.
+   * @param args optional array of {@link Object arguments} used to replace the placeholders in the message.
+   * @return a new {@link BeanIntrospectionException}.
+   * @see #newBeanIntrospectionException(Throwable, String, Object...)
+   * @see org.cp.elements.beans.BeanIntrospectionException
+   */
+  public static BeanIntrospectionException newBeanIntrospectionException(String message, Object... args) {
+    return newBeanIntrospectionException(null, message, args);
+  }
+
+  /**
+   * Constructs a new {@link BeanIntrospectionException} initialized with the given {@link String message}
+   * to describe the exception along with a {@link Throwable cause} used as the reason why the exception was thrown.
+   *
+   * @param cause {@link Throwable} used as the cause of the exception.
+   * @param message {@link String} containing a message to describe the exception.
+   * @param args optional array of {@link Object arguments} used to replace the placeholders in the message.
+   * @return a new {@link BeanIntrospectionException}.
+   * @see org.cp.elements.beans.BeanIntrospectionException
+   */
+  public static BeanIntrospectionException newBeanIntrospectionException(Throwable cause, String message, Object... args) {
+    return new BeanIntrospectionException(format(message, args), cause);
   }
 
   /**
