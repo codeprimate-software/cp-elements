@@ -33,8 +33,8 @@ import org.cp.elements.util.stream.StreamUtils;
  * Interface defining a contract for Java {@link Object Objects} and services
  * {@link ServiceLoader#load(Class, ClassLoader) loaded} with Java's {@link ServiceLoader}.
  *
- * @param <T> {@link Class type} of the service instance loaded by this {@link ServiceLoader}.
  * @author John Blum
+ * @param <T> {@link Class type} of the service instance loaded by this {@link ServiceLoader}.
  * @see java.util.ServiceLoader
  * @since 1.0.0
  */

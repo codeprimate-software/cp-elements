@@ -29,9 +29,9 @@ import org.cp.elements.util.CollectionUtils;
 /**
  * Abstract base class supporting the implementation of different types of {@link Cache Caches}.
  *
+ * @author John Blum
  * @param <KEY> {@link Class type} of the {@link Cache} key.
  * @param <VALUE> {@link Class type} of the {@link Cache} value.
- * @author John Blum
  * @see org.cp.elements.data.caching.Cache
  * @see java.lang.Comparable
  * @since 1.0.0

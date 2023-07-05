@@ -34,8 +34,8 @@ import org.cp.elements.util.CollectionUtils;
  * for the CRUD ({@literal CREATE, READ, UPDATE, DELETE}) data access operations
  * as well as simple queries.
  *
- * @param <T> {@link Class type} of {@link Object application domain model object} being persisted.
  * @author John J. Blum
+ * @param <T> {@link Class type} of {@link Object application domain model object} being persisted.
  * @see java.util.function.Function
  * @see java.util.function.Predicate
  * @see java.util.Comparator

@@ -65,9 +65,9 @@ import org.cp.elements.util.stream.StreamUtils;
  * then caching providers should additionally override the {@link #getLock()} method to return a {@literal non-null}
  * {@link Object} to be used as the {@literal lock}.
  *
+ * @author John Blum
  * @param <KEY> {@link Comparable} {@link Class type} of {@literal keys} used for mapping by this {@link Cache}.
  * @param <VALUE> {@link Class type} of {@link VALUE values} stored in this {@link Cache}.
- * @author John Blum
  * @see java.lang.Comparable
  * @see java.lang.Iterable
  * @see java.util.Map
