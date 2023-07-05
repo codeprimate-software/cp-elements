@@ -18,26 +18,27 @@ package org.cp.elements.biz.rules;
 import org.cp.elements.lang.Constants;
 import org.cp.elements.lang.ObjectUtils;
 import org.cp.elements.lang.annotation.NotNull;
+import org.cp.elements.lang.support.IdentifiableSupport;
 
 /**
- * Abstract base class for encapsulating functionality common to all {@link Rule} implementations.
+ * Abstract base class encapsulating functionality common to all {@link Rule} implementations.
  *
  * @author John J. Blum
  * @param <T> {@link Class type} of {@link Object objects} evaluated by this {@literal business rule}.
  * @param <ID> {@link Comparable} {@link Class type} of the identifier uniquely identifying the {@link Rule}.
  * @see org.cp.elements.biz.rules.Rule
+ * @see org.cp.elements.lang.support.IdentifiableSupport
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
-public abstract class AbstractRule<T, ID extends Comparable<ID>> implements Rule<T, ID> {
+public abstract class AbstractRule<T, ID extends Comparable<ID>> extends IdentifiableSupport<ID>
+    implements Rule<T, ID> {
 
   protected static final boolean DEFAULT_EXPECTED_OUTCOME = true;
   protected static final boolean DEFAULT_THROW_EXCEPTION_ON_FAILURE = false;
 
   private volatile boolean expectedOutcome = DEFAULT_EXPECTED_OUTCOME;
   private volatile boolean throwExceptionOnFailure = DEFAULT_THROW_EXCEPTION_ON_FAILURE;
-
-  private volatile ID id;
 
   /**
    * Gets the {@link ID identifier} uniquely identifying this {@link Rule}.
@@ -48,7 +49,7 @@ public abstract class AbstractRule<T, ID extends Comparable<ID>> implements Rule
    */
   @Override
   public @NotNull ID getId() {
-    return ObjectUtils.requireState(this.id,
+    return ObjectUtils.requireState(super.getId(),
       "Identifier for Rule [%s] was not properly initialized", getClass().getName());
   }
 
@@ -61,7 +62,7 @@ public abstract class AbstractRule<T, ID extends Comparable<ID>> implements Rule
    */
   @Override
   public final void setId(@NotNull ID id) {
-    this.id = ObjectUtils.requireObject(id, "Identifier for Rule [%s] is required", getClass().getName());
+    super.setId(ObjectUtils.requireObject(id, "Identifier for Rule [%s] is required", getClass().getName()));
   }
 
   /**
