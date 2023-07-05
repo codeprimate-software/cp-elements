@@ -23,6 +23,8 @@ import java.util.function.Function;
  * Java {@link Function} implementation capable of throwing an {@link Throwable exception} during execution.
  *
  * @author John Blum
+ * @param <T> {@link Class type} of the {@link Function Function's} input argument.
+ * @param <R> {@link Class type} of the {@link Function Function's} computed result and return value.
  * @see java.lang.FunctionalInterface
  * @see java.util.function.Function
  * @since 2.0.0
