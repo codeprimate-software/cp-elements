@@ -32,7 +32,8 @@ public class CacheEntryNotFoundException extends CacheEntryException {
   public CacheEntryNotFoundException() { }
 
   /**
-   * Constructs a new {@link CacheEntryNotFoundException} with the given {@link String message} describing the exception.
+   * Constructs a new {@link CacheEntryNotFoundException} with the given {@link String message}
+   * describing the exception.
    *
    * @param message {@link String} containing a description of the exception.
    */
