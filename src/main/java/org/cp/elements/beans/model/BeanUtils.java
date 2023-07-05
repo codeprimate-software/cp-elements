@@ -15,6 +15,8 @@
  */
 package org.cp.elements.beans.model;
 
+import static org.cp.elements.lang.ElementsExceptionsFactory.newBeansException;
+
 import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
 import java.beans.Introspector;
@@ -59,8 +61,7 @@ public abstract class BeanUtils extends ObjectUtils {
       return Introspector.getBeanInfo(beanType, Object.class);
     }
     catch (IntrospectionException cause) {
-      throw new BeansException(String.format("Failed to introspect bean of type [%s]",
-        ObjectUtils.getName(beanType))) { };
+      throw newBeansException(cause, "Failed to introspect bean of type [%s]", ObjectUtils.getName(beanType));
     }
   }
 

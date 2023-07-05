@@ -31,12 +31,12 @@ import java.beans.PropertyDescriptor;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
+import org.junit.jupiter.api.Test;
+
 import org.cp.elements.beans.PropertyNotFoundException;
 import org.cp.elements.beans.model.support.ArrayProperty;
 import org.cp.elements.process.AbstractBaseProcess;
 import org.cp.elements.security.model.User;
-
-import org.junit.jupiter.api.Test;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -79,7 +79,7 @@ public class BeanUtilsUnitTests {
     assertThat(userProperties).hasSize(2);
     assertThat(Arrays.stream(userProperties)
         .map(PropertyDescriptor::getName)
-        .collect(Collectors.toList())
+        .toList()
         .stream()
         .sorted())
       .containsExactly("id", "name");
