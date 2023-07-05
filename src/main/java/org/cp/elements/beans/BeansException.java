@@ -16,7 +16,7 @@
 package org.cp.elements.beans;
 
 /**
- * Abstract {@link RuntimeException} thrown when an error occurs while accessing or processing a Java Bean.
+ * Abstract {@link RuntimeException} thrown when an exception occurs while accessing or processing a Java Bean.
  *
  * @author John Blum
  * @see java.lang.RuntimeException
@@ -26,16 +26,15 @@ package org.cp.elements.beans;
 public abstract class BeansException extends RuntimeException {
 
   /**
-   * Constructs a new, default instance of {@link BeansException} with no {@link String message}
-   * and no {@link Throwable cause}.
+   * Constructs a new {@link BeansException} with no {@link String message} and no {@link Throwable cause}.
    */
   public BeansException() { }
 
   /**
    * Constructs a new {@link BeansException} initialized with the given {@link String message}
-   * describing this exception.
+   * to describe this exception.
    *
-   * @param message {@link String} containing a {@literal message} describing the exception.
+   * @param message {@link String} containing a {@literal message} describing this exception.
    */
   public BeansException(String message) {
     super(message);
@@ -43,9 +42,9 @@ public abstract class BeansException extends RuntimeException {
 
   /**
    * Constructs a new {@link BeansException} initialized with a given {@link Throwable}
-   * as the cause of this exception.
+   * used as the cause of this exception.
    *
-   * @param cause {@link Throwable} used as the cause of this exception.
+   * @param cause {@link Throwable} used as the {@literal cause} of this exception.
    */
   public BeansException(Throwable cause) {
     super(cause);
@@ -53,10 +52,10 @@ public abstract class BeansException extends RuntimeException {
 
   /**
    * Constructs a new {@link BeansException} initialized with the given {@link String message}
-   * describing this exception along with a {@link Throwable} used as the cause of this exception.
+   * to describe this exception along with a {@link Throwable} used as the cause of this exception.
    *
-   * @param message {@link String} containing a {@literal message} describing the exception.
-   * @param cause {@link Throwable} used as the cause of this exception.
+   * @param message {@link String} containing a {@literal message} describing this exception.
+   * @param cause {@link Throwable} used as the {@literal cause} of this exception.
    */
   public BeansException(String message, Throwable cause) {
     super(message, cause);
