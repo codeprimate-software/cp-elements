@@ -244,6 +244,7 @@
                 value="STATIC###STANDARD_JAVA_PACKAGE###THIRD_PARTY_PACKAGE"/>
       <property name="separateLineBetweenGroups" value="true"/>
       <property name="sortImportsInGroupAlphabetically" value="true"/>
+      <property name="standardPackageRegExp" value="^java\."/>
     </module>
     <module name="IllegalImport"/> <!-- defaults to sun.* packages -->
     <!--module name="ImportControl"/-->
