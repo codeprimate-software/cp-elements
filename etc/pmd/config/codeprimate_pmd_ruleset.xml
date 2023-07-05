@@ -44,9 +44,9 @@
   </rule>
 
   <rule ref="category/java/bestpractices.xml/JUnit4TestShouldUseTestAnnotation">
-    <proeprties>
+    <properties>
       <property name="testClassPattern" value="^(?!.*Tester).+(Test|Tests)$"/>
-    </proeprties>
+    </properties>
   </rule>
 
 </ruleset>
