@@ -135,10 +135,6 @@ public abstract class ZipUtils {
         }
         else {
 
-          DataInputStream entryInputStream = null;
-
-          DataOutputStream entryOutputStream = null;
-
           try {
 
             File zipEntryFile = new File(directory, zipEntry.getName());
@@ -148,20 +144,16 @@ public abstract class ZipUtils {
                 zipEntryFile.getParent(), zipEntry.getName()));
 
             Assert.state(zipEntryFile.createNewFile(),
-              newSystemException("Filed to create file [%1$s] for entry [%2$s]", zipEntryFile, zipEntry.getName()));
+              newSystemException("Failed to create file [%1$s] for entry [%2$s]", zipEntryFile, zipEntry.getName()));
 
-            entryInputStream = new DataInputStream(zipFile.getInputStream(zipEntry));
-            entryOutputStream = new DataOutputStream(new FileOutputStream(zipEntryFile));
-
-            IOUtils.copy(entryInputStream, entryOutputStream);
-
+            try (DataInputStream entryInputStream = new DataInputStream(zipFile.getInputStream(zipEntry))) {
+              try (DataOutputStream entryOutputStream = new DataOutputStream(new FileOutputStream(zipEntryFile))) {
+                IOUtils.copy(entryInputStream, entryOutputStream);
+              }
+            }
           }
           catch (IOException cause) {
             throw newSystemException(cause, "Failed to unzip entry [%s]", zipEntry.getName());
-          }
-          finally {
-            IOUtils.close(entryInputStream);
-            IOUtils.close(entryOutputStream);
           }
         }
       });

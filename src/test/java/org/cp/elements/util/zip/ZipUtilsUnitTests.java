@@ -54,7 +54,7 @@ import org.cp.elements.util.SystemException;
  * @since 1.0.0
  */
 @UnitTest
-public class ZipUtilsTests {
+public class ZipUtilsUnitTests {
 
   @Test
   @SuppressWarnings("all")
