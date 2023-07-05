@@ -18,7 +18,8 @@ package org.cp.elements.function;
 import java.util.function.Function;
 
 /**
- * {@link FunctionExecutionException} implementation thrown when a Java {@link Function} throws an exception during execution.
+ * {@link FunctionExecutionException} implementation thrown when a Java {@link Function} throws an exception
+ * during execution.
  *
  * @author John Blum
  * @see java.util.function.Function
