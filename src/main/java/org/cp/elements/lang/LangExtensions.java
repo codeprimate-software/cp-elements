@@ -66,7 +66,9 @@ public abstract class LangExtensions {
 
   /**
    * Safe-navigation operator used to safely navigate a sequence of {@link Object} {@link Method} invocations
-   * in a call chain, for example:
+   * in a call chain.
+   * <p>
+   * For example:
    * <p>
    * <code>
    * obj.getX().getY().getZ()...
@@ -723,7 +725,7 @@ public abstract class LangExtensions {
 
     private final boolean expected;
 
-    private final T obj;
+    private final T target;
 
     @Nullable
     private Condition condition;
@@ -741,25 +743,25 @@ public abstract class LangExtensions {
      * Constructs a new {@link AssertThatExpression} initialized with the given {@link Object}
      * used as the subject of this assertion.
      *
-     * @param obj {@link Object} to evaluate and make an assertion.
+     * @param target {@link Object} to evaluate and make an assertion.
      * @see #AssertThatExpression(Object, boolean)
      * @see java.lang.Object
      */
-    private AssertThatExpression(@Nullable T obj) {
-      this(obj, DEFAULT_EXPECTED);
+    private AssertThatExpression(@Nullable T target) {
+      this(target, DEFAULT_EXPECTED);
     }
 
     /**
      * Constructs a new {@link AssertThatExpression} initialized with the given {@link Object}
      * used as the subject of this assertion.
      *
-     * @param obj {@link Object} to evaluate and make an assertion.
+     * @param target {@link Object} to evaluate and make an assertion.
      * @param expected boolean value specifying the expected outcome of this assertion.
      * @see java.lang.Object
      */
-    private AssertThatExpression(@Nullable T obj, boolean expected) {
+    private AssertThatExpression(@Nullable T target, boolean expected) {
 
-      this.obj = obj;
+      this.target = target;
       this.expected = expected;
       this.condition = DEFAULT_CONDITION;
     }
@@ -794,7 +796,7 @@ public abstract class LangExtensions {
      * @see java.lang.Object
      */
     private @Nullable T getTarget() {
-      return this.obj;
+      return this.target;
     }
 
     /**
@@ -2098,19 +2100,19 @@ public abstract class LangExtensions {
 
     private final boolean expected;
 
-    private final T obj;
+    private final T target;
 
-    private IsExpression(@Nullable T obj) {
-      this(obj, DEFAULT_EXPECTED);
+    private IsExpression(@Nullable T target) {
+      this(target, DEFAULT_EXPECTED);
     }
 
-    private IsExpression(@Nullable T obj, boolean expected) {
-      this.obj = obj;
+    private IsExpression(@Nullable T target, boolean expected) {
+      this.target = target;
       this.expected = expected;
     }
 
     private T getTarget() {
-      return this.obj;
+      return this.target;
     }
 
     private boolean equalToExpected(boolean actual) {
