@@ -392,8 +392,10 @@ public class SimpleThreadFactory implements ThreadFactory {
 
       Logger logger = getLogger();
 
-      logger.warning(String.format("An unhandled error [%1$s] was thrown by Thread [%2$s] with ID [%3$d]",
-        cause.getClass().getName(), thread.getName(), thread.getId()));
+      if (logger.isLoggable(Level.WARNING)) {
+        logger.warning(String.format("An unhandled error [%1$s] was thrown by Thread [%2$s] with ID [%3$d]",
+          cause.getClass().getName(), thread.getName(), thread.getId()));
+      }
 
       if (logger.isLoggable(Level.FINE)) {
         logger.fine(ThrowableUtils.getStackTrace(cause));

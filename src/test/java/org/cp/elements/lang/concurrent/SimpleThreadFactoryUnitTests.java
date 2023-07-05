@@ -22,6 +22,7 @@ import static org.cp.elements.lang.concurrent.ThreadUtils.waitFor;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -377,7 +378,8 @@ public class SimpleThreadFactoryUnitTests {
     Logger mockLogger = mock(Logger.class);
 
     doReturn(mockLogger).when(uncaughtExceptionHandler).getLogger();
-    doReturn(false).when(mockLogger).isLoggable(any(Level.class));
+    doAnswer(invocation -> Level.WARNING.equals(invocation.getArgument(0)))
+      .when(mockLogger).isLoggable(eq(Level.WARNING));
 
     Thread.currentThread().setName("simpleUncaughtExceptionHandlerOnlyLogsWarningTest");
 
@@ -390,7 +392,8 @@ public class SimpleThreadFactoryUnitTests {
     verify(uncaughtExceptionHandler, times(1))
       .uncaughtException(eq(Thread.currentThread()), eq(error));
     verify(uncaughtExceptionHandler, times(1)).getLogger();
-    verify(mockLogger, times(1)).warning(expectedLogMessage);
+    verify(mockLogger, times(1)).isLoggable(eq(Level.WARNING));
+    verify(mockLogger, times(1)).warning(eq(expectedLogMessage));
     verify(mockLogger, times(1)).isLoggable(eq(Level.FINE));
     verify(mockLogger, never()).fine(anyString());
 
