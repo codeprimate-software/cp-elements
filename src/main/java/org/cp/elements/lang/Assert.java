@@ -1351,7 +1351,7 @@ public abstract class Assert {
    * @see #notInterrupted(Supplier)
    */
   public static void notInterrupted() throws InterruptedException {
-    notInterrupted(()-> format("Thread [%s] was interrupted", Thread.currentThread().getName()));
+    notInterrupted(() -> format("Thread [%s] was interrupted", Thread.currentThread().getName()));
   }
 
   /**
