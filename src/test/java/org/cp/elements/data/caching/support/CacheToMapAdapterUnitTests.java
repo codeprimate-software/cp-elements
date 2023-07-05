@@ -18,6 +18,7 @@ package org.cp.elements.data.caching.support;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.cp.elements.lang.ThrowableAssertions.assertThatThrowableOfType;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -43,14 +44,15 @@ import java.util.stream.IntStream;
 
 import org.junit.jupiter.api.Test;
 
+import org.assertj.core.api.InstanceOfAssertFactories;
 import org.cp.elements.data.caching.Cache;
+import org.cp.elements.data.caching.CacheEntryNotFoundException;
 import org.cp.elements.lang.Sourced;
+import org.cp.elements.lang.ThrowableOperation;
 import org.cp.elements.test.annotation.IntegrationTest;
 import org.cp.elements.util.CollectionUtils;
 import org.cp.elements.util.MapBuilder;
 import org.cp.elements.util.stream.StreamUtils;
-
-import org.assertj.core.api.InstanceOfAssertFactories;
 
 /**
  * Unit Tests for {@link CacheToMapAdapter}.
@@ -210,9 +212,10 @@ public class CacheToMapAdapterUnitTests {
 
     assertThat(entrySetIterator).isExhausted();
 
-    assertThatExceptionOfType(NoSuchElementException.class)
-      .isThrownBy(entrySetIterator::next)
-      .withMessage("No more cache entries")
+    assertThatThrowableOfType(CacheEntryNotFoundException.class)
+      .isThrownBy(ThrowableOperation.fromSupplier(entrySetIterator::next))
+      .havingMessage("No more cache entries")
+      .causedBy(NoSuchElementException.class)
       .withNoCause();
   }
 

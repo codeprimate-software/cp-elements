@@ -15,6 +15,8 @@
  */
 package org.cp.elements.data.caching.support;
 
+import static org.cp.elements.lang.ElementsExceptionsFactory.newCacheEntryNotFoundException;
+
 import java.util.AbstractMap;
 import java.util.AbstractSet;
 import java.util.Iterator;
@@ -127,8 +129,8 @@ public class CacheToMapAdapter<KEY extends Comparable<KEY>, VALUE> extends Abstr
             try {
               return CacheMapEntry.of(getCache(), this.keys.next());
             }
-            catch (NoSuchElementException ignore) {
-              throw new NoSuchElementException("No more cache entries");
+            catch (NoSuchElementException cause) {
+              throw newCacheEntryNotFoundException(cause, "No more cache entries");
             }
           }
         };
