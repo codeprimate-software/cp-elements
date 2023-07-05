@@ -124,7 +124,7 @@ public abstract class ObjectUtils extends ReflectionUtils {
             return IOUtils.deserialize(IOUtils.serialize(obj));
           }
           catch (ClassNotFoundException | IOException cause) {
-            throw new CloneException("[clone] using [serialization] was unsuccessful", cause);
+            throw new CloneException("[clone] using [serialization] was unsuccessful", cause); // NOPMD
           }
         }
       }
