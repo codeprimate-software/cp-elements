@@ -213,7 +213,9 @@ public abstract class ElementsExceptionsFactory {
    * @return a new {@link BeanIntrospectionException}.
    * @see org.cp.elements.beans.BeanIntrospectionException
    */
-  public static BeanIntrospectionException newBeanIntrospectionException(Throwable cause, String message, Object... args) {
+  public static BeanIntrospectionException newBeanIntrospectionException(Throwable cause, String message,
+      Object... args) {
+
     return new BeanIntrospectionException(format(message, args), cause);
   }
 
@@ -544,7 +546,9 @@ public abstract class ElementsExceptionsFactory {
    * @return a new {@link CacheEntryNotFoundException}.
    * @see org.cp.elements.data.caching.CacheEntryNotFoundException
    */
-  public static CacheEntryNotFoundException newCacheEntryNotFoundException(Throwable cause, String message, Object... args) {
+  public static CacheEntryNotFoundException newCacheEntryNotFoundException(Throwable cause, String message,
+      Object... args) {
+
     return new CacheEntryNotFoundException(format(message, args), cause);
   }
 
