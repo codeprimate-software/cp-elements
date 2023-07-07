@@ -18,6 +18,9 @@ package org.cp.elements.lang;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 
+import java.util.Arrays;
+import java.util.Set;
+
 import org.junit.jupiter.api.Test;
 
 /**
@@ -30,16 +33,45 @@ import org.junit.jupiter.api.Test;
  */
 public class JavaVersionUnitTests {
 
+  private void assertJavaVersionMajorMinorPatch(JavaVersion javaVersion, int expectedMajor) {
+    assertJavaVersionMajorMinorPatch(javaVersion, expectedMajor, 0);
+  }
+
+  private void assertJavaVersionMajorMinorPatch(JavaVersion javaVersion, int expectedMajor, int expectedMinor) {
+
+    assertThat(javaVersion).isNotNull();
+    assertThat(javaVersion.getMajor()).isEqualTo(expectedMajor);
+    assertThat(javaVersion.getMinor()).isEqualTo(expectedMinor);
+    assertThat(javaVersion.getPatch()).isZero();
+    assertThat(javaVersion.getBuildNumber()).isZero();
+  }
+
   @Test
   public void parseFakeJavaVersion() {
 
-    JavaVersion javaVersion = JavaVersion.parse("2.8.16_248");
+    JavaVersion javaVersion = JavaVersion.parse("2.8.16_256");
 
     assertThat(javaVersion).isNotNull();
     assertThat(javaVersion.getMajor()).isEqualTo(2);
     assertThat(javaVersion.getMinor()).isEqualTo(8);
     assertThat(javaVersion.getPatch()).isEqualTo(16);
-    assertThat(javaVersion.getBuildNumber()).isEqualTo(248);
+    assertThat(javaVersion.getBuildNumber()).isEqualTo(256);
+  }
+
+  @Test
+  public void parseJavaVersion() {
+
+    Set<JavaVersion> javaVersions = JavaVersion.values();
+
+    assertThat(javaVersions).hasSize(22);
+
+    javaVersions.forEach(javaVersion -> {
+
+      JavaVersion parsedJavaVersion = JavaVersion.parse(javaVersion.toString());
+
+      assertThat(parsedJavaVersion).isNotSameAs(javaVersion);
+      assertThat(parsedJavaVersion).isEqualTo(javaVersion);
+    });
   }
 
   @Test
@@ -48,12 +80,12 @@ public class JavaVersionUnitTests {
   }
 
   @Test
-  public void parseJavaVersionWithMajorMinorVersionNumber() {
+  public void parseJavaVersionWithMajorMinorVersionNumbers() {
     assertThat(JavaVersion.parse("1.8")).isEqualTo(JavaVersion.EIGHT);
   }
 
   @Test
-  public void parseJavaVersionWithMajorMinorPatchVersionNumber() {
+  public void parseJavaVersionWithMajorMinorPatchVersionNumbers() {
     assertThat(JavaVersion.parse("1.8.0")).isEqualTo(JavaVersion.EIGHT);
   }
 
@@ -65,70 +97,40 @@ public class JavaVersionUnitTests {
     assertThat(JavaVersion.parse("1.8.0_321")).isEqualTo(JavaVersion.EIGHT);
   }
 
-  private void parseIllegalJavaVersionString(String javaVersion) {
-
-    try {
-      JavaVersion.parse(javaVersion);
-    }
-    catch (IllegalArgumentException expected) {
-
-      assertThat(expected).hasMessage("Java version [%s] must not be null or empty", javaVersion);
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
-  }
-
   @Test
-  public void parseBlankJavaVersion() {
+  public void parseIllegalJavaVersion() {
 
-    assertThatIllegalArgumentException()
-      .isThrownBy(() -> parseIllegalJavaVersionString("  "));
-  }
-
-  @Test
-  public void parseEmptyJavaVersion() {
-
-    assertThatIllegalArgumentException()
-      .isThrownBy(() -> parseIllegalJavaVersionString(""));
-  }
-
-  @Test
-  public void parseNullJavaVersion() {
-
-    assertThatIllegalArgumentException()
-      .isThrownBy(() -> parseIllegalJavaVersionString(null));
+    Arrays.asList("  ", "", null).forEach(javaVersionString -> assertThatIllegalArgumentException()
+      .isThrownBy(() -> JavaVersion.parse(javaVersionString))
+      .withMessage("Java version [%s] is required", javaVersionString)
+      .withNoCause());
   }
 
   @Test
   public void majorMinorPatchVersionIsCorrect() {
 
-    assertThat(JavaVersion.EIGHT.getMajor()).isEqualTo(1);
-    assertThat(JavaVersion.EIGHT.getMinor()).isEqualTo(8);
-    assertThat(JavaVersion.EIGHT.getPatch()).isEqualTo(0);
-    assertThat(JavaVersion.ELEVEN.getMajor()).isEqualTo(11);
-    assertThat(JavaVersion.ELEVEN.getMinor()).isEqualTo(0);
-    assertThat(JavaVersion.ELEVEN.getPatch()).isEqualTo(0);
-    assertThat(JavaVersion.SIXTEEN.getMajor()).isEqualTo(16);
-    assertThat(JavaVersion.SIXTEEN.getMinor()).isEqualTo(0);
-    assertThat(JavaVersion.SIXTEEN.getPatch()).isEqualTo(0);
-    assertThat(JavaVersion.SEVENTEEN.getMajor()).isEqualTo(17);
-    assertThat(JavaVersion.SEVENTEEN.getMinor()).isEqualTo(0);
-    assertThat(JavaVersion.SEVENTEEN.getPatch()).isEqualTo(0);
+    assertJavaVersionMajorMinorPatch(JavaVersion.EIGHT, 1, 8);
+    assertJavaVersionMajorMinorPatch(JavaVersion.ELEVEN, 11);
+    assertJavaVersionMajorMinorPatch(JavaVersion.FOURTEEN, 14);
+    assertJavaVersionMajorMinorPatch(JavaVersion.SIXTEEN, 16);
+    assertJavaVersionMajorMinorPatch(JavaVersion.SEVENTEEN, 17);
+    assertJavaVersionMajorMinorPatch(JavaVersion.TWENTY_ONE, 21);
   }
 
   @Test
-  public void iOlderThanIsTrue() {
+  public void isOlderThanIsTrue() {
 
     assertThat(JavaVersion.EIGHT.isOlderThan(JavaVersion.NINE)).isTrue();
     assertThat(JavaVersion.EIGHT.isOlderThan(JavaVersion.ELEVEN)).isTrue();
+    assertThat(JavaVersion.EIGHT.isOlderThan(JavaVersion.FOURTEEN)).isTrue();
     assertThat(JavaVersion.EIGHT.isOlderThan(JavaVersion.SEVENTEEN)).isTrue();
   }
 
   @Test
   public void isOlderThanIsFalse() {
 
-    assertThat(JavaVersion.SEVENTEEN.isOlderThan(JavaVersion.ELEVEN)).isFalse();
+    assertThat(JavaVersion.SEVENTEEN.isOlderThan(JavaVersion.FOURTEEN)).isFalse();
+    assertThat(JavaVersion.FOURTEEN.isOlderThan(JavaVersion.ELEVEN)).isFalse();
     assertThat(JavaVersion.ELEVEN.isOlderThan(JavaVersion.EIGHT)).isFalse();
     assertThat(JavaVersion.EIGHT.isOlderThan(JavaVersion.EIGHT)).isFalse();
     assertThat(JavaVersion.EIGHT.isOlderThan(JavaVersion.SEVEN)).isFalse();
@@ -137,7 +139,8 @@ public class JavaVersionUnitTests {
   @Test
   public void isNewerThanOrEqualToIsTrue() {
 
-    assertThat(JavaVersion.SEVENTEEN.isNewerThanOrEqualTo(JavaVersion.ELEVEN)).isTrue();
+    assertThat(JavaVersion.SEVENTEEN.isNewerThanOrEqualTo(JavaVersion.FOURTEEN)).isTrue();
+    assertThat(JavaVersion.FOURTEEN.isNewerThanOrEqualTo(JavaVersion.EIGHT)).isTrue();
     assertThat(JavaVersion.ELEVEN.isNewerThanOrEqualTo(JavaVersion.EIGHT)).isTrue();
     assertThat(JavaVersion.EIGHT.isNewerThanOrEqualTo(JavaVersion.EIGHT)).isTrue();
     assertThat(JavaVersion.EIGHT.isNewerThanOrEqualTo(JavaVersion.SEVEN)).isTrue();
@@ -148,7 +151,43 @@ public class JavaVersionUnitTests {
 
     assertThat(JavaVersion.EIGHT.isNewerThanOrEqualTo(JavaVersion.NINE)).isFalse();
     assertThat(JavaVersion.EIGHT.isNewerThanOrEqualTo(JavaVersion.ELEVEN)).isFalse();
+    assertThat(JavaVersion.EIGHT.isNewerThanOrEqualTo(JavaVersion.FOURTEEN)).isFalse();
     assertThat(JavaVersion.ELEVEN.isNewerThanOrEqualTo(JavaVersion.SEVENTEEN)).isFalse();
+  }
+
+  @Test
+  public void isJava8IsCorrect() {
+
+    JavaVersion.values().forEach(javaVersion ->
+      assertThat(javaVersion.isJava8()).isEqualTo(JavaVersion.EIGHT.equals(javaVersion)));
+  }
+
+  @Test
+  public void isJava11IsCorrect() {
+
+    JavaVersion.values().forEach(javaVersion ->
+      assertThat(javaVersion.isJava11()).isEqualTo(JavaVersion.ELEVEN.equals(javaVersion)));
+  }
+
+  @Test
+  public void isJava14IsCorrect() {
+
+    JavaVersion.values().forEach(javaVersion ->
+      assertThat(javaVersion.isJava14()).isEqualTo(JavaVersion.FOURTEEN.equals(javaVersion)));
+  }
+
+  @Test
+  public void isJava17IsCorrect() {
+
+    JavaVersion.values().forEach(javaVersion ->
+      assertThat(javaVersion.isJava17()).isEqualTo(JavaVersion.SEVENTEEN.equals(javaVersion)));
+  }
+
+  @Test
+  public void isJava21IsCorrect() {
+
+    JavaVersion.values().forEach(javaVersion ->
+      assertThat(javaVersion.isJava21()).isEqualTo(JavaVersion.TWENTY_ONE.equals(javaVersion)));
   }
 
   @Test

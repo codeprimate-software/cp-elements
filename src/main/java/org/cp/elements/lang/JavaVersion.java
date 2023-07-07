@@ -15,6 +15,9 @@
  */
 package org.cp.elements.lang;
 
+import java.util.Collections;
+import java.util.Set;
+import java.util.TreeSet;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.cp.elements.lang.annotation.NotNull;
@@ -32,30 +35,42 @@ import org.cp.elements.util.ArrayUtils;
 @SuppressWarnings({ "AbstractClassName", "unused" })
 public abstract class JavaVersion implements Comparable<JavaVersion> {
 
-  public static final JavaVersion ONE_ZERO = JavaVersion.of(1, 0, 0);
-  public static final JavaVersion ONE_ONE = JavaVersion.of(1, 1, 0);
-  public static final JavaVersion ONE_TWO = JavaVersion.of(1, 2, 0);
-  public static final JavaVersion ONE_THREE = JavaVersion.of(1, 3, 0);
-  public static final JavaVersion ONE_FOUR = JavaVersion.of(1, 4, 0);
-  public static final JavaVersion FIVE = JavaVersion.of(1, 5, 0);
-  public static final JavaVersion SIX = JavaVersion.of(1, 6, 0);
-  public static final JavaVersion SEVEN = JavaVersion.of(1, 7, 0);
-  public static final JavaVersion EIGHT = JavaVersion.of(1, 8, 0);
-  public static final JavaVersion NINE = JavaVersion.of(9, 0, 0);
-  public static final JavaVersion TEN = JavaVersion.of(10, 0, 0);
-  public static final JavaVersion ELEVEN = JavaVersion.of(11, 0, 0);
-  public static final JavaVersion TWELVE = JavaVersion.of(12, 0, 0);
-  public static final JavaVersion THIRTEEN = JavaVersion.of(13, 0, 0);
-  public static final JavaVersion FOURTEEN = JavaVersion.of(14, 0, 0);
-  public static final JavaVersion FIFTEEN = JavaVersion.of(15, 0, 0);
-  public static final JavaVersion SIXTEEN = JavaVersion.of(16, 0, 0);
-  public static final JavaVersion SEVENTEEN = JavaVersion.of(17, 0, 0);
-  public static final JavaVersion EIGHTEEN = JavaVersion.of(18, 0, 0);
+  private static final Set<JavaVersion> JAVA_VERSIONS = new TreeSet<>();
+
+  private static @NotNull JavaVersion add(@NotNull JavaVersion javaVersion) {
+    JAVA_VERSIONS.add(ObjectUtils.requireObject(javaVersion, "JavaVersion is required"));
+    return javaVersion;
+  }
+
+  public static final JavaVersion ONE_ZERO = add(JavaVersion.of(1, 0, 0));
+  public static final JavaVersion ONE_ONE = add(JavaVersion.of(1, 1, 0));
+  public static final JavaVersion ONE_TWO = add(JavaVersion.of(1, 2, 0));
+  public static final JavaVersion ONE_THREE = add(JavaVersion.of(1, 3, 0));
+  public static final JavaVersion ONE_FOUR = add(JavaVersion.of(1, 4, 0));
+  public static final JavaVersion FIVE = add(JavaVersion.of(1, 5, 0));
+  public static final JavaVersion SIX = add(JavaVersion.of(1, 6, 0));
+  public static final JavaVersion SEVEN = add(JavaVersion.of(1, 7, 0));
+  public static final JavaVersion EIGHT = add(JavaVersion.of(1, 8, 0));
+  public static final JavaVersion NINE = add(JavaVersion.of(9, 0, 0));
+  public static final JavaVersion TEN = add(JavaVersion.of(10, 0, 0));
+  public static final JavaVersion ELEVEN = add(JavaVersion.of(11, 0, 0));
+  public static final JavaVersion TWELVE = add(JavaVersion.of(12, 0, 0));
+  public static final JavaVersion THIRTEEN = add(JavaVersion.of(13, 0, 0));
+  public static final JavaVersion FOURTEEN = add(JavaVersion.of(14, 0, 0));
+  public static final JavaVersion FIFTEEN = add(JavaVersion.of(15, 0, 0));
+  public static final JavaVersion SIXTEEN = add(JavaVersion.of(16, 0, 0));
+  public static final JavaVersion SEVENTEEN = add(JavaVersion.of(17, 0, 0));
+  public static final JavaVersion EIGHTEEN = add(JavaVersion.of(18, 0, 0));
+  public static final JavaVersion NINETEEN = add(JavaVersion.of(19, 0, 0));
+  public static final JavaVersion TWENTY = add(JavaVersion.of(20, 0, 0));
+  public static final JavaVersion TWENTY_ONE = add(JavaVersion.of(21, 0, 0));
 
   public static final String JAVA_VERSION_SYSTEM_PROPERTY = "java.version";
 
   protected static final int DEFAULT_VERSION_NUMBER = 0;
   protected static final int DEFAULT_BUILD_NUMBER = DEFAULT_VERSION_NUMBER;
+  protected static final int DEFAULT_MAJOR_VERSION = DEFAULT_VERSION_NUMBER;
+  protected static final int DEFAULT_MINOR_VERSION = DEFAULT_VERSION_NUMBER;
   protected static final int DEFAULT_PATCH_VERSION = DEFAULT_VERSION_NUMBER;
 
   protected static final Integer ZERO = 0;
@@ -86,6 +101,20 @@ public abstract class JavaVersion implements Comparable<JavaVersion> {
    */
   private static JavaVersion determineCurrentJavaVersion() {
     return parse(String.valueOf(System.getProperty(JAVA_VERSION_SYSTEM_PROPERTY)));
+  }
+
+  /**
+   * Factory method used to construct a new {@link JavaVersion} with the given {@link Integer#TYPE major},
+   * and {@link Integer#TYPE minor} version numbers.
+   *
+   * @param major {@link Integer#TYPE} for the {@literal major} version number.
+   * @param minor {@link Integer#TYPE} for the {@literal minor} version number.
+   * @return a new {@link JavaVersion}
+   * @see #JavaVersion(int, int, int)
+   * @see #of(int, int, int, int)
+   */
+  protected static JavaVersion of(int major, int minor) {
+    return of(major, minor, DEFAULT_PATCH_VERSION, DEFAULT_BUILD_NUMBER);
   }
 
   /**
@@ -130,20 +159,24 @@ public abstract class JavaVersion implements Comparable<JavaVersion> {
    */
   public static @NotNull JavaVersion parse(@NotNull String javaVersion) {
 
-    Assert.hasText(javaVersion, "Java version [%s] must not be null or empty", javaVersion);
+    Assert.hasText(javaVersion, "Java version [%s] is required", javaVersion);
 
     String[] javaVersionNumberArray =
       ArrayUtils.nullSafeArray(javaVersion.split(VERSION_NUMBER_SEPARATOR), String.class);
 
     int buildNumber = DEFAULT_BUILD_NUMBER;
-    int major = 0;
-    int minor = 0;
-    int patch = 0;
+    int major = DEFAULT_MAJOR_VERSION;
+    int minor = DEFAULT_MINOR_VERSION;
+    int patch = DEFAULT_PATCH_VERSION;
 
     if (javaVersionNumberArray.length > 0) {
+
       major = parseInt(javaVersionNumberArray[0]);
+
       if (javaVersionNumberArray.length > 1) {
+
         minor = parseInt(javaVersionNumberArray[1]);
+
         if (javaVersionNumberArray.length > 2) {
 
           String patchVersion = String.valueOf(javaVersionNumberArray[2]);
@@ -177,6 +210,16 @@ public abstract class JavaVersion implements Comparable<JavaVersion> {
     }
   }
 
+  /**
+   * Returns a {@link Set} of all {@link JavaVersion JavaVersion} in this enumeration.
+   *
+   * @return a {@link Set} of all {@link JavaVersion JavaVersion} in this enumeration.
+   * @see java.util.Set
+   */
+  public static Set<JavaVersion> values() {
+    return Collections.unmodifiableSet(JAVA_VERSIONS);
+  }
+
   private final Integer buildNumber;
   private final Integer major;
   private final Integer minor;
@@ -186,8 +229,8 @@ public abstract class JavaVersion implements Comparable<JavaVersion> {
    * Constructs a new {@link JavaVersion} initialized with
    * {@link Integer#TYPE major} and {@link Integer#TYPE minor} version numbers.
    *
-   * @param major {@link Integer#TYPE} for the {@literal major} version number.
-   * @param minor {@link Integer#TYPE} for the {@literal minor} version number.
+   * @param major {@link Integer#TYPE value} of the {@literal major version number}.
+   * @param minor {@link Integer#TYPE value} of the {@literal minor version number}.
    * @throws IllegalArgumentException if any version number is not valid.
    * @see #JavaVersion(int, int, int)
    */
@@ -196,12 +239,12 @@ public abstract class JavaVersion implements Comparable<JavaVersion> {
   }
 
   /**
-   * Constructs a new {@link JavaVersion} initialized with {@link Integer#TYPE major},
-   * {@link Integer#TYPE minor} and {@link Integer#TYPE patch} version numbers.
+   * Constructs a new {@link JavaVersion} initialized with {@link Integer#TYPE major}, {@link Integer#TYPE minor}
+   * and {@link Integer#TYPE patch} version numbers.
    *
-   * @param major {@link Integer#TYPE} for the {@literal major} version number.
-   * @param minor {@link Integer#TYPE} for the {@literal minor} version number.
-   * @param patch {@link Integer#TYPE} for the {@literal patch} version number.
+   * @param major {@link Integer#TYPE value} of the {@literal major version number}.
+   * @param minor {@link Integer#TYPE value} of the {@literal minor version number}.
+   * @param patch {@link Integer#TYPE value} of the {@literal patch version number}.
    * @throws IllegalArgumentException if any version number is not valid.
    * @see #JavaVersion(int, int, int, int)
    */
@@ -210,14 +253,13 @@ public abstract class JavaVersion implements Comparable<JavaVersion> {
   }
 
   /**
-   * Constructs a new {@link JavaVersion} initialized with the given {@link Integer#TYPE major},
-   * {@link Integer#TYPE minor}, and {@link Integer#TYPE patch} version numbers along with
-   * a {@link Integer#TYPE build number}.
+   * Constructs a new {@link JavaVersion} initialized with {@link Integer#TYPE major}, {@link Integer#TYPE minor},
+   * and {@link Integer#TYPE patch} version numbers along with a {@link Integer#TYPE build number}.
    *
-   * @param major {@link Integer#TYPE} for the {@literal major} version number.
-   * @param minor {@link Integer#TYPE} for the {@literal minor} version number.
-   * @param patch {@link Integer#TYPE} for the {@literal patch} version number.
-   * @param buildNumber {@link Integer#TYPE} for the version's {@literal build number}.
+   * @param major {@link Integer#TYPE value} of the {@literal major version number}.
+   * @param minor {@link Integer#TYPE value} of the {@literal minor version number}.
+   * @param patch {@link Integer#TYPE value} of the {@literal patch version number}.
+   * @param buildNumber {@link Integer#TYPE value} of the {@literal version's build number}.
    * @throws IllegalArgumentException if any version number is not valid.
    * @see #validateVersionNumber(int)
    */
@@ -245,7 +287,7 @@ public abstract class JavaVersion implements Comparable<JavaVersion> {
    * @see #getMajor()
    */
   public boolean isJava8() {
-    return EIGHT.getMajor().equals(getMajor());
+    return EIGHT.getMajor().equals(getMajor()) && EIGHT.getMinor().equals(getMinor());
   }
 
   /**
@@ -279,6 +321,17 @@ public abstract class JavaVersion implements Comparable<JavaVersion> {
    */
   public boolean isJava17() {
     return SEVENTEEN.getMajor().equals(getMajor());
+  }
+
+  /**
+   * Determines whether {@literal this} {@link JavaVersion} is {@literal Java 21}.
+   *
+   * @return a boolean value indicating whether {@literal this} {@link JavaVersion} is {@literal Java 21}.
+   * @see JavaVersion#TWENTY_ONE
+   * @see #getMajor()
+   */
+  public boolean isJava21() {
+    return TWENTY_ONE.getMajor().equals(getMajor());
   }
 
   /**
