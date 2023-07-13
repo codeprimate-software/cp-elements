@@ -26,7 +26,7 @@ import org.cp.elements.lang.annotation.Nullable;
 import org.cp.elements.util.ComparatorResultBuilder;
 
 /**
- * Abstract Data Type (ADT) modeling a software version number.
+ * Abstract Data Type (ADT) modeling a {@literal software version number}.
  *
  * @author John Blum
  * @see java.time.LocalDateTime
@@ -47,25 +47,26 @@ public class Version implements Comparable<Version> {
   /**
    * Factory method used to construct a new {@link Version} initialized with major and minor version numbers.
    *
-   * @param major major version number.
-   * @param minor minor version number.
-   * @return a new instance of {@link Version} initialized with the major and minor version numbers.
+   * @param major {@link Integer major version number}.
+   * @param minor {@link Integer minor version number}.
+   * @return a new {@link Version} initialized with the {@link Integer major and {@link Integer minor} version numbers.
    * @throws IllegalArgumentException if {@code major} or {@code minor} version numbers are less than {@literal 0}.
    * @see org.cp.elements.lang.Version
    * @see #from(int, int, int, Qualifier, int)
    */
   public static @NotNull Version from(int major, int minor) {
-    return from(major, minor, 0, Qualifier.UNDEFINED, DEFAULT_QUALIFIER_NUMBER);
+    return from(major, minor, DEFAULT_VERSION_NUMBER, Qualifier.UNDEFINED, DEFAULT_QUALIFIER_NUMBER);
   }
 
   /**
    * Factory method used to construct a new {@link Version} initialized with major, minor and maintenance
    * version numbers.
    *
-   * @param major major version number.
-   * @param minor minor version number.
-   * @param maintenance maintenance version number.
-   * @return a new instance of {@link Version} initialized with the major, minor and maintenance version numbers.
+   * @param major {@link Integer major version number}.
+   * @param minor {@link Integer minor version number}.
+   * @param maintenance {@link Integer maintenance version number}.
+   * @return a new {@link Version} initialized with the {@link Integer major}, {@link Integer minor}
+   * and {@link Integer maintenance} version numbers.
    * @throws IllegalArgumentException if {@code major}, {@code minor} or {@code maintenance} version numbers
    * are less than {@literal 0}.
    * @see org.cp.elements.lang.Version
@@ -79,13 +80,13 @@ public class Version implements Comparable<Version> {
    * Factory method used to construct a new {@link Version} initialized with major, minor and maintenance
    * version numbers along with a version qualifier (for example: {@literal RELEASE}).
    *
-   * @param major major version number.
-   * @param minor minor version number.
-   * @param maintenance maintenance version number.
+   * @param major {@link Integer major version number}.
+   * @param minor {@link Integer minor version number}.
+   * @param maintenance {@link Integer maintenance version number}.
    * @param qualifier version {@link Qualifier} such as {@literal M# (Milestone)}, {@literal RC# (Release Candidate)}
    * or {@literal RELEASE}.
-   * @return a new instance of {@link Version} initialized with the major, minor and maintenance version numbers
-   * along with the version qualifier.
+   * @return a new {@link Version} initialized with the {@link Integer major}, {@link Integer minor}
+   * and {@link Integer maintenance} version numbers along with a version {@link Qualifier}.
    * @throws IllegalArgumentException if {@code major}, {@code minor} or {@code maintenance} version numbers
    * are less than {@literal 0}.
    * @see org.cp.elements.lang.Version.Qualifier
@@ -100,14 +101,15 @@ public class Version implements Comparable<Version> {
    * Factory method used to construct a new {@link Version} initialized with major, minor and maintenance
    * version numbers along with a version qualifier (for example: {@literal RELEASE}) and a qualifier number.
    *
-   * @param major major version number.
-   * @param minor minor version number.
-   * @param maintenance maintenance version number.
+   * @param major {@link Integer major version number}.
+   * @param minor {@link Integer minor version number}.
+   * @param maintenance {@link Integer maintenance version number}.
    * @param qualifier version {@link Qualifier} such as {@literal M# (Milestone)}, {@literal RC# (Release Candidate)}
    * or {@literal RELEASE}.
-   * @param qualifierNumber qualifier version number such as {@literal M1 (Milestone 1)}.
-   * @return a new instance of {@link Version} initialized with the major, minor and maintenance version numbers
-   * along with a version qualifier and qualifier number.
+   * @param qualifierNumber {@link Integer qualifier version number} such as {@literal M1 (Milestone 1)}.
+   * @return a new {@link Version} initialized with the {@link Integer major}, {@link Integer minor}
+   * and {@link Integer maintenance} version numbers along with a version {@link Qualifier}
+   * and {@link Integer qualifier number}.
    * @throws IllegalArgumentException if {@code major}, {@code minor} or {@code maintenance} version numbers
    * are less than {@literal 0}.
    * @see #Version(int, int, int, Qualifier, int)
@@ -122,10 +124,10 @@ public class Version implements Comparable<Version> {
    * Factory method used to parse a {@link String version} into a fully-qualified instance of {@link Version}.
    *
    * @param version {@link String} representation of the version; must not be {@literal null} or {@literal empty}.
-   * @return a new instance of {@link Version} initialized with the given, required version {@link String}.
-   * @throws IllegalArgumentException if the {@code version} {@link String} is {@literal null} or {@literal empty},
-   * or the version {@link String} could not be parsed into individual version elements,
-   * or the version {@link String} is unrecognizable.
+   * @return a new {@link Version} initialized from the given, required {@link String version}.
+   * @throws IllegalArgumentException if the {@link String version} is {@literal null} or {@literal empty},
+   * or the {@link String version} could not be parsed into individual version elements,
+   * or the {@link String version} is unrecognizable.
    * @see #parseMajorMinorMaintenanceQualifier(String[])
    * @see #parseMajorMinorMaintenance(String[])
    * @see #parseMajorMinor(String[])
@@ -216,7 +218,7 @@ public class Version implements Comparable<Version> {
    * @see org.cp.elements.lang.Version.Qualifier
    */
   private static @NotNull Qualifier parseQualifier(@Nullable String qualifier) {
-    return Qualifier.resolve(qualifier);
+    return Qualifier.parse(qualifier);
   }
 
   /**
@@ -251,8 +253,8 @@ public class Version implements Comparable<Version> {
   /**
    * Constructs a new {@link Version} initialized with major and minor version numbers.
    *
-   * @param major major version number.
-   * @param minor minor version number.
+   * @param major {@link Integer major version number}.
+   * @param minor {@link Integer minor version number}.
    * @throws IllegalArgumentException if {@code major} or {@code minor} version numbers
    * are less than {@literal 0}.
    * @see #Version(int, int, int, Qualifier, int)
@@ -264,9 +266,9 @@ public class Version implements Comparable<Version> {
   /**
    * Constructs a new {@link Version} initialized with major, minor and maintenance version numbers.
    *
-   * @param major major version number.
-   * @param minor minor version number.
-   * @param maintenance maintenance version number.
+   * @param major {@link Integer major version number}.
+   * @param minor {@link Integer minor version number}.
+   * @param maintenance {@link Integer maintenance version number}.
    * @throws IllegalArgumentException if {@code major}, {@code minor} or {@code maintenance} version numbers
    * are less than {@literal 0}.
    * @see #Version(int, int, int, Qualifier, int)
@@ -279,9 +281,9 @@ public class Version implements Comparable<Version> {
    * Constructs a new {@link Version} initialized with major, minor and maintenance version numbers
    * along with the version {@link Qualifier}.
    *
-   * @param major major version number.
-   * @param minor minor version number.
-   * @param maintenance maintenance version number.
+   * @param major {@link Integer major version number}.
+   * @param minor {@link Integer minor version number}.
+   * @param maintenance {@link Integer maintenance version number}.
    * @param qualifier version {@link Qualifier}.
    * @throws IllegalArgumentException if {@code major}, {@code minor} or {@code maintenance} version numbers
    * are less than {@literal 0}.
@@ -295,11 +297,11 @@ public class Version implements Comparable<Version> {
    * Constructs a new {@link Version} initialized with major, minor and maintenance version numbers
    * along with a version {@link Qualifier} and qualifier number.
    *
-   * @param major major version number.
-   * @param minor minor version number.
-   * @param maintenance maintenance version number.
+   * @param major {@link Integer major version number}.
+   * @param minor {@link Integer minor version number}.
+   * @param maintenance {@link Integer maintenance version number}.
    * @param qualifier version {@link Qualifier}.
-   * @param qualifierNumber qualifier number (e.g. M1, RC2).
+   * @param qualifierNumber {@link String qualifier number}, for example:  {@literal M1}, {@literal RC2} and so on.
    * @throws IllegalArgumentException if {@code major}, {@code minor} or {@code maintenance} version numbers
    * are less than {@literal 0}.
    */
@@ -389,7 +391,7 @@ public class Version implements Comparable<Version> {
   }
 
   /**
-   * Returns the major version number for this {@link Version}.
+   * Returns the {@link Integer major version number} for this {@link Version}.
    *
    * @return the major version number for this {@link Version}.
    */
@@ -634,9 +636,6 @@ public class Version implements Comparable<Version> {
     SNAPSHOT("SNAPSHOT", "Snapshot"),
     UNDEFINED("UNDEFINED", "Undefined");
 
-    private final String abbreviation;
-    private final String description;
-
     /**
      * Factory method to search for a {@link Qualifier} enumerated version matching the {@code version} that contains
      * the matching {@link Qualifier Qualifier's} abbreviation.
@@ -646,7 +645,7 @@ public class Version implements Comparable<Version> {
      * @see org.cp.elements.lang.Version.Qualifier
      * @see #getAbbreviation()
      */
-    public static @NotNull Qualifier resolve(@Nullable String version) {
+    public static @NotNull Qualifier parse(@Nullable String version) {
 
       if (StringUtils.hasText(version)) {
 
@@ -669,6 +668,9 @@ public class Version implements Comparable<Version> {
 
       return Qualifier.UNDEFINED;
     }
+
+    private final String abbreviation;
+    private final String description;
 
     /**
      * Constructs an instance of a {@link Qualifier} enumerated value initialized with the given abbreviation

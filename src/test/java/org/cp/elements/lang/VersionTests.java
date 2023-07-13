@@ -402,64 +402,64 @@ public class VersionTests {
   @Test
   public void qualifierResolveIsCorrect() {
 
-    assertThat(Qualifier.resolve("1.0.0.ALPHA")).isEqualTo(Qualifier.ALPHA);
-    assertThat(Qualifier.resolve("1.0.0.BETA")).isEqualTo(Qualifier.BETA);
-    assertThat(Qualifier.resolve("1.0.0.BUILD-SNAPSHOT")).isEqualTo(Qualifier.BUILD_SNAPSHOT);
-    assertThat(Qualifier.resolve("1.0.0.BUILD_SNAPSHOT")).isEqualTo(Qualifier.BUILD_SNAPSHOT);
-    assertThat(Qualifier.resolve("1.0.0.ITERATION")).isEqualTo(Qualifier.ITERATION);
-    assertThat(Qualifier.resolve("1.0.0.ITER")).isEqualTo(Qualifier.ITERATION);
-    assertThat(Qualifier.resolve("1.0.0.IT")).isEqualTo(Qualifier.ITERATION);
-    assertThat(Qualifier.resolve("1.0.0.MILESTONE")).isEqualTo(Qualifier.MILESTONE);
-    assertThat(Qualifier.resolve("1.0.0.MILE")).isEqualTo(Qualifier.MILESTONE);
-    assertThat(Qualifier.resolve("1.0.0.MI")).isEqualTo(Qualifier.MILESTONE);
-    assertThat(Qualifier.resolve("1.0.0.M0")).isEqualTo(Qualifier.MILESTONE);
-    assertThat(Qualifier.resolve("1.0.0.M1")).isEqualTo(Qualifier.MILESTONE);
-    assertThat(Qualifier.resolve("1.0.0.M2")).isEqualTo(Qualifier.MILESTONE);
-    assertThat(Qualifier.resolve("1.0.0.M3")).isEqualTo(Qualifier.MILESTONE);
-    assertThat(Qualifier.resolve("1.0.0.M")).isEqualTo(Qualifier.MILESTONE);
-    assertThat(Qualifier.resolve("1.0.0.MileStone")).isEqualTo(Qualifier.MILESTONE);
-    assertThat(Qualifier.resolve("1.0.0.MS")).isEqualTo(Qualifier.MILESTONE);
-    assertThat(Qualifier.resolve("1.0.0.M#")).isEqualTo(Qualifier.MILESTONE);
-    assertThat(Qualifier.resolve("1.0.0.M!")).isEqualTo(Qualifier.MILESTONE);
-    assertThat(Qualifier.resolve("1.0.0.RELEASE_CANDIDATE")).isEqualTo(Qualifier.RELEASE_CANDIDATE);
-    assertThat(Qualifier.resolve("1.0.0.RC")).isEqualTo(Qualifier.RELEASE_CANDIDATE);
-    assertThat(Qualifier.resolve("1.0.0.RC0")).isEqualTo(Qualifier.RELEASE_CANDIDATE);
-    assertThat(Qualifier.resolve("1.0.0.RC1")).isEqualTo(Qualifier.RELEASE_CANDIDATE);
-    assertThat(Qualifier.resolve("1.0.0.RC2")).isEqualTo(Qualifier.RELEASE_CANDIDATE);
-    assertThat(Qualifier.resolve("1.0.0.RC3")).isEqualTo(Qualifier.RELEASE_CANDIDATE);
-    assertThat(Qualifier.resolve("1.0.0.RELEASE")).isEqualTo(Qualifier.RELEASE);
-    assertThat(Qualifier.resolve("1.0.0.Release")).isEqualTo(Qualifier.RELEASE);
-    assertThat(Qualifier.resolve("1.0.0.SNAPSHOT")).isEqualTo(Qualifier.SNAPSHOT);
-    assertThat(Qualifier.resolve("1.0.0.snapshot")).isEqualTo(Qualifier.SNAPSHOT);
-    assertThat(Qualifier.resolve("RELEASE")).isEqualTo(Qualifier.RELEASE);
-    assertThat(Qualifier.resolve("Snapshot")).isEqualTo(Qualifier.SNAPSHOT);
-    assertThat(Qualifier.resolve("undefined")).isEqualTo(Qualifier.UNDEFINED);
+    assertThat(Qualifier.parse("1.0.0.ALPHA")).isEqualTo(Qualifier.ALPHA);
+    assertThat(Qualifier.parse("1.0.0.BETA")).isEqualTo(Qualifier.BETA);
+    assertThat(Qualifier.parse("1.0.0.BUILD-SNAPSHOT")).isEqualTo(Qualifier.BUILD_SNAPSHOT);
+    assertThat(Qualifier.parse("1.0.0.BUILD_SNAPSHOT")).isEqualTo(Qualifier.BUILD_SNAPSHOT);
+    assertThat(Qualifier.parse("1.0.0.ITERATION")).isEqualTo(Qualifier.ITERATION);
+    assertThat(Qualifier.parse("1.0.0.ITER")).isEqualTo(Qualifier.ITERATION);
+    assertThat(Qualifier.parse("1.0.0.IT")).isEqualTo(Qualifier.ITERATION);
+    assertThat(Qualifier.parse("1.0.0.MILESTONE")).isEqualTo(Qualifier.MILESTONE);
+    assertThat(Qualifier.parse("1.0.0.MILE")).isEqualTo(Qualifier.MILESTONE);
+    assertThat(Qualifier.parse("1.0.0.MI")).isEqualTo(Qualifier.MILESTONE);
+    assertThat(Qualifier.parse("1.0.0.M0")).isEqualTo(Qualifier.MILESTONE);
+    assertThat(Qualifier.parse("1.0.0.M1")).isEqualTo(Qualifier.MILESTONE);
+    assertThat(Qualifier.parse("1.0.0.M2")).isEqualTo(Qualifier.MILESTONE);
+    assertThat(Qualifier.parse("1.0.0.M3")).isEqualTo(Qualifier.MILESTONE);
+    assertThat(Qualifier.parse("1.0.0.M")).isEqualTo(Qualifier.MILESTONE);
+    assertThat(Qualifier.parse("1.0.0.MileStone")).isEqualTo(Qualifier.MILESTONE);
+    assertThat(Qualifier.parse("1.0.0.MS")).isEqualTo(Qualifier.MILESTONE);
+    assertThat(Qualifier.parse("1.0.0.M#")).isEqualTo(Qualifier.MILESTONE);
+    assertThat(Qualifier.parse("1.0.0.M!")).isEqualTo(Qualifier.MILESTONE);
+    assertThat(Qualifier.parse("1.0.0.RELEASE_CANDIDATE")).isEqualTo(Qualifier.RELEASE_CANDIDATE);
+    assertThat(Qualifier.parse("1.0.0.RC")).isEqualTo(Qualifier.RELEASE_CANDIDATE);
+    assertThat(Qualifier.parse("1.0.0.RC0")).isEqualTo(Qualifier.RELEASE_CANDIDATE);
+    assertThat(Qualifier.parse("1.0.0.RC1")).isEqualTo(Qualifier.RELEASE_CANDIDATE);
+    assertThat(Qualifier.parse("1.0.0.RC2")).isEqualTo(Qualifier.RELEASE_CANDIDATE);
+    assertThat(Qualifier.parse("1.0.0.RC3")).isEqualTo(Qualifier.RELEASE_CANDIDATE);
+    assertThat(Qualifier.parse("1.0.0.RELEASE")).isEqualTo(Qualifier.RELEASE);
+    assertThat(Qualifier.parse("1.0.0.Release")).isEqualTo(Qualifier.RELEASE);
+    assertThat(Qualifier.parse("1.0.0.SNAPSHOT")).isEqualTo(Qualifier.SNAPSHOT);
+    assertThat(Qualifier.parse("1.0.0.snapshot")).isEqualTo(Qualifier.SNAPSHOT);
+    assertThat(Qualifier.parse("RELEASE")).isEqualTo(Qualifier.RELEASE);
+    assertThat(Qualifier.parse("Snapshot")).isEqualTo(Qualifier.SNAPSHOT);
+    assertThat(Qualifier.parse("undefined")).isEqualTo(Qualifier.UNDEFINED);
   }
 
   @Test
   public void qualifierResolvesToUndefined() {
 
-    assertThat(Qualifier.resolve("1.0.0.ALPH")).isEqualTo(Qualifier.UNDEFINED);
-    assertThat(Qualifier.resolve("1.0.0.BET")).isEqualTo(Qualifier.UNDEFINED);
-    assertThat(Qualifier.resolve("1.0.0.BLD-SNPSHT")).isEqualTo(Qualifier.UNDEFINED);
-    assertThat(Qualifier.resolve("1.0.0.BUILD-SNAP")).isEqualTo(Qualifier.UNDEFINED);
-    assertThat(Qualifier.resolve("1.0.0.BUILD")).isEqualTo(Qualifier.UNDEFINED);
-    assertThat(Qualifier.resolve("1.0.0.I")).isEqualTo(Qualifier.UNDEFINED);
-    assertThat(Qualifier.resolve("1.0.0.R")).isEqualTo(Qualifier.UNDEFINED);
-    assertThat(Qualifier.resolve("1.0.0.RD")).isEqualTo(Qualifier.UNDEFINED);
-    assertThat(Qualifier.resolve("1.0.0.REL")).isEqualTo(Qualifier.UNDEFINED);
-    assertThat(Qualifier.resolve("1.0.0.GA")).isEqualTo(Qualifier.UNDEFINED);
-    assertThat(Qualifier.resolve("1.0.0.SNAP")).isEqualTo(Qualifier.UNDEFINED);
-    assertThat(Qualifier.resolve("1.0.0.SR")).isEqualTo(Qualifier.UNDEFINED);
-    assertThat(Qualifier.resolve("1.0.0.S")).isEqualTo(Qualifier.UNDEFINED);
-    assertThat(Qualifier.resolve("1.0.0.UNDEFINED")).isEqualTo(Qualifier.UNDEFINED);
-    assertThat(Qualifier.resolve("1.0.0.DEFINED")).isEqualTo(Qualifier.UNDEFINED);
-    assertThat(Qualifier.resolve("1.0.0.UNDEF")).isEqualTo(Qualifier.UNDEFINED);
-    assertThat(Qualifier.resolve("1.0.0.DEF")).isEqualTo(Qualifier.UNDEFINED);
-    assertThat(Qualifier.resolve("1.0.0.U")).isEqualTo(Qualifier.UNDEFINED);
-    assertThat(Qualifier.resolve("1.0.0")).isEqualTo(Qualifier.UNDEFINED);
-    assertThat(Qualifier.resolve("  ")).isEqualTo(Qualifier.UNDEFINED);
-    assertThat(Qualifier.resolve("")).isEqualTo(Qualifier.UNDEFINED);
-    assertThat(Qualifier.resolve(null)).isEqualTo(Qualifier.UNDEFINED);
+    assertThat(Qualifier.parse("1.0.0.ALPH")).isEqualTo(Qualifier.UNDEFINED);
+    assertThat(Qualifier.parse("1.0.0.BET")).isEqualTo(Qualifier.UNDEFINED);
+    assertThat(Qualifier.parse("1.0.0.BLD-SNPSHT")).isEqualTo(Qualifier.UNDEFINED);
+    assertThat(Qualifier.parse("1.0.0.BUILD-SNAP")).isEqualTo(Qualifier.UNDEFINED);
+    assertThat(Qualifier.parse("1.0.0.BUILD")).isEqualTo(Qualifier.UNDEFINED);
+    assertThat(Qualifier.parse("1.0.0.I")).isEqualTo(Qualifier.UNDEFINED);
+    assertThat(Qualifier.parse("1.0.0.R")).isEqualTo(Qualifier.UNDEFINED);
+    assertThat(Qualifier.parse("1.0.0.RD")).isEqualTo(Qualifier.UNDEFINED);
+    assertThat(Qualifier.parse("1.0.0.REL")).isEqualTo(Qualifier.UNDEFINED);
+    assertThat(Qualifier.parse("1.0.0.GA")).isEqualTo(Qualifier.UNDEFINED);
+    assertThat(Qualifier.parse("1.0.0.SNAP")).isEqualTo(Qualifier.UNDEFINED);
+    assertThat(Qualifier.parse("1.0.0.SR")).isEqualTo(Qualifier.UNDEFINED);
+    assertThat(Qualifier.parse("1.0.0.S")).isEqualTo(Qualifier.UNDEFINED);
+    assertThat(Qualifier.parse("1.0.0.UNDEFINED")).isEqualTo(Qualifier.UNDEFINED);
+    assertThat(Qualifier.parse("1.0.0.DEFINED")).isEqualTo(Qualifier.UNDEFINED);
+    assertThat(Qualifier.parse("1.0.0.UNDEF")).isEqualTo(Qualifier.UNDEFINED);
+    assertThat(Qualifier.parse("1.0.0.DEF")).isEqualTo(Qualifier.UNDEFINED);
+    assertThat(Qualifier.parse("1.0.0.U")).isEqualTo(Qualifier.UNDEFINED);
+    assertThat(Qualifier.parse("1.0.0")).isEqualTo(Qualifier.UNDEFINED);
+    assertThat(Qualifier.parse("  ")).isEqualTo(Qualifier.UNDEFINED);
+    assertThat(Qualifier.parse("")).isEqualTo(Qualifier.UNDEFINED);
+    assertThat(Qualifier.parse(null)).isEqualTo(Qualifier.UNDEFINED);
   }
 }
