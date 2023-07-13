@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.cp.elements.lang.concurrent.locks;
+package org.cp.elements.lang.concurrent.lock;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
@@ -38,7 +38,7 @@ import org.mockito.InOrder;
  * @see java.util.concurrent.locks.Lock
  * @see org.junit.jupiter.api.Test
  * @see org.mockito.Mockito
- * @see org.cp.elements.lang.concurrent.locks.LockUtils
+ * @see org.cp.elements.lang.concurrent.lock.LockUtils
  * @since 2.0.0
  */
 public class LockUtilsUnitTests {

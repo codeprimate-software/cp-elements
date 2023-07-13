@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.cp.elements.lang.concurrent.locks;
+package org.cp.elements.lang.concurrent.lock;
 
 import java.util.concurrent.locks.Lock;
 import java.util.function.Supplier;
@@ -52,7 +52,7 @@ public abstract class LockUtils {
       Thread.currentThread().interrupt();
     }
     finally {
-      lock.unlock();
+      unlock(lock);
     }
   }
 
@@ -83,7 +83,15 @@ public abstract class LockUtils {
       throw (IllegalMonitorStateException) new IllegalMonitorStateException(message).initCause(cause);
     }
     finally {
+      unlock(lock);
+    }
+  }
+
+  private static void unlock(@NotNull Lock lock) {
+
+    try {
       lock.unlock();
     }
+    catch (IllegalMonitorStateException ignore) { }
   }
 }
