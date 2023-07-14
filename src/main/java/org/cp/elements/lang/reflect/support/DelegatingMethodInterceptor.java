@@ -21,7 +21,7 @@ import java.util.Optional;
 import org.cp.elements.lang.ObjectUtils;
 import org.cp.elements.lang.annotation.NotNull;
 import org.cp.elements.lang.annotation.Nullable;
-import org.cp.elements.lang.concurrent.GuardedBy;
+import org.cp.elements.lang.concurrent.lock.GuardedBy;
 import org.cp.elements.lang.reflect.MethodInterceptor;
 import org.cp.elements.lang.reflect.MethodInvocation;
 
