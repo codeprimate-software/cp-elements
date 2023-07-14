@@ -258,8 +258,10 @@ public abstract class ClassUtils {
    */
   private static Set<Class<?>> getInterfaces(@NotNull Class<?> type, @NotNull Set<Class<?>> interfaces) {
 
-    if (type.getSuperclass() != null) {
-      getInterfaces(type.getSuperclass(), interfaces);
+    Class<?> superclass = type.getSuperclass();
+
+    if (!(superclass == null || Object.class.equals(superclass))) {
+      getInterfaces(superclass, interfaces);
     }
 
     for (Class<?> implementedType : type.getInterfaces()) {
