@@ -18,7 +18,7 @@ package org.cp.elements.data.struct;
 import java.util.Optional;
 
 import org.cp.elements.lang.annotation.NotNull;
-import org.cp.elements.lang.concurrent.ThreadSafe;
+import org.cp.elements.lang.annotation.ThreadSafe;
 
 /**
  * A {@link StringBasedKeyValue} data structure providing access to the {@link String value} of
@@ -27,6 +27,7 @@ import org.cp.elements.lang.concurrent.ThreadSafe;
  * @author John Blum
  * @see java.lang.System#getProperties()
  * @see org.cp.elements.data.struct.StringBasedKeyValue
+ * @see org.cp.elements.lang.annotation.ThreadSafe
  * @since 1.0.0
  */
 @ThreadSafe

@@ -19,13 +19,13 @@ import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.annotation.NotNull;
 import org.cp.elements.lang.annotation.NullSafe;
 import org.cp.elements.lang.annotation.Nullable;
-import org.cp.elements.lang.concurrent.ThreadSafe;
+import org.cp.elements.lang.annotation.ThreadSafe;
 
 /**
  * Reference holder to an {@link ObjectFactory} instance.
  *
  * @author John J. Blum
- * @see org.cp.elements.lang.concurrent.ThreadSafe
+ * @see org.cp.elements.lang.annotation.ThreadSafe
  * @see org.cp.elements.lang.factory.ObjectFactory
  * @since 1.0.0
  */

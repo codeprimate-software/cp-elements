@@ -23,7 +23,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.Integers;
-import org.cp.elements.lang.concurrent.ThreadSafe;
+import org.cp.elements.lang.annotation.ThreadSafe;
 
 /**
  * A probabilistic data structure testing whether a given data element is a member of the set maintained by the filter.
@@ -33,7 +33,7 @@ import org.cp.elements.lang.concurrent.ThreadSafe;
  * @see java.util.Random
  * @see org.cp.elements.data.struct.BloomFilter
  * @see org.cp.elements.data.struct.ScalableBloomFilter
- * @see org.cp.elements.lang.concurrent.ThreadSafe
+ * @see org.cp.elements.lang.annotation.ThreadSafe
  * @see <a href="https://en.wikipedia.org/wiki/Bloom_filter">Bloom Filter</a>
  * @see <a href="https://stackoverflow.com/questions/658439/how-many-hash-functions-does-my-bloom-filter-need">How many hash functions does my bloom filter need?</a>
  * @since 1.0.0

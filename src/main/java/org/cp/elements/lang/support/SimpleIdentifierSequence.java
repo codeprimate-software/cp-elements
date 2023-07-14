@@ -18,7 +18,7 @@ package org.cp.elements.lang.support;
 import java.util.concurrent.atomic.AtomicLong;
 
 import org.cp.elements.lang.IdentifierSequence;
-import org.cp.elements.lang.concurrent.ThreadSafe;
+import org.cp.elements.lang.annotation.ThreadSafe;
 
 /**
  * {@link IdentifierSequence} interface generating unique, {@link Long} typed identifiers.
@@ -32,7 +32,7 @@ import org.cp.elements.lang.concurrent.ThreadSafe;
  * @see java.lang.Long
  * @see java.util.concurrent.atomic.AtomicLong
  * @see org.cp.elements.lang.IdentifierSequence
- * @see org.cp.elements.lang.concurrent.ThreadSafe
+ * @see org.cp.elements.lang.annotation.ThreadSafe
  * @since 1.0.0
  */
 @SuppressWarnings("unused")

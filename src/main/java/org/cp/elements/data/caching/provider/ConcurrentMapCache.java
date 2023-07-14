@@ -31,7 +31,7 @@ import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.annotation.NotNull;
 import org.cp.elements.lang.annotation.NullSafe;
 import org.cp.elements.lang.annotation.Nullable;
-import org.cp.elements.lang.concurrent.ThreadSafe;
+import org.cp.elements.lang.annotation.ThreadSafe;
 import org.cp.elements.util.MapUtils;
 
 /**
@@ -45,6 +45,7 @@ import org.cp.elements.util.MapUtils;
  * @see java.util.concurrent.ConcurrentMap
  * @see org.cp.elements.data.caching.AbstractCache
  * @see org.cp.elements.data.caching.Cache
+ * @see org.cp.elements.lang.annotation.ThreadSafe
  * @since 1.0.0
  */
 @ThreadSafe

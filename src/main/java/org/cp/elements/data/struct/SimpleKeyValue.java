@@ -20,9 +20,10 @@ import java.util.Optional;
 
 import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.ObjectUtils;
+import org.cp.elements.lang.annotation.Immutable;
 import org.cp.elements.lang.annotation.NotNull;
 import org.cp.elements.lang.annotation.Nullable;
-import org.cp.elements.lang.concurrent.ThreadSafe;
+import org.cp.elements.lang.annotation.ThreadSafe;
 
 /**
  * A {@link ThreadSafe Thread-safe} {@link KeyValue} data structure implementation modeling both a {@link Object key}
@@ -34,8 +35,11 @@ import org.cp.elements.lang.concurrent.ThreadSafe;
  * @see java.util.Map
  * @see java.util.Map.Entry
  * @see org.cp.elements.data.struct.KeyValue
+ * @see org.cp.elements.lang.annotation.Immutable
+ * @see org.cp.elements.lang.annotation.ThreadSafe
  * @since 1.0.0
  */
+@Immutable
 @ThreadSafe
 @SuppressWarnings("unused")
 public class SimpleKeyValue<KEY, VALUE> implements KeyValue<KEY, VALUE> {

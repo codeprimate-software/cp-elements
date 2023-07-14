@@ -20,7 +20,7 @@
  * @author John Blum
  * @see org.cp.elements.lang.concurrent.SimpleThreadFactory
  * @see org.cp.elements.lang.concurrent.ThreadAdapter
- * @see org.cp.elements.lang.concurrent.ThreadSafe
+ * @see org.cp.elements.lang.annotation.ThreadSafe
  * @since 1.0.0
  */
 package org.cp.elements.lang.concurrent;

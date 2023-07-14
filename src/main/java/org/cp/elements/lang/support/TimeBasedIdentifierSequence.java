@@ -17,7 +17,7 @@ package org.cp.elements.lang.support;
 
 import org.cp.elements.lang.IdentifierSequence;
 import org.cp.elements.lang.annotation.NotNull;
-import org.cp.elements.lang.concurrent.ThreadSafe;
+import org.cp.elements.lang.annotation.ThreadSafe;
 
 /**
  * Implementation of the {@link IdentifierSequence} interface generating unique, {@link Long Long-typed} identifiers
@@ -33,10 +33,11 @@ import org.cp.elements.lang.concurrent.ThreadSafe;
  * @see java.lang.Long
  * @see java.lang.System
  * @see org.cp.elements.lang.IdentifierSequence
+ * @see org.cp.elements.lang.annotation.ThreadSafe
  * @since 1.0.0
  */
-@SuppressWarnings("unused")
 @ThreadSafe
+@SuppressWarnings("unused")
 public class TimeBasedIdentifierSequence implements IdentifierSequence<Long> {
 
   private static long currentIdentifier = -1L;
