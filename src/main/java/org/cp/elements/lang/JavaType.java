@@ -25,11 +25,10 @@ import org.cp.elements.lang.annotation.Nullable;
 import org.cp.elements.util.stream.StreamUtils;
 
 /**
- * The {@link JavaType} enum is an enumeration of various Java {@link Class types}.
+ * {@link Enum Enumeration} of various Java [primitive] {@link Class types}.
  *
  * @author John Blum
  * @see java.lang.Class
- * @see org.cp.elements.lang.ClassUtils
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
@@ -99,8 +98,8 @@ public enum JavaType {
    */
   public static boolean isJavaType(@Nullable Class<?> type) {
 
-    return StreamUtils.stream(values())
-      .anyMatch(javaType -> type != null && ClassUtils.assignableTo(type, javaType.getType()));
+    return type != null && StreamUtils.stream(values())
+      .anyMatch(javaType -> ClassUtils.assignableTo(type, javaType.getType()));
   }
 
   /**
@@ -143,7 +142,7 @@ public enum JavaType {
   }
 
   /**
-   * Returns a {@link String} representation (view) of this {@link JavaType}.
+   * Returns a {@link String} representation of this {@link JavaType}.
    *
    * @return a {@link String} describing this {@link JavaType}.
    * @see java.lang.Object#toString()
