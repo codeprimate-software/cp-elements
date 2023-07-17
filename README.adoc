@@ -16,6 +16,8 @@ the **Java Platform**.
 The main intent of *Elements* is to provide high quality, reusable and useful application classes and components
 to solve common, reoccurring problems during software development with ease and reliability.
 
+Write better Java!
+
 [[elemental-objectives]]
 == Elemental Objectives
 
