@@ -21,6 +21,7 @@ import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 
@@ -44,13 +45,45 @@ import org.mockito.InOrder;
 public class LockUtilsUnitTests {
 
   @Test
+  public void usingBlockingLockingStategyIsCorrect() throws InterruptedException {
+
+    Lock mockLock = mock(Lock.class);
+
+    LockUtils lockUtils = LockUtils.usingBlockingLock();
+
+    assertThat(lockUtils).isNotNull();
+    assertThat(lockUtils).isSameAs(LockUtils.usingBlockingLock());
+
+    lockUtils.lockAcquiringStrategy().acquire(mockLock);
+
+    verify(mockLock, times(1)).lock();
+    verifyNoMoreInteractions(mockLock);
+  }
+
+  @Test
+  public void usingInterruptableLockingStrategyIsCorrect() throws InterruptedException {
+
+    Lock mockLock = mock(Lock.class);
+
+    LockUtils lockUtils = LockUtils.usingInterruptableLock();
+
+    assertThat(lockUtils).isNotNull();
+    assertThat(lockUtils).isSameAs(LockUtils.usingInterruptableLock());
+
+    lockUtils.lockAcquiringStrategy().acquire(mockLock);
+
+    verify(mockLock, times(1)).lockInterruptibly();
+    verifyNoMoreInteractions(mockLock);
+  }
+
+  @Test
   public void doRunnableWithLock() throws InterruptedException {
 
     Lock mockLock = mock(Lock.class);
 
     Runnable mockRunnable = mock(Runnable.class);
 
-    LockUtils.doWithLock(mockLock, mockRunnable);
+    LockUtils.usingInterruptableLock().doWithLock(mockLock, mockRunnable);
 
     InOrder order = inOrder(mockLock, mockRunnable);
 
@@ -67,7 +100,7 @@ public class LockUtilsUnitTests {
     Lock mockLock = mock(Lock.class);
 
     assertThatIllegalArgumentException()
-      .isThrownBy(() -> LockUtils.doWithLock(mockLock, (Runnable) null))
+      .isThrownBy(() -> LockUtils.usingBlockingLock().doWithLock(mockLock, (Runnable) null))
       .withMessage("Code to run with Lock is required")
       .withNoCause();
 
@@ -80,7 +113,7 @@ public class LockUtilsUnitTests {
     Runnable mockRunnable = mock(Runnable.class);
 
     assertThatIllegalArgumentException()
-      .isThrownBy(() -> LockUtils.doWithLock(null, mockRunnable))
+      .isThrownBy(() -> LockUtils.usingInterruptableLock().doWithLock(null, mockRunnable))
       .withMessage("Lock is required")
       .withNoCause();
 
@@ -96,7 +129,7 @@ public class LockUtilsUnitTests {
 
     doReturn("TEST").when(mockSupplier).get();
 
-    assertThat(LockUtils.doWithLock(mockLock, mockSupplier)).isEqualTo("TEST");
+    assertThat(LockUtils.usingInterruptableLock().doWithLock(mockLock, mockSupplier)).isEqualTo("TEST");
 
     InOrder order = inOrder(mockLock, mockSupplier);
 
@@ -113,7 +146,7 @@ public class LockUtilsUnitTests {
     Lock mockLock = mock(Lock.class);
 
     assertThatIllegalArgumentException()
-      .isThrownBy(() -> LockUtils.doWithLock(mockLock, (Supplier<?>) null))
+      .isThrownBy(() -> LockUtils.usingBlockingLock().doWithLock(mockLock, (Supplier<?>) null))
       .withMessage("Code to run with Lock is required")
       .withNoCause();
 
@@ -126,7 +159,7 @@ public class LockUtilsUnitTests {
     Supplier<?> mockSupplier = mock(Supplier.class);
 
     assertThatIllegalArgumentException()
-      .isThrownBy(() -> LockUtils.doWithLock(null, mockSupplier))
+      .isThrownBy(() -> LockUtils.usingInterruptableLock().doWithLock(null, mockSupplier))
       .withMessage("Lock is required")
       .withNoCause();
 

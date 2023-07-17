@@ -107,7 +107,7 @@ public class LockUtilsIntegrationTests {
 
       Runnable mockRunnable = mock(Runnable.class);
 
-      LockUtils.doWithLock(getLock(), mockRunnable);
+      LockUtils.usingInterruptableLock().doWithLock(getLock(), mockRunnable);
 
       verifyNoInteractions(mockRunnable);
     }
@@ -122,7 +122,7 @@ public class LockUtilsIntegrationTests {
       Supplier<?> mockSupplier = mock(Supplier.class);
 
       assertThatThrowableOfType(IllegalMonitorStateException.class)
-        .isThrownBy(args -> LockUtils.doWithLock(getLock(), mockSupplier))
+        .isThrownBy(args -> LockUtils.usingInterruptableLock().doWithLock(getLock(), mockSupplier))
         .havingMessage("Thread was interrupted while trying to obtain lock [%s]", getLock())
         .causedBy(InterruptedException.class)
         .withNoCause();

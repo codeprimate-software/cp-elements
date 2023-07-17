@@ -30,6 +30,52 @@ import org.cp.elements.lang.annotation.NotNull;
  */
 public abstract class LockUtils {
 
+  protected static final LockUtils BLOCKING_LOCK = new LockUtils() {
+
+    @Override
+    protected LockAcquiringStrategy lockAcquiringStrategy() {
+      return Lock::lock;
+    }
+  };
+
+  protected static final LockUtils INTERRUPTABLE_LOCK = new LockUtils() {
+
+    @Override
+    protected LockAcquiringStrategy lockAcquiringStrategy() {
+      return Lock::lockInterruptibly;
+    }
+  };
+
+  /**
+   * Factory method used to apply a {@literal blocking, non-interruptable locking strategy}
+   * during acquisition of the {@link Lock}.
+   *
+   * @return a locking strategy used to acquire {@link Lock} using a non-interruptable, blocking method.
+   * @see java.util.concurrent.locks.Lock#lock()
+   */
+  public static LockUtils usingBlockingLock() {
+    return BLOCKING_LOCK;
+  }
+
+  /**
+   * Factory method used to apply a {@literal non-blocking, interruptable locking strategy}
+   * during acquisition of the {@link Lock}.
+   *
+   * @return a locking strategy used to acquire {@link Lock} using a non-blocking, interruptable method.
+   * @see java.util.concurrent.locks.Lock#lockInterruptibly()
+   */
+  public static LockUtils usingInterruptableLock() {
+    return INTERRUPTABLE_LOCK;
+  }
+
+  /**
+   * Returns the configured {@link LockAcquiringStrategy} used to acquire the {@link Lock}.
+   *
+   * @return the configured {@link LockAcquiringStrategy} used to acquire the {@link Lock}.
+   * @see org.cp.elements.lang.concurrent.lock.LockUtils.LockAcquiringStrategy
+   */
+  protected abstract LockAcquiringStrategy lockAcquiringStrategy();
+
   /**
    * Attempts to execute the given {@link Runnable code} while holding the given, required {@link Lock}.
    *
@@ -37,15 +83,16 @@ public abstract class LockUtils {
    * @param runner {@link Runnable code} to run while holding the given {@link Lock}; must not be {@literal null}.
    * @throws IllegalArgumentException if either the {@link Lock} or {@link Runnable} are {@literal null}.
    * @see java.util.concurrent.locks.Lock
+   * @see #lockAcquiringStrategy()
    * @see java.lang.Runnable
    */
-  public static void doWithLock(@NotNull Lock lock, @NotNull Runnable runner) {
+  public void doWithLock(@NotNull Lock lock, @NotNull Runnable runner) {
 
     Assert.notNull(lock, "Lock is required");
     Assert.notNull(runner, "Code to run with Lock is required");
 
     try {
-      lock.lockInterruptibly();
+      lockAcquiringStrategy().acquire(lock);
       runner.run();
     }
     catch (InterruptedException ignore) {
@@ -66,15 +113,16 @@ public abstract class LockUtils {
    * @return the result of executing the given {@link Supplier code}.
    * @throws IllegalArgumentException if either the {@link Lock} or {@link Runnable} are {@literal null}.
    * @see java.util.concurrent.locks.Lock
-   * @see java.lang.Runnable
+   * @see java.util.function.Supplier
+   * @see #lockAcquiringStrategy()
    */
-  public static <T> T doWithLock(@NotNull Lock lock, @NotNull Supplier<T> supplier) {
+  public <T> T doWithLock(@NotNull Lock lock, @NotNull Supplier<T> supplier) {
 
     Assert.notNull(lock, "Lock is required");
     Assert.notNull(supplier, "Code to run with Lock is required");
 
     try {
-      lock.lockInterruptibly();
+      lockAcquiringStrategy().acquire(lock);
       return supplier.get();
     }
     catch (InterruptedException cause) {
@@ -93,5 +141,10 @@ public abstract class LockUtils {
       lock.unlock();
     }
     catch (IllegalMonitorStateException ignore) { }
+  }
+
+  @FunctionalInterface
+  protected interface LockAcquiringStrategy {
+    void acquire(Lock lock) throws InterruptedException;
   }
 }
