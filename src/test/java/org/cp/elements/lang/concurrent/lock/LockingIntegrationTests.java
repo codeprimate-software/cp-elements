@@ -32,18 +32,18 @@ import edu.umd.cs.mtc.MultithreadedTestCase;
 import edu.umd.cs.mtc.TestFramework;
 
 /**
- * Integration Tests for {@link LockUtils}.
+ * Integration Tests for {@link Locking}.
  *
  * @author John Blum
  * @see java.util.concurrent.locks.Lock
  * @see org.junit.jupiter.api.Test
  * @see org.mockito.Mockito
- * @see org.cp.elements.lang.concurrent.lock.LockUtils
+ * @see Locking
  * @see edu.umd.cs.mtc.MultithreadedTestCase
  * @see edu.umd.cs.mtc.TestFramework
  * @since 2.0.0
  */
-public class LockUtilsIntegrationTests {
+public class LockingIntegrationTests {
 
   @Test
   void doRunnableWithThreadLockInterrupted() throws Throwable {
@@ -107,7 +107,7 @@ public class LockUtilsIntegrationTests {
 
       Runnable mockRunnable = mock(Runnable.class);
 
-      LockUtils.usingInterruptableLock().doWithLock(getLock(), mockRunnable);
+      Locking.usingInterruptableLock().doWithLock(getLock(), mockRunnable);
 
       verifyNoInteractions(mockRunnable);
     }
@@ -122,7 +122,7 @@ public class LockUtilsIntegrationTests {
       Supplier<?> mockSupplier = mock(Supplier.class);
 
       assertThatThrowableOfType(IllegalMonitorStateException.class)
-        .isThrownBy(args -> LockUtils.usingInterruptableLock().doWithLock(getLock(), mockSupplier))
+        .isThrownBy(args -> Locking.usingInterruptableLock().doWithLock(getLock(), mockSupplier))
         .havingMessage("Thread was interrupted while trying to obtain lock [%s]", getLock())
         .causedBy(InterruptedException.class)
         .withNoCause();

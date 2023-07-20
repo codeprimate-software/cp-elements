@@ -28,9 +28,9 @@ import org.cp.elements.lang.annotation.NotNull;
  * @see java.util.concurrent.locks.Lock
  * @since 2.0.0
  */
-public abstract class LockUtils {
+public abstract class Locking {
 
-  protected static final LockUtils BLOCKING_LOCK = new LockUtils() {
+  protected static final Locking BLOCKING_LOCK = new Locking() {
 
     @Override
     protected LockAcquiringStrategy lockAcquiringStrategy() {
@@ -38,7 +38,7 @@ public abstract class LockUtils {
     }
   };
 
-  protected static final LockUtils INTERRUPTABLE_LOCK = new LockUtils() {
+  protected static final Locking INTERRUPTABLE_LOCK = new Locking() {
 
     @Override
     protected LockAcquiringStrategy lockAcquiringStrategy() {
@@ -53,7 +53,7 @@ public abstract class LockUtils {
    * @return a locking strategy used to acquire {@link Lock} using a non-interruptable, blocking method.
    * @see java.util.concurrent.locks.Lock#lock()
    */
-  public static LockUtils usingBlockingLock() {
+  public static Locking usingBlockingLock() {
     return BLOCKING_LOCK;
   }
 
@@ -64,7 +64,7 @@ public abstract class LockUtils {
    * @return a locking strategy used to acquire {@link Lock} using a non-blocking, interruptable method.
    * @see java.util.concurrent.locks.Lock#lockInterruptibly()
    */
-  public static LockUtils usingInterruptableLock() {
+  public static Locking usingInterruptableLock() {
     return INTERRUPTABLE_LOCK;
   }
 
@@ -72,7 +72,7 @@ public abstract class LockUtils {
    * Returns the configured {@link LockAcquiringStrategy} used to acquire the {@link Lock}.
    *
    * @return the configured {@link LockAcquiringStrategy} used to acquire the {@link Lock}.
-   * @see org.cp.elements.lang.concurrent.lock.LockUtils.LockAcquiringStrategy
+   * @see Locking.LockAcquiringStrategy
    */
   protected abstract LockAcquiringStrategy lockAcquiringStrategy();
 
