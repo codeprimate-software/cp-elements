@@ -20,12 +20,14 @@ import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 
 import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Supplier;
 
 import org.junit.jupiter.api.Test;
@@ -45,7 +47,7 @@ import org.mockito.InOrder;
 public class LockingUnitTests {
 
   @Test
-  public void usingBlockingLockingStategyIsCorrect() throws InterruptedException {
+  public void usingBlockingLockingStrategyIsCorrect() throws InterruptedException {
 
     Lock mockLock = mock(Lock.class);
 
@@ -54,7 +56,7 @@ public class LockingUnitTests {
     assertThat(locking).isNotNull();
     assertThat(locking).isSameAs(Locking.usingBlockingLock());
 
-    locking.lockAcquiringStrategy().acquire(mockLock);
+    locking.lockingStrategy().acquire(mockLock);
 
     verify(mockLock, times(1)).lock();
     verifyNoMoreInteractions(mockLock);
@@ -70,10 +72,39 @@ public class LockingUnitTests {
     assertThat(locking).isNotNull();
     assertThat(locking).isSameAs(Locking.usingInterruptableLock());
 
-    locking.lockAcquiringStrategy().acquire(mockLock);
+    locking.lockingStrategy().acquire(mockLock);
 
     verify(mockLock, times(1)).lockInterruptibly();
     verifyNoMoreInteractions(mockLock);
+  }
+
+  @Test
+  public void withLockingStrategyReleaseLock() {
+
+    Lock lock = spy(new ReentrantLock(false));
+
+    assertThat(lock.tryLock()).isTrue();
+    assertThat(Locking.usingBlockingLock().lockingStrategy().release(lock)).isTrue();
+
+    verify(lock, times(1)).tryLock();
+    verify(lock, times(1)).unlock();
+    verifyNoMoreInteractions(lock);
+  }
+
+  @Test
+  public void withLockingStrategyReleaseUnheldLock() {
+
+    Lock lock = spy(new ReentrantLock(false));
+
+    assertThat(Locking.usingBlockingLock().lockingStrategy().release(lock)).isFalse();
+
+    verify(lock, times(1)).unlock();
+    verifyNoMoreInteractions(lock);
+  }
+
+  @Test
+  public void withLockingStrategyReleaseNullLockIsNullSafe() {
+    assertThat(Locking.usingBlockingLock().lockingStrategy().release(null)).isTrue();
   }
 
   @Test
@@ -101,7 +132,7 @@ public class LockingUnitTests {
 
     assertThatIllegalArgumentException()
       .isThrownBy(() -> Locking.usingBlockingLock().doWithLock(mockLock, (Runnable) null))
-      .withMessage("Code to run with Lock is required")
+      .withMessage("The code to run with Lock is required")
       .withNoCause();
 
     verifyNoInteractions(mockLock);
@@ -121,7 +152,7 @@ public class LockingUnitTests {
   }
 
   @Test
-  public void doSupplierWithLock() throws InterruptedException {
+  public void doSupplierWithLock() {
 
     Lock mockLock = mock(Lock.class);
 
@@ -129,11 +160,11 @@ public class LockingUnitTests {
 
     doReturn("TEST").when(mockSupplier).get();
 
-    assertThat(Locking.usingInterruptableLock().doWithLock(mockLock, mockSupplier)).isEqualTo("TEST");
+    assertThat(Locking.usingBlockingLock().doWithLock(mockLock, mockSupplier)).isEqualTo("TEST");
 
     InOrder order = inOrder(mockLock, mockSupplier);
 
-    order.verify(mockLock, times(1)).lockInterruptibly();
+    order.verify(mockLock, times(1)).lock();
     order.verify(mockSupplier, times(1)).get();
     order.verify(mockLock, times(1)).unlock();
 
@@ -146,8 +177,8 @@ public class LockingUnitTests {
     Lock mockLock = mock(Lock.class);
 
     assertThatIllegalArgumentException()
-      .isThrownBy(() -> Locking.usingBlockingLock().doWithLock(mockLock, (Supplier<?>) null))
-      .withMessage("Code to run with Lock is required")
+      .isThrownBy(() -> Locking.usingInterruptableLock().doWithLock(mockLock, (Supplier<?>) null))
+      .withMessage("The code to run with Lock is required")
       .withNoCause();
 
     verifyNoInteractions(mockLock);
@@ -159,7 +190,7 @@ public class LockingUnitTests {
     Supplier<?> mockSupplier = mock(Supplier.class);
 
     assertThatIllegalArgumentException()
-      .isThrownBy(() -> Locking.usingInterruptableLock().doWithLock(null, mockSupplier))
+      .isThrownBy(() -> Locking.usingBlockingLock().doWithLock(null, mockSupplier))
       .withMessage("Lock is required")
       .withNoCause();
 

@@ -20,6 +20,8 @@ import java.util.function.Supplier;
 
 import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.annotation.NotNull;
+import org.cp.elements.lang.annotation.NullSafe;
+import org.cp.elements.lang.annotation.Nullable;
 
 /**
  * Abstract utility class for using {@link Lock Locks}.
@@ -33,7 +35,7 @@ public abstract class Locking {
   protected static final Locking BLOCKING_LOCK = new Locking() {
 
     @Override
-    protected LockAcquiringStrategy lockAcquiringStrategy() {
+    protected LockingStrategy lockingStrategy() {
       return Lock::lock;
     }
   };
@@ -41,16 +43,16 @@ public abstract class Locking {
   protected static final Locking INTERRUPTABLE_LOCK = new Locking() {
 
     @Override
-    protected LockAcquiringStrategy lockAcquiringStrategy() {
+    protected LockingStrategy lockingStrategy() {
       return Lock::lockInterruptibly;
     }
   };
 
   /**
    * Factory method used to apply a {@literal blocking, non-interruptable locking strategy}
-   * during acquisition of the {@link Lock}.
+   * during acquisition of a {@link Lock}.
    *
-   * @return a locking strategy used to acquire {@link Lock} using a non-interruptable, blocking method.
+   * @return a locking strategy used to acquire a {@link Lock} using a {@literal non-interruptable, blocking} procedure.
    * @see java.util.concurrent.locks.Lock#lock()
    */
   public static Locking usingBlockingLock() {
@@ -59,9 +61,9 @@ public abstract class Locking {
 
   /**
    * Factory method used to apply a {@literal non-blocking, interruptable locking strategy}
-   * during acquisition of the {@link Lock}.
+   * during acquisition of a {@link Lock}.
    *
-   * @return a locking strategy used to acquire {@link Lock} using a non-blocking, interruptable method.
+   * @return a locking strategy used to acquire a {@link Lock} using a {@literal non-blocking, interruptable} procedure.
    * @see java.util.concurrent.locks.Lock#lockInterruptibly()
    */
   public static Locking usingInterruptableLock() {
@@ -69,12 +71,12 @@ public abstract class Locking {
   }
 
   /**
-   * Returns the configured {@link LockAcquiringStrategy} used to acquire the {@link Lock}.
+   * Returns the configured {@link LockingStrategy} used to acquire and release {@link Lock Locks}.
    *
-   * @return the configured {@link LockAcquiringStrategy} used to acquire the {@link Lock}.
-   * @see Locking.LockAcquiringStrategy
+   * @return the configured {@link LockingStrategy} used to acquire and release {@link Lock Locks}.
+   * @see org.cp.elements.lang.concurrent.lock.Locking.LockingStrategy
    */
-  protected abstract LockAcquiringStrategy lockAcquiringStrategy();
+  protected abstract LockingStrategy lockingStrategy();
 
   /**
    * Attempts to execute the given {@link Runnable code} while holding the given, required {@link Lock}.
@@ -83,23 +85,23 @@ public abstract class Locking {
    * @param runner {@link Runnable code} to run while holding the given {@link Lock}; must not be {@literal null}.
    * @throws IllegalArgumentException if either the {@link Lock} or {@link Runnable} are {@literal null}.
    * @see java.util.concurrent.locks.Lock
-   * @see #lockAcquiringStrategy()
+   * @see #lockingStrategy()
    * @see java.lang.Runnable
    */
   public void doWithLock(@NotNull Lock lock, @NotNull Runnable runner) {
 
     Assert.notNull(lock, "Lock is required");
-    Assert.notNull(runner, "Code to run with Lock is required");
+    Assert.notNull(runner, "The code to run with Lock is required");
 
     try {
-      lockAcquiringStrategy().acquire(lock);
+      lockingStrategy().acquire(lock);
       runner.run();
     }
     catch (InterruptedException ignore) {
       Thread.currentThread().interrupt();
     }
     finally {
-      unlock(lock);
+      lockingStrategy().release(lock);
     }
   }
 
@@ -114,15 +116,15 @@ public abstract class Locking {
    * @throws IllegalArgumentException if either the {@link Lock} or {@link Runnable} are {@literal null}.
    * @see java.util.concurrent.locks.Lock
    * @see java.util.function.Supplier
-   * @see #lockAcquiringStrategy()
+   * @see #lockingStrategy()
    */
   public <T> T doWithLock(@NotNull Lock lock, @NotNull Supplier<T> supplier) {
 
     Assert.notNull(lock, "Lock is required");
-    Assert.notNull(supplier, "Code to run with Lock is required");
+    Assert.notNull(supplier, "The code to run with Lock is required");
 
     try {
-      lockAcquiringStrategy().acquire(lock);
+      lockingStrategy().acquire(lock);
       return supplier.get();
     }
     catch (InterruptedException cause) {
@@ -131,20 +133,28 @@ public abstract class Locking {
       throw (IllegalMonitorStateException) new IllegalMonitorStateException(message).initCause(cause);
     }
     finally {
-      unlock(lock);
+      lockingStrategy().release(lock);
     }
-  }
-
-  private static void unlock(@NotNull Lock lock) {
-
-    try {
-      lock.unlock();
-    }
-    catch (IllegalMonitorStateException ignore) { }
   }
 
   @FunctionalInterface
-  protected interface LockAcquiringStrategy {
+  protected interface LockingStrategy {
+
     void acquire(Lock lock) throws InterruptedException;
+
+    @NullSafe
+    default boolean release(@Nullable Lock lock) {
+
+      try {
+        if (lock != null) {
+          lock.unlock();
+        }
+
+        return true;
+      }
+      catch (IllegalMonitorStateException ignore) {
+        return false;
+      }
+    }
   }
 }
