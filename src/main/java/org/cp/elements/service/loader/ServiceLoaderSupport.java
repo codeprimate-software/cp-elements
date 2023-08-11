@@ -123,8 +123,8 @@ public interface ServiceLoaderSupport<T> {
    */
   default @NotNull T getServiceInstance(@NotNull String declaredName) {
 
-    Predicate<T> namedServicePredicate = service -> service instanceof Nameable
-      && String.valueOf(((Nameable<?>) service).getName()).equals(declaredName);
+    Predicate<T> namedServicePredicate = service -> service instanceof Nameable<?> namedService
+      && String.valueOf(namedService.getName()).equals(declaredName);
 
     Predicate<T> qualifierAnnotationPredicate = service -> {
 
@@ -134,10 +134,10 @@ public interface ServiceLoaderSupport<T> {
         && serviceType.getAnnotation(Qualifier.class).name().equals(declaredName);
     };
 
-    Predicate<T> resolvedNameSourcedPredicate = namedServicePredicate.or(qualifierAnnotationPredicate);
+    Predicate<T> resolvedNameSourcePredicate = namedServicePredicate.or(qualifierAnnotationPredicate);
 
     try {
-      return getServiceInstance(resolvedNameSourcedPredicate);
+      return getServiceInstance(resolvedNameSourcePredicate);
     }
     catch (ServiceUnavailableException cause) {
       throw newServiceUnavailableException(cause, "Failed to find a service instance with the declared name [%s]",
