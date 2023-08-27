@@ -447,7 +447,7 @@ public abstract class ObjectUtils extends ReflectionUtils {
     int hashCode = 17;
 
     for (Object obj : ArrayUtils.nullSafeArray(array)) {
-      hashCode = 37 * hashCode + hashCode(obj);
+      hashCode = 31 * hashCode + hashCode(obj);
     }
 
     return hashCode;

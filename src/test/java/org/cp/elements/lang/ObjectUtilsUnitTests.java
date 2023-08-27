@@ -523,12 +523,12 @@ public class ObjectUtilsUnitTests {
 
   @Test
   public void hashCodeWithNonNullValue() {
-    assertThat(ObjectUtils.hashCode("test")).isEqualTo("test".hashCode());
+    assertThat(ObjectUtils.hashCode("test")).hasSameHashCodeAs("test");
   }
 
   @Test
   public void hashCodeWithNullValue() {
-    assertThat(ObjectUtils.hashCode(null)).isEqualTo(0);
+    assertThat(ObjectUtils.hashCode(null)).isZero();
   }
 
   @Test
@@ -595,7 +595,7 @@ public class ObjectUtilsUnitTests {
         return true;
       }
 
-      if (!(obj instanceof CopyableObject that)) {
+      if (!(obj instanceof CopyableObject<?> that)) {
         return false;
       }
 
@@ -725,8 +725,8 @@ public class ObjectUtilsUnitTests {
 
       int hashValue = 17;
 
-      hashValue = 37 * hashValue + ObjectUtils.hashCode(getFirstName());
-      hashValue = 37 * hashValue + ObjectUtils.hashCode(getLastName());
+      hashValue = 31 * hashValue + ObjectUtils.hashCode(getFirstName());
+      hashValue = 31 * hashValue + ObjectUtils.hashCode(getLastName());
 
       return hashValue;
     }
