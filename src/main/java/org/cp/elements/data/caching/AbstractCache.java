@@ -68,6 +68,19 @@ public abstract class AbstractCache<KEY extends Comparable<KEY>, VALUE> implemen
   }
 
   /**
+   * Returns the {@link String name} of this {@link Cache}.
+   * <p>
+   * The configured {@link String name} may be {@literal null}.
+   *
+   * @return the {@link String name} of this {@link Cache}; may be {@literal null}.
+   * @see #named(String)
+   */
+  @Override
+  public @Nullable String getName() {
+    return this.name;
+  }
+
+  /**
    * Clears the entire contents of (all entries from) this {@link Cache}.
    * <p>
    * This {@link Cache} operation is not supported by default since it can be a very costly operation,
@@ -109,19 +122,6 @@ public abstract class AbstractCache<KEY extends Comparable<KEY>, VALUE> implemen
   @Override
   public VALUE get(KEY key) {
     throw newUnsupportedOperationException("Get is not supported");
-  }
-
-  /**
-   * Returns the {@link String name} of this {@link Cache}.
-   * <p>
-   * The configured {@link String name} may be {@literal null}.
-   *
-   * @return the {@link String name} of this {@link Cache}; may be {@literal null}.
-   * @see #named(String)
-   */
-  @Override
-  public @Nullable String getName() {
-    return this.name;
   }
 
   /**
