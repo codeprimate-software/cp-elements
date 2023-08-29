@@ -6,14 +6,14 @@ This chapter covers Java language extensions and features provided by _Elements_
 [[elements-lang-dsl]]
 === Domain Specific Languages (DSL)
 
-_Elements_ provides 5 different domain-specific languages (DSL) that you can be used to write concise yet expressive
-code. By statically importing the DSL language operators declared and defined in
-the `org.cp.elements.lang.LangExtensions` class, you can immediately write much more powerful code in fewer lines.
+_Elements_ provides 5 different domain-specific languages (DSL) that you can use to write concise, yet expressive code.
+By statically importing the DSL language operators declared and defined in the `org.cp.elements.lang.LangExtensions`
+class, you can immediately write much more powerful code in fewer lines.
 
 [[elements-lang-dsl-assertThat]]
 ==== `assertThat` operator
 
-The `assertThat` operator and DSL enables a developer to make assertions about the state of his or her running programs.
+The `assertThat` operator and DSL enables developers to make assertions about the state of his or her running programs.
 
 For instance, a developer can assert that an object reference is not `null`.
 
@@ -25,8 +25,121 @@ assertThat(objectReference).isNotNull();
 ----
 
 The `assertThat` operator and DSL provided by _Elements_ is very similar to https://assertj.github.io/doc/[AssertJ],
-and indeed was partially inspired by AssertJ. However, Elements `assertThat` operator and DSL focuses on the most
-common and useful assertions. For complete assertion coverage, we recommend developers to use AssertJ.
+and was partly inspired by AssertJ. However, Elements `assertThat` operator and DSL focuses on the most common
+and useful assertions and more refined expressions.
+
+NOTE: For complete assertion coverage, we recommend developers use AssertJ.
+
+Other common assertions include, but are not limited to:
+
+* `isAssignableTo(:Class<?>)` | `isInstanceOf(:Class<?>)`
+* `isComparableTo(:Coparable<?>)` | `isNotComparableTo(:Comparable<?>)`
+* `isEqualsTo(..)` | `isNotEqualTo(..)`
+* `isGreaterThan(..)`
+* `isGreaterThanAndLessThan(..)`
+* `isGreaterThanAndLessThanEqualTo(..)`
+* `isGreaterThanEqualTo(..)`
+* `isGreaterThanEqualToAndLessThan(..)`
+* `isGreaterThanEqualToAndLessThanEqualTo(..)`
+* `hasText(..)`
+* `holdsLock(..)`
+* `isNotBlank()`
+* `isNotEmpty()` For: Arrays, Collections, Iterables, Maps and Strings
+* `isFalse()` | `isTrue()`
+* `isLessThan(..)`
+* `isLessThanOrGreaterThan(..)`
+* `isLessThanOrGreaterThanEqualTo(..)`
+* `isLessThanEqualTo(..)`
+* `isLessThanEqualToOrGreaterThan(..)`
+* `isLessThanEqualToOrGreaterThanEqualTo(..)`
+* `isNull()` | `isNotNull()`
+* `isSameAs(:Object)` | `isNotSameAs(:Object)`
+* `isValid(:Predicate)`
+
+In addition to the assertions listed above, the `assertThat` operator supports strongly-typed assertions
+making it possible to do:
+
+.Type-specific assertions
+[source,java]
+[subs="verbatim,attributes"]
+----
+Object user = //...
+
+assertThat(user).isInstanceOf(User.class)
+  .as(User.class)
+  .isEqualTo(User.as("jonDoe"));
+----
+
+The assertion above is useful when the incoming object type is not known in advance. More specifically, developers
+may assert specific properties of a typed object as well:
+
+.Assertion extraction (mapping)
+[source,java]
+[subs="verbatim,attributes"]
+----
+Object user = //...
+
+assertThat(user).isInstanceOf(User.class)
+  .as(User.class)
+  .map(User::getName)
+  .isEqualTo("jonDoe");
+----
+
+Developers may customize the Exception message thrown from the assertion as well as throw custom Exceptions
+when necessary:
+
+.Custom Exception message
+[source,java]
+[subs="verbatim,attributes"]
+----
+Object user = //...
+
+assertThat(user).isInstanceOf(User.class).as(User.class)
+  .describedAs("Expected user of type [%s]", User.class.getName())
+  .map(User::getName)
+  .isEqualTo("jonDoe");
+----
+
+.Custom Exception
+[source,java]
+[subs="verbatim,attributes"]
+----
+Object user = //...
+
+assertThat(user).isInstanceOf(User.class).as(User.class)
+  .throwing(new UnauthorizedUser("User " + user + " is not authorized"))
+  .map(User::getRole)
+  .isEqualTo("Admin");
+----
+
+An assertion may be easily negated using `not()`, such as:
+
+.Assertion negation
+[source,java]
+[subs="verbatim,attributes"]
+----
+assertThat(object).not().holdsLock();
+----
+
+Certain assertions conveniently provide named negation variants, such as:
+`isNotEqualTo(:Object)` or `isNotSameAs(:Object)`.
+
+Unlike Java assertions, Elements assertions can be enabled or disabled using a complex expression, expressed with a
+`Condition` implementation.
+
+.Conditional assertions
+[source,java]
+[subs="verbatim,attributes"]
+----
+Condition enabled = // ...
+
+assertThat(object).when(enabled).isValid(:Predicate)
+----
+
+A `Condition` can be reused across assertions. Individual, or grouped assertions can each have custom `Conditions`
+of your choosing.
+
+The `assertThat(..)` DSL operator provides many more capabilities out-of-the-box.
 
 [[elements-lang-dsl-from]]
 ==== `from` operator
@@ -55,7 +168,8 @@ Under-the-hood, the `from` operator uses _Elements_ powerful Conversion library 
 [[elements-lang-dsl-given]]
 ==== `given` operator
 
-The `given` operator and DSL enables developers to declare _expectations_ of an object.
+The `given` operator and DSL enables developers to declare "_expectations_" for an object,
+satisfying certain conditions or requirements.
 
 .Given
 [source,java]
@@ -64,8 +178,8 @@ The `given` operator and DSL enables developers to declare _expectations_ of an 
 User jonDoe = ...;
 
 boolean result = given(jonDoe)
-  .expectThat(jonDoe::isActive)
   .expectThat(jonDoe::isAuthenticated)
+  .expectThat(jonDoe::isActive)
   .thenGiven(jonDoe::getGroups)
   .expectThat(jonDoeGroups -> jonDoeGroups.contains(Group.AUTHORIZED_USER))
   .result();
@@ -120,7 +234,7 @@ It is easy to negate the expression using the `not()` function:
 boolean result = is(objectReference).not().sameAs(otherObjectReference);
 ----
 
-Of course, the `is` operator offers shortcuts for some of the negated conditional expressions:
+Conveniently, the `is` operator offers shortcuts for some of the negated conditional expressions:
 
 .Is Not
 [source,java]
