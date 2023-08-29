@@ -141,6 +141,45 @@ of your choosing.
 
 The `assertThat(..)` DSL operator provides many more capabilities out-of-the-box.
 
+[[elements-lang-dsl-assertThat-exceptions]]
+==== `assertThat` operator for Exceptions
+
+The Elements `org.cp.elements.lang.ThrowableAssertions` class provides assertions for common Exceptions
+thrown by application code:
+
+* `assertThatArrayIndexOutOfBoundsException()`
+* `assertThatIllegalArgumentException()`
+* `assertThatIllegalStateException()`
+* `assertThatIndexOutOfBoundsException()`
+* `assertThatInterruptedException()`
+* `assertThatNullPointerException()`
+* `assertThatRuntimeException()`
+* `assertThatSecurityException()`
+* `assertThatUnsupportedOperationException()`
+
+If your asserted Exception is not conveniently provided by a DSL, you can generically use:
+
+* `assertThatThrowableOfType(:Class<? extends Throwable>)`
+
+Even though Exception assertions were inspired by AssertJ as well, Elements Exception assertions enable assertion
+chaining in the event that the application code throws a chained Exception. This enables developers to write
+more expression Exception assertions:
+
+.Chained Exception assertions
+[source,java]
+[subs="verbatim,attributes"]
+----
+assesrtThatThrowableOfType(UnauthroizedUserException.class)
+  .isThrownBy(args -> applicationCodeThrowingSecurityExceptions(unauthorizedUser))
+  .havingMessage("User [%s] is not authorized", unauthorizedUser)
+  .causedBy(SecurityException.class)
+  .havingMessage("Security access exception occurred")
+  .withNoCause();
+----
+
+When the `causeBy(:Class<? extends Throwable>)` method is called, it switches the assertion context to
+the targeted Exception.
+
 [[elements-lang-dsl-from]]
 ==== `from` operator
 
