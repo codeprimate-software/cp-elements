@@ -2488,6 +2488,15 @@ public class LangExtensionsUnitTests {
   }
 
   @Test
+  public void fromObjectConvertToNullType() {
+
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> from("MockUser").convertTo(null))
+      .withMessage("No SimpleTypeConversion exists for target type [null]")
+      .withNoCause();
+  }
+
+  @Test
   public void fromObjectConvertToIncompatibleType() {
 
     ThrowableAssertions.assertThatThrowableOfType(ConversionException.class)
@@ -2495,15 +2504,6 @@ public class LangExtensionsUnitTests {
       .havingMessage("Cannot convert [test] into an Integer")
       .causedBy(NumberFormatException.class)
       .havingMessageContaining("test")
-      .withNoCause();
-  }
-
-  @Test
-  public void fromObjectConvertToNullType() {
-
-    assertThatIllegalArgumentException()
-      .isThrownBy(() -> from("MockUser").convertTo(null))
-      .withMessage("No SimpleTypeConversion exists for target type [null]")
       .withNoCause();
   }
 
@@ -2519,6 +2519,20 @@ public class LangExtensionsUnitTests {
   @Test
   public void fromUserConvertToString() {
     assertThat(from(User.as("MockUser")).convertTo(String.class)).isEqualTo("MockUser");
+  }
+
+  @Test
+  void fromObjectMapToUsingNullMappingFunction() {
+
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> from("test").mapTo(null))
+      .withMessage("Function used to perform the mapping is required")
+      .withNoCause();
+  }
+
+  @Test
+  void fromStringMappedToUser() {
+    assertThat(from("jonDoe").mapTo(User::as)).isEqualTo(User.as("jonDoe"));
   }
 
   @Test

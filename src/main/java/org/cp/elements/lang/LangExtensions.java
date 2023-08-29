@@ -1585,6 +1585,19 @@ public abstract class LangExtensions {
      */
     <T> T convertTo(Class<T> type);
 
+    /**
+     * Maps the given {@link Object} of {@link Class type} {@link S}
+     * to an {@link Object} of {@link Class type} {@link T}.
+     *
+     * @param <S> {@link Class Type} of the {@link Object source}.
+     * @param <T> {@link Class Type} of the {@link Object target}.
+     * @param mappingFunction {@link Function} used to perform the mapping.
+     * @return a new {@link Object} of {@link Class type} {@link T} mapped from
+     * the source {@link Object} of {@link Class type} {@link S}.
+     * @see java.util.function.Function
+     */
+    <S, T> T mapTo(Function<S, T> mappingFunction);
+
   }
 
   /**
@@ -1611,8 +1624,17 @@ public abstract class LangExtensions {
     }
 
     @Override
-    public <T> T convertTo(Class<T> type) {
+    public <T> T convertTo(@NotNull Class<T> type) {
       return SimpleTypeConversions.findBy(type).convert(getTarget());
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public <S, T> T mapTo(@NotNull Function<S, T> mappingFunction) {
+
+      Assert.notNull(mappingFunction, "Function used to perform the mapping is required");
+
+      return mappingFunction.apply((S) getTarget());
     }
   }
 
