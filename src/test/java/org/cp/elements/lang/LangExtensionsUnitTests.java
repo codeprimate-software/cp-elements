@@ -37,6 +37,7 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
@@ -55,13 +56,12 @@ import java.util.function.Predicate;
 
 import org.junit.jupiter.api.Test;
 
+import org.assertj.core.api.Assertions;
 import org.cp.elements.data.conversion.ConversionException;
 import org.cp.elements.lang.LangExtensions.Given;
 import org.cp.elements.lang.annotation.NotNull;
 import org.cp.elements.test.TestUtils;
 import org.cp.elements.util.ComparatorUtils;
-
-import org.assertj.core.api.Assertions;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -95,15 +95,6 @@ public class LangExtensionsUnitTests {
   }
 
   @Test
-  public void assertThatAsStringAssertion() {
-
-    User jonDoe = User.as("jonDoe");
-
-    assertThat(jonDoe).isNotNull();
-    assertThat(jonDoe).asString().isEqualTo("jonDoe");
-  }
-
-  @Test
   public void assertThatAsConvertedTypedAssertion() {
 
     Person jonDoe = new Person(1L, "Jon", "Doe");
@@ -115,11 +106,25 @@ public class LangExtensionsUnitTests {
   }
 
   @Test
+  public void assertThatAsStringAssertion() {
+
+    User jonDoe = User.as("jonDoe");
+
+    assertThat(jonDoe).isNotNull();
+    assertThat(jonDoe).asString().isEqualTo("jonDoe");
+  }
+
+  @Test
+  void assertThatAsStringConvertedToUserTypedAssertion() {
+    assertThat("jonDoe").asType(User::as).isEqualTo(User.as("jonDoe"));
+  }
+
+  @Test
   public void assertThatAsNullConverterFunction() {
 
     assertThatIllegalArgumentException()
       .isThrownBy(() -> assertThat("mock").asType(null).isEqualTo("test"))
-      .withMessage("The Function used to convert the target (subject) is required")
+      .withMessage("Function used to convert the target (subject) to the specified type is required")
       .withNoCause();
   }
 
@@ -751,7 +756,7 @@ public class LangExtensionsUnitTests {
   }
 
   @Test
-  public void sassertThatStringsDoNotHaveText() {
+  public void assertThatStringsDoNotHaveText() {
 
     assertThat(null).not().hasText();
     assertThat("").not().isNotBlank();
@@ -2266,6 +2271,26 @@ public class LangExtensionsUnitTests {
 
   @Test
   @SuppressWarnings({ "rawtypes", "unchecked" })
+  void wrappedAssertThatMapDelegatesToWrappedAssertion() {
+
+    Function mockFunction = mock(Function.class);
+
+    AssertThat<?> newAssertion = mock(AssertThat.class);
+    AssertThat<?> mockAssertion = mock(AssertThat.class);
+
+    doReturn(newAssertion).when(mockAssertion).map(any(Function.class));
+
+    AssertThat<?> result = AssertThatWrapper.wrap(mockAssertion).map(mockFunction);
+
+    Assertions.assertThat(result).isSameAs(newAssertion);
+
+    verify(mockAssertion, times(1)).map(eq(mockFunction));
+    verifyNoMoreInteractions(mockAssertion);
+    verifyNoInteractions(mockFunction, newAssertion);
+  }
+
+  @Test
+  @SuppressWarnings({ "rawtypes", "unchecked" })
   public void wrappedAssertThatNotDelegatesToWrappedAssertion() {
 
     AssertThat mockAssertion = mock(AssertThat.class);
@@ -2372,6 +2397,26 @@ public class LangExtensionsUnitTests {
     verify(assertThat, times(1)).isValid(any());
     verify(assertThat, never()).isLessThanOrGreaterThan(eq(3), eq(1));
     verifyNoMoreInteractions(assertThat);
+  }
+
+  @Test
+  void assertThatWithMapping() {
+
+    Product iphone = TestProduct.newProduct("Apple iPhone", BigDecimal.valueOf(1199.0d));
+    LineItem lineItem = TestLineItem.newLineItem(iphone, 2);
+
+    assertThat(lineItem).isNotNull()
+      .map(LineItem::getProduct).isNotNull()
+      .map(Product::getName).isEqualTo("Apple iPhone");
+  }
+
+  @Test
+  void assertThatWithMappingUsingNullFunctionThrowsIllegalArgumentException() {
+
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> assertThat("test").map(null))
+      .withMessage("Function is required")
+      .withNoCause();
   }
 
   @Test
@@ -3287,16 +3332,14 @@ public class LangExtensionsUnitTests {
   }
 
   @Getter
+  @SuppressWarnings("unused")
   @RequiredArgsConstructor(staticName = "newPerson")
   private static class Person implements Comparable<Person> {
 
-    @lombok.NonNull
     private final Long id;
 
-    @lombok.NonNull
     private final String firstName;
 
-    @lombok.NonNull
     private final String lastName;
 
     public String getName() {
@@ -3339,7 +3382,7 @@ public class LangExtensionsUnitTests {
   }
 
   @SuppressWarnings("unused")
-  public interface Invoice {
+  interface Invoice {
 
     LineItem findBy(int index);
 
@@ -3353,10 +3396,9 @@ public class LangExtensionsUnitTests {
 
   @Getter
   @RequiredArgsConstructor(staticName = "of")
-  public static class TestInvoice implements Invoice {
+  static class TestInvoice implements Invoice {
 
-    @lombok.NonNull
-    private List<TestLineItem> lineItems;
+    private final List<TestLineItem> lineItems;
 
     public LineItem findBy(int index) {
       return nullSafeList(getLineItems()).get(index);
@@ -3388,7 +3430,7 @@ public class LangExtensionsUnitTests {
   }
 
   @SuppressWarnings("unused")
-  public interface LineItem {
+  interface LineItem {
 
     Product getProduct();
 
@@ -3400,12 +3442,10 @@ public class LangExtensionsUnitTests {
 
   @Getter
   @RequiredArgsConstructor(staticName = "newLineItem")
-  public static class TestLineItem implements LineItem {
+  static class TestLineItem implements LineItem {
 
-    @lombok.NonNull
     private final Product product;
 
-    @lombok.NonNull
     private final Integer quantity;
 
     public BigDecimal getCost() {
@@ -3418,7 +3458,7 @@ public class LangExtensionsUnitTests {
     }
   }
 
-  public interface Product {
+  interface Product {
 
     String getName();
 
@@ -3430,12 +3470,10 @@ public class LangExtensionsUnitTests {
 
   @Getter
   @RequiredArgsConstructor(staticName = "newProduct")
-  public static class TestProduct implements Product {
+  static class TestProduct implements Product {
 
-    @lombok.NonNull
     private final String name;
 
-    @lombok.NonNull
     private final BigDecimal price;
 
     public BigDecimal getCost(int quantity) {
@@ -3452,9 +3490,8 @@ public class LangExtensionsUnitTests {
   @EqualsAndHashCode
   @RequiredArgsConstructor(staticName = "as")
   @SuppressWarnings("unused")
-  public static class User implements Comparable<User> {
+  static class User implements Comparable<User> {
 
-    @lombok.NonNull
     private final String name;
 
     @Override

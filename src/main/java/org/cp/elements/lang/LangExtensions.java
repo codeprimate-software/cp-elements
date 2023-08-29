@@ -299,25 +299,26 @@ public abstract class LangExtensions {
     }
 
     /**
-     * Converts {@literal this} {@link AssertThat assertion} into a typed {@link AssertThat assertion}
-     * using the given {@link Function} to convert the {@literal target (subject)} of {@literal this}
-     * {@link AssertThat assertion} into an {@link Object} of the required {@link Class type}.
+     * Converts this {@link AssertThat assertion} into a typed {@link AssertThat assertion}
+     * using the given {@link Function}, which converts the {@link Object target (subject)}
+     * of this {@link AssertThat assertion} into an {@link Object} of the required {@link Class type}.
      *
-     * @param <S> new {@link Class type} for {@literal this} {@link AssertThat assertion}.
-     * @param converter {@link Function} used to convert the {@literal target (subject)}
-     * of {@literal this} {@link AssertThat assertion} into an {@link Object} of the required {@link Class type}.
-     * @return {@literal this} {@link AssertThat assertion} into an {@link AssertThat assertion}
-     * of the given {@link Class type}.
+     * @param <S> new {@link Class type} for this {@link AssertThat assertion} to evaluate.
+     * @param converter {@link Function} used to convert the {@link Object target (subject)}
+     * of this {@link AssertThat assertion} into an {@link Object} of the required {@link Class type}.
+     * @return this {@link AssertThat assertion} into an {@link AssertThat assertion} on the given {@link Class type}.
+     * @see #map(Function)
      */
     <S> AssertThat<S> asType(Function<T, S> converter);
 
     /**
-     * Asserts whether the object to evaluate is assignable to the given Class type.  The object evaluated
-     * maybe a Class object, an instance of a Class or null.
+     * Asserts whether the {@link Object} to evaluate is assignable to the given {@link Class type}.
+     * <p>
+     * The {@link Object} evaluated maybe a {@link Class} object, an instance of a {@link Class} or {@literal null}.
      *
-     * @param type the Class type with which to determine assignment compatibility.
+     * @param type {@link Class} used to determine assignment compatibility.
      * @return this assertion.
-     * @throws AssertionException if the object being evaluated is not assignable to the Class type.
+     * @throws AssertionException if the {@link Object} being evaluated is not assignable to the {@link Class type}.
      * @see java.lang.Class#isAssignableFrom(Class)
      * @see #isInstanceOf(Class)
      */
@@ -355,12 +356,13 @@ public abstract class LangExtensions {
     AssertThat<T> isNotComparableTo(Comparable<T> obj);
 
     /**
-     * Asserts whether the object to evaluate is equal to the given object.  The objects are deemed equal
-     * as determined by the Object.equals method.
+     * Asserts whether the {@link Object} to evaluate is equal to the given {@link Object}.
+     * <p>
+     * The {@link Object Objects} are deemed equal as determined by the {@link Object#equals(Object)} method.
      *
-     * @param obj the object used in the equality comparison with the object being evaluated.
+     * @param obj {@link Object} used in the equality comparison with the {@link Object} being evaluated.
      * @return this assertion.
-     * @throws AssertionException if the object being evaluated is not equal to the given object.
+     * @throws AssertionException if the {@link Object} being evaluated is not equal to the given {@link Object}.
      * @see java.lang.Object#equals(Object)
      * @see #isSameAs(Object)
      */
@@ -381,106 +383,108 @@ public abstract class LangExtensions {
     AssertThat<T> isNotEqualTo(T obj);
 
     /**
-     * Asserts whether the object to evaluate is false.
+     * Asserts whether the object to evaluate is {@literal false}.
      *
      * @return this assertion.
-     * @throws AssertionException if the object being evaluated is not false.
+     * @throws AssertionException if the {@link Object} being evaluated is not {@literal false}.
      * @see #isTrue()
      */
     AssertThat<T> isFalse();
 
     /**
-     * Assert that the object to evaluate is greater than the given Comparable value.
+     * Assert that the {@link Object} to evaluate is greater than the given {@link Comparable} value.
      *
-     * @param lowerBound the Comparable value used as the lower bound in the relational comparison.
+     * @param lowerBound {@link Comparable} used as the lower bound in the relational comparison.
      * @return this assertion.
-     * @throws AssertionException if the object being evaluated is less than or equal to the lower bound.
+     * @throws AssertionException if the {@link Object} being evaluated is less than or equal to the lower bound.
      */
     AssertThat<T> isGreaterThan(T lowerBound);
 
     /**
-     * Assert that the object to evaluate is within the range of (greater than and less than)
-     * the given Comparable values.
+     * Assert that the {@link Object} to evaluate is within the range of (greater than and less than)
+     * the given {@link Comparable} values.
      *
-     * @param lowerBound the Comparable value used as the lower bound in the relational comparison.
-     * @param upperBound the Comparable value used as the upper bound in the relational comparison.
+     * @param lowerBound {@link Comparable} used as the lower bound in the relational comparison.
+     * @param upperBound {@link Comparable} used as the upper bound in the relational comparison.
      * @return this assertion.
-     * @throws AssertionException if the object being evaluated is less than equal to the lower bound
+     * @throws AssertionException if the {@link Object} being evaluated is less than equal to the lower bound
      * or greater than equal to the upper bound.
      */
     AssertThat<T> isGreaterThanAndLessThan(T lowerBound, T upperBound);
 
     /**
-     * Assert that the object to evaluate is within the range of (greater than and less than equal to)
-     * the given Comparable values.
+     * Assert that the {@link Object} to evaluate is within the range of (greater than and less than equal to)
+     * the given {@link Comparable} values.
      *
-     * @param lowerBound the Comparable value used as the lower bound in the relational comparison.
-     * @param upperBound the Comparable value used as the upper bound in the relational comparison.
+     * @param lowerBound {@link Comparable} used as the lower bound in the relational comparison.
+     * @param upperBound {@link Comparable} used as the upper bound in the relational comparison.
      * @return this assertion.
-     * @throws AssertionException if the object being evaluated is less than equal to the lower bound
+     * @throws AssertionException if the {@link Object} being evaluated is less than equal to the lower bound
      * or greater than the upper bound.
      */
     AssertThat<T> isGreaterThanAndLessThanEqualTo(T lowerBound, T upperBound);
 
     /**
-     * Assert that the object to evaluate is greater than or equal to the given Comparable value.
+     * Assert that the {@link Object} to evaluate is greater than or equal to the given {@link Comparable} value.
      *
-     * @param lowerBound the Comparable value used as the lower bound in the relational comparison.
+     * @param lowerBound {@link Comparable} used as the lower bound in the relational comparison.
      * @return this assertion.
-     * @throws AssertionException if the object being evaluated is less than the lower bound.
+     * @throws AssertionException if the {@link Object} being evaluated is less than the lower bound.
      */
     AssertThat<T> isGreaterThanEqualTo(T lowerBound);
 
     /**
-     * Assert that the object to evaluate is within the range of (greater than equal to and less than)
-     * the given Comparable values.
+     * Assert that the {@link Object} to evaluate is within the range of (greater than equal to and less than)
+     * the given {@link Comparable} values.
      *
-     * @param lowerBound the Comparable value used as the lower bound in the relational comparison.
-     * @param upperBound the Comparable value used as the upper bound in the relational comparison.
+     * @param lowerBound {@link Comparable} used as the lower bound in the relational comparison.
+     * @param upperBound {@link Comparable} used as the upper bound in the relational comparison.
      * @return this assertion.
-     * @throws AssertionException if the object being evaluated is less than the lower bound
+     * @throws AssertionException if the {@link Object} being evaluated is less than the lower bound
      * or greater than equal to the upper bound.
      */
     AssertThat<T> isGreaterThanEqualToAndLessThan(T lowerBound, T upperBound);
 
     /**
-     * Assert that the object to evaluate is within the range of (greater than equal to and less than equal to)
-     * the given Comparable values.
+     * Assert that the {@link Object} to evaluate is within the range of (greater than equal to and less than equal to)
+     * the given {@link Comparable} values.
      *
-     * @param lowerBound the Comparable value used as the lower bound in the relational comparison.
-     * @param upperBound the Comparable value used as the upper bound in the relational comparison.
+     * @param lowerBound {@link Comparable} used as the lower bound in the relational comparison.
+     * @param upperBound {@link Comparable} used as the upper bound in the relational comparison.
      * @return this assertion.
-     * @throws AssertionException if the object being evaluated is less than the lower bound
+     * @throws AssertionException if the {@link Object} being evaluated is less than the lower bound
      * or greater than the upper bound.
      */
     AssertThat<T> isGreaterThanEqualToAndLessThanEqualTo(T lowerBound, T upperBound);
 
     /**
-     * Asserts that the object to evaluate has actual textual information.  The object's String value has text
-     * if and only if the value contains at least 1 character that is not whitespace.
+     * Asserts that the {@link Object} to evaluate has actual textual information.
+     * <p>
+     * The {@link Object object's} {@link String} value has text if and only if the value contains at least 1 character
+     * that is not whitespace.
      *
      * @return this assertion.
-     * @throws AssertionException if the object being evaluated has no text.
+     * @throws AssertionException if the {@link Object} being evaluated has no text.
      * @see #isNotBlank()
      */
     AssertThat<T> hasText();
 
     /**
-     * Assert that the current Thread holds the specified lock inside a synchronized block.
+     * Assert that the current {@link Thread} holds the specified lock inside a synchronized block.
      *
-     * @param lock the Object lock that must be held by the current Thread.
+     * @param lock {@link Object lock} that must be held by the current {@link Thread}.
      * @return this assertion.
-     * @throws AssertionException if the current Thread does not hold the specified lock.
+     * @throws AssertionException if the current {@link Thread} does not hold the specified lock.
      * @see java.lang.Thread#holdsLock(Object)
      */
     AssertThat<T> holdsLock(Object lock);
 
     /**
-     * Asserts that the object to evaluate is an instance of the specified Class type.
+     * Asserts that the {@link Object} to evaluate is an instance of the specified {@link Class type}.
      *
-     * @param type the Class type used in the instance of check for the object being evaluated.
+     * @param type {@link Class} used in the instance of check for the {@link Object} being evaluated.
      * @return this assertion.
-     * @throws AssertionException if the object being evaluated is not an instance of the Class type.
+     * @throws AssertionException if the {@link Object} being evaluated is not an instance of the {@link Class type}.
      * @see java.lang.Class#isInstance(Object)
      * @see #isAssignableTo(Class)
      */
@@ -488,103 +492,106 @@ public abstract class LangExtensions {
     AssertThat<T> isInstanceOf(Class type);
 
     /**
-     * Asserts that the object to evaluate is less than the given Comparable value.
+     * Asserts that the {@link Object} to evaluate is less than the given {@link Comparable} value.
      *
-     * @param upperBound the Comparable value used as the upper bound in the relational comparison.
+     * @param upperBound {@link Comparable} used as the upper bound in the relational comparison.
      * @return this assertion.
-     * @throws AssertionException if the object being evaluated is not less than the upper bound.
+     * @throws AssertionException if the {@link Object} being evaluated is not less than the upper bound.
      */
     AssertThat<T> isLessThan(T upperBound);
 
     /**
-     * Asserts that the object to evaluate is outside the bounds of the given Comparable values.
+     * Asserts that the {@link Object} to evaluate is outside the bounds of the given {@link Comparable} values.
      *
-     * @param upperBound the Comparable value used as the lower upper bound in the relational comparison.
-     * @param lowerBound the Comparable value used as the upper lower bound in the relational comparison.
+     * @param upperBound {@link Comparable} used as the lower upper bound in the relational comparison.
+     * @param lowerBound {@link Comparable} used as the upper lower bound in the relational comparison.
      * @return this assertion.
-     * @throws AssertionException if the object being evaluated is not less than the upper bound
+     * @throws AssertionException if the {@link Object} being evaluated is not less than the upper bound
      * or greater than the lower bound.
      */
     AssertThat<T> isLessThanOrGreaterThan(T upperBound, T lowerBound);
 
     /**
-     * Asserts that the object to evaluate is outside the bounds of the given Comparable values.
+     * Asserts that the {@link Object} to evaluate is outside the bounds of the given {@link Comparable} values.
      *
-     * @param upperBound the Comparable value used as the lower upper bound in the relational comparison.
-     * @param lowerBound the Comparable value used as the upper lower bound in the relational comparison.
+     * @param upperBound {@link Comparable} used as the lower upper bound in the relational comparison.
+     * @param lowerBound {@link Comparable} used as the upper lower bound in the relational comparison.
      * @return this assertion.
-     * @throws AssertionException if the object being evaluated is not less than the upper bound
+     * @throws AssertionException if the {@link Object} being evaluated is not less than the upper bound
      * or greater than equal to the lower bound.
      */
     AssertThat<T> isLessThanOrGreaterThanEqualTo(T upperBound, T lowerBound);
 
     /**
-     * Asserts that the object to evaluate is less than equal to the given Comparable value.
+     * Asserts that the {@link Object} to evaluate is less than equal to the given {@link Comparable} value.
      *
-     * @param upperBound the Comparable value used as the upper bound in the relational comparison.
+     * @param upperBound {@link Comparable} used as the upper bound in the relational comparison.
      * @return this assertion.
-     * @throws AssertionException if the object being evaluated is not less than equal to the upper bound.
+     * @throws AssertionException if the {@link Object} being evaluated is not less than equal to the upper bound.
      */
     AssertThat<T> isLessThanEqualTo(T upperBound);
 
     /**
-     * Asserts that the object to evaluate is outside the bounds of the given Comparable values.
+     * Asserts that the {@link Object} to evaluate is outside the bounds of the given {@link Comparable} values.
      *
-     * @param upperBound the Comparable value used as the lower upper bound in the relational comparison.
-     * @param lowerBound the Comparable value used as the upper lower bound in the relational comparison.
+     * @param upperBound {@link Comparable} used as the lower upper bound in the relational comparison.
+     * @param lowerBound {@link Comparable} used as the upper lower bound in the relational comparison.
      * @return this assertion.
-     * @throws AssertionException if the object being evaluated is not less than equal to the upper bound
+     * @throws AssertionException if the {@link Object} being evaluated is not less than equal to the upper bound
      * or greater than the lower bound.
      */
     AssertThat<T> isLessThanEqualToOrGreaterThan(T upperBound, T lowerBound);
 
     /**
-     * Asserts that the object to evaluate is outside the bounds of the given Comparable values.
+     * Asserts that the {@link Object} to evaluate is outside the bounds of the given {@link Comparable} values.
      *
-     * @param upperBound the Comparable value used as the lower upper bound in the relational comparison.
-     * @param lowerBound the Comparable value used as the upper lower bound in the relational comparison.
+     * @param upperBound {@link Comparable} used as the lower upper bound in the relational comparison.
+     * @param lowerBound {@link Comparable} used as the upper lower bound in the relational comparison.
      * @return this assertion.
-     * @throws AssertionException if the object being evaluated is not less than equal to the upper bound
+     * @throws AssertionException if the {@link Object} being evaluated is not less than equal to the upper bound
      * or greater than equal to the lower bound.
      */
     AssertThat<T> isLessThanEqualToOrGreaterThanEqualTo(T upperBound, T lowerBound);
 
     /**
-     * Assert that the object to evaluate is not blank, or rather, has text.  The object String value is blank
-     * if it contains only whitespace characters or null.
+     * Assert that the {@link Object} to evaluate is not blank, or rather, has text.
+     * <p>
+     * The object {@link String} value is blank if it contains only whitespace characters or {@literal null}.
      *
      * @return this assertion.
-     * @throws AssertionException if the object being evaluated is blank, or has no actual test.
+     * @throws AssertionException if the {@link Object} being evaluated is blank, or has no actual test.
      * @see #hasText()
      */
     AssertThat<T> isNotBlank();
 
     /**
-     * Assert that the object to evaluate is not empty.  The object String value is empty if it is equal to
-     * the empty String.
+     * Assert that the {@link Object} to evaluate is not empty.
+     * <p>
+     * The object {@link String} value is empty if it is equal to the empty {@link String}.
      *
      * @return this assertion.
-     * @throws AssertionException if the object being evaluated is empty.
+     * @throws AssertionException if the {@link Object} being evaluated is empty.
      */
     AssertThat<T> isNotEmpty();
 
     /**
-     * Asserts that the object to evaluate is not null.
+     * Asserts that the {@link Object} to evaluate is not {@literal null}.
      *
      * @return this assertion.
-     * @throws AssertionException if the object being evaluated is null.
+     * @throws AssertionException if the {@link Object} being evaluated is {@literal null}.
      * @see #isNull()
      * @see #not()
      */
     AssertThat<T> isNotNull();
 
     /**
-     * Asserts that the object to evaluate is not the same instance as the given object.  This assertion deems
-     * the objects are not the same as determined by the identity comparison (==).
+     * Asserts that the {@link Object} to evaluate is not the same instance as the given {@link Object}.
+     * <p>
+     * This assertion deems the {@link Object objects} are not the same as determined by the identity comparison (==).
      *
-     * @param obj the object used in the identity comparison with the object being evaluated.
+     * @param obj {@link Object} used in the identity comparison with the {@link Object} being evaluated.
      * @return this assertion.
-     * @throws AssertionException if the objects are the same.
+     * @throws AssertionException if the {@link Object objects} are the same.
      * @see #isNotEqualTo(Object)
      * @see #isSameAs(Object)
      * @see #not()
@@ -592,29 +599,30 @@ public abstract class LangExtensions {
     AssertThat<T> isNotSameAs(T obj);
 
     /**
-     * Asserts that the object to evaluate is null.
+     * Asserts that the {@link Object} to evaluate is {@literal null}.
      *
      * @return this assertion.
-     * @throws AssertionException if the object being evaluated is not null.
+     * @throws AssertionException if the {@link Object} being evaluated is not {@literal null}.
      */
     AssertThat<T> isNull();
 
     /**
-     * Asserts that the object to evaluate is the same instance as the given object.  This assertion deems the objects
-     * are the same as determined by the identity comparison (==).
+     * Asserts that the {@link Object} to evaluate is the same instance as the given {@link Object}.
+     * <p>
+     * This assertion deems the {@link Object objects} are the same as determined by the identity comparison (==).
      *
-     * @param obj the object used in the identity comparison with the object being evaluated.
+     * @param obj {@link Object} used in the identity comparison with the {@link Object} being evaluated.
      * @return this assertion.
-     * @throws AssertionException if the objects are not the same.
+     * @throws AssertionException if the {@link Object objects} are not the same.
      * @see #isEqualTo(Object)
      */
     AssertThat<T> isSameAs(T obj);
 
     /**
-     * Asserts that the object to evaluate is true.
+     * Asserts that the {@link Object} to evaluate is {@literal true}.
      *
      * @return this assertion.
-     * @throws AssertionException if the object being evaluated is not true.
+     * @throws AssertionException if the {@link Object} being evaluated is not {@literal true}.
      * @see #isFalse()
      */
     AssertThat<T> isTrue();
@@ -628,6 +636,17 @@ public abstract class LangExtensions {
      * @see java.util.function.Predicate
      */
     AssertThat<T> isValid(Predicate<T> predicate);
+
+    /**
+     * Maps the {@link Object target} to a property on the {@link Object target} thereby allowing assertions
+     * to be chained.
+     *
+     * @param <S> {@link Class Type} of the {@link Object target's} property.
+     * @param function {@link Function} used to map the {@link Object target} to one of its properties.
+     * @return this assertion.
+     * @see java.util.function.Function
+     */
+    <S> AssertThat<S> map(Function<T, S> function);
 
     /**
      * Negates this assertion.
@@ -837,9 +856,12 @@ public abstract class LangExtensions {
     @Override
     public @NotNull <S> AssertThat<S> asType(@NotNull Function<T, S> converter) {
 
-      Assert.notNull(converter, "The Function used to convert the target (subject) is required");
+      Assert.notNull(converter,
+        "Function used to convert the target (subject) to the specified type is required");
 
-      return new AssertThatExpression<>(converter.apply(getTarget()), getExpected());
+      S newTarget = converter.apply(getTarget());
+
+      return new AssertThatExpression<>(newTarget, getExpected());
     }
 
     @Override
@@ -1180,6 +1202,16 @@ public abstract class LangExtensions {
     }
 
     @Override
+    public @NotNull <S> AssertThat<S> map(@NotNull Function<T, S> function) {
+
+      Assert.notNull(function, "Function is required");
+
+      S newTarget = function.apply(getTarget());
+
+      return new AssertThatExpression<>(newTarget);
+    }
+
+    @Override
     public @NotNull AssertThat<T> not() {
 
       AssertThat<T> expression = new AssertThatExpression<>(getTarget(), getNotExpected());
@@ -1282,10 +1314,7 @@ public abstract class LangExtensions {
      * @throws IllegalArgumentException if the {@link AssertThat} object is {@literal null}.
      */
     public AssertThatWrapper(@NotNull AssertThat<T> delegate) {
-
-      Assert.notNull(delegate, "AssertThat delegate is required");
-
-      this.delegate = delegate;
+      this.delegate = ObjectUtils.requireObject(delegate, "AssertThat delegate is required");
     }
 
     /**
@@ -1294,22 +1323,22 @@ public abstract class LangExtensions {
      * @return a reference to the configured {@link AssertThat} object wrapped by this wrapper.
      * @see AssertThat
      */
-    protected AssertThat<T> getDelegate() {
+    protected @NotNull AssertThat<T> getDelegate() {
       return this.delegate;
     }
 
     @Override
-    public <S> AssertThat<S> as(Class<S> type) {
+    public @NotNull <S> AssertThat<S> as(Class<S> type) {
       return getDelegate().as(type);
     }
 
     @Override
-    public AssertThat<String> asString() {
+    public @NotNull AssertThat<String> asString() {
       return getDelegate().asString();
     }
 
     @Override
-    public <S> AssertThat<S> asType(Function<T, S> converter) {
+    public @NotNull <S> AssertThat<S> asType(Function<T, S> converter) {
       return getDelegate().asType(converter);
     }
 
@@ -1456,40 +1485,45 @@ public abstract class LangExtensions {
     }
 
     @Override
-    public AssertThat<T> isValid(Predicate<T> predicate) {
+    public @NotNull AssertThat<T> isValid(Predicate<T> predicate) {
       return getDelegate().isValid(predicate);
     }
 
     @Override
-    public AssertThat<T> not() {
+    public @NotNull <S> AssertThat<S> map(@NotNull Function<T, S> function) {
+      return getDelegate().map(function);
+    }
+
+    @Override
+    public @NotNull AssertThat<T> not() {
       return new AssertThatWrapper<>(getDelegate().not());
     }
 
     @Override
-    public AssertThat<T> stating(String message, Object... args) {
+    public @NotNull AssertThat<T> stating(String message, Object... args) {
       getDelegate().stating(message, args);
       return this;
     }
 
     @Override
-    public AssertThat<T> stating(Supplier<String> message) {
+    public @NotNull AssertThat<T> stating(Supplier<String> message) {
       getDelegate().stating(message);
       return null;
     }
 
     @Override
-    public AssertThat<T> throwing(RuntimeException cause) {
+    public @NotNull AssertThat<T> throwing(RuntimeException cause) {
       getDelegate().throwing(cause);
       return this;
     }
 
     @Override
-    public AssertThat<T> transform(Transformer<AssertThat<T>> assertionTransformer) {
+    public @NotNull AssertThat<T> transform(Transformer<AssertThat<T>> assertionTransformer) {
       return new AssertThatWrapper<>(assertionTransformer.transform(getDelegate()));
     }
 
     @Override
-    public AssertThat<T> when(Condition condition) {
+    public @NotNull AssertThat<T> when(Condition condition) {
       getDelegate().when(condition);
       return this;
     }
