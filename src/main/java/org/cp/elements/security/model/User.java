@@ -15,8 +15,10 @@
  */
 package org.cp.elements.security.model;
 
+import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.Identifiable;
 import org.cp.elements.lang.Nameable;
+import org.cp.elements.lang.annotation.NotNull;
 
 /**
  * Abstract Data Type (ADT) defining and modeling a user of an application, program or system.
@@ -30,6 +32,32 @@ import org.cp.elements.lang.Nameable;
  */
 @SuppressWarnings("unused")
 public interface User<ID extends Comparable<ID>> extends Comparable<User<ID>>, Identifiable<ID>, Nameable<String> {
+
+  /**
+   * Factory method used to construct a new {@link User} with the given, required {@link String name}.
+   *
+   * @param <ID> {@link Class Type} of the {@link User} {@literal ID}.
+   * @param name {@link String} containing the {@literal username}; must not be {@literal null} or {@literal empty}.
+   * @return a new {@link User} with the given {@link String name}.
+   * @throws IllegalArgumentException if the given {@link String name} is {@literal null} or {@literal empty}.
+   */
+  static <ID extends Comparable<ID>> User<ID> named(@NotNull String name) {
+
+    Assert.hasText(name, "Username [%s] is required", name);
+
+    return new User<>() {
+
+      @Override
+      public ID getId() {
+        return null;
+      }
+
+      @Override
+      public String getName() {
+        return name;
+      }
+    };
+  }
 
   @Override
   default int compareTo(User<ID> that) {

@@ -16,10 +16,13 @@
 package org.cp.elements.security.model;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.Mockito.doCallRealMethod;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
+
+import java.util.Arrays;
 
 import org.junit.jupiter.api.Test;
 
@@ -33,6 +36,17 @@ import org.junit.jupiter.api.Test;
  * @since 1.0.0
  */
 public class UserUnitTests {
+
+  private <ID extends Comparable<ID>> void assertUser(User<ID> user, String name) {
+    assertUser(user, name, null);
+  }
+
+  private <ID extends Comparable<ID>> void assertUser(User<ID> user, String name, ID id) {
+
+    assertThat(user).isNotNull();
+    assertThat(user.getName()).isEqualTo(name);
+    assertThat(user.getId()).isEqualTo(id);
+  }
 
   @SuppressWarnings("unchecked")
   private User<Integer> mockUser(Integer id, String name) {
@@ -57,5 +71,23 @@ public class UserUnitTests {
     assertThat(janeDoe.compareTo(jonDoe)).isLessThan(0);
     assertThat(jonDoe.compareTo(jonDoe)).isZero();
     assertThat(pieDoe.compareTo(jonDoe)).isGreaterThan(0);
+  }
+
+  @Test
+  void namedUserIsCorrect() {
+
+    User<?> user = User.named("jonDoe");
+
+    assertUser(user, "jonDoe");
+  }
+
+  @Test
+  void illegalNamedUserThrowsIllegalArgumentException() {
+
+    Arrays.asList("  ", "", null).forEach(illegalUsername ->
+      assertThatIllegalArgumentException()
+        .isThrownBy(() -> User.named(illegalUsername))
+        .withMessage("Username [%s] is required", illegalUsername)
+        .withNoCause());
   }
 }
