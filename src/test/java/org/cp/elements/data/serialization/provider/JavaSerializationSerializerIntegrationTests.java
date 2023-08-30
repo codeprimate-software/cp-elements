@@ -27,6 +27,7 @@ import org.junit.jupiter.api.Test;
 
 import org.cp.elements.data.serialization.DeserializationException;
 import org.cp.elements.data.serialization.SerializationException;
+import org.cp.elements.lang.Identifiable;
 import org.cp.elements.lang.ThrowableAssertions;
 import org.cp.elements.security.model.User;
 
@@ -120,8 +121,13 @@ public class JavaSerializationSerializerIntegrationTests {
     @Setter
     private Integer id;
 
-    @lombok.NonNull
     private final String name;
 
+    @Override
+    @SuppressWarnings("unchecked")
+    public <IDX extends Identifiable<Integer>> IDX identifiedBy(Integer id) {
+      setId(id);
+      return (IDX) this;
+    }
   }
 }

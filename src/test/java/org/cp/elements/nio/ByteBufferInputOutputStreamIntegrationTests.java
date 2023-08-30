@@ -28,8 +28,10 @@ import java.io.Serializable;
 import java.nio.ByteBuffer;
 import java.util.UUID;
 
-import org.cp.elements.security.model.User;
 import org.junit.jupiter.api.Test;
+
+import org.cp.elements.lang.Identifiable;
+import org.cp.elements.security.model.User;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -188,5 +190,11 @@ public class ByteBufferInputOutputStreamIntegrationTests {
     @Setter
     private UUID id;
 
+    @Override
+    @SuppressWarnings("unchecked")
+    public <IDX extends Identifiable<UUID>> IDX identifiedBy(UUID id) {
+      setId(id);
+      return (IDX) this;
+    }
   }
 }
