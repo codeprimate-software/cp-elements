@@ -62,7 +62,7 @@ public class UserUnitTests {
 
   @Test
   @SuppressWarnings("all")
-  public void userCompareToIsCorrect() {
+  void userCompareToIsCorrect() {
 
     User<Integer> janeDoe = mockUser(3, "janeDoe");
     User<Integer> jonDoe = mockUser(2, "jonDoe");
@@ -71,6 +71,22 @@ public class UserUnitTests {
     assertThat(janeDoe.compareTo(jonDoe)).isLessThan(0);
     assertThat(jonDoe.compareTo(jonDoe)).isZero();
     assertThat(pieDoe.compareTo(jonDoe)).isGreaterThan(0);
+  }
+
+  @Test
+  void nullIdentifiedUserIsNullSafe() {
+
+    User<Integer> user = User.<Integer>named("testUser").identifiedBy(null);
+
+    assertUser(user, "testUser", null);
+  }
+
+  @Test
+  void identifiedUserIsCorrect() {
+
+    User<Integer> user = User.<Integer>named("jonDoe").identifiedBy(1);
+
+    assertUser(user, "jonDoe", 1);
   }
 
   @Test

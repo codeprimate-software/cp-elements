@@ -63,4 +63,22 @@ public interface User<ID extends Comparable<ID>> extends Comparable<User<ID>>, I
   default int compareTo(User<ID> that) {
     return this.getName().compareTo(that.getName());
   }
+
+  @Override
+  @SuppressWarnings("unchecked")
+  default <IDX extends Identifiable<ID>> IDX identifiedBy(ID id) {
+
+    return (IDX) new User<ID>() {
+
+      @Override
+      public ID getId() {
+        return id;
+      }
+
+      @Override
+      public String getName() {
+        return User.this.getName();
+      }
+    };
+  }
 }
