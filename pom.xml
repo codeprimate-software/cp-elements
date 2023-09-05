@@ -85,7 +85,7 @@
     <build-helper-maven-plugin.version>3.4.0</build-helper-maven-plugin.version>
     <maven-changelog-plugin.version>2.3</maven-changelog-plugin.version>
     <datafaker.version>2.0.1</datafaker.version>
-    <jmh.version>1.36</jmh.version>
+    <jmh.version>1.37</jmh.version>
   </properties>
 
   <build>
