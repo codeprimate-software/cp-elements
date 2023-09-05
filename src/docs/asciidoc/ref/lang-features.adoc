@@ -210,7 +210,7 @@ Additionally, given a `java.util.function.Function`, developers may map an `Obje
 [source,java]
 [subs="verbatim,attributes"]
 ----
-Double number = from("jonDoe").mapTo(username -> User.as(username));
+User jonDoe = from("jonDoe").mapTo(username -> User.as(username));
 ----
 
 [[elements-lang-dsl-given]]
