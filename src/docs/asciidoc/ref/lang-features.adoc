@@ -204,6 +204,15 @@ Double number = from("123.45").convertTo(Double.class);
 
 Under-the-hood, the `from` operator uses _Elements_ powerful Conversion library to perform the conversion.
 
+Additionally, given a `java.util.function.Function`, developers may map an `Object` from 1 type to another:
+
+.Mapping
+[source,java]
+[subs="verbatim,attributes"]
+----
+Double number = from("jonDoe").mapTo(username -> User.as(username));
+----
+
 [[elements-lang-dsl-given]]
 ==== `given` operator
 
