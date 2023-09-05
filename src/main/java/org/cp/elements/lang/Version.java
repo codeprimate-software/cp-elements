@@ -49,7 +49,7 @@ public class Version implements Comparable<Version> {
    *
    * @param major {@link Integer major version number}.
    * @param minor {@link Integer minor version number}.
-   * @return a new {@link Version} initialized with the {@link Integer major and {@link Integer minor} version numbers.
+   * @return a new {@link Version} initialized with the {@link Integer major} and {@link Integer minor} version numbers.
    * @throws IllegalArgumentException if {@code major} or {@code minor} version numbers are less than {@literal 0}.
    * @see org.cp.elements.lang.Version
    * @see #from(int, int, int, Qualifier, int)
