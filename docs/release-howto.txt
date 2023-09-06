@@ -4,11 +4,11 @@ To perform a release of the Codeprimate Elements (cp-elements) project, run the 
 
 Version Qualifier is 1 of: [ SNAPSHOT, M# (Milestone #; e.g. M2), RC# (Release Candidate #; e.g. RC1) ]
 
-For example: 2.0.0-SNAPSHOT, 2.0.0-M1, 2.0.0-RC1, 2.0.1
+For example: 2.0.0-SNAPSHOT, 2.0.0-M1, 2.0.0-RC1, 2.0.0, 2.0.1
 
 1. Build with all supported JDK [LTS] versions from baseline forward, for example: [ JDK17, JDK20 ].
 
-2. `mvn -P code-analysis,prepare-release clean install site`
+2. `mvn -P code-analysis,docs,prepare-release clean install site`
 
 3. Copy 'changelog.txt' and 'changelog.xml' files to 'cp-core-workspace/etc/releases/cp-elements-<major>.<minor>.<maint>.<version-qualifier>/'.
 
@@ -16,7 +16,7 @@ For example: 2.0.0-SNAPSHOT, 2.0.0-M1, 2.0.0-RC1, 2.0.1
 
 5. Copy 'cp-elements/target/site' to 'cp-core-workspace/etc/releases/cp-elements-<major>.<minor>.<maint>.<version-qualifier>/'.
 
-6. Copy Checkstyle, PMD and SpotsBugs configuration files and results to 'cp-core-workspace/etc/releases/cp-elements-<major>.<minor>.<maint>.<version-qualifier>/Code-verification'.
+6. Copy Checkstyle, PMD and SpotsBugs configuration files and results to 'cp-core-workspace/etc/releases/cp-elements-<major>.<minor>.<maint>.<version-qualifier>/Code-verifications'.
 
 7. `mvn -P release deploy [-DskipTests]`
 
