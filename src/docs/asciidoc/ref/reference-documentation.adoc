@@ -4,4 +4,4 @@
 This documentation serves as a source of truth and reference for how to use all of _Elements_ features and functionality
 effectively and successfully.
 
-include::lang-features.adoc[]
+include::ref/lang-features.adoc[]
