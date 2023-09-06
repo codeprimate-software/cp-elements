@@ -31,7 +31,6 @@ import org.cp.elements.data.conversion.converters.EnumConverter;
 import org.cp.elements.data.conversion.converters.IntegerConverter;
 import org.cp.elements.data.conversion.converters.NumberConverter;
 import org.cp.elements.data.conversion.converters.StringConverter;
-import org.cp.elements.enums.Race;
 
 /**
  * Unit Tests for {@link AbstractConversionService}.
@@ -169,6 +168,10 @@ public class AbstractConversionServiceTests {
 
   private enum Gender {
     FEMALE, MALE
+  }
+
+  private enum Race {
+    BLACK, WHITE
   }
 
   static class GenderConverter extends AbstractConverter<String, Gender> {

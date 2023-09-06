@@ -20,7 +20,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.jupiter.api.Test;
 
 import org.cp.elements.data.conversion.ConversionException;
-import org.cp.elements.enums.Race;
 import org.cp.elements.lang.ThrowableAssertions;
 import org.cp.elements.time.TimeUnit;
 
@@ -107,5 +106,9 @@ public class EnumConverterTests {
 
   private enum Gender {
     FEMALE, MALE
+  }
+
+  private enum Race {
+    BLACK, WHITE
   }
 }

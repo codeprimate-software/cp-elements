@@ -54,7 +54,6 @@ import org.cp.elements.data.conversion.converters.ShortConverter;
 import org.cp.elements.data.conversion.converters.StringConverter;
 import org.cp.elements.data.conversion.converters.URIConverter;
 import org.cp.elements.data.conversion.converters.URLConverter;
-import org.cp.elements.enums.Race;
 import org.cp.elements.lang.Identifiable;
 
 /**
@@ -335,5 +334,9 @@ public class SimpleConversionServiceTests {
 
   private enum Gender {
     FEMALE, MALE
+  }
+
+  private enum Race {
+    BLACK, WHITE
   }
 }
