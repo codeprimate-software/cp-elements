@@ -3,6 +3,35 @@ Codeprimate Elements changelog.txt
 https://github.com/codeprimate-software/cp-elements/blob/master/changelog.txt
 
 
+2.0.0-M3 - 2023-September-05
+----------------------------
+Release Codeprimate Elements 2.0.0-M3 with updated reference documentation. Additionally, cleans up Checkstyle and PMD
+rule violations.
+
+* Built on Oracle Java (JDK) 17.0.8 2023-July-18 LTS (build 17.0.8+9-LTS-211).
+* Builds and supports Elements on (up to) Java (JDK) 20.0.2 (build 20.0.2+9-78).
+* Adds map(:Function) method to the assertThat(:Object) DSL operator in LangExtensions.
+* Adds mapTo(:Function<S, T>) method to the from(:Object) DSL operator in LangExtensions.
+* Adds named(:String) factory method to User interface.
+* Applies more Java 17 syntax (try-with-resources) to source thereby improving resource handling.
+* Changes ObjectUtils.hashCodeFor(..) method multiplier to 31.
+* Cleans up and configures Checkstyle rules.
+* Cleans up and configures PMD rules.
+* Creates the Locking utility class in org.cp.elements.lang.concurrent.lock package to run code atomically with a lock.
+* Defines enumerations for Java 19, 20 and 21 in JavaVersions.
+* Defines BeanIntrospectionException in the org.cp.elements.beans package to wrap JavaBeans IntrospectionExceptions.
+* Defines CacheEntryException and CacheEntryNotFoundExceptions in the org.cp.elements.data.cache package
+to further classify Exceptions while processing Cache entries.
+* Edit reference documentation refining the chapter on Elements DSLs: assertThat, assertThat for Exceptions, from.
+* Moves @GuardBy annotation to org.cp.elements.lang.concurrent.lock package.
+* Moves @ThreadSafe annotation to org.cp.elements.lang.annotation package.
+* Removes the Gender enum from org.cp.elements.enums package.
+* Removes the Race enum from org.cp.elements.enums package.
+* Upgrades to Codeprimate Build 2.0.0-M4.
+* Upgrades to JMH 1.37.
+* Upgrades to Maven 3.9.4.
+
+
 2.0.0-M2 - 2023-July-04
 -----------------------
 Release Codeprimate Elements 2.0.0-M2 with Javadoc improvements.
