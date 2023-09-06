@@ -13,16 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.data.conversion.converters;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Date;
 
-import org.cp.elements.enums.Gender;
-import org.cp.elements.lang.Identifiable;
 import org.junit.jupiter.api.Test;
+
+import org.cp.elements.lang.Identifiable;
 
 /**
  * Unit tests for {@link StringConverter}.
@@ -84,7 +83,7 @@ public class StringConverterTests {
     assertThat(this.converter.convert(Boolean.TRUE)).isEqualTo("true");
     assertThat(this.converter.convert('X')).isEqualTo("X");
     assertThat(this.converter.convert(now)).isEqualTo(now.toString());
-    assertThat(this.converter.convert(Gender.FEMALE)).isEqualTo("Female");
+    assertThat(this.converter.convert(Gender.FEMALE)).isEqualTo("FEMALE");
     assertThat(this.converter.convert(42)).isEqualTo("42");
     assertThat(this.converter.convert(3.14159d)).isEqualTo("3.14159");
     assertThat(this.converter.convert("test")).isEqualTo("test");
@@ -96,5 +95,9 @@ public class StringConverterTests {
     Object obj = new Object();
 
     assertThat(this.converter.convert(obj)).isEqualTo(obj.toString());
+  }
+
+  private enum Gender {
+    FEMALE, MALE
   }
 }

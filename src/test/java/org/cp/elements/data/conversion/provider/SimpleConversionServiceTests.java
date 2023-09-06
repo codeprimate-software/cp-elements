@@ -54,7 +54,6 @@ import org.cp.elements.data.conversion.converters.ShortConverter;
 import org.cp.elements.data.conversion.converters.StringConverter;
 import org.cp.elements.data.conversion.converters.URIConverter;
 import org.cp.elements.data.conversion.converters.URLConverter;
-import org.cp.elements.enums.Gender;
 import org.cp.elements.enums.Race;
 import org.cp.elements.lang.Identifiable;
 
@@ -332,5 +331,9 @@ public class SimpleConversionServiceTests {
     assertThat(this.conversionService.convert(null, Integer.class)).isEqualTo(0);
     assertThat(this.conversionService.convert(null, Double.class)).isEqualTo(0.0d);
     assertThat(this.conversionService.convert(null, String.class)).isNull();
+  }
+
+  private enum Gender {
+    FEMALE, MALE
   }
 }

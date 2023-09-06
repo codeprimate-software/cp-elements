@@ -39,7 +39,6 @@ import org.junit.jupiter.api.Test;
 
 import org.cp.elements.beans.model.Property;
 import org.cp.elements.data.mapping.MappingException;
-import org.cp.elements.enums.Gender;
 import org.cp.elements.lang.Constants;
 import org.cp.elements.lang.ThrowableAssertions;
 import org.cp.elements.lang.factory.ObjectInstantiationException;
@@ -477,6 +476,10 @@ public class AbstractRowUnitTests {
 
     private NonInstantiableType() { }
 
+  }
+
+  private enum Gender {
+    FEMALE, MALE
   }
 
   @NoArgsConstructor

@@ -32,7 +32,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import org.cp.elements.data.conversion.ConversionException;
-import org.cp.elements.enums.Gender;
 import org.cp.elements.lang.ThrowableAssertions;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -99,5 +98,9 @@ public class PropertyEditingConverterAdapterTests {
 
     verify(this.mockPropertyEditor, times(1)).setAsText(eq("test"));
     verify(this.mockPropertyEditor, never()).getValue();
+  }
+
+  private enum Gender {
+    FEMALE, MALE
   }
 }

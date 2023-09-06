@@ -54,7 +54,6 @@ import org.cp.elements.data.conversion.ConversionException;
 import org.cp.elements.data.conversion.ConversionService;
 import org.cp.elements.data.conversion.Converter;
 import org.cp.elements.data.conversion.converters.URIConverter;
-import org.cp.elements.enums.Gender;
 import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.Nameable;
 import org.cp.elements.lang.ObjectUtils;
@@ -642,6 +641,10 @@ public class AbstractConfigurationUnitTests {
     public Iterator<String> iterator() {
       return this.properties.stringPropertyNames().iterator();
     }
+  }
+
+  private enum Gender {
+    FEMALE, MALE
   }
 
   @Profile(names = "test")

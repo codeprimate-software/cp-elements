@@ -22,11 +22,11 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Date;
 
-import org.cp.elements.data.conversion.ConversionException;
-import org.cp.elements.enums.Gender;
-import org.cp.elements.lang.ThrowableAssertions;
-
 import org.junit.jupiter.api.Test;
+
+import org.cp.elements.data.conversion.ConversionException;
+import org.cp.elements.enums.LengthUnit;
+import org.cp.elements.lang.ThrowableAssertions;
 
 /**
  * Unit Tests for {@link ByteConverter}.
@@ -72,7 +72,7 @@ public class ByteConverterTests {
     assertThat(this.converter.canConvert(Boolean.class, Byte.class)).isFalse();
     assertThat(this.converter.canConvert(Character.class, Byte.class)).isFalse();
     assertThat(this.converter.canConvert(Date.class, Byte.class)).isFalse();
-    assertThat(this.converter.canConvert(Gender.class, Byte.class)).isFalse();
+    assertThat(this.converter.canConvert(LengthUnit.class, Byte.class)).isFalse();
     assertThat(this.converter.canConvert(Object.class, Byte.class)).isFalse();
   }
 

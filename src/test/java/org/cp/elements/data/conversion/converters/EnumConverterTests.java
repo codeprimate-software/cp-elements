@@ -20,7 +20,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.jupiter.api.Test;
 
 import org.cp.elements.data.conversion.ConversionException;
-import org.cp.elements.enums.Gender;
 import org.cp.elements.enums.Race;
 import org.cp.elements.lang.ThrowableAssertions;
 import org.cp.elements.time.TimeUnit;
@@ -104,5 +103,9 @@ public class EnumConverterTests {
       .havingMessage("[test] is not a valid enumerated value of Enum [%s]", Enum.class.getName())
       .causedBy(IllegalArgumentException.class)
       .withNoCause();
+  }
+
+  private enum Gender {
+    FEMALE, MALE
   }
 }

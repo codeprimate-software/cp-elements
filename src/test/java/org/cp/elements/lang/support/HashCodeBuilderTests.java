@@ -34,7 +34,6 @@ import java.util.logging.Logger;
 
 import org.junit.jupiter.api.Test;
 
-import org.cp.elements.enums.Gender;
 import org.cp.elements.function.FunctionUtils;
 import org.cp.elements.lang.AssertionException;
 import org.cp.elements.lang.ObjectUtils;
@@ -284,6 +283,10 @@ public class HashCodeBuilderTests {
     public String toString() {
       return String.format("Expected [%1$s]; but was [%2$s]", expectedValue, actualValue);
     }
+  }
+
+  private enum Gender {
+    FEMALE, MALE
   }
 
   @Getter

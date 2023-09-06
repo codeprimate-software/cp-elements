@@ -31,7 +31,6 @@ import org.cp.elements.data.conversion.converters.EnumConverter;
 import org.cp.elements.data.conversion.converters.IntegerConverter;
 import org.cp.elements.data.conversion.converters.NumberConverter;
 import org.cp.elements.data.conversion.converters.StringConverter;
-import org.cp.elements.enums.Gender;
 import org.cp.elements.enums.Race;
 
 /**
@@ -166,6 +165,10 @@ public class AbstractConversionServiceTests {
     }
 
     assertThat(expectedConverters.isEmpty()).isTrue();
+  }
+
+  private enum Gender {
+    FEMALE, MALE
   }
 
   static class GenderConverter extends AbstractConverter<String, Gender> {
