@@ -57,6 +57,7 @@ import static org.cp.elements.lang.ElementsExceptionsFactory.newMethodNotFoundEx
 import static org.cp.elements.lang.ElementsExceptionsFactory.newNetworkException;
 import static org.cp.elements.lang.ElementsExceptionsFactory.newNoAvailablePortException;
 import static org.cp.elements.lang.ElementsExceptionsFactory.newNoSuchConstructorException;
+import static org.cp.elements.lang.ElementsExceptionsFactory.newNoSuchDirectoryException;
 import static org.cp.elements.lang.ElementsExceptionsFactory.newNoSuchFileException;
 import static org.cp.elements.lang.ElementsExceptionsFactory.newObjectInstantiationException;
 import static org.cp.elements.lang.ElementsExceptionsFactory.newObjectNotFoundException;
@@ -115,6 +116,7 @@ import org.cp.elements.data.serialization.DeserializationException;
 import org.cp.elements.data.serialization.SerializationException;
 import org.cp.elements.function.FunctionException;
 import org.cp.elements.function.FunctionExecutionException;
+import org.cp.elements.io.NoSuchDirectoryException;
 import org.cp.elements.io.NoSuchFileException;
 import org.cp.elements.lang.factory.NoSuchConstructorException;
 import org.cp.elements.lang.factory.ObjectInstantiationException;
@@ -425,6 +427,17 @@ public class ElementsExceptionsFactoryUnitTests {
   public void newFunctionExecutionExceptionWithFormattedMessageAndCause() {
     assertThrowable(newFunctionExecutionException(this.mockCause, "%s is a {1}", "This", "test"),
       FunctionExecutionException.class, "This is a test", this.mockCause);
+  }
+
+  @Test
+  public void newNoSuchDirectoryExceptionWithMessage() {
+    assertThrowable(newNoSuchDirectoryException("test"), NoSuchDirectoryException.class, "test");
+  }
+
+  @Test
+  public void newNoSuchDirectoryExceptionWithFormattedMessageAndCause() {
+    assertThrowable(newNoSuchDirectoryException(this.mockCause, "%s is a {1}", "This", "test"),
+      NoSuchDirectoryException.class, "This is a test", this.mockCause);
   }
 
   @Test

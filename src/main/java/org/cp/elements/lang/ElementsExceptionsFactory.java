@@ -39,6 +39,7 @@ import org.cp.elements.data.serialization.DeserializationException;
 import org.cp.elements.data.serialization.SerializationException;
 import org.cp.elements.function.FunctionException;
 import org.cp.elements.function.FunctionExecutionException;
+import org.cp.elements.io.NoSuchDirectoryException;
 import org.cp.elements.io.NoSuchFileException;
 import org.cp.elements.lang.factory.NoSuchConstructorException;
 import org.cp.elements.lang.factory.ObjectInstantiationException;
@@ -105,6 +106,7 @@ import org.cp.elements.util.sort.SortException;
  * @see org.cp.elements.data.mapping.MappingException
  * @see org.cp.elements.function.FunctionException
  * @see org.cp.elements.function.FunctionExecutionException
+ * @see org.cp.elements.io.NoSuchDirectoryException
  * @see org.cp.elements.io.NoSuchFileException
  * @see org.cp.elements.lang.AssertionException
  * @see org.cp.elements.lang.CloneException
@@ -826,8 +828,37 @@ public abstract class ElementsExceptionsFactory {
   // package org.cp.elements.io
 
   /**
+   * Constructs a new {@link NoSuchDirectoryException} initialized with the given {@link String message}
+   * describing the {@link NoSuchDirectoryException}.
+   *
+   * @param message {@link String} containing a message to describe the exception.
+   * @param args optional array of {@link Object arguments} used to replace the placeholders in the message.
+   * @return a new {@link NoSuchDirectoryException}.
+   * @see #newNoSuchDirectoryException(String, Object...)
+   * @see org.cp.elements.io.NoSuchDirectoryException
+   */
+  public static NoSuchDirectoryException newNoSuchDirectoryException(String message, Object... args) {
+    return newNoSuchDirectoryException(null, message, args);
+  }
+
+  /**
+   * Constructs a new {@link NoSuchDirectoryException} initialized with the given {@link String message}
+   * describing the {@link NoSuchDirectoryException} along with a {@link Throwable cause} used as the reason
+   * why the {@link NoSuchDirectoryException} was thrown.
+   *
+   * @param cause {@link Throwable} used as the cause of the exception.
+   * @param message {@link String} containing a message to describe the exception.
+   * @param args optional array of {@link Object arguments} used to replace the placeholders in the message.
+   * @return a new {@link NoSuchDirectoryException}.
+   * @see org.cp.elements.io.NoSuchDirectoryException
+   */
+  public static NoSuchDirectoryException newNoSuchDirectoryException(Throwable cause, String message, Object... args) {
+    return new NoSuchDirectoryException(format(message, args), cause);
+  }
+
+  /**
    * Constructs a new {@link NoSuchFileException} initialized with the given {@link String message}
-   * to describe the {@link NoSuchFileException}.
+   * describing the {@link NoSuchFileException}.
    *
    * @param message {@link String} containing a message to describe the exception.
    * @param args optional array of {@link Object arguments} used to replace the placeholders in the message.
@@ -841,7 +872,7 @@ public abstract class ElementsExceptionsFactory {
 
   /**
    * Constructs a new {@link NoSuchFileException} initialized with the given {@link String message}
-   * to describe the {@link NoSuchFileException} along with a {@link Throwable cause} used as the reason
+   * describing the {@link NoSuchFileException} along with a {@link Throwable cause} used as the reason
    * why the {@link NoSuchFileException} was thrown.
    *
    * @param cause {@link Throwable} used as the cause of the exception.
