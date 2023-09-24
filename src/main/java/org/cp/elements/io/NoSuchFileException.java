@@ -18,7 +18,7 @@ package org.cp.elements.io;
 import java.io.File;
 
 /**
- * Java {@link RuntimeException} used to indicate a missing {@link java.io.File}.
+ * Java {@link RuntimeException} thrown when a {@link File} cannot be found.
  *
  * @author John J. Blum
  * @see java.io.File
@@ -38,7 +38,7 @@ public class NoSuchFileException extends RuntimeException {
    * Constructs a new {@link NoSuchFileException} initialized with the given {@link String message}
    * describing the missing {@link File}.
    *
-   * @param message {@link String} containing a description for this {@link RuntimeException}.
+   * @param message {@link String} containing a {@literal description} of this {@link RuntimeException}.
    * @see java.lang.String
    */
   public NoSuchFileException(String message) {
@@ -49,7 +49,7 @@ public class NoSuchFileException extends RuntimeException {
    * Constructs a new {@link NoSuchFileException} initialized with the given {@link Throwable}
    * used as the {@literal cause} of this {@link RuntimeException}.
    *
-   * @param cause {@link Throwable} used as the cause of this {@link RuntimeException}.
+   * @param cause {@link Throwable} used as the {@literal cause} of this {@link RuntimeException}.
    * @see java.lang.Throwable
    */
   public NoSuchFileException(Throwable cause) {
@@ -61,8 +61,8 @@ public class NoSuchFileException extends RuntimeException {
    * describing the missing {@link File} along with the given {@link Throwable} used as the {@literal cause}
    * of this {@link RuntimeException}.
    *
-   * @param message {@link String} containing a description for this {@link RuntimeException}.
-   * @param cause {@link Throwable} used as the cause of this {@link RuntimeException}.
+   * @param message {@link String} containing a {@literal description} of this {@link RuntimeException}.
+   * @param cause {@link Throwable} used as the {@literal cause} of this {@link RuntimeException}.
    * @see java.lang.Throwable
    * @see java.lang.String
    */
