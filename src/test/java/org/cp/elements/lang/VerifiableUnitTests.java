@@ -20,10 +20,12 @@ import static org.cp.elements.lang.RuntimeExceptionsFactory.newIllegalStateExcep
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doCallRealMethod;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -45,36 +47,50 @@ import org.mockito.junit.jupiter.MockitoExtension;
  * @since 1.0.0
  */
 @ExtendWith(MockitoExtension.class)
-public class VerifiableTests {
+public class VerifiableUnitTests {
 
   @Mock
   @SuppressWarnings("rawtypes")
   private Verifiable<Verifiable> mockVerifiable;
 
   @Test
-  public void isValidReturnsTrue() {
+  void isValidReturnsTrue() {
 
-    when(this.mockVerifiable.isValid()).thenCallRealMethod();
-    when(this.mockVerifiable.validate()).thenReturn(this.mockVerifiable);
+    doReturn(this.mockVerifiable).when(this.mockVerifiable).validate();
+    doCallRealMethod().when(this.mockVerifiable).isValid();
 
     assertThat(this.mockVerifiable.isValid()).isTrue();
 
     verify(this.mockVerifiable, times(1)).validate();
+    verifyNoMoreInteractions(this.mockVerifiable);
   }
 
   @Test
-  public void isValidReturnsFalse() {
+  void isValidReturnsFalse() {
 
-    when(this.mockVerifiable.isValid()).thenCallRealMethod();
-    when(this.mockVerifiable.validate()).thenThrow(newIllegalStateException("Invalid"));
+    doThrow(newIllegalStateException("Invalid")).when(this.mockVerifiable).validate();
+    doCallRealMethod().when(this.mockVerifiable).isValid();
 
     assertThat(this.mockVerifiable.isValid()).isFalse();
 
+    verify(this.mockVerifiable, times(1)).isValid();
     verify(this.mockVerifiable, times(1)).validate();
+    verifyNoMoreInteractions(this.mockVerifiable);
   }
 
   @Test
-  public void verifyCallsVerifierVerifyWithThis() {
+  void validateReturnsSelf() {
+
+    doCallRealMethod().when(this.mockVerifiable).validate();
+
+    assertThat(this.mockVerifiable.validate()).isSameAs(this.mockVerifiable);
+
+    verify(this.mockVerifiable, times(1)).validate();
+    verifyNoMoreInteractions(this.mockVerifiable);
+  }
+
+  @Test
+  void verifyCallsVerifierVerifyWithThis() {
 
     Verifier mockVerifier = mock(Verifier.class);
 
@@ -82,6 +98,8 @@ public class VerifiableTests {
 
     assertThat(this.mockVerifiable.verify(mockVerifier)).isSameAs(this.mockVerifiable);
 
+    verify(this.mockVerifiable, times(1)).verify(eq(mockVerifier));
     verify(mockVerifier, times(1)).verify(eq(this.mockVerifiable));
+    verifyNoMoreInteractions(this.mockVerifiable, mockVerifier);
   }
 }

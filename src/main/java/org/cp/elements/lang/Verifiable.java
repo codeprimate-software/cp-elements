@@ -16,16 +16,14 @@
 package org.cp.elements.lang;
 
 /**
- * The {@link Verifiable} interface defines a contract for implementing objects capable of validating that any soft
- * constraints, invariants and business rules of this implementing object are upheld.
+ * Interface defining a contract for implementing {@link Object objects} capable of validating that any soft
+ * constraints, invariants and business rules of this implementing {@link Object} are upheld.
  *
  * @author John Blum
- * @param <T> {@link Class type} of the {@link Object} implementing this interface.
- * @see java.lang.FunctionalInterface
+ * @param <T> {@link Class Type} of the {@link Object} implementing this interface.
  * @see org.cp.elements.lang.Verifier
  * @since 1.0.0
  */
-@FunctionalInterface
 @SuppressWarnings("unused")
 public interface Verifiable<T> {
 
@@ -50,7 +48,10 @@ public interface Verifiable<T> {
    *
    * @return this implementing {@link Verifiable} {@link Object}.
    */
-  T validate();
+  @SuppressWarnings("unchecked")
+  default T validate() {
+    return (T) this;
+  }
 
   /**
    * Verifies this {@link Verifiable} with the given {@link Verifier}.
