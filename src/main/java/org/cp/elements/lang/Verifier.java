@@ -13,11 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.lang;
 
+import org.cp.elements.lang.annotation.NotNull;
+import org.cp.elements.lang.annotation.Nullable;
+
 /**
- * The {@link Verifier} interface defines a contract for implementing {@link Object objects}
+ * Interface defining a contract for implementing {@link Object objects}
  * capable of verifying {@link Verifiable} objects.
  *
  * @author John Blum
@@ -35,4 +37,18 @@ public interface Verifier {
    */
   void verify(Verifiable<?> verifiable);
 
+  /**
+   * Builder method used to compose {@link Verifier Verifiers} into a single, composite {@link Verifier}
+   *
+   * @param verifier {@link Verifier} to compose with this {@link Verifier}.
+   * @return a new composite {@link Verifier} composed of this {@link Verifier} followed by the given {@link Verifier},
+   * or simply return this {@link Verifier} if the given {@link Verifier} is {@literal null}.
+   */
+  default @NotNull Verifier andThen(@Nullable Verifier verifier) {
+
+    return verifier == null ? this : (Verifiable<?> verifiable)  -> {
+      this.verify(verifiable);
+      verifier.verify(verifiable);
+    };
+  }
 }
