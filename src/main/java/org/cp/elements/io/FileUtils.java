@@ -15,6 +15,7 @@
  */
 package org.cp.elements.io;
 
+import static org.cp.elements.lang.ElementsExceptionsFactory.newNoSuchDirectoryException;
 import static org.cp.elements.lang.ElementsExceptionsFactory.newNoSuchFileException;
 
 import java.io.BufferedOutputStream;
@@ -72,6 +73,26 @@ public abstract class FileUtils extends IOUtils {
   protected static final String NO_FILE_NAME = StringUtils.EMPTY_STRING;
 
   /**
+   * Asserts the given {@link File} is a valid {@link File#isDirectory() directory}.
+   * <p>
+   * The {@link File} is valid if the {@link File} is not {@literal null} and is an existing,
+   * valid {@link File#isDirectory() directory}.
+   *
+   * @param directory {@link File} to assert.
+   * @return the given {@link File}.
+   * @throws NoSuchDirectoryException if the given {@link File} is not valid.
+   */
+  @NullSafe
+  public static @NotNull File assertDirectory(@Nullable File directory) {
+
+    if (isDirectory(directory)) {
+      return directory;
+    }
+
+    throw newNoSuchDirectoryException("File [%s] is not a valid directory", directory);
+  }
+
+  /**
    * Asserts that the given {@link File} exists.
    *
    * @param path {@link File} to assert for existence.
@@ -91,9 +112,10 @@ public abstract class FileUtils extends IOUtils {
   }
 
   /**
-   * Asserts the given {@link File} is a valid {@link File}.
+   * Asserts the given {@link File} is a valid {@link File#isFile() file}.
    * <p>
-   * The {@link File} is valid if the {@link File} {@link File#exists()} and is an actual {@link File#isFile() file}.
+   * The {@link File} is valid if the {@link File} is not {@literal null} and is an existing,
+   * valid {@link File#isFile() file}.
    *
    * @param file {@link File} to assert.
    * @return the given {@link File}.

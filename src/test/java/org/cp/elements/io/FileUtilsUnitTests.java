@@ -90,6 +90,49 @@ public class FileUtilsUnitTests extends AbstractTestSuite {
 
   @Test
   @IntegrationTest
+  void assertDirectoryWithExistingDirectory() {
+    assertThat(FileUtils.assertDirectory(FileSystemUtils.WORKING_DIRECTORY))
+      .isSameAs(FileSystemUtils.WORKING_DIRECTORY);
+  }
+
+  @Test
+  void assertDirectoryWithValidDirectory() {
+
+    File mockDirectory = mock(File.class);
+
+    doReturn(true).when(mockDirectory).isDirectory();
+
+    assertThat(FileUtils.assertDirectory(mockDirectory)).isSameAs(mockDirectory);
+
+    verify(mockDirectory, times(1)).isDirectory();
+    verifyNoMoreInteractions(mockDirectory);
+  }
+
+  @Test
+  void assertDirectoryWithNonDirectory() {
+
+    doReturn(false).when(this.mockFile).isDirectory();
+
+    assertThatExceptionOfType(NoSuchDirectoryException.class)
+      .isThrownBy(() -> FileUtils.assertDirectory(this.mockFile))
+      .withMessage("File [%s] is not a valid directory", this.mockFile)
+      .withNoCause();
+
+    verify(this.mockFile, times(1)).isDirectory();
+    verifyNoMoreInteractions(this.mockFile);
+  }
+
+  @Test
+  void assertDirectoryWithNullIsNullSafe() {
+
+    assertThatExceptionOfType(NoSuchDirectoryException.class)
+      .isThrownBy(() -> FileUtils.assertDirectory(null))
+      .withMessage("File [null] is not a valid directory")
+      .withNoCause();
+  }
+
+  @Test
+  @IntegrationTest
   public void assertExistsWithExistingDirectory() throws FileNotFoundException {
 
     assertThat(FileUtils.assertExists(TEMPORARY_DIRECTORY)).isEqualTo(TEMPORARY_DIRECTORY);
@@ -138,17 +181,16 @@ public class FileUtilsUnitTests extends AbstractTestSuite {
   @Test
   void assertFileWithValidFile() {
 
-    File mockFile = mock(File.class);
+    doReturn(true).when(this.mockFile).isFile();
 
-    doReturn(true).when(mockFile).isFile();
+    assertThat(FileUtils.assertFile(this.mockFile)).isSameAs(this.mockFile);
 
-    assertThat(FileUtils.assertFile(mockFile)).isSameAs(mockFile);
-
-    verify(mockFile, times(1)).isFile();
-    verifyNoMoreInteractions(mockFile);
+    verify(this.mockFile, times(1)).isFile();
+    verifyNoMoreInteractions(this.mockFile);
   }
 
   @Test
+  @IntegrationTest
   void assertFileWithDirectory() {
 
     assertThatExceptionOfType(NoSuchFileException.class)
@@ -160,21 +202,19 @@ public class FileUtilsUnitTests extends AbstractTestSuite {
   @Test
   void assertFileWithNonFile() {
 
-    File mockFile = mock(File.class);
-
-    doReturn(false).when(mockFile).isFile();
+    doReturn(false).when(this.mockFile).isFile();
 
     assertThatExceptionOfType(NoSuchFileException.class)
-      .isThrownBy(() -> FileUtils.assertFile(mockFile))
-      .withMessage("File [%s] is not a valid file", mockFile)
+      .isThrownBy(() -> FileUtils.assertFile(this.mockFile))
+      .withMessage("File [%s] is not a valid file", this.mockFile)
       .withNoCause();
 
-    verify(mockFile, times(1)).isFile();
-    verifyNoMoreInteractions(mockFile);
+    verify(this.mockFile, times(1)).isFile();
+    verifyNoMoreInteractions(this.mockFile);
   }
 
   @Test
-  void assertFileWithNull() {
+  void assertFileWithNullIsNullSafe() {
 
     assertThatExceptionOfType(NoSuchFileException.class)
       .isThrownBy(() -> FileUtils.assertFile(null))
