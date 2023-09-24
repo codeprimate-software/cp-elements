@@ -136,6 +136,53 @@ public class FileUtilsUnitTests extends AbstractTestSuite {
   }
 
   @Test
+  void assertFileWithValidFile() {
+
+    File mockFile = mock(File.class);
+
+    doReturn(true).when(mockFile).isFile();
+
+    assertThat(FileUtils.assertFile(mockFile)).isSameAs(mockFile);
+
+    verify(mockFile, times(1)).isFile();
+    verifyNoMoreInteractions(mockFile);
+  }
+
+  @Test
+  void assertFileWithDirectory() {
+
+    assertThatExceptionOfType(NoSuchFileException.class)
+      .isThrownBy(() -> FileUtils.assertFile(FileSystemUtils.WORKING_DIRECTORY))
+      .withMessage("File [%s] is not a valid file", FileSystemUtils.WORKING_DIRECTORY)
+      .withNoCause();
+  }
+
+  @Test
+  void assertFileWithNonFile() {
+
+    File mockFile = mock(File.class);
+
+    doReturn(false).when(mockFile).isFile();
+
+    assertThatExceptionOfType(NoSuchFileException.class)
+      .isThrownBy(() -> FileUtils.assertFile(mockFile))
+      .withMessage("File [%s] is not a valid file", mockFile)
+      .withNoCause();
+
+    verify(mockFile, times(1)).isFile();
+    verifyNoMoreInteractions(mockFile);
+  }
+
+  @Test
+  void assertFileWithNull() {
+
+    assertThatExceptionOfType(NoSuchFileException.class)
+      .isThrownBy(() -> FileUtils.assertFile(null))
+      .withMessage("File [null] is not a valid file")
+      .withNoCause();
+  }
+
+  @Test
   @SuppressWarnings("all")
   public void createDirectoryWithNonExistingDirectory() {
 

@@ -15,6 +15,8 @@
  */
 package org.cp.elements.io;
 
+import static org.cp.elements.lang.ElementsExceptionsFactory.newNoSuchFileException;
+
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.File;
@@ -86,6 +88,25 @@ public abstract class FileUtils extends IOUtils {
     }
 
     throw new FileNotFoundException(String.format("[%s] was not found", path));
+  }
+
+  /**
+   * Asserts the given {@link File} is a valid {@link File}.
+   * <p>
+   * The {@link File} is valid if the {@link File} {@link File#exists()} and is an actual {@link File#isFile() file}.
+   *
+   * @param file {@link File} to assert.
+   * @return the given {@link File}.
+   * @throws NoSuchFileException if the given {@link File} is not valid.
+   */
+  @NullSafe
+  public static @NotNull File assertFile(@Nullable File file) {
+
+    if (isFile(file)) {
+      return file;
+    }
+
+    throw newNoSuchFileException("File [%s] is not a valid file", file);
   }
 
   /**
