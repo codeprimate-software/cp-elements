@@ -79,6 +79,7 @@ import static org.cp.elements.lang.ElementsExceptionsFactory.newSecurityExceptio
 import static org.cp.elements.lang.ElementsExceptionsFactory.newSerializationException;
 import static org.cp.elements.lang.ElementsExceptionsFactory.newServiceException;
 import static org.cp.elements.lang.ElementsExceptionsFactory.newServiceInvocationException;
+import static org.cp.elements.lang.ElementsExceptionsFactory.newServiceNotProvidedException;
 import static org.cp.elements.lang.ElementsExceptionsFactory.newServiceUnavailableException;
 import static org.cp.elements.lang.ElementsExceptionsFactory.newSortException;
 import static org.cp.elements.lang.ElementsExceptionsFactory.newSystemException;
@@ -139,6 +140,7 @@ import org.cp.elements.security.AuthorizationException;
 import org.cp.elements.service.ServiceException;
 import org.cp.elements.service.ServiceInvocationException;
 import org.cp.elements.service.ServiceUnavailableException;
+import org.cp.elements.service.provider.ServiceNotProvidedException;
 import org.cp.elements.test.FailedTestException;
 import org.cp.elements.test.HungTestException;
 import org.cp.elements.test.TestException;
@@ -812,6 +814,17 @@ public class ElementsExceptionsFactoryUnitTests {
   public void newServiceInvocationExceptionWithFormattedMessageAndCause() {
     assertThrowable(newServiceInvocationException(this.mockCause, "%s is a {1}", "This", "test"),
       ServiceInvocationException.class, "This is a test", this.mockCause);
+  }
+
+  @Test
+  public void newServiceNotProvidedExceptionWithMessage() {
+    assertThrowable(newServiceNotProvidedException("test"), ServiceNotProvidedException.class, "test");
+  }
+
+  @Test
+  public void newServiceNotProvidedExceptionWithFormattedMessageAndCause() {
+    assertThrowable(newServiceNotProvidedException(this.mockCause, "%s is a {1}", "This", "test"),
+      ServiceNotProvidedException.class, "This is a test", this.mockCause);
   }
 
   @Test

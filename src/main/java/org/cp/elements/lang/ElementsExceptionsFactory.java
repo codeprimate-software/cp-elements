@@ -62,6 +62,7 @@ import org.cp.elements.security.AuthorizationException;
 import org.cp.elements.service.ServiceException;
 import org.cp.elements.service.ServiceInvocationException;
 import org.cp.elements.service.ServiceUnavailableException;
+import org.cp.elements.service.provider.ServiceNotProvidedException;
 import org.cp.elements.test.FailedTestException;
 import org.cp.elements.test.HungTestException;
 import org.cp.elements.test.TestException;
@@ -139,7 +140,10 @@ import org.cp.elements.util.sort.SortException;
  * @see org.cp.elements.security.AuthenticationException
  * @see org.cp.elements.security.AuthorizationException
  * @see org.cp.elements.security.AbstractSecurityException
+ * @see org.cp.elements.service.ServiceException
  * @see org.cp.elements.service.ServiceInvocationException
+ * @see org.cp.elements.service.ServiceUnavailableException
+ * @see org.cp.elements.service.provider.ServiceNotProvidedException
  * @see org.cp.elements.test.FailedTestException
  * @see org.cp.elements.test.HungTestException
  * @see org.cp.elements.test.TestException
@@ -1879,6 +1883,37 @@ public abstract class ElementsExceptionsFactory {
       String message, Object... args) {
 
     return new ServiceInvocationException(format(message, args), cause);
+  }
+
+  /**
+   * Constructs a new {@link ServiceNotProvidedException} initialized with the given {@link String message}
+   * to describe the {@link ServiceNotProvidedException}.
+   *
+   * @param message {@link String} containing a message to describe the exception.
+   * @param args optional array of {@link Object arguments} used to replace the placeholders in the message.
+   * @return a new {@link ServiceNotProvidedException}.
+   * @see #newServiceInvocationException(Throwable, String, Object...)
+   * @see org.cp.elements.service.provider.ServiceNotProvidedException
+   */
+  public static ServiceNotProvidedException newServiceNotProvidedException(String message, Object... args) {
+    return newServiceNotProvidedException(null, message, args);
+  }
+
+  /**
+   * Constructs a new {@link ServiceNotProvidedException} initialized with the given {@link String message}
+   * to describe the {@link ServiceNotProvidedException} along with a {@link Throwable cause} used as the reason
+   * the {@link ServiceNotProvidedException} was thrown.
+   *
+   * @param cause {@link Throwable} used as the cause of the exception.
+   * @param message {@link String} containing a message to describe the exception.
+   * @param args optional array of {@link Object arguments} used to replace the placeholders in the message.
+   * @return a new {@link ServiceNotProvidedException}.
+   * @see org.cp.elements.service.provider.ServiceNotProvidedException
+   */
+  public static ServiceNotProvidedException newServiceNotProvidedException(Throwable cause,
+      String message, Object... args) {
+
+    return new ServiceNotProvidedException(format(message, args), cause);
   }
 
   /**
