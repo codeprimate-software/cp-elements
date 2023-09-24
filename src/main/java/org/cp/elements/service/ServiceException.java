@@ -16,7 +16,7 @@
 package org.cp.elements.service;
 
 /**
- * A general {@link RuntimeException} implementation to classify problems with an application service.
+ * Java {@link RuntimeException} used to classify application service exceptions.
  *
  * @author John Blum
  * @see java.lang.RuntimeException
@@ -26,15 +26,15 @@ package org.cp.elements.service;
 public class ServiceException extends RuntimeException {
 
   /**
-   * Constructs a new, uninitialized instance of {@link ServiceException}.
+   * Constructs a new {@link ServiceException} with no {@link String message} and no {@link Throwable cause}.
    */
   public ServiceException() { }
 
   /**
    * Constructs a new {@link ServiceException} initialized with the given {@link String message}
-   * describing the {@link RuntimeException}.
+   * describing this {@link RuntimeException}.
    *
-   * @param message {@link String} containing a description of the {@link RuntimeException}.
+   * @param message {@link String} containing a {@literal description} of this {@link ServiceException}.
    */
   public ServiceException(String message) {
     super(message);
@@ -42,9 +42,9 @@ public class ServiceException extends RuntimeException {
 
   /**
    * Constructs a new {@link ServiceException} initialized with the given {@link Throwable}
-   * used as the reason this {@link RuntimeException} was thrown.
+   * used as the {@literal cause} of this {@link RuntimeException}.
    *
-   * @param cause {@link Throwable} used as the reason this {@link ServiceUnavailableException} was thrown.
+   * @param cause {@link Throwable} used as the {@literal cause} of this {@link ServiceException}.
    */
   public ServiceException(Throwable cause) {
     super(cause);
@@ -52,11 +52,11 @@ public class ServiceException extends RuntimeException {
 
   /**
    * Constructs a new {@link ServiceException} initialized with the given {@link String message}
-   * describing the {@link RuntimeException} and {@link Throwable} used as the reason this {@link RuntimeException}
-   * was thrown.
+   * describing this {@link RuntimeException} and {@link Throwable} used as the {@literal cause}
+   * of this {@link RuntimeException}.
    *
-   * @param message {@link String} containing a description of the {@link RuntimeException}.
-   * @param cause {@link Throwable} used as the reason this {@link RuntimeException} was thrown.
+   * @param message {@link String} containing a {@literal description} of this {@link ServiceException}.
+   * @param cause {@link Throwable} used as the {@literal cause} of this {@link ServiceException}.
    */
   public ServiceException(String message, Throwable cause) {
     super(message, cause);
