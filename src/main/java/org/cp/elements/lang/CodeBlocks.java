@@ -38,26 +38,45 @@ public abstract class CodeBlocks {
   public static final Runnable NO_OP_RUNNABLE = () -> { };
 
   /**
+   * Implementation of a {@literal if-then} code block.
+   *
+   * @param <T> {@link Class Type} of {@link Object} processed in the {@literal if-else} statement.
+   * @param <R> {@link Class Type} of {@link Object result} returned from the {@literal if-else} statement.
+   * @param target {@link Object} to evaluate in the {@literal if-else} statement.
+   * @param ifCondition {@link Predicate} used to evaluate the {@link Object} in the {@literal if} condition.
+   * @param ifBlock {@link Function} encapsulating the logic in the {@literal if} block.
+   * @return the {@link Object result} of the evaluation from the {@literal if-else} statement.
+   * @throws IllegalArgumentException if the {@link Predicate if-condition} or {@link Function if-block}
+   * are {@literal null}.
+   * @see #ifElse(Object, Predicate, Function, Function)
+   * @see java.util.function.Predicate
+   * @see java.util.function.Function
+   */
+  public static <T, R> R ifThen(@Nullable T target, @NotNull Predicate<T> ifCondition, Function<T, R> ifBlock) {
+    return ifElse(target, ifCondition, ifBlock, arg -> null);
+  }
+
+  /**
    * Implementation of an {@literal if-else} code block.
    *
-   * @param <T> {@link Class type} of the {@link Object target} processed in the {@literal if} statement.
-   * @param <R> {@link Class type} of the {@link Object result} returned from the {@literal if} statement.
-   * @param target {@link Object} to evaluate in the {@literal if} statement.
-   * @param ifCondition {@link Predicate} used to evaluate the {@link Object target} in the {@literal if} condition.
+   * @param <T> {@link Class Type} of {@link Object} processed in the {@literal if-else} statement.
+   * @param <R> {@link Class Type} of {@link Object result} returned from the {@literal if-else} statement.
+   * @param target {@link Object} to evaluate in the {@literal if-else} statement.
+   * @param ifCondition {@link Predicate} used to evaluate the {@link Object} in the {@literal if} condition.
    * @param ifBlock {@link Function} encapsulating the logic in the {@literal if} block.
    * @param elseBlock {@link Function} encapsulating the logic in the {@literal else} block.
-   * @return the {@link Object result} from the evaluation of the {@literal if} statement.
+   * @return the {@link Object result} of the evaluation from the {@literal if-else} statement.
    * @throws IllegalArgumentException if the {@link Predicate if-condition}, {@link Function if-block}
    * or the {@link Function else-block} are {@literal null}.
-   * @see java.util.function.Function
    * @see java.util.function.Predicate
+   * @see java.util.function.Function
    */
   public static <T, R> R ifElse(@Nullable T target, @NotNull Predicate<T> ifCondition,
       @NotNull Function<T, R> ifBlock, @NotNull Function<T, R> elseBlock) {
 
-    Assert.notNull(ifCondition, "The Predicate used in the condition of the if statement is required");
-    Assert.notNull(ifBlock, "The Function for the if block is required");
-    Assert.notNull(elseBlock, "The Function for the else block is required");
+    Assert.notNull(ifCondition, "Predicate used in the condition of the if statement is required");
+    Assert.notNull(ifBlock, "Function for the if block is required");
+    Assert.notNull(elseBlock, "Function for the else block is required");
 
     //return ifCondition.test(target) ? ifBlock.apply(target) : elseBlock.apply(target);
 

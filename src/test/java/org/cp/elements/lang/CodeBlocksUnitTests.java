@@ -27,6 +27,7 @@ import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
@@ -51,15 +52,47 @@ import org.mockito.InOrder;
  * @since 1.0.0
  */
 @SuppressWarnings("unchecked")
-public class CodeBlocksUnitTests {
+class CodeBlocksUnitTests {
 
   @Test
-  public void ifElseExecutesIfBlock() {
+  void ifThenExecutesIfBlock() {
 
+    Function<Object, Object> ifBlock = mock(Function.class);
     Predicate<Object> ifCondition = mock(Predicate.class);
+
+    doReturn(true).when(ifCondition).test(any());
+    doReturn("test").when(ifBlock).apply(any());
+
+    assertThat(CodeBlocks.ifThen("mock", ifCondition, ifBlock)).isEqualTo("test");
+
+    verify(ifCondition, times(1)).test(eq("mock"));
+    verify(ifBlock, times(1)).apply(eq("mock"));
+    verifyNoMoreInteractions(ifBlock, ifCondition);
+  }
+
+  @Test
+  void ifThenDoesNotExecuteIfBlock() {
+
+    Function<Object, Object> ifBlock = mock(Function.class);
+    Predicate<Object> ifCondition = mock(Predicate.class);
+
+    doReturn(false).when(ifCondition).test(any());
+
+    assertThat(CodeBlocks.ifThen("mock", ifCondition, ifBlock)).isNull();
+
+    verify(ifCondition, times(1)).test(eq("mock"));
+    verify(ifBlock, never()).apply(any());
+    verifyNoMoreInteractions(ifCondition);
+    verifyNoInteractions(ifBlock);
+  }
+
+  @Test
+  void ifElseExecutesIfBlock() {
 
     Function<Object, Object> ifBlock = mock(Function.class);
     Function<Object, Object> elseBlock = mock(Function.class);
+
+    Predicate<Object> ifCondition = mock(Predicate.class);
 
     doReturn(true).when(ifCondition).test(eq("mock"));
     doReturn("test").when(ifBlock).apply(eq("mock"));
@@ -73,12 +106,12 @@ public class CodeBlocksUnitTests {
   }
 
   @Test
-  public void ifElseExecutesElseBlock() {
-
-    Predicate<Object> ifCondition = mock(Predicate.class);
+  void ifElseExecutesElseBlock() {
 
     Function<Object, Object> ifBlock = mock(Function.class);
     Function<Object, Object> elseBlock = mock(Function.class);
+
+    Predicate<Object> ifCondition = mock(Predicate.class);
 
     doReturn(false).when(ifCondition).test(eq("mock"));
     doReturn("test").when(elseBlock).apply(eq("mock"));
@@ -92,21 +125,21 @@ public class CodeBlocksUnitTests {
   }
 
   @Test
-  public void ifElseWithNullIfCondition() {
+  void ifElseWithNullIfCondition() {
 
     Function<Object, Object> ifBlock = mock(Function.class);
     Function<Object, Object> elseBlock = mock(Function.class);
 
     assertThatIllegalArgumentException()
       .isThrownBy(() -> CodeBlocks.ifElse("test", null, ifBlock, elseBlock))
-      .withMessage("The Predicate used in the condition of the if statement is required")
+      .withMessage("Predicate used in the condition of the if statement is required")
       .withNoCause();
 
     verifyNoInteractions(ifBlock, elseBlock);
   }
 
   @Test
-  public void ifElseWithNullIfBlock() {
+  void ifElseWithNullIfBlock() {
 
     Predicate<Object> ifCondition = mock(Predicate.class);
 
@@ -114,14 +147,14 @@ public class CodeBlocksUnitTests {
 
     assertThatIllegalArgumentException()
       .isThrownBy(() -> CodeBlocks.ifElse("test", ifCondition, null, elseBlock))
-      .withMessage("The Function for the if block is required")
+      .withMessage("Function for the if block is required")
       .withNoCause();
 
     verifyNoInteractions(ifCondition, elseBlock);
   }
 
   @Test
-  public void ifElseWithNullElseBlock() {
+  void ifElseWithNullElseBlock() {
 
     Predicate<Object> ifCondition = mock(Predicate.class);
 
@@ -129,14 +162,14 @@ public class CodeBlocksUnitTests {
 
     assertThatIllegalArgumentException()
       .isThrownBy(() -> CodeBlocks.ifElse("test", ifCondition, ifBlock, null))
-      .withMessage("The Function for the else block is required")
+      .withMessage("Function for the else block is required")
       .withNoCause();
 
     verifyNoInteractions(ifCondition, ifBlock);
   }
 
   @Test
-  public void ifElseWithNullTargetIsNullSafe() {
+  void ifElseWithNullTargetIsNullSafe() {
 
     Predicate<Object> ifCondition = mock(Predicate.class);
 
@@ -155,7 +188,7 @@ public class CodeBlocksUnitTests {
   }
 
   @Test
-  public void tryCatchIsSuccessful() throws Throwable {
+  void tryCatchIsSuccessful() throws Throwable {
 
     ThrowableOperation<Object> operation = mock(ThrowableOperation.class);
 
@@ -171,7 +204,7 @@ public class CodeBlocksUnitTests {
   }
 
   @Test
-  public void tryCatchThrowsRuntimeException() throws Throwable {
+  void tryCatchThrowsRuntimeException() throws Throwable {
 
     ThrowableOperation<Object> operation = mock(ThrowableOperation.class);
 
@@ -197,7 +230,7 @@ public class CodeBlocksUnitTests {
   }
 
   @Test
-  public void tryCatchFinallyThrowsRuntimeException() throws Throwable {
+  void tryCatchFinallyThrowsRuntimeException() throws Throwable {
 
     ThrowableOperation<Object> operation = mock(ThrowableOperation.class);
 
@@ -226,7 +259,7 @@ public class CodeBlocksUnitTests {
   }
 
   @Test
-  public void tryCatchFinallyWithNullTryBlock() {
+  void tryCatchFinallyWithNullTryBlock() {
 
     Runnable finallyBlock = mock(Runnable.class);
 
@@ -241,7 +274,7 @@ public class CodeBlocksUnitTests {
   }
 
   @Test
-  public void tryCatchFinallyWithNullFinallyBlock() {
+  void tryCatchFinallyWithNullFinallyBlock() {
 
     ThrowableOperation<Object> operation = mock(ThrowableOperation.class);
 
@@ -256,7 +289,7 @@ public class CodeBlocksUnitTests {
   }
 
   @Test
-  public void tryCatchFinallyWithNullCatchBlock() {
+  void tryCatchFinallyWithNullCatchBlock() {
 
     ThrowableOperation<Object> operation = mock(ThrowableOperation.class);
 
@@ -271,7 +304,7 @@ public class CodeBlocksUnitTests {
   }
 
   @Test
-  public void tryHandleIsSuccessful() throws Throwable {
+  void tryHandleIsSuccessful() throws Throwable {
 
     ThrowableOperation<Object> operation = mock(ThrowableOperation.class);
 
@@ -287,7 +320,7 @@ public class CodeBlocksUnitTests {
   }
 
   @Test
-  public void tryHandleThrowsRuntimeException() throws Throwable {
+  void tryHandleThrowsRuntimeException() throws Throwable {
 
     ThrowableOperation<Object> operation = mock(ThrowableOperation.class);
 
@@ -313,7 +346,7 @@ public class CodeBlocksUnitTests {
   }
 
   @Test
-  public void tryHandleFinallyThrowsRuntimeException() throws Throwable {
+  void tryHandleFinallyThrowsRuntimeException() throws Throwable {
 
     ThrowableOperation<Object> operation = mock(ThrowableOperation.class);
 
@@ -342,7 +375,7 @@ public class CodeBlocksUnitTests {
   }
 
   @Test
-  public void tryHandleFinallyWithNullTryBlock() {
+  void tryHandleFinallyWithNullTryBlock() {
 
     Runnable finallyBlock = mock(Runnable.class);
 
@@ -357,7 +390,7 @@ public class CodeBlocksUnitTests {
   }
 
   @Test
-  public void tryHandleFinallyWithNullFinallyBlock() {
+  void tryHandleFinallyWithNullFinallyBlock() {
 
     ThrowableOperation<Object> tryBlock = mock(ThrowableOperation.class);
 
@@ -372,7 +405,7 @@ public class CodeBlocksUnitTests {
   }
 
   @Test
-  public void tryHandleFinallyWithNullCatchBlock() {
+  void tryHandleFinallyWithNullCatchBlock() {
 
     ThrowableOperation<Object> tryBlock = mock(ThrowableOperation.class);
 
@@ -387,7 +420,7 @@ public class CodeBlocksUnitTests {
   }
 
   @Test
-  public void whileLoopIsSuccessful() {
+  void whileLoopIsSuccessful() {
 
     Predicate<Integer> whileCondition = number ->  number < 200;
 
@@ -397,7 +430,7 @@ public class CodeBlocksUnitTests {
   }
 
   @Test
-  public void whileLoopWithNullWhileCondition() {
+  void whileLoopWithNullWhileCondition() {
 
     Function<Object, Object> whileBlock = mock(Function.class);
 
@@ -410,7 +443,7 @@ public class CodeBlocksUnitTests {
   }
 
   @Test
-  public void whileLoopWithNullWhileBlock() {
+  void whileLoopWithNullWhileBlock() {
 
     Predicate<Object> whileCondition = mock(Predicate.class);
 
