@@ -30,7 +30,6 @@ import java.util.Random;
 import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.FilteringTransformer;
@@ -41,6 +40,7 @@ import org.cp.elements.lang.annotation.NotNull;
 import org.cp.elements.lang.annotation.NullSafe;
 import org.cp.elements.lang.annotation.Nullable;
 import org.cp.elements.lang.support.ToStringRenderer;
+import org.cp.elements.util.stream.StreamUtils;
 
 /**
  * An abstract utility {@link Class} providing methods and functionality for working with the Java Collections Framework
@@ -227,10 +227,8 @@ public abstract class CollectionUtils {
   @NullSafe
   public static @NotNull <T> List<T> asList(@Nullable Iterable<T> iterable) {
 
-    return iterable instanceof Collection
-      ? new ArrayList<>((Collection<T>) iterable)
-      : StreamSupport.stream(nullSafeIterable(iterable).spliterator(), false)
-        .collect(Collectors.toList());
+    return iterable instanceof Collection<T> collection ? new ArrayList<>(collection)
+      : StreamUtils.stream(nullSafeIterable(iterable)).toList();
   }
 
   /**
@@ -260,10 +258,8 @@ public abstract class CollectionUtils {
   @NullSafe
   public static @NotNull <T> Set<T> asSet(@Nullable Iterable<T> iterable) {
 
-    return iterable instanceof Collection
-      ? new HashSet<>((Collection<T>) iterable)
-      : StreamSupport.stream(nullSafeIterable(iterable).spliterator(), false)
-        .collect(Collectors.toSet());
+    return iterable instanceof Collection<T> collection ? new HashSet<>(collection)
+      : StreamUtils.stream(nullSafeIterable(iterable)).collect(Collectors.toSet());
   }
 
   /**
@@ -306,8 +302,7 @@ public abstract class CollectionUtils {
   @NullSafe
   public static long count(@Nullable Iterable<?> iterable) {
 
-    return iterable instanceof Collection
-      ? ((Collection<?>) iterable).size()
+    return iterable instanceof Collection<?> collection ? collection.size()
       : count(iterable, element -> true);
   }
 
@@ -329,7 +324,7 @@ public abstract class CollectionUtils {
 
     Assert.notNull(predicate, "Predicate is required");
 
-    return StreamSupport.stream(nullSafeIterable(iterable).spliterator(), false)
+    return StreamUtils.stream(nullSafeIterable(iterable))
       .filter(predicate)
       .count();
   }
@@ -428,7 +423,7 @@ public abstract class CollectionUtils {
 
     Assert.notNull(predicate, "Predicate is required");
 
-    return StreamSupport.stream(nullSafeIterable(iterable).spliterator(), false)
+    return StreamUtils.stream(nullSafeIterable(iterable))
       .filter(predicate)
       .collect(Collectors.toList());
   }
@@ -452,7 +447,7 @@ public abstract class CollectionUtils {
 
     Assert.notNull(predicate, "Predicate is required");
 
-    return StreamSupport.stream(nullSafeIterable(iterable).spliterator(), false)
+    return StreamUtils.stream(nullSafeIterable(iterable))
       .filter(predicate)
       .findFirst()
       .orElse(null);
