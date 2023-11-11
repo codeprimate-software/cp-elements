@@ -20,7 +20,6 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.Calendar;
-import java.util.Optional;
 
 import org.cp.elements.lang.annotation.NotNull;
 import org.cp.elements.lang.annotation.NullSafe;
@@ -42,21 +41,21 @@ import org.cp.elements.lang.annotation.Nullable;
 @SuppressWarnings("unused")
 public abstract class DateTimeUtils {
 
-  public static final int NUMBER_OF_MILLISECONDS_IN_SECOND = 1000;
-  public static final int NUMBER_OF_SECONDS_IN_MINUTE = 60;
-  public static final int NUMBER_OF_MINUTES_IN_HOUR = 60;
-  public static final int NUMBER_OF_HOURS_IN_DAY = 24;
-  public static final int NUMBER_OF_DAYS_IN_FEBRUARY_OF_LEAP_YEAR = 29;
-  public static final int NUMBER_OF_DAYS_IN_WEEK = 7;
-  public static final int NUMBER_OF_DAYS_IN_YEAR = 365;
-  public static final int NUMBER_OF_DAYS_IN_LEAP_YEAR = 366;
-  public static final int NUMBER_OF_MONTHS_IN_YEAR = 12;
-  public static final int NUMBER_OF_YEARS_IN_DECADE = 10;
-  public static final int NUMBER_OF_YEARS_IN_SCORE = 20;
-  public static final int NUMBER_OF_YEARS_IN_CENTURY = 100;
-  public static final int NUMBER_OF_YEARS_IN_MILLENNIUM = 1000;
+  public static final int MILLISECONDS_IN_SECOND = 1000;
+  public static final int SECONDS_IN_MINUTE = 60;
+  public static final int MINUTES_IN_HOUR = 60;
+  public static final int HOURS_IN_DAY = 24;
+  public static final int DAYS_IN_FEBRUARY_OF_LEAP_YEAR = 29;
+  public static final int DAYS_IN_WEEK = 7;
+  public static final int DAYS_IN_YEAR = 365;
+  public static final int DAYS_IN_LEAP_YEAR = 366;
+  public static final int MONTHS_IN_YEAR = 12;
+  public static final int YEARS_IN_DECADE = 10;
+  public static final int YEARS_IN_SCORE = 20;
+  public static final int YEARS_IN_CENTURY = 100;
+  public static final int YEARS_IN_MILLENNIUM = 1000;
 
-  public static final int[] NUMBER_OF_DAYS_IN_MONTH = {
+  public static final int[] DAYS_IN_MONTH = {
     31, // January
     28, // February
     31, // March
@@ -80,11 +79,7 @@ public abstract class DateTimeUtils {
    */
   @NullSafe
   public static @Nullable Calendar clone(@NotNull Calendar dateTime) {
-
-    return Optional.ofNullable(dateTime)
-      .map(Calendar::clone)
-      .map(Calendar.class::cast)
-      .orElse(null);
+    return dateTime != null ? (Calendar) dateTime.clone() : null;
   }
 
   /**
