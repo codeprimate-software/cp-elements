@@ -17,6 +17,7 @@ package org.cp.elements.time;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
 
 import org.junit.jupiter.api.Test;
@@ -29,24 +30,24 @@ import org.junit.jupiter.api.Test;
  * @see org.cp.elements.time.TimeUnit
  * @since 1.0.0
  */
-public class TimeUnitUnitTests {
+class TimeUnitUnitTests {
 
   @Test
-  public void valueOfReturnsTimeUnit() {
+  void valueOfReturnsTimeUnit() {
 
     Arrays.stream(TimeUnit.values()).forEach(timeUnit ->
       assertThat(TimeUnit.valueOf(timeUnit.name())).isEqualTo(timeUnit));
   }
 
   @Test
-  public void valueOfAbbreviationIsCorrect() {
+  void valueOfAbbreviationIsCorrect() {
 
     Arrays.stream(TimeUnit.values()).forEach(timeUnit ->
       assertThat(TimeUnit.valueOfAbbreviation(timeUnit.getAbbreviation())).isEqualTo(timeUnit));
   }
 
   @Test
-  public void valueOfAbbreviationIsLenient() {
+  void valueOfAbbreviationIsLenient() {
 
     assertThat(TimeUnit.valueOfAbbreviation("ms")).isEqualTo(TimeUnit.MILLISECOND);
     assertThat(TimeUnit.valueOfAbbreviation("Mi")).isEqualTo(TimeUnit.MINUTE);
@@ -54,17 +55,17 @@ public class TimeUnitUnitTests {
   }
 
   @Test
-  public void valueOfAbbreviationIsNullSafeReturnsNull() {
+  void valueOfAbbreviationIsNullSafeReturnsNull() {
     assertThat(TimeUnit.valueOfAbbreviation(null)).isNull();
   }
 
   @Test
-  public void valueOfAbbreviationUsingNameReturnsNull() {
+  void valueOfAbbreviationUsingNameReturnsNull() {
     assertThat(TimeUnit.valueOfAbbreviation("Week")).isNull();
   }
 
   @Test
-  public void valueOfInvalidAbbreviationReturnsNull() {
+  void valueOfInvalidAbbreviationReturnsNull() {
 
     assertThat(TimeUnit.valueOfAbbreviation("")).isNull();
     assertThat(TimeUnit.valueOfAbbreviation("  ")).isNull();
@@ -74,7 +75,7 @@ public class TimeUnitUnitTests {
   }
 
   @Test
-  public void valueOfNameIsCorrect() {
+  void valueOfNameIsCorrect() {
 
     Arrays.stream(TimeUnit.values()).forEach(timeUnit -> {
       assertThat(TimeUnit.valueOfName(timeUnit.name())).isEqualTo(timeUnit);
@@ -83,7 +84,7 @@ public class TimeUnitUnitTests {
   }
 
   @Test
-  public void valueOfNameIsLenient() {
+  void valueOfNameIsLenient() {
 
     assertThat(TimeUnit.valueOfName("MicroSecond")).isEqualTo(TimeUnit.MICROSECOND);
     assertThat(TimeUnit.valueOfName("milliSecond")).isEqualTo(TimeUnit.MILLISECOND);
@@ -95,21 +96,33 @@ public class TimeUnitUnitTests {
   }
 
   @Test
-  public void valueOfNameIsNullSafeReturnsNull() {
+  void valueOfNameIsNullSafeReturnsNull() {
     assertThat(TimeUnit.valueOfName(null)).isNull();
   }
 
   @Test
-  public void valueOfNameUsingAbbreviationReturnsNull() {
+  void valueOfNameUsingAbbreviationReturnsNull() {
     assertThat(TimeUnit.valueOfName("us")).isNull();
   }
 
   @Test
-  public void valueOfInvalidNameReturnsNull() {
+  void valueOfInvalidNameReturnsNull() {
 
     assertThat(TimeUnit.valueOfName("")).isNull();
     assertThat(TimeUnit.valueOfName("  ")).isNull();
     assertThat(TimeUnit.valueOfName("daily")).isNull();
     assertThat(TimeUnit.valueOfName("weekend")).isNull();
+  }
+
+  @Test
+  void valueOfChronoUnitIsCorrect() {
+
+    Arrays.stream(TimeUnit.values()).forEach(timeUnit ->
+      assertThat(TimeUnit.valueOfChronoUnit(timeUnit.getChronoUnit())).isEqualTo(timeUnit));
+  }
+
+  @Test
+  void valeOfNonExistingChronoUnitReturnsNull() {
+    assertThat(TimeUnit.valueOfChronoUnit(ChronoUnit.ERAS)).isNull();
   }
 }

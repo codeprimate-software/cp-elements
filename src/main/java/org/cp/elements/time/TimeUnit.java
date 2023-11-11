@@ -15,9 +15,12 @@
  */
 package org.cp.elements.time;
 
+import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
 import java.util.function.Predicate;
 
+import org.cp.elements.lang.Nameable;
+import org.cp.elements.lang.ObjectUtils;
 import org.cp.elements.lang.annotation.NotNull;
 import org.cp.elements.lang.annotation.Nullable;
 
@@ -26,25 +29,27 @@ import org.cp.elements.lang.annotation.Nullable;
  *
  * @author John J. Blum
  * @see java.lang.Enum
+ * @see java.time.temporal.ChronoUnit
+ * @see org.cp.elements.lang.Nameable
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
-public enum TimeUnit {
+public enum TimeUnit implements Nameable<String> {
 
-  NANOSECOND("ns", "Nanosecond", "1 billionth of a second"),
-  MICROSECOND("us", "Microsecond", "1 millionth of a second"),
-  MILLISECOND("ms", "Millisecond", "1 thousandth of a second"),
-  SECOND("s", "Second", "1 second"),
-  MINUTE("mi", "Minute", "60 seconds"),
-  HOUR("hr", "Hour", "60 minutes"),
-  DAY("day", "Day", "24 hours"),
-  WEEK("wk", "Week", "7 days"),
-  MONTH("mon", "Month", "28-31 days"),
-  YEAR("yr", "Year", "12 months, 365 days"),
-  DECADE("dec", "Decade", "10 years"),
-  SCORE("score", "Score", "20 years"),
-  CENTURY("cent", "Century", "100 years"),
-  MILLENNIA("millennia", "Millennia", "1000 years");
+  NANOSECOND("ns", "Nanosecond", "1 billionth of a second", ChronoUnit.NANOS),
+  MICROSECOND("us", "Microsecond", "1 millionth of a second", ChronoUnit.MICROS),
+  MILLISECOND("ms", "Millisecond", "1 thousandth of a second", ChronoUnit.MILLIS),
+  SECOND("s", "Second", "1 second", ChronoUnit.SECONDS),
+  MINUTE("mi", "Minute", "60 seconds", ChronoUnit.MINUTES),
+  HOUR("hr", "Hour", "60 minutes", ChronoUnit.HOURS),
+  DAY("day", "Day", "24 hours", ChronoUnit.DAYS),
+  WEEK("wk", "Week", "7 days", ChronoUnit.WEEKS),
+  MONTH("mon", "Month", "28-31 days", ChronoUnit.MONTHS),
+  YEAR("yr", "Year", "12 months, 365 days", ChronoUnit.YEARS),
+  DECADE("dec", "Decade", "10 years", ChronoUnit.DECADES),
+  SCORE("score", "Score", "20 years", null),
+  CENTURY("cent", "Century", "100 years", ChronoUnit.CENTURIES),
+  MILLENNIA("millennia", "Millennia", "1000 years", ChronoUnit.MILLENNIA);
 
   /**
    * Factory method used to find a {@link TimeUnit} for the given {@link String abbreviation}.
@@ -58,6 +63,20 @@ public enum TimeUnit {
    */
   public static @Nullable TimeUnit valueOfAbbreviation(@Nullable String abbreviation) {
     return valueOf(timeUnit -> timeUnit.getAbbreviation().equalsIgnoreCase(abbreviation));
+  }
+
+  /**
+   * Factory method used to find a {@link TimeUnit} for the given {@link ChronoUnit}.
+   *
+   * @param chronoUnit {@link ChronoUnit} matching the {@link TimeUnit}.
+   * @return a {@link TimeUnit} matching the given {@link ChronoUnit} or {@literal null}
+   * if no {@link TimeUnit} exists matching the {@link ChronoUnit}.
+   * @see java.time.temporal.ChronoUnit
+   * @see #valueOf(Predicate)
+   * @see #getChronoUnit()
+   */
+  public static @Nullable TimeUnit valueOfChronoUnit(@Nullable ChronoUnit chronoUnit) {
+    return valueOf(timeUnit -> ObjectUtils.equalsIgnoreNull(timeUnit.getChronoUnit(), chronoUnit));
   }
 
   /**
@@ -91,6 +110,8 @@ public enum TimeUnit {
       .orElse(null);
   }
 
+  private final ChronoUnit chronoUnit;
+
   private final String abbreviation;
   private final String description;
   private final String name;
@@ -102,11 +123,14 @@ public enum TimeUnit {
    * @param abbreviation {@link String} specifying the {@literal abbreviation} for {@literal this} {@link TimeUnit}.
    * @param name {@link String} containing the {@literal name} of {@literal this} {@link TimeUnit}.
    * @param description {@link String} describing {@literal this} {@link TimeUnit}.
+   * @param chronoUnit {@link ChronoUnit} corresponding to the unit of time.
+   * @see java.time.temporal.ChronoUnit
    */
-  TimeUnit(String abbreviation, String name, String description) {
+  TimeUnit(String abbreviation, String name, String description, ChronoUnit chronoUnit) {
     this.abbreviation = abbreviation;
     this.name = name;
     this.description = description;
+    this.chronoUnit = chronoUnit;
   }
 
   /**
@@ -136,6 +160,16 @@ public enum TimeUnit {
    */
   public String getName() {
     return this.name;
+  }
+
+  /**
+   * Gets the {@link ChronoUnit} matching this {@link TimeUnit}.
+   *
+   * @return the {@link ChronoUnit} matching this {@link TimeUnit}.
+   * @see java.time.temporal.ChronoUnit
+   */
+  public @Nullable ChronoUnit getChronoUnit() {
+    return this.chronoUnit;
   }
 
   /**
