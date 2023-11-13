@@ -83,6 +83,15 @@ class DurationFormatterUnitTests {
   }
 
   @Test
+  void daysNanosecondsIsCorrect() {
+
+    Duration actual = DurationFormatter.TIME_UNIT.parse("16d8ns");
+    Duration expected = durationOf(16, 0, 0, 0, 0, 0, 8);
+
+    assertThat(actual).isEqualTo(expected);
+  }
+
+  @Test
   void hoursSecondsMicrosecondsIsCorrect() {
 
     Duration actual = DurationFormatter.TIME_UNIT.parse("18h59s512125us");
