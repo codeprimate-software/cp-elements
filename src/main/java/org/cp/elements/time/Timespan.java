@@ -66,26 +66,79 @@ public class Timespan implements Comparable<Timespan>, Renderable {
 	protected static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern(DATE_PATTERN);
 	protected static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern(DATE_TIME_PATTERN);
 
+	/**
+	 * Factory method used to construct a new {@link Timespan} beginning in the given, required {@link Year}.
+	 * <p>
+	 * The beginning of the {@link Timespan} is set to {@literal <Year>-January-1:00:00:00.0}.
+	 *
+	 * @param year {@link Year} marking the beginning of the {@link Timespan}; must not be {@literal null}.
+	 * @return a new {@link Timespan} beginning in the given {@link Year}.
+	 * @throws IllegalArgumentException if the given {@link Year} is {@literal null}.
+	 * @see #beginning(YearMonth)
+	 * @see java.time.Year
+	 */
 	public static @NotNull Timespan beginning(@NotNull Year year) {
-		Assert.notNull(year, "Begin Year is required");
+		Assert.notNull(year, "Beginning year is required");
 		return beginning(year.atMonth(Month.JANUARY));
 	}
 
+	/**
+	 * Factory method used to construct a new {@link Timespan} beginning in the given, required {@link YearMonth}.
+	 * <p>
+	 * The beginning of the {@link Timespan} is set to {@literal <Year>-<Month>-1:00:00:00.0}.
+	 *
+	 * @param yearMonth {@link YearMonth} marking the beginning of the {@link Timespan}; mus not be {@literal null}.
+	 * @return a new {@link Timespan} beginning in the given {@link YearMonth}.
+	 * @throws IllegalArgumentException if the given {@link YearMonth} are {@literal null}.
+	 * @see #beginning(LocalDate)
+	 * @see java.time.YearMonth
+	 */
 	public static @NotNull Timespan beginning(@NotNull YearMonth yearMonth) {
-		Assert.notNull(yearMonth, "Begin Year/Month are required");
+		Assert.notNull(yearMonth, "Beginning year and month are required");
 		return beginning(yearMonth.atDay(1));
 	}
 
+	/**
+	 * Factory method used to construct a new {@link Timespan} beginning on the given, required {@link LocalDate},
+	 * with no timestamp.
+	 *
+	 * @param date {@link LocalDate} marking the beginning of the {@link Timespan}; must not be {@literal null}.
+	 * @return a new {@link Timespan} beginning on the given {@link LocalDate}.
+	 * @throws IllegalArgumentException if the given {@link LocalDate} is {@literal null}.
+	 * @see #beginning(LocalDateTime)
+	 * @see java.time.LocalDate
+	 */
 	public static @NotNull Timespan beginning(@NotNull LocalDate date) {
-		Assert.notNull(date, "Begin date is required");
+		Assert.notNull(date, "Beginning date is required");
 		return beginning(date.atStartOfDay());
 	}
 
+	/**
+	 * Factory method used to construct a new {@link Timespan} beginning on the given,
+	 * required {@link LocalDateTime date and time}.
+	 *
+	 * @param dateTime {@link LocalDateTime} marking the beginning of the {@link Timespan}; must not be {@literal null}.
+	 * @return a new {@link Timespan} beginning on the given {@link LocalDateTime}.
+	 * @throws IllegalArgumentException if the given {@link LocalDateTime} is {@literal null}.
+	 * @see java.time.LocalDateTime
+	 */
 	public static @NotNull Timespan beginning(@NotNull LocalDateTime dateTime) {
-		Assert.notNull(dateTime, "Begin date/time is required");
+		Assert.notNull(dateTime, "Beginning date and time is required");
 		return new Timespan(dateTime, null);
 	}
 
+	/**
+	 * Factory method used to construct a new {@link Timespan} beginning at the given, required {@link LocalTime}.
+	 * <p>
+	 * The beginning of the {@link Timespan} is set to
+	 * {@literal <Current Year>-<Current Month>-<Current Day of Month>-<Hour>-<Minute>-<Second>}.
+	 *
+	 * @param time {@link LocalTime} marking the beginning of the {@link Timespan}.
+	 * @return a new {@link Timespan} beginning at the given {@link LocalTime}.
+	 * @throws IllegalArgumentException if the given {@link LocalTime} is {@literal null}.
+	 * @see #beginning(LocalDateTime)
+	 * @see java.time.LocalTime
+	 */
 	public static @NotNull Timespan beginning(@NotNull LocalTime time) {
 		Assert.notNull(time, "Start time is required");
 		return beginning(time.atDate(LocalDate.now()));

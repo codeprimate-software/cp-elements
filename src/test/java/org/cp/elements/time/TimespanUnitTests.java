@@ -18,9 +18,12 @@ package org.cp.elements.time;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.Month;
 import java.time.Year;
+import java.time.YearMonth;
 import java.util.Arrays;
 
 import org.junit.jupiter.api.Test;
@@ -34,6 +37,29 @@ import org.junit.jupiter.api.Test;
  * @since 2.0.0
  */
 class TimespanUnitTests {
+
+  private void assertBeginning(Timespan timespan, int year, Month month, int dayOfMonth) {
+    assertBeginning(timespan, year, month, dayOfMonth, 0, 0, 0);
+  }
+
+  private void assertBeginning(Timespan timespan, int year, Month month, int dayOfMonth,
+      int hour, int minute, int seconds) {
+
+    assertThat(timespan).isNotNull();
+    assertThat(timespan.getEnd()).isNull();
+    assertThat(timespan.getOptionalEnd()).isNotPresent();
+
+    LocalDateTime begin = timespan.getBegin();
+
+    assertThat(begin).isNotNull();
+    assertThat(begin).hasYear(year);
+    assertThat(begin).hasMonth(month);
+    assertThat(begin).hasDayOfMonth(dayOfMonth);
+    assertThat(begin).hasHour(hour);
+    assertThat(begin).hasMinute(minute);
+    assertThat(begin).hasSecond(seconds);
+    assertThat(timespan.getOptionalBegin().orElse(null)).isEqualTo(begin);
+  }
 
   @Test
   void timespanBetweenIsSuccessful() {
@@ -82,24 +108,11 @@ class TimespanUnitTests {
   }
 
   @Test
-  void beginningYearIsCorrect() {
+  void beginningInYear() {
 
     Timespan timespan = Timespan.beginning(Year.of(2023));
 
-    assertThat(timespan).isNotNull();
-    assertThat(timespan.getEnd()).isNull();
-    assertThat(timespan.getOptionalEnd()).isNotPresent();
-
-    LocalDateTime begin = timespan.getBegin();
-
-    assertThat(begin).isNotNull();
-    assertThat(begin).hasYear(2023);
-    assertThat(begin).hasMonth(Month.JANUARY);
-    assertThat(begin).hasDayOfMonth(1);
-    assertThat(begin).hasHour(0);
-    assertThat(begin).hasMinute(0);
-    assertThat(begin).hasSecond(0);
-    assertThat(timespan.getOptionalBegin().orElse(null)).isEqualTo(begin);
+    assertBeginning(timespan, 2023, Month.JANUARY, 1);
   }
 
   @Test
@@ -107,7 +120,84 @@ class TimespanUnitTests {
 
     assertThatIllegalArgumentException()
       .isThrownBy(() -> Timespan.beginning((Year) null))
-      .withMessage("Begin Year is required")
+      .withMessage("Beginning year is required")
+      .withNoCause();
+  }
+
+  @Test
+  void beginningInYearAndMonth() {
+
+    YearMonth yearMonth = YearMonth.of(2020, Month.MAY);
+
+    Timespan timespan = Timespan.beginning(yearMonth);
+
+    assertBeginning(timespan, 2020, Month.MAY, 1);
+  }
+
+  @Test
+  void beginningInNullYearnAndMonth() {
+
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> Timespan.beginning((YearMonth) null))
+      .withMessage("Beginning year and month are required")
+      .withNoCause();
+  }
+
+  @Test
+  void beginningOnDate() {
+
+    LocalDate date = LocalDate.of(2011, Month.MAY, 31);
+
+    Timespan timespan = Timespan.beginning(date);
+
+    assertBeginning(timespan, 2011, Month.MAY, 31);
+  }
+
+  @Test
+  void beginningOnNullDate() {
+
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> Timespan.beginning((LocalDate) null))
+      .withMessage("Beginning date is required")
+      .withNoCause();
+  }
+
+  @Test
+  void beginningOnDateAndTime() {
+
+    LocalDateTime dateTime = LocalDateTime.of(1998, Month.MAY, 15, 13, 18, 30, 0);
+
+    Timespan timespan = Timespan.beginning(dateTime);
+
+    assertBeginning(timespan, 1998, Month.MAY, 15, 13, 18, 30);
+  }
+
+  @Test
+  void beginningOnNullDateTime() {
+
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> Timespan.beginning((LocalDateTime) null))
+      .withMessage("Beginning date and time is required")
+      .withNoCause();
+  }
+
+  @Test
+  void beginningAtTime() {
+
+    LocalTime time = LocalTime.of(16, 55, 30, 0);
+    LocalDate date = LocalDate.now();
+
+    Timespan timespan = Timespan.beginning(time);
+
+    assertBeginning(timespan, date.getYear(), date.getMonth(), date.getDayOfMonth(), 16, 55, 30);
+  }
+
+  @Test
+  void beginningAtNullTime() {
+
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> Timespan.beginning((LocalTime) null))
+      .withMessage("Start time is required")
       .withNoCause();
   }
 }
