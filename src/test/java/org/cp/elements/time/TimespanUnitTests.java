@@ -25,6 +25,7 @@ import java.time.Month;
 import java.time.Year;
 import java.time.YearMonth;
 import java.util.Arrays;
+import java.util.function.Supplier;
 
 import org.junit.jupiter.api.Test;
 
@@ -43,22 +44,42 @@ class TimespanUnitTests {
   }
 
   private void assertBeginning(Timespan timespan, int year, Month month, int dayOfMonth,
-      int hour, int minute, int seconds) {
+      int hour, int minute, int second) {
 
     assertThat(timespan).isNotNull();
     assertThat(timespan.getEnd()).isNull();
     assertThat(timespan.getOptionalEnd()).isNotPresent();
+    assertTime(year, month, dayOfMonth, hour, minute, second, timespan::getBegin);
+    assertThat(timespan.getOptionalBegin().orElse(null)).isEqualTo(timespan.getBegin());
+  }
 
-    LocalDateTime begin = timespan.getBegin();
+  private void assertEnding(Timespan timespan, int year, Month month, int dayOfMonth) {
+    LocalTime time = LocalTime.MAX;
+    assertEnding(timespan, year, month, dayOfMonth, time.getHour(), time.getMinute(), time.getSecond());
+  }
 
-    assertThat(begin).isNotNull();
-    assertThat(begin).hasYear(year);
-    assertThat(begin).hasMonth(month);
-    assertThat(begin).hasDayOfMonth(dayOfMonth);
-    assertThat(begin).hasHour(hour);
-    assertThat(begin).hasMinute(minute);
-    assertThat(begin).hasSecond(seconds);
-    assertThat(timespan.getOptionalBegin().orElse(null)).isEqualTo(begin);
+  private void assertEnding(Timespan timespan, int year, Month month, int dayOfMonth,
+      int hour, int minute, int second) {
+
+    assertThat(timespan).isNotNull();
+    assertThat(timespan.getBegin()).isNull();
+    assertThat(timespan.getOptionalBegin()).isNotPresent();
+    assertTime(year, month, dayOfMonth, hour, minute, second, timespan::getEnd);
+    assertThat(timespan.getOptionalEnd().orElse(null)).isEqualTo(timespan.getEnd());
+  }
+
+  private void assertTime(int year, Month month, int dayOfMonth, int hour, int minute, int second,
+      Supplier<LocalDateTime> dateTimeSupplier) {
+
+    LocalDateTime dateTime = dateTimeSupplier.get();
+
+    assertThat(dateTime).isNotNull();
+    assertThat(dateTime).hasYear(year);
+    assertThat(dateTime).hasMonth(month);
+    assertThat(dateTime).hasDayOfMonth(dayOfMonth);
+    assertThat(dateTime).hasHour(hour);
+    assertThat(dateTime).hasMinute(minute);
+    assertThat(dateTime).hasSecond(second);
   }
 
   @Test
@@ -127,15 +148,13 @@ class TimespanUnitTests {
   @Test
   void beginningInYearAndMonth() {
 
-    YearMonth yearMonth = YearMonth.of(2020, Month.MAY);
+    Timespan timespan = Timespan.beginning(YearMonth.of(2020, Month.JULY));
 
-    Timespan timespan = Timespan.beginning(yearMonth);
-
-    assertBeginning(timespan, 2020, Month.MAY, 1);
+    assertBeginning(timespan, 2020, Month.JULY, 1);
   }
 
   @Test
-  void beginningInNullYearnAndMonth() {
+  void beginningInNullYearAndMonth() {
 
     assertThatIllegalArgumentException()
       .isThrownBy(() -> Timespan.beginning((YearMonth) null))
@@ -146,9 +165,7 @@ class TimespanUnitTests {
   @Test
   void beginningOnDate() {
 
-    LocalDate date = LocalDate.of(2011, Month.MAY, 31);
-
-    Timespan timespan = Timespan.beginning(date);
+    Timespan timespan = Timespan.beginning(LocalDate.of(2011, Month.MAY, 31));
 
     assertBeginning(timespan, 2011, Month.MAY, 31);
   }
@@ -165,9 +182,7 @@ class TimespanUnitTests {
   @Test
   void beginningOnDateAndTime() {
 
-    LocalDateTime dateTime = LocalDateTime.of(1998, Month.MAY, 15, 13, 18, 30, 0);
-
-    Timespan timespan = Timespan.beginning(dateTime);
+    Timespan timespan = Timespan.beginning(LocalDateTime.of(1998, Month.MAY, 15, 13, 18, 30, 0));
 
     assertBeginning(timespan, 1998, Month.MAY, 15, 13, 18, 30);
   }
@@ -184,12 +199,12 @@ class TimespanUnitTests {
   @Test
   void beginningAtTime() {
 
+    LocalDate now = LocalDate.now();
     LocalTime time = LocalTime.of(16, 55, 30, 0);
-    LocalDate date = LocalDate.now();
 
     Timespan timespan = Timespan.beginning(time);
 
-    assertBeginning(timespan, date.getYear(), date.getMonth(), date.getDayOfMonth(), 16, 55, 30);
+    assertBeginning(timespan, now.getYear(), now.getMonth(), now.getDayOfMonth(), 16, 55, 30);
   }
 
   @Test
@@ -198,6 +213,94 @@ class TimespanUnitTests {
     assertThatIllegalArgumentException()
       .isThrownBy(() -> Timespan.beginning((LocalTime) null))
       .withMessage("Start time is required")
+      .withNoCause();
+  }
+
+  @Test
+  void endingInYear() {
+
+    Timespan timespan = Timespan.ending(Year.of(1999));
+
+    assertEnding(timespan, 1999, Month.DECEMBER, 31);
+  }
+
+  @Test
+  void endingInNullYear() {
+
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> Timespan.ending((Year) null))
+      .withMessage("End year is required")
+      .withNoCause();
+  }
+
+  @Test
+  void endingInYearAndMonth() {
+
+    Timespan timespan = Timespan.ending(YearMonth.of(2020, Month.JUNE));
+
+    assertEnding(timespan, 2020, Month.JUNE, 30);
+  }
+
+  @Test
+  void endingInNullYearAndMonth() {
+
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> Timespan.ending((YearMonth) null))
+      .withMessage("End year and month are required")
+      .withNoCause();
+  }
+
+  @Test
+  void endingOnDate() {
+
+    Timespan timespan = Timespan.ending(LocalDate.of(2013, Month.MARCH, 31));
+
+    assertEnding(timespan, 2013, Month.MARCH, 31);
+  }
+
+  @Test
+  void endingOnNullDate() {
+
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> Timespan.ending((LocalDate) null))
+      .withMessage("End date is required")
+      .withNoCause();
+  }
+
+  @Test
+  void endingOnDateAndTime() {
+
+    Timespan timespan = Timespan.ending(LocalDateTime.of(2019, Month.DECEMBER, 31, 16, 59, 59));
+
+    assertEnding(timespan, 2019, Month.DECEMBER, 31, 16, 59, 59);
+  }
+
+  @Test
+  void endingOnNullDateAndTime() {
+
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> Timespan.ending((LocalDateTime) null))
+      .withMessage("End date and time are required")
+      .withNoCause();
+  }
+
+  @Test
+  void endingAtTime() {
+
+    LocalDate now = LocalDate.now();
+    LocalTime time = LocalTime.of(22, 36, 15);
+
+    Timespan timespan = Timespan.ending(time);
+
+    assertEnding(timespan, now.getYear(), now.getMonth(), now.getDayOfMonth(), 22, 36, 15);
+  }
+
+  @Test
+  void endingAtNullTime() {
+
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> Timespan.ending((LocalTime) null))
+      .withMessage("End time is required")
       .withNoCause();
   }
 }

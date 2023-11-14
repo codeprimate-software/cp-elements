@@ -128,12 +128,13 @@ public class Timespan implements Comparable<Timespan>, Renderable {
 	}
 
 	/**
-	 * Factory method used to construct a new {@link Timespan} beginning at the given, required {@link LocalTime}.
+	 * Factory method used to construct a new {@link Timespan} beginning at the given, required {@link LocalTime}
+	 * on the current day.
 	 * <p>
 	 * The beginning of the {@link Timespan} is set to
 	 * {@literal <Current Year>-<Current Month>-<Current Day of Month>-<Hour>-<Minute>-<Second>}.
 	 *
-	 * @param time {@link LocalTime} marking the beginning of the {@link Timespan}.
+	 * @param time {@link LocalTime} marking the beginning of the {@link Timespan}; must not be {@literal null}.
 	 * @return a new {@link Timespan} beginning at the given {@link LocalTime}.
 	 * @throws IllegalArgumentException if the given {@link LocalTime} is {@literal null}.
 	 * @see #beginning(LocalDateTime)
@@ -171,26 +172,80 @@ public class Timespan implements Comparable<Timespan>, Renderable {
 		return new Timespan(begin, end);
 	}
 
+	/**
+	 * Factory method used to construct a new {@link Timespan} ending in the given, required {@link Year}.
+	 * <p>
+	 * The ending of the {@link Timespan} is set to {@literal <Year>-December-31:00:00:00.0}.
+	 *
+	 * @param year {@link Year} marking the end of the {@link Timespan}; must not be {@literal null}.
+	 * @return a new {@link Timespan} ending in the given {@link Year}.
+	 * @throws IllegalArgumentException if the given {@link Year} is {@literal null}.
+	 * @see #ending(YearMonth)
+	 * @see java.time.Year
+	 */
 	public static @NotNull Timespan ending(@NotNull Year year) {
-		Assert.notNull(year, "End Year is required");
+		Assert.notNull(year, "End year is required");
 		return ending(year.atMonth(Month.DECEMBER));
 	}
 
+	/**
+	 * Factory method used to construct a new {@link Timespan} ending in the given, required {@link YearMonth}.
+	 * <p>
+	 * The ending of the {@link Timespan} is set to {@literal <Year>-<Month>-<last-day-of-given-month>:00:00:00.0}.
+	 *
+	 * @param yearMonth {@link YearMonth} marking the end of the {@link Timespan}; must not be {@literal null}.
+	 * @return a new {@link Timespan} ending in the given {@link YearMonth}.
+	 * @throws IllegalArgumentException if the given {@link YearMonth} is {@literal null}.
+	 * @see java.time.YearMonth
+	 * @see #ending(LocalDate)
+	 */
 	public static @NotNull Timespan ending(@NotNull YearMonth yearMonth) {
-		Assert.notNull(yearMonth, "End Year/Month is required");
+		Assert.notNull(yearMonth, "End year and month are required");
 		return ending(yearMonth.atEndOfMonth());
 	}
 
+	/**
+	 * Factory method used to construct a new {@link Timespan} ending on the given, required {@link LocalDate},
+	 * with no timestamp.
+	 *
+	 * @param date {@link LocalDate} marking the end of the {@link Timespan}; must not be {@literal null}.
+	 * @return a new {@link Timespan} ending on the given {@link LocalDate}.
+	 * @throws IllegalArgumentException if the given {@link LocalDate} is {@literal null}.
+	 * @see #ending(LocalDateTime)
+	 * @see java.time.LocalDate
+	 */
 	public static @NotNull Timespan ending(@NotNull LocalDate date) {
 		Assert.notNull(date, "End date is required");
 		return ending(date.atTime(LocalTime.MAX));
 	}
 
+	/**
+	 * Factory method used to construct a new {@link Timespan} ending on the given,
+	 * required {@link LocalDateTime date and time}.
+	 *
+	 * @param dateTime {@link LocalDateTime} marking the end of the {@link Timespan}; must not be {@literal null}.
+	 * @return a new {@link Timespan} ending on the given {@link LocalDateTime}.
+	 * @throws IllegalArgumentException if the given {@link LocalDateTime} is {@literal null}.
+	 * @see java.time.LocalDateTime
+	 */
 	public static @NotNull Timespan ending(@NotNull LocalDateTime dateTime) {
-		Assert.notNull(dateTime, "End date/time is required");
+		Assert.notNull(dateTime, "End date and time are required");
 		return new Timespan(null, dateTime);
 	}
 
+	/**
+	 * Factory method used to construct a new {@link Timespan} ending at the given, required {@link LocalTime}
+	 * of the current day.
+	 * <p>
+	 * The end of the {@link Timespan} is set to
+	 * {@literal <Current Year>-<Current Month>-<Current Day of Month>-<Hour>-<Minute>-<Second>}.
+	 *
+	 * @param time {@link LocalTime} marking the end of the {@link Timespan}; must not be {@literal null}.
+	 * @return a new {@link Timespan} ending at the given {@link LocalTime}.
+	 * @throws IllegalArgumentException if the given {@link LocalTime} is {@literal null}.
+	 * @see #ending(LocalDateTime)
+	 * @see java.time.LocalTime
+	 */
 	public static @NotNull Timespan ending(@NotNull LocalTime time) {
 		Assert.notNull(time, "End time is required");
 		return ending(time.atDate(LocalDate.now()));
