@@ -47,6 +47,9 @@ import org.cp.elements.lang.StringUtils;
  * Unit Tests for {@link CollectionUtils}.
  *
  * @author John J. Blum
+ * @see java.util.Collection
+ * @see java.util.List
+ * @see java.util.Set
  * @see org.junit.jupiter.api.Test
  * @see org.cp.elements.util.CollectionUtils
  * @since 1.0.0
