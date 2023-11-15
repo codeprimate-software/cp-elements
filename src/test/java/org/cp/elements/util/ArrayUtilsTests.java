@@ -167,7 +167,7 @@ class ArrayUtilsTests {
   }
 
   @Test
-  void assertNotEmptyWithNonEmptyArray() {
+  void assertNotEmptyWithArray() {
 
     Object[] array = { 1, 2, 3 };
 
@@ -191,6 +191,34 @@ class ArrayUtilsTests {
     assertThatIllegalArgumentException()
       .isThrownBy(() -> ArrayUtils.assertNotEmpty(null))
       .withMessage("Non-empty array is required")
+      .withNoCause();
+  }
+
+  @Test
+  void assertNoNullElementsWithArray() {
+
+    Object[] array = { "test", "testing", "tested" };
+
+    ArrayUtils.assertNoNullElements(array);
+  }
+
+  @Test
+  void assertNoNullElementsWithArrayContainingNullElements() {
+
+    Object[] array = { 1, null, 2};
+
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> ArrayUtils.assertNoNullElements(array))
+      .withMessage("Array is required and must not contain any null elements")
+      .withNoCause();
+  }
+
+  @Test
+  void assertNoNullElementsWithNullArray() {
+
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> ArrayUtils.assertNoNullElements(null))
+      .withMessage("Array is required and must not contain any null elements")
       .withNoCause();
   }
 

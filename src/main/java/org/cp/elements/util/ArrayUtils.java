@@ -74,8 +74,22 @@ public abstract class ArrayUtils {
    * @return the given array.
    * @throws IllegalArgumentException if the given array is {@literal null} or {@literal empty}.
    */
-  public static @NotNull <T> T[] assertNotEmpty(T[] array) {
+  public static @NotNull <T> T[] assertNotEmpty(@NotNull T[] array) {
     Assert.argument(array, it -> it != null && it.length != 0, "Non-empty array is required");
+    return array;
+  }
+
+  /**
+   * Asserts that the array contains no {@literal null} elements.
+   *
+   * @param <T> {@link Class type} of elements in the array.
+   * @param array array to assert.
+   * @return the given array.
+   * @throws IllegalArgumentException if the given array is {@literal null} or contains {@literal null} elements.
+   */
+  public static @NotNull <T> T[] assertNoNullElements(@NotNull T[] array) {
+    Predicate<T[]> predicate = it -> it != null && Arrays.stream(array).noneMatch(Objects::isNull);
+    Assert.argument(array, predicate, "Array is required and must not contain any null elements");
     return array;
   }
 
