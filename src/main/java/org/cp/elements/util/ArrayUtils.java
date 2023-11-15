@@ -80,7 +80,7 @@ public abstract class ArrayUtils {
   }
 
   /**
-   * Asserts that the array contains no {@literal null} elements.
+   * Asserts that the given array contains no {@literal null} elements.
    *
    * @param <T> {@link Class type} of elements in the array.
    * @param array array to assert.
