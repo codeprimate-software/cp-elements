@@ -47,19 +47,11 @@ import org.cp.elements.lang.StringUtils;
  * Unit Tests for {@link CollectionUtils}.
  *
  * @author John J. Blum
- * @see java.lang.Iterable
- * @see java.util.Arrays
- * @see java.util.Collection
- * @see java.util.Collections
- * @see java.util.Enumeration
- * @see java.util.Iterator
- * @see java.util.List
- * @see java.util.Set
  * @see org.junit.jupiter.api.Test
  * @see org.cp.elements.util.CollectionUtils
  * @since 1.0.0
  */
-public class CollectionUtilsTests {
+class CollectionUtilsTests {
 
   @SafeVarargs
   private <T> void assertElements(Collection<T> collection, T... elements) {
@@ -139,6 +131,37 @@ public class CollectionUtilsTests {
         return elements[index++];
       }
     };
+  }
+
+  @Test
+  void assertNotEmptyWithCollection() {
+
+    List<?> list = List.of(1, 2, 3);
+    Set<?> set = Set.of("test", "testing", "tested");
+
+    CollectionUtils.assertNotEmpty(list);
+    CollectionUtils.assertNotEmpty(set);
+  }
+
+  @Test
+  void assertNotEmptyWithEmptyCollection() {
+
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> CollectionUtils.assertNotEmpty(Collections.emptySet()))
+      .withMessage("Non-empty Collection is required")
+      .withNoCause();
+
+  }
+
+  @Test
+  @SuppressWarnings("all")
+  void assertNotEmptyWithNullCollection() {
+
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> CollectionUtils.assertNotEmpty(null))
+      .withMessage("Non-empty Collection is required")
+      .withNoCause();
+
   }
 
   @Test

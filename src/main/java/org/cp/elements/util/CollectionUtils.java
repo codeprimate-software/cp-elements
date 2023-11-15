@@ -67,6 +67,21 @@ public abstract class CollectionUtils {
   private static final Random random = new Random();
 
   /**
+   * Assert that the given {@link Collection} is not {@literal null} and not {@literal empty}.
+   *
+   * @param <T> {@link Class type} of the {@link Collection}.
+   * @param <E> {@link Class type} of elements in the {@link Collection}.
+   * @param collection {@link Collection} to assert.
+   * @return the given {@link Collection}.
+   * @throws IllegalArgumentException if the given {@link Collection} is {@literal null} or {@literal empty}.
+   * @see java.util.Collection
+   */
+  public static <E, T extends Collection<E>> T assertNotEmpty(@NotNull T collection) {
+    Assert.argument(collection, it -> it != null && !it.isEmpty(), "Non-empty Collection is required");
+    return collection;
+  }
+
+  /**
    * Adds all elements from the given array to the given {@link Collection}.
    *
    * @param <E> {@link Class} type of the elements in the array and {@link Collection}.
