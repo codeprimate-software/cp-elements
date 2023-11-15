@@ -56,6 +56,21 @@ public abstract class MapUtils {
     mapEntry -> Objects.nonNull(mapEntry.getValue());
 
   /**
+   * Assert that the given {@link Map} is not {@literal null} and not {@literal empty}.
+   *
+   * @param <K> {@link Class type} of the key.
+   * @param <V> {@link Class type} of the value.
+   * @param map {@link Map} to assert.
+   * @return the given {@link Map}.
+   * @throws IllegalArgumentException if the given {@link Map} is {@literal null} or {@literal empty}.
+   * @see java.util.Map
+   */
+  public static <K, V> Map<K, V> assertNotEmpty(@NotNull Map<K, V> map) {
+    Assert.argument(map, it -> it != null && !it.isEmpty(), "Map is required");
+    return map;
+  }
+
+  /**
    * Determines the number of {@link Map.Entry entries} in the {@link Map}.
    * <p>
    * This method is null-safe and will return {@literal 0} if the {@link Map} is {@literal null} or {@literal empty}.

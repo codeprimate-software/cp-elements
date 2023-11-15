@@ -42,13 +42,12 @@ import org.cp.elements.lang.NumberUtils;
  * Unit Tests for {@link MapUtils}.
  *
  * @author John J. Blum
- * @see java.util.Collections
  * @see java.util.Map
  * @see org.junit.jupiter.api.Test
  * @see org.cp.elements.util.MapUtils
  * @since 1.0.0
  */
-public class MapUtilsTests {
+class MapUtilsTests {
 
   @SuppressWarnings("unchecked")
   private <K, V> Map.Entry<K, V> mockMapEntry(K key, V value) {
@@ -59,6 +58,32 @@ public class MapUtilsTests {
     doReturn(value).when(mockMapEntry).getValue();
 
     return mockMapEntry;
+  }
+
+  @Test
+  void assertNotEmptyWithMap() {
+
+    Map<?, ?> map = Map.of("key", "value");
+
+    MapUtils.assertNotEmpty(map);
+  }
+
+  @Test
+  void assertNotEmptyWithEmptyMap() {
+
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> MapUtils.assertNotEmpty(Collections.emptyMap()))
+      .withMessage("Map is required")
+      .withNoCause();
+  }
+
+  @Test
+  void assertNotEmptyWithNullMap() {
+
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> MapUtils.assertNotEmpty(Collections.emptyMap()))
+      .withMessage("Map is required")
+      .withNoCause();
   }
 
   @Test
