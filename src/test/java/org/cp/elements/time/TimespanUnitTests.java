@@ -319,6 +319,36 @@ class TimespanUnitTests {
   }
 
   @Test
+  void fromYearToYear() {
+
+    Timespan timespan = Timespan.from(Year.of(2021)).to(Year.of(2023)).build();
+
+    assertThat(timespan).isNotNull();
+    assertThat(timespan.getBegin()).isEqualTo(LocalDateTime.of(2021, Month.JANUARY, 1, 0, 0, 0));
+    assertThat(timespan.getEnd()).isEqualTo(LocalDate.of(2023, Month.DECEMBER, 31).atTime(LocalTime.MAX));
+    assertThat(timespan.isFinite()).isTrue();
+    assertThat(timespan.isInfinite()).isFalse();
+  }
+
+  @Test
+  void fromYearToNullYear() {
+
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> Timespan.from(Year.of(2023)).to((Year) null).build())
+      .withMessage("End date and time is required")
+      .withNoCause();
+  }
+
+  @Test
+  void fromNullYearToYear() {
+
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> Timespan.from((Year) null).to(Year.of(2023)).build())
+      .withMessage("Begin date and time is required")
+      .withNoCause();
+  }
+
+  @Test
   void infiniteTimespan() {
 
     Timespan timespan = Timespan.infinite();
