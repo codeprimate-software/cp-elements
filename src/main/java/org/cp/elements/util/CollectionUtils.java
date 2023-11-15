@@ -82,6 +82,23 @@ public abstract class CollectionUtils {
   }
 
   /**
+   * Assert that the given {@link Collection} contains no {@literal null} elements.
+   *
+   * @param <T> {@link Class type} of the {@link Collection}.
+   * @param <E> {@link Class type} of elements in the {@link Collection}.
+   * @param collection {@link Collection} to assert.
+   * @return the given {@link Collection}.
+   * @throws IllegalArgumentException if the given {@link Collection} is {@literal null}
+   * or contains {@literal null} elements.
+   * @see java.util.Collection
+   */
+  public static <E, T extends Collection<E>> T assertNoNullElements(@NotNull T collection) {
+    Predicate<T> predicate = it -> it != null && collection.stream().noneMatch(Objects::isNull);
+    Assert.argument(collection, predicate, "Collection is required and must not contain any null elements");
+    return collection;
+  }
+
+  /**
    * Adds all elements from the given array to the given {@link Collection}.
    *
    * @param <E> {@link Class} type of the elements in the array and {@link Collection}.

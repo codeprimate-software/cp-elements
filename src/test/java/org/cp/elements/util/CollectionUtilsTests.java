@@ -165,6 +165,36 @@ class CollectionUtilsTests {
   }
 
   @Test
+  void assertNoNullElementsWithCollection() {
+
+    List<?> list = List.of(1, 2, 3);
+    Set<?> set = Set.of("test", "testing", "tested");
+
+    CollectionUtils.assertNoNullElements(list);
+    CollectionUtils.assertNoNullElements(set);
+  }
+
+  @Test
+  void assertNoNullElementsWithCollectionContainingNullElements() {
+
+    List<?> list = Arrays.asList(0, 1, 2, null, 4, null, null, null, 8);
+
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> CollectionUtils.assertNoNullElements(list))
+      .withMessage("Collection is required and must not contain any null elements")
+      .withNoCause();
+  }
+
+  @Test
+  void assertNoNullElementsWithNullCollection() {
+
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> CollectionUtils.assertNoNullElements(null))
+      .withMessage("Collection is required and must not contain any null elements")
+      .withNoCause();
+  }
+
+  @Test
   public void addAllArrayElementsToList() {
 
     List<Integer> numbers = new ArrayList<>(Arrays.asList(1, 2, 3));
