@@ -83,7 +83,7 @@ class TimespanUnitTests {
   }
 
   @Test
-  void timespanBetweenIsSuccessful() {
+  void timespanBetweenIsCorrect() {
 
     LocalDateTime begin = LocalDateTime.of(2023, Month.OCTOBER, 30, 15, 4, 30);
     LocalDateTime end = LocalDateTime.now();
@@ -302,5 +302,47 @@ class TimespanUnitTests {
       .isThrownBy(() -> Timespan.ending((LocalTime) null))
       .withMessage("End time is required")
       .withNoCause();
+  }
+
+  @Test
+  void fromNow() {
+
+    LocalDateTime now = LocalDateTime.now();
+    Timespan timespan = Timespan.fromNow();
+
+    assertThat(timespan).isNotNull();
+    assertThat(timespan.getBegin()).isAfterOrEqualTo(now);
+    assertThat(timespan.getEnd()).isNull();
+    assertThat(timespan.getOptionalEnd()).isNotPresent();
+    assertThat(timespan.isFinite()).isFalse();
+    assertThat(timespan.isInfinite()).isTrue();
+  }
+
+  @Test
+  void infiniteTimespan() {
+
+    Timespan timespan = Timespan.infinite();
+
+    assertThat(timespan).isNotNull();
+    assertThat(timespan.getBegin()).isNull();
+    assertThat(timespan.getOptionalBegin()).isNotPresent();
+    assertThat(timespan.getEnd()).isNull();
+    assertThat(timespan.getOptionalEnd()).isNotPresent();
+    assertThat(timespan.isFinite()).isFalse();
+    assertThat(timespan.isInfinite()).isTrue();
+  }
+
+  @Test
+  void untilNow() {
+
+    Timespan timespan = Timespan.untilNow();
+    LocalDateTime now = LocalDateTime.now();
+
+    assertThat(timespan).isNotNull();
+    assertThat(timespan.getBegin()).isNull();
+    assertThat(timespan.getOptionalBegin()).isNotPresent();
+    assertThat(timespan.getEnd()).isBeforeOrEqualTo(now);
+    assertThat(timespan.isFinite()).isFalse();
+    assertThat(timespan.isInfinite()).isTrue();
   }
 }
