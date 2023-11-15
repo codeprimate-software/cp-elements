@@ -257,7 +257,7 @@ public class Timespan implements Comparable<Timespan>, Renderable {
 	 *
 	 * @param beginning {@link Year} marking the beginning of the {@link Timespan}.
 	 * @return a new {@link Timespan} with a {@link Year} timeframe.
-	 * @see #from(LocalDateTime)
+	 * @see #from(YearMonth)
 	 * @see java.time.Year
 	 * @see WithTo
 	 */
@@ -266,6 +266,16 @@ public class Timespan implements Comparable<Timespan>, Renderable {
 		return from(beginning != null ? beginning.atMonth(Month.JANUARY) : null);
 	}
 
+	/**
+	 * Factory method used to construct a new {@link Timespan} beginning the given {@link YearMonth}
+	 * and ending in a subsequent {@link YearMonth}.
+	 *
+	 * @param beginning {@link YearMonth} marking the beginning of the {@link Timespan}.
+	 * @return a new {@link Timespan} with a {@link YearMonth} timeframe.
+	 * @see java.time.YearMonth
+	 * @see #from(LocalDate)
+	 * @see WithTo
+	 */
 	@Dsl
 	public static @NotNull WithTo from(@Nullable YearMonth beginning) {
 		return from(beginning != null ? beginning.atDay(1) : null);
@@ -578,6 +588,11 @@ public class Timespan implements Comparable<Timespan>, Renderable {
 
 		@Override
 		public Timespan build() {
+
+			Assert.isFalse(getBeginning().isAfter(getEnding()),
+				() -> "Beginning [%s] of Timespan must not be after the ending [%s]"
+					.formatted(getBeginning().format(DATE_TIME_FORMATTER), getEnding()).formatted(DATE_TIME_FORMATTER));
+
 			return new Timespan(getBeginning(), getEnding());
 		}
 	}

@@ -33,6 +33,7 @@ import org.junit.jupiter.api.Test;
  * Unit Tests for {@link Timespan}
  *
  * @author John Blum
+ * @see java.time.LocalDateTime
  * @see org.junit.jupiter.api.Test
  * @see org.cp.elements.time.Timespan
  * @since 2.0.0
@@ -345,6 +346,54 @@ class TimespanUnitTests {
     assertThatIllegalArgumentException()
       .isThrownBy(() -> Timespan.from((Year) null).to(Year.of(2023)).build())
       .withMessage("Begin date and time is required")
+      .withNoCause();
+  }
+
+  @Test
+  void fromBeginYearAfterEndYear() {
+
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> Timespan.from(Year.of(2023)).to(Year.of(2020)).build())
+      .withMessageMatching("Beginning \\[.*] of Timespan must not be after the ending \\[.*]")
+      .withNoCause();
+  }
+
+  @Test
+  void fromYearMonthToYearMonth() {
+
+    Timespan timespan = Timespan.from(YearMonth.of(2020, Month.JULY)).to(YearMonth.of(2023, Month.JUNE)).build();
+
+    assertThat(timespan).isNotNull();
+    assertThat(timespan.getBegin()).isEqualTo(LocalDate.of(2020, Month.JULY, 1).atStartOfDay());
+    assertThat(timespan.getEnd()).isEqualTo(LocalDate.of(2023, Month.JUNE, 30).atTime(LocalTime.MAX));
+    assertThat(timespan.isFinite()).isTrue();
+    assertThat(timespan.isInfinite()).isFalse();
+  }
+
+  @Test
+  void fromYearMonthToNullYearMonth() {
+
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> Timespan.from(YearMonth.of(2020, Month.JULY)).to((YearMonth) null).build())
+      .withMessage("End date and time is required")
+      .withNoCause();
+  }
+
+  @Test
+  void fromNullYearMonthToYearMonth() {
+
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> Timespan.from((YearMonth) null).to(YearMonth.of(2022, Month.DECEMBER)).build())
+      .withMessage("Begin date and time is required")
+      .withNoCause();
+  }
+
+  @Test
+  void fromBeginYearMonthAfterEndYearMonth() {
+
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> Timespan.from(YearMonth.of(2023, Month.DECEMBER)).to(YearMonth.of(2000, Month.JANUARY)).build())
+      .withMessageMatching("Beginning \\[.*] of Timespan must not be after the ending \\[.*]")
       .withNoCause();
   }
 
