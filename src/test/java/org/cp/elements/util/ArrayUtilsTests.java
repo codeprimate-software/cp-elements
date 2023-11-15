@@ -48,17 +48,11 @@ import lombok.RequiredArgsConstructor;
  * Unit Tests for {@link ArrayUtils}.
  *
  * @author John J. Blum
- * @see java.lang.Iterable
- * @see java.lang.reflect.Array
- * @see java.util.Arrays
- * @see java.util.Enumeration
- * @see java.util.Iterator
- * @see java.util.List
  * @see org.junit.jupiter.api.Test
  * @see org.cp.elements.util.ArrayUtils
  * @since 1.0.0
  */
-public class ArrayUtilsTests {
+class ArrayUtilsTests {
 
   private static final Object[] NULL_OBJECT_ARRAY = null;
 
@@ -170,6 +164,34 @@ public class ArrayUtilsTests {
         return elements[index++];
       }
     };
+  }
+
+  @Test
+  void assertNotEmptyWithNonEmptyArray() {
+
+    Object[] array = { 1, 2, 3 };
+
+    ArrayUtils.assertNotEmpty(array);
+  }
+
+  @Test
+  void assertNotEmptyWithEmptyArray() {
+
+    Object[] array = {};
+
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> ArrayUtils.assertNotEmpty(array))
+      .withMessage("Non-empty array is required")
+      .withNoCause();
+  }
+
+  @Test
+  void assertNotEmptyWithNullArray() {
+
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> ArrayUtils.assertNotEmpty(null))
+      .withMessage("Non-empty array is required")
+      .withNoCause();
   }
 
   @Test
@@ -1629,7 +1651,7 @@ public class ArrayUtilsTests {
     Integer[] numbers = { 2, 4, 3, 1 };
     Integer[] sortedNumbers = ArrayUtils.sort(numbers);
 
-    assertThat(numbers).isSameAs(numbers);
+    assertThat(sortedNumbers).isSameAs(numbers);
     assertSorted(sortedNumbers);
   }
 

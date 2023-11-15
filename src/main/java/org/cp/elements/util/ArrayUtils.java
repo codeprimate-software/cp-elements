@@ -67,7 +67,20 @@ public abstract class ArrayUtils {
   private static final Random random = new Random();
 
   /**
-   * Adds (inserts) the element to the end of the array.
+   * Asserts that the given array is not {@literal null} and not {@literal empty}.
+   *
+   * @param <T> {@link Class type} of elements in the array.
+   * @param array array to assert.
+   * @return the given array.
+   * @throws IllegalArgumentException if the given array is {@literal null} or {@literal empty}.
+   */
+  public static @NotNull <T> T[] assertNotEmpty(T[] array) {
+    Assert.argument(array, it -> it != null && it.length != 0, "Non-empty array is required");
+    return array;
+  }
+
+  /**
+   * Adds (inserts) the {@link Object element} to the end of the array.
    *
    * @param <T> Class type of the elements stored in the array.
    * @param element element to insert at the end of the array.
