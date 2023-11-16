@@ -257,6 +257,8 @@ public class Timespan implements Comparable<Timespan>, Renderable {
 	 *
 	 * @param beginning {@link Year} marking the beginning of the {@link Timespan}.
 	 * @return a new {@link Timespan} with a {@link Year} timeframe.
+	 * @throws IllegalArgumentException if the beginning or ending {@link Year} are {@literal null}
+	 * or if the {@link Year begin year} is after the {@link Year end year}.
 	 * @see #from(YearMonth)
 	 * @see java.time.Year
 	 * @see WithTo
@@ -272,6 +274,8 @@ public class Timespan implements Comparable<Timespan>, Renderable {
 	 *
 	 * @param beginning {@link YearMonth} marking the beginning of the {@link Timespan}.
 	 * @return a new {@link Timespan} with a {@link YearMonth} timeframe.
+	 * @throws IllegalArgumentException if the beginning or ending {@link YearMonth} are {@literal null}
+	 * or the {@link YearMonth begin year and month} are after the {@link YearMonth end year and month}.
 	 * @see java.time.YearMonth
 	 * @see #from(LocalDate)
 	 * @see WithTo
@@ -281,6 +285,18 @@ public class Timespan implements Comparable<Timespan>, Renderable {
 		return from(beginning != null ? beginning.atDay(1) : null);
 	}
 
+	/**
+	 * Factory method used construct a new {@link Timespan} beginning from the given {@link LocalDate}
+	 * and ending on a subsequent {@link LocalDate}.
+	 *
+	 * @param beginning {@link LocalDate} marking the beginning of the {@link Timespan}; must not be {@literal null}.
+	 * @return a new {@link Timespan} with a specific {@link LocalDate} timeframe.
+	 * @throws IllegalArgumentException if the beginning or ending {@link LocalDate} are {@literal null}
+	 * or if the {@link LocalDate begin date} is after the {@link LocalDate end date}.
+	 * @see #from(LocalDateTime)
+	 * @see java.time.LocalDate
+	 * @see WithTo
+	 */
 	@Dsl
 	public static @NotNull WithTo from(@Nullable LocalDate beginning) {
 		return from(beginning != null ? beginning.atStartOfDay() : null);
@@ -535,7 +551,7 @@ public class Timespan implements Comparable<Timespan>, Renderable {
 		private final LocalDateTime beginning;
 
 		protected WithTo(@NotNull LocalDateTime beginning) {
-			this.beginning = ObjectUtils.requireObject(beginning, "Begin date and time is required");
+			this.beginning = ObjectUtils.requireObject(beginning, "Begin date and time are required");
 		}
 
 		protected @NotNull LocalDateTime getBeginning() {
@@ -574,8 +590,8 @@ public class Timespan implements Comparable<Timespan>, Renderable {
 		private final LocalDateTime ending;
 
 		protected Builder(@NotNull LocalDateTime beginning, @NotNull LocalDateTime ending) {
-			this.beginning = ObjectUtils.requireObject(beginning, "Begin date and time is required");
-			this.ending = ObjectUtils.requireObject(ending, "End date and time is required");
+			this.beginning = ObjectUtils.requireObject(beginning, "Begin date and time are required");
+			this.ending = ObjectUtils.requireObject(ending, "End date and time are required");
 		}
 
 		protected @NotNull LocalDateTime getBeginning() {

@@ -69,6 +69,20 @@ class TimespanUnitTests {
     assertThat(timespan.getOptionalEnd().orElse(null)).isEqualTo(timespan.getEnd());
   }
 
+  private void assertFinite(Timespan timespan) {
+
+    assertThat(timespan).isNotNull();
+    assertThat(timespan.isFinite()).isTrue();
+    assertThat(timespan.isInfinite()).isFalse();
+  }
+
+  private void assertInfinite(Timespan timespan) {
+
+    assertThat(timespan).isNotNull();
+    assertThat(timespan.isFinite()).isFalse();
+    assertThat(timespan.isInfinite()).isTrue();
+  }
+
   private void assertTime(int year, Month month, int dayOfMonth, int hour, int minute, int second,
       Supplier<LocalDateTime> dateTimeSupplier) {
 
@@ -315,8 +329,7 @@ class TimespanUnitTests {
     assertThat(timespan.getBegin()).isAfterOrEqualTo(now);
     assertThat(timespan.getEnd()).isNull();
     assertThat(timespan.getOptionalEnd()).isNotPresent();
-    assertThat(timespan.isFinite()).isFalse();
-    assertThat(timespan.isInfinite()).isTrue();
+    assertInfinite(timespan);
   }
 
   @Test
@@ -327,8 +340,7 @@ class TimespanUnitTests {
     assertThat(timespan).isNotNull();
     assertThat(timespan.getBegin()).isEqualTo(LocalDateTime.of(2021, Month.JANUARY, 1, 0, 0, 0));
     assertThat(timespan.getEnd()).isEqualTo(LocalDate.of(2023, Month.DECEMBER, 31).atTime(LocalTime.MAX));
-    assertThat(timespan.isFinite()).isTrue();
-    assertThat(timespan.isInfinite()).isFalse();
+    assertFinite(timespan);
   }
 
   @Test
@@ -336,7 +348,7 @@ class TimespanUnitTests {
 
     assertThatIllegalArgumentException()
       .isThrownBy(() -> Timespan.from(Year.of(2023)).to((Year) null).build())
-      .withMessage("End date and time is required")
+      .withMessage("End date and time are required")
       .withNoCause();
   }
 
@@ -345,7 +357,7 @@ class TimespanUnitTests {
 
     assertThatIllegalArgumentException()
       .isThrownBy(() -> Timespan.from((Year) null).to(Year.of(2023)).build())
-      .withMessage("Begin date and time is required")
+      .withMessage("Begin date and time are required")
       .withNoCause();
   }
 
@@ -366,8 +378,7 @@ class TimespanUnitTests {
     assertThat(timespan).isNotNull();
     assertThat(timespan.getBegin()).isEqualTo(LocalDate.of(2020, Month.JULY, 1).atStartOfDay());
     assertThat(timespan.getEnd()).isEqualTo(LocalDate.of(2023, Month.JUNE, 30).atTime(LocalTime.MAX));
-    assertThat(timespan.isFinite()).isTrue();
-    assertThat(timespan.isInfinite()).isFalse();
+    assertFinite(timespan);
   }
 
   @Test
@@ -375,7 +386,7 @@ class TimespanUnitTests {
 
     assertThatIllegalArgumentException()
       .isThrownBy(() -> Timespan.from(YearMonth.of(2020, Month.JULY)).to((YearMonth) null).build())
-      .withMessage("End date and time is required")
+      .withMessage("End date and time are required")
       .withNoCause();
   }
 
@@ -384,7 +395,7 @@ class TimespanUnitTests {
 
     assertThatIllegalArgumentException()
       .isThrownBy(() -> Timespan.from((YearMonth) null).to(YearMonth.of(2022, Month.DECEMBER)).build())
-      .withMessage("Begin date and time is required")
+      .withMessage("Begin date and time are required")
       .withNoCause();
   }
 
@@ -393,6 +404,46 @@ class TimespanUnitTests {
 
     assertThatIllegalArgumentException()
       .isThrownBy(() -> Timespan.from(YearMonth.of(2023, Month.DECEMBER)).to(YearMonth.of(2000, Month.JANUARY)).build())
+      .withMessageMatching("Beginning \\[.*] of Timespan must not be after the ending \\[.*]")
+      .withNoCause();
+  }
+
+  @Test
+  void fromDateToDate() {
+
+    Timespan timespan = Timespan.from(LocalDate.of(2000, Month.DECEMBER, 4))
+      .to(LocalDate.of(2023, Month.NOVEMBER, 15))
+      .build();
+
+    assertThat(timespan).isNotNull();
+    assertThat(timespan.getBegin()).isEqualTo(LocalDate.of(2000, Month.DECEMBER, 4).atStartOfDay());
+    assertThat(timespan.getEnd()).isEqualTo(LocalDate.of(2023, Month.NOVEMBER, 15).atTime(LocalTime.MAX));
+    assertFinite(timespan);
+  }
+
+  @Test
+  void fromDateToNullDate() {
+
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> Timespan.from(LocalDate.now()).to((LocalDate) null).build())
+      .withMessage("End date and time are required")
+      .withNoCause();
+  }
+
+  @Test
+  void fromNullDateToDate() {
+
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> Timespan.from((LocalDate) null).to(LocalDate.now()).build())
+      .withMessage("Begin date and time are required")
+      .withNoCause();
+  }
+
+  @Test
+  void fromBeginDateAfterEndDate() {
+
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> Timespan.from(LocalDate.now().plusDays(2)).to(LocalDate.now()).build())
       .withMessageMatching("Beginning \\[.*] of Timespan must not be after the ending \\[.*]")
       .withNoCause();
   }
@@ -407,8 +458,7 @@ class TimespanUnitTests {
     assertThat(timespan.getOptionalBegin()).isNotPresent();
     assertThat(timespan.getEnd()).isNull();
     assertThat(timespan.getOptionalEnd()).isNotPresent();
-    assertThat(timespan.isFinite()).isFalse();
-    assertThat(timespan.isInfinite()).isTrue();
+    assertInfinite(timespan);
   }
 
   @Test
@@ -421,7 +471,6 @@ class TimespanUnitTests {
     assertThat(timespan.getBegin()).isNull();
     assertThat(timespan.getOptionalBegin()).isNotPresent();
     assertThat(timespan.getEnd()).isBeforeOrEqualTo(now);
-    assertThat(timespan.isFinite()).isFalse();
-    assertThat(timespan.isInfinite()).isTrue();
+    assertInfinite(timespan);
   }
 }
