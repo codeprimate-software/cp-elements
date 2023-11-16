@@ -258,7 +258,7 @@ public class Timespan implements Comparable<Timespan>, Renderable {
 	 * @param beginning {@link Year} marking the beginning of the {@link Timespan}.
 	 * @return a new {@link Timespan} with a {@link Year} timeframe.
 	 * @throws IllegalArgumentException if the beginning or ending {@link Year} are {@literal null}
-	 * or if the {@link Year begin year} is after the {@link Year end year}.
+	 * or the {@link Year begin year} is after the {@link Year end year}.
 	 * @see #from(YearMonth)
 	 * @see java.time.Year
 	 * @see WithTo
@@ -292,7 +292,7 @@ public class Timespan implements Comparable<Timespan>, Renderable {
 	 * @param beginning {@link LocalDate} marking the beginning of the {@link Timespan}; must not be {@literal null}.
 	 * @return a new {@link Timespan} with a specific {@link LocalDate} timeframe.
 	 * @throws IllegalArgumentException if the beginning or ending {@link LocalDate} are {@literal null}
-	 * or if the {@link LocalDate begin date} is after the {@link LocalDate end date}.
+	 * or the {@link LocalDate begin date} is after the {@link LocalDate end date}.
 	 * @see #from(LocalDateTime)
 	 * @see java.time.LocalDate
 	 * @see WithTo
@@ -309,7 +309,7 @@ public class Timespan implements Comparable<Timespan>, Renderable {
 	 * @param beginning {@link LocalDateTime} marking the beginning of the {@link Timespan}; must not be {@literal null}.
 	 * @return a new {@link Timespan} with a specific {@link LocalDateTime} timeframe.
 	 * @throws IllegalArgumentException if the beginning or ending {@link LocalDateTime} are {@literal null}
-	 * or if the {@link LocalDateTime begin date and time} is after the {@link LocalDateTime end date and time}.
+	 * or the {@link LocalDateTime begin date and time} is after the {@link LocalDateTime end date and time}.
 	 * @see java.time.LocalDateTime
 	 * @see WithTo
 	 */
@@ -318,6 +318,17 @@ public class Timespan implements Comparable<Timespan>, Renderable {
 		return new WithTo(beginning);
 	}
 
+	/**
+	 * Factory method used to construct a new {@link Timespan} beginning at the given {@link LocalTime}
+	 * and ending at a subsequent {@link LocalTime}.
+	 *
+	 * @param beginning {@link LocalTime} marking the beginning of the {@link Timespan}; must not be {@literal null}.
+	 * @return a new {@link Timespan} with a specific {@link LocalTime} timeframe.
+	 * @throws IllegalArgumentException if the beginning or ending {@link LocalTime} are {@literal null}
+	 * or the {@link LocalTime begin time} is after the {@link LocalTime end time}.
+	 * @see java.time.LocalDateTime
+	 * @see WithTo
+	 */
 	@Dsl
 	public static @NotNull WithTo from(@Nullable LocalTime beginning) {
 		return from(beginning != null ? beginning.atDate(LocalDate.now()) : null);
@@ -557,6 +568,10 @@ public class Timespan implements Comparable<Timespan>, Renderable {
 		return TIMESPAN_TO_STRING.formatted(beginningString, endingString);
 	}
 
+	/**
+	 * Builder with a {@link FluentApi} used to construct a new {@link Timespan} within a given {@literal timeframe}.
+	 */
+	@FluentApi
 	public static class WithTo {
 
 		private final LocalDateTime beginning;
@@ -595,6 +610,11 @@ public class Timespan implements Comparable<Timespan>, Renderable {
 		}
 	}
 
+	/**
+	 * Elements {@link Builder} used to build a new {@link Timespan} within a given {@literal timeframe}.
+	 *
+	 * @see org.cp.elements.lang.Builder
+	 */
 	public static class Builder implements org.cp.elements.lang.Builder<Timespan> {
 
 		private final LocalDateTime beginning;

@@ -490,6 +490,44 @@ class TimespanUnitTests {
   }
 
   @Test
+  void fromBeginTimeToEndTime() {
+
+    Timespan timespan = Timespan.from(LocalTime.MIDNIGHT).to(LocalTime.MAX).build();
+
+    assertThat(timespan).isNotNull();
+    assertThat(timespan.getBegin()).isEqualTo(LocalDate.now().atStartOfDay());
+    assertThat(timespan.getEnd()).isEqualTo(LocalDate.now().atTime(LocalTime.MAX));
+    assertFinite(timespan);
+  }
+
+  @Test
+  void fromBeginTimeToNullEndTime() {
+
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> Timespan.from(LocalTime.now()).to((LocalTime) null).build())
+      .withMessage("End date and time are required")
+      .withNoCause();
+  }
+
+  @Test
+  void fromNullBeginTimeToEndTime() {
+
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> Timespan.from((LocalTime) null).to(LocalTime.now()).build())
+      .withMessage("Begin date and time are required")
+      .withNoCause();
+  }
+
+  @Test
+  void fromBeginTimeAfterEndTime() {
+
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> Timespan.from(LocalTime.now()).to(LocalTime.MIDNIGHT).build())
+      .withMessageMatching("Beginning \\[.*] of Timespan must not be after the ending \\[.*]")
+      .withNoCause();
+  }
+
+  @Test
   void infiniteTimespan() {
 
     Timespan timespan = Timespan.infinite();
