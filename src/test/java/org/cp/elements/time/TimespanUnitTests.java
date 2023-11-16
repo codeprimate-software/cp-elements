@@ -409,7 +409,7 @@ class TimespanUnitTests {
   }
 
   @Test
-  void fromDateToDate() {
+  void fromBeginDateToEndDate() {
 
     Timespan timespan = Timespan.from(LocalDate.of(2000, Month.DECEMBER, 4))
       .to(LocalDate.of(2023, Month.NOVEMBER, 15))
@@ -422,7 +422,7 @@ class TimespanUnitTests {
   }
 
   @Test
-  void fromDateToNullDate() {
+  void fromBeginDateToNullEndDate() {
 
     assertThatIllegalArgumentException()
       .isThrownBy(() -> Timespan.from(LocalDate.now()).to((LocalDate) null).build())
@@ -431,7 +431,7 @@ class TimespanUnitTests {
   }
 
   @Test
-  void fromNullDateToDate() {
+  void fromNullBeginDateToEndDate() {
 
     assertThatIllegalArgumentException()
       .isThrownBy(() -> Timespan.from((LocalDate) null).to(LocalDate.now()).build())
@@ -444,6 +444,47 @@ class TimespanUnitTests {
 
     assertThatIllegalArgumentException()
       .isThrownBy(() -> Timespan.from(LocalDate.now().plusDays(2)).to(LocalDate.now()).build())
+      .withMessageMatching("Beginning \\[.*] of Timespan must not be after the ending \\[.*]")
+      .withNoCause();
+  }
+
+  @Test
+  void fromBeginDateTimeToEndDateTime() {
+
+    LocalDateTime begin = LocalDateTime.of(2023, Month.NOVEMBER, 15, 23, 9, 0, 0);
+    LocalDateTime end = LocalDateTime.of(2023, Month.NOVEMBER, 15, 23, 10, 0, 0);
+
+    Timespan timespan = Timespan.from(begin).to(end).build();
+
+    assertThat(timespan).isNotNull();
+    assertThat(timespan.getBegin()).isEqualTo(begin);
+    assertThat(timespan.getEnd()).isEqualTo(end);
+    assertFinite(timespan);
+  }
+
+  @Test
+  void fromBeginDateTimeToNullEndDateTime() {
+
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> Timespan.from(LocalDateTime.now()).to((LocalDateTime) null).build())
+      .withMessage("End date and time are required")
+      .withNoCause();
+  }
+
+  @Test
+  void fromNullBeginDateTimeToEndDateTime() {
+
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> Timespan.from((LocalDateTime) null).to(LocalDateTime.now()).build())
+      .withMessage("Begin date and time are required")
+      .withNoCause();
+  }
+
+  @Test
+  void fromBeginDateTimeAfterEndDateTime() {
+
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> Timespan.from(LocalDateTime.now().plusHours(1)).to(LocalDateTime.now()).build())
       .withMessageMatching("Beginning \\[.*] of Timespan must not be after the ending \\[.*]")
       .withNoCause();
   }

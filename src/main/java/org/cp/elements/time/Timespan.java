@@ -286,7 +286,7 @@ public class Timespan implements Comparable<Timespan>, Renderable {
 	}
 
 	/**
-	 * Factory method used construct a new {@link Timespan} beginning from the given {@link LocalDate}
+	 * Factory method used to construct a new {@link Timespan} beginning from the given {@link LocalDate}
 	 * and ending on a subsequent {@link LocalDate}.
 	 *
 	 * @param beginning {@link LocalDate} marking the beginning of the {@link Timespan}; must not be {@literal null}.
@@ -302,6 +302,17 @@ public class Timespan implements Comparable<Timespan>, Renderable {
 		return from(beginning != null ? beginning.atStartOfDay() : null);
 	}
 
+	/**
+	 * Factory method used to construct a new {@link Timespan} beginning from the given {@link LocalDateTime}
+	 * and ending on a subsequent {@link LocalDateTime}.
+	 *
+	 * @param beginning {@link LocalDateTime} marking the beginning of the {@link Timespan}; must not be {@literal null}.
+	 * @return a new {@link Timespan} with a specific {@link LocalDateTime} timeframe.
+	 * @throws IllegalArgumentException if the beginning or ending {@link LocalDateTime} are {@literal null}
+	 * or if the {@link LocalDateTime begin date and time} is after the {@link LocalDateTime end date and time}.
+	 * @see java.time.LocalDateTime
+	 * @see WithTo
+	 */
 	@Dsl
 	public static @NotNull WithTo from(@Nullable LocalDateTime beginning) {
 		return new WithTo(beginning);
