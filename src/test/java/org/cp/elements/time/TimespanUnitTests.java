@@ -25,6 +25,7 @@ import java.time.Month;
 import java.time.Year;
 import java.time.YearMonth;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.function.Supplier;
 
 import org.junit.jupiter.api.Test;
@@ -551,5 +552,88 @@ class TimespanUnitTests {
     assertThat(timespan.getOptionalBegin()).isNotPresent();
     assertThat(timespan.getEnd()).isBeforeOrEqualTo(now);
     assertInfinite(timespan);
+  }
+
+  @Test
+  void isAfterYearReturnsTrue() {
+    assertThat(Timespan.ending(Year.of(2023)).isAfter(Year.of(2024))).isTrue();
+  }
+
+  @Test
+  void isAfterYearReturnsFalse() {
+    assertThat(Timespan.ending(Year.of(2023)).isAfter(Year.of(2022))).isFalse();
+    assertThat(Timespan.ending(Year.of(2023)).isAfter(Year.of(1999))).isFalse();
+  }
+
+  @Test
+  void isAfterYearIsNullSafe() {
+    assertThat(Timespan.ending(Year.of(2020)).isAfter((Year) null)).isFalse();
+  }
+
+  @Test
+  void isAfterYearMonthReturnsTrue() {
+    assertThat(Timespan.ending(YearMonth.of(2023, Calendar.MARCH)).isAfter(YearMonth.of(2024, Calendar.FEBRUARY)))
+      .isTrue();
+  }
+
+  @Test
+  void isAfterYearMonthReturnsFalse() {
+    assertThat(Timespan.ending(YearMonth.of(2023, Calendar.APRIL)).isAfter(YearMonth.of(2022, Calendar.NOVEMBER)))
+      .isFalse();
+  }
+
+  @Test
+  void isAfterYearMonthIsNullSafe() {
+    assertThat(Timespan.ending(YearMonth.of(2023, Month.NOVEMBER)).isAfter((YearMonth) null)).isFalse();
+  }
+
+  @Test
+  void isAfterDateReturnsTrue() {
+    assertThat(Timespan.ending(LocalDate.of(1974, Month.MAY, 27)).isAfter(LocalDate.of(1975, Month.JANUARY, 22)))
+      .isTrue();
+  }
+
+  @Test
+  void isAfterDateReturnsFalse() {
+    assertThat(Timespan.ending(LocalDate.of(2023, Month.MAY, 27)).isAfter(LocalDate.of(2008, Month.AUGUST, 25)))
+      .isFalse();
+  }
+
+  @Test
+  void isAfterDateIsNullSafe() {
+    assertThat(Timespan.ending(LocalDate.of(2023, Month.MAY, 27)).isAfter((LocalDate) null)).isFalse();
+  }
+
+  @Test
+  void isAfterDateTimeReturnsTrue() {
+    assertThat(Timespan.ending(LocalDateTime.of(1974, Month.MAY, 27, 1, 15, 30))
+      .isAfter(LocalDateTime.of(1975, Month.JANUARY, 22, 18, 45, 30, 0))).isTrue();
+  }
+
+  @Test
+  void isAfterDateTimeReturnsFalse() {
+    assertThat(Timespan.ending(LocalDateTime.of(1974, Month.MAY, 27, 1, 15, 30))
+      .isAfter(LocalDateTime.of(2008, Month.AUGUST, 25, 5, 5, 30, 512))).isTrue();
+  }
+
+  @Test
+  void isAfterDateTimeIsNullSafe() {
+    assertThat(Timespan.ending(LocalDateTime.of(2023, Month.MAY, 27, 1, 15, 30, 0)).isAfter((LocalDateTime) null))
+      .isFalse();
+  }
+
+  @Test
+  void isAferTimeReturnsTrue() {
+    assertThat(Timespan.ending(LocalTime.of(22, 23, 24, 512)).isAfter(LocalTime.MAX)).isTrue();
+  }
+
+  @Test
+  void isAferTimeReturnsFalse() {
+    assertThat(Timespan.ending(LocalTime.MAX).isAfter(LocalTime.of(22, 24, 30, 512))).isFalse();
+  }
+
+  @Test
+  void isAferTimeIsNullSafe() {
+    assertThat(Timespan.ending(LocalTime.MAX).isAfter((LocalTime) null)).isFalse();
   }
 }

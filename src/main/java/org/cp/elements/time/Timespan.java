@@ -388,43 +388,108 @@ public class Timespan implements Comparable<Timespan>, Renderable {
 		this.end = end;
 	}
 
-	public @NotNull LocalDateTime getBegin() {
+	/**
+	 * Gets the {@link LocalDateTime beginning} of this {@link Timespan}.
+	 *
+	 * @return the {@link LocalDateTime beginning} of this {@link Timespan}; returns {@literal null}
+	 * if the beginning of this {@link Timespan} is open-ended.
+	 * @see #getOptionalBegin()
+	 * @see #getEnd()
+	 */
+	public @Nullable LocalDateTime getBegin() {
 		return this.begin;
 	}
 
-	public @NotNull LocalDateTime getEnd() {
+	/**
+	 * Gets the {@link LocalDateTime end} of this {@link Timespan}.
+	 *
+	 * @return the {@link LocalDateTime end} of this {@link Timespan}; returns {@literal null}
+	 * if the end of this {@link Timespan} is open-ended.
+	 * @see #getOptionalEnd()
+	 * @see #getBegin()
+	 */
+	public @Nullable LocalDateTime getEnd() {
 		return this.end;
 	}
 
+	/**
+	 * Gets an {@link Optional} {@link LocalDateTime beginning} to this {@link Timespan}.
+	 *
+	 * @return an {@link Optional} {@link LocalDateTime beginning} to this {@link Timespan}.
+	 * @see java.util.Optional
+	 * @see #getBegin()
+	 */
 	public Optional<LocalDateTime> getOptionalBegin() {
 		return Optional.ofNullable(getBegin());
 	}
 
+	/**
+	 * Gets an {@link Optional} {@link LocalDateTime ending} to this {@link Timespan}.
+	 *
+	 * @return an {@link Optional} {@link LocalDateTime ending} to this {@link Timespan}.
+	 * @see java.util.Optional
+	 * @see #getEnd()
+	 */
 	public Optional<LocalDateTime> getOptionalEnd() {
 		return Optional.ofNullable(getEnd());
 	}
 
-	// Determine whether the given year is after this Timespan
+	/**
+	 * Determine whether the given {@link Year} is after this {@link Timespan}.
+	 *
+	 * @param year {@link Year} to compare with the {@link #getEnd() end} of this {@link Timespan}.
+	 * @return a boolean value indicating whether the given {@link Year} is after this {@link Timespan}.
+	 * @see #isAfter(YearMonth)
+	 * @see java.time.Year
+	 */
 	public boolean isAfter(@NotNull Year year) {
 		return year != null && isAfter(year.atMonth(Month.JANUARY));
 	}
 
-	// Determine whether the given year/month is after this Timespan
+	/**
+	 * Determine whether the given {@link YearMonth} is after this {@link Timespan}.
+	 *
+	 * @param yearMonth {@link YearMonth} to compare with the {@link #getEnd() end} of this {@link Timespan}.
+	 * @return a boolean value indicating whether the given {@link YearMonth} is after this {@link Timespan}.
+	 * @see #isAfter(LocalDate)
+	 * @see java.time.YearMonth
+	 */
 	public boolean isAfter(@NotNull YearMonth yearMonth) {
 		return yearMonth != null && isAfter(yearMonth.atDay(1));
 	}
 
-	// Determine whether the given date is after this Timespan
+	/**
+	 * Determine whether the given {@link LocalDate} is after this {@link Timespan}.
+	 *
+	 * @param date {@link LocalDate} to compare with the {@link #getEnd() end} of this {@link Timespan}.
+	 * @return a boolean value indicating whether the given {@link LocalDate} is after this {@link Timespan}.
+	 * @see #isAfter(LocalDateTime)
+	 * @see java.time.LocalDate
+	 */
 	public boolean isAfter(@NotNull LocalDate date) {
 		return date != null && isAfter(date.atStartOfDay());
 	}
 
-	// Determine whether the given date/time is after this Timespan
+	/**
+	 * Determine whether the given {@link LocalDateTime} is after this {@link Timespan}.
+	 *
+	 * @param dateTime {@link LocalDate} to compare with the {@link #getEnd() end} of this {@link Timespan}.
+	 * @return a boolean value indicating whether the given {@link LocalDateTime} is after this {@link Timespan}.
+	 * @see java.time.LocalDateTime
+	 * @see #getOptionalEnd()
+	 */
 	public boolean isAfter(@NotNull LocalDateTime dateTime) {
 		return dateTime != null && getOptionalEnd().map(dateTime::isAfter).orElse(false);
 	}
 
-	// Determine whether the given time is after this Timespan
+	/**
+	 * Determine whether the given {@link LocalTime} is after this {@link Timespan}.
+	 *
+	 * @param time {@link LocalTime} to compare with the {@link #getEnd() end} of this {@link Timespan}.
+	 * @return a boolean value indicating whether the given {@link LocalTime} is after this {@link Timespan}.
+	 * @see #isAfter(LocalDateTime)
+	 * @see java.time.LocalTime
+	 */
 	public boolean isAfter(@NotNull LocalTime time) {
 		return time != null && isAfter(time.atDate(LocalDate.now()));
 	}
