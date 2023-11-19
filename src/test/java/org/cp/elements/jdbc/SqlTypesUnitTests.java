@@ -31,7 +31,7 @@ import org.junit.jupiter.api.Test;
  * @see org.junit.jupiter.api.Test
  * @since 1.0.0
  */
-public class SqlTypesTest {
+public class SqlTypesUnitTests {
 
   private boolean isPublicStatic(int modifiers) {
     return Modifier.isPublic(modifiers) && Modifier.isStatic(modifiers);
@@ -42,6 +42,7 @@ public class SqlTypesTest {
   }
 
   @Test
+  @SuppressWarnings("all")
   public void valueOfAllJavaSqlTypes() throws IllegalAccessException {
 
     int count = 0;
@@ -53,8 +54,10 @@ public class SqlTypesTest {
 
         SqlType sqlType = SqlType.valueOf(value);
 
-        assertThat(sqlType).as(String.format("Expected %1$s for %2$s.%3$s!", SqlType.class.getName(),
-          java.sql.Types.class.getName(), field.getName())).isNotNull();
+        assertThat(sqlType).
+          describedAs(String.format("Expected %1$s for %2$s.%3$s!",
+            SqlType.class.getName(), java.sql.Types.class.getName(), field.getName()))
+          .isNotNull();
 
         assertThat(sqlType.getType()).isEqualTo(value);
 
@@ -66,14 +69,14 @@ public class SqlTypesTest {
   }
 
   @Test
-  public void valueOfInvalidValue() {
+  public void valueOfInvalidConstantValue() {
 
     assertThat(SqlType.valueOf(Integer.MIN_VALUE)).isNull();
     assertThat(SqlType.valueOf(-123456789)).isNull();
   }
 
   @Test
-  public void valueOfInvalidValuesIgnoringCase() {
+  public void valueOfInvalidNameValuesIgnoringCase() {
 
     assertThat(SqlType.valueOfIgnoreCase("  character")).isNull();
     assertThat(SqlType.valueOfIgnoreCase("Fake")).isNull();

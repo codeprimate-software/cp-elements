@@ -18,10 +18,10 @@ package org.cp.elements.jdbc;
 import java.sql.Types;
 
 import org.cp.elements.lang.StringUtils;
-import org.cp.elements.lang.annotation.NullSafe;
+import org.cp.elements.lang.annotation.Nullable;
 
 /**
- * The SqlType enum is an enumeration of SQL types from the java.sql.Types class.
+ * {@link Enum Enumeration} of SQL types from the {@link java.sql.Types} class.
  *
  * @author John J. Blum
  * @see java.sql.Types
@@ -73,9 +73,9 @@ public enum SqlType {
   private final int type;
 
   /**
-   * Constructs an instance of the SqlType enum initialized with the matching java.sql.Types constant.
+   * Constructs a new {@link SqlType} enum initialized with the matching {@link java.sql.Types} constant.
    *
-   * @param type the java.sql.Types integer constant.
+   * @param type {@link java.sql.Types} constant.
    * @see java.sql.Types
    */
   SqlType(int type) {
@@ -83,13 +83,14 @@ public enum SqlType {
   }
 
   /**
-   * Returns the SqlType enumerated value matching the java.sql.Types constant or null if no match was found.
+   * Factory method used to find a {@link SqlType} enumerated value matching the given {@link java.sql.Types} constant.
    *
-   * @param type the java.sql.Types integer constant.
-   * @return the SqlType enumerated value matching the java.sql.Types constant or null if no match was found.
+   * @param type {@link java.sql.Types} constant.
+   * @return the {@link SqlType} enumerated value matching the {@link java.sql.Types} constant
+   * or {@literal null} if no match was found.
    * @see java.sql.Types
    */
-  public static SqlType valueOf(int type) {
+  public static @Nullable SqlType valueOf(int type) {
 
     for (SqlType sqlType : values()) {
       if (sqlType.getType() == type) {
@@ -101,17 +102,14 @@ public enum SqlType {
   }
 
   /**
-   * Returns a SqlType enumerated value matching the given String name or null if no match was found.  A match
-   * is found by ignoring case and trimming leading/trailing whitespace in the String name.
+   * Factory method used to find a {@link SqlType} enumerated value matching the given {@link String name}.
    *
-   * @param name the String name used ot match the SqlType.
-   * @return a SqlType enumerated value matching the String name or null for no match was found.
-   * @see java.lang.String#equalsIgnoreCase(String)
-   * @see org.cp.elements.jdbc.SqlType#name()
-   * @see org.cp.elements.lang.StringUtils#trim(String)
+   * @param name {@link String} containing the {@literal name} of the {@link java.sql.Types} constant.
+   * @return the {@link SqlType} enumerated value matching the given {@link String name}
+   * of the {@link java.sql.Types} constant or {@literal null} if no match was found.
+   * @see java.sql.Types
    */
-  @NullSafe
-  public static SqlType valueOfIgnoreCase(String name) {
+  public static @Nullable SqlType valueOfIgnoreCase(String name) {
 
     for (SqlType sqlType : values()) {
       if (sqlType.name().equalsIgnoreCase(StringUtils.trim(name))) {
@@ -123,9 +121,9 @@ public enum SqlType {
   }
 
   /**
-   * Gets the java.sql.Types constant corresponding to this SqlType enumerated value.
+   * Gets the {@link java.sql.Types} constant corresponding to this {@link SqlType} enumerated value.
    *
-   * @return a java.sql.Types constant value corresponding to this SqlType enum.
+   * @return the {@link java.sql.Types} constant corresponding to this {@link SqlType} enumerated value.
    * @see java.sql.Types
    */
   public int getType() {
