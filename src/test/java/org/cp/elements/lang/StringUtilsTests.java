@@ -528,11 +528,61 @@ public class StringUtilsTests {
   }
 
   @Test
+  void padLeftWithCharacter() {
+
+    assertThat(StringUtils.padLeft("", 'x', 5)).isEqualTo("xxxxx");
+    assertThat(StringUtils.padLeft(" ", 'x', 5)).isEqualTo("xxxx ");
+    assertThat(StringUtils.padLeft("  ", 'x', 5)).isEqualTo("xxx  ");
+    assertThat(StringUtils.padLeft("   ", 'x', 5)).isEqualTo("xx   ");
+    assertThat(StringUtils.padLeft("    ", 'x', 5)).isEqualTo("x    ");
+    assertThat(StringUtils.padLeft("     ", 'x', 5)).isEqualTo("     ");
+    assertThat(StringUtils.padLeft("xxxxx", 'x', 5)).isEqualTo("xxxxx");
+    assertThat(StringUtils.padLeft("x", 'x', 5)).isEqualTo("xxxxx");
+    assertThat(StringUtils.padLeft("Xxx", 'x', 5)).isEqualTo("xxXxx");
+    assertThat(StringUtils.padLeft("xxxxx", 'X', 10)).isEqualTo("XXXXXxxxxx");
+  }
+
+  @Test
+  void padLeftWithIllegalLength() {
+
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> StringUtils.padLeft("xyz", 'A', -1))
+      .withMessage("[-1] must be greater than equal to 0")
+      .withNoCause();
+  }
+
+  @Test
+  void padLeftWithNullIsNullSafe() {
+
+    assertThat(StringUtils.padLeft(null, 0)).isNull();
+    assertThat(StringUtils.padLeft(null, 1)).isEqualTo(" ");
+    assertThat(StringUtils.padLeft(null, 3)).isEqualTo("   ");
+  }
+
+  @Test
+  void padLeftWithSpaces() {
+
+    assertThat(StringUtils.padLeft("test", 10)).isEqualTo("      test");
+    assertThat(StringUtils.padLeft("test", 5)).isEqualTo(" test");
+    assertThat(StringUtils.padLeft("test", 4)).isEqualTo("test");
+    assertThat(StringUtils.padLeft("test", 1)).isEqualTo("test");
+    assertThat(StringUtils.padLeft("test", 0)).isEqualTo("test");
+    assertThat(StringUtils.padLeft("null", 2)).isEqualTo("null");
+    assertThat(StringUtils.padLeft("nil", 2)).isEqualTo("nil");
+    assertThat(StringUtils.padLeft("", 2)).isEqualTo("  ");
+    assertThat(StringUtils.padLeft(" ", 2)).isEqualTo("  ");
+    assertThat(StringUtils.padLeft("  ", 2)).isEqualTo("  ");
+  }
+
+  @Test
   public void padWithCharacter() {
 
     assertThat(StringUtils.pad("", 'x', 5)).isEqualTo("xxxxx");
     assertThat(StringUtils.pad(" ", 'x', 5)).isEqualTo(" xxxx");
+    assertThat(StringUtils.pad("  ", 'x', 5)).isEqualTo("  xxx");
     assertThat(StringUtils.pad("   ", 'x', 5)).isEqualTo("   xx");
+    assertThat(StringUtils.pad("    ", 'x', 5)).isEqualTo("    x");
+    assertThat(StringUtils.pad("     ", 'x', 5)).isEqualTo("     ");
     assertThat(StringUtils.pad("xxxxx", 'x', 5)).isEqualTo("xxxxx");
     assertThat(StringUtils.pad("x", 'x', 5)).isEqualTo("xxxxx");
     assertThat(StringUtils.pad("xxX", 'x', 5)).isEqualTo("xxXxx");
@@ -549,7 +599,7 @@ public class StringUtilsTests {
   }
 
   @Test
-  public void padWithNull() {
+  public void padWithNullIsNullSafe() {
 
     assertThat(StringUtils.pad(null, 0)).isNull();
     assertThat(StringUtils.pad(null, 2)).isEqualTo("  ");
@@ -563,7 +613,7 @@ public class StringUtilsTests {
     assertThat(StringUtils.pad("test", ' ', 5)).isEqualTo("test ");
     assertThat(StringUtils.pad("test", ' ', 4)).isEqualTo("test");
     assertThat(StringUtils.pad("test", ' ', 1)).isEqualTo("test");
-    assertThat(StringUtils.pad("x", ' ', 0)).isEqualTo("x");
+    assertThat(StringUtils.pad("test", ' ', 0)).isEqualTo("test");
     assertThat(StringUtils.pad("null", ' ', 2)).isEqualTo("null");
     assertThat(StringUtils.pad("nil", ' ', 2)).isEqualTo("nil");
     assertThat(StringUtils.pad("", ' ', 2)).isEqualTo("  ");

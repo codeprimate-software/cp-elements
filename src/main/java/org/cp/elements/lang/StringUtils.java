@@ -488,10 +488,46 @@ public abstract class StringUtils {
       .throwing(newIllegalArgumentException("[%d] must be greater than equal to 0", length))
       .isGreaterThanEqualTo(0);
 
-    String resolvedValue = ObjectUtils.returnFirstNonNullValue(value, EMPTY_STRING);
+    String resolvedValue = ObjectUtils.returnValueOrDefaultIfNull(value, EMPTY_STRING);
 
     return length > 0
       ? resolvedValue.concat(String.valueOf(padding).repeat(Math.max(length - resolvedValue.length(), 0)))
+      : value;
+  }
+
+  /**
+   * Pads the given {@link String value} up to the given {@link Integer length} with the whitespace character
+   * on the left.
+   *
+   * @param value {@link String value} to pad.
+   * @param length {@link Integer length} of the value plus the padding.
+   * @return the padded {@link String value}.
+   * @throws IllegalArgumentException if {@link Integer length} is less than {@literal 0}.
+   * @see #padLeft(String, char, int)
+   */
+  public static @Nullable String padLeft(@Nullable String value, int length) {
+    return padLeft(value, SINGLE_SPACE_CHAR, length);
+  }
+
+  /**
+   * Pads the given {@link String value} up to the given {@link Integer length} with the given {@link Character}
+   * on the left.
+   *
+   * @param value {@link String value} to pad.
+   * @param length {@link Integer length} of the value plus the padding.
+   * @return the padded {@link String value}.
+   * @throws IllegalArgumentException if {@link Integer length} is less than {@literal 0}.
+   */
+  public static @Nullable String padLeft(@Nullable String value, char padding, int length) {
+
+    assertThat(length)
+      .throwing(newIllegalArgumentException("[%d] must be greater than equal to 0", length))
+      .isGreaterThanEqualTo(0);
+
+    String resolvedValue = ObjectUtils.returnValueOrDefaultIfNull(value, EMPTY_STRING);
+
+    return length > 0
+      ? String.valueOf(padding).repeat(Math.max(length - resolvedValue.length(), 0)).concat(resolvedValue)
       : value;
   }
 
