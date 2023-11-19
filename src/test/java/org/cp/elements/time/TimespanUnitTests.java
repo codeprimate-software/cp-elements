@@ -636,4 +636,105 @@ class TimespanUnitTests {
   void isAferTimeIsNullSafe() {
     assertThat(Timespan.ending(LocalTime.MAX).isAfter((LocalTime) null)).isFalse();
   }
+
+  @Test
+  void isBeforeYearReturnsTrue() {
+    assertThat(Timespan.beginning(Year.of(2023)).isBefore(Year.of(2022))).isTrue();
+  }
+
+  @Test
+  void isBeforeYearReturnsFalse() {
+    assertThat(Timespan.beginning(Year.of(2023)).isBefore(Year.of(2023))).isFalse();
+    assertThat(Timespan.beginning(Year.of(2023)).isBefore(Year.of(2024))).isFalse();
+    assertThat(Timespan.beginning(Year.of(2023)).isBefore(Year.of(2100))).isFalse();
+  }
+
+  @Test
+  void isBeforeYearIsNullSafe() {
+    assertThat(Timespan.beginning(Year.of(2023)).isBefore((Year) null)).isFalse();
+  }
+
+  @Test
+  void isBeforeYearMonthReturnsTrue() {
+    assertThat(Timespan.beginning(YearMonth.of(2023, Month.JULY)).isBefore(YearMonth.of(2023, Month.JUNE))).isTrue();
+    assertThat(Timespan.beginning(YearMonth.of(2023, Month.MAY)).isBefore(YearMonth.of(2022, Month.AUGUST))).isTrue();
+    assertThat(Timespan.beginning(YearMonth.of(2023, Month.MAY)).isBefore(YearMonth.of(2021, Month.APRIL))).isTrue();
+  }
+
+  @Test
+  void isBeforeYearMonthReturnsFalse() {
+    assertThat(Timespan.beginning(YearMonth.of(2023, Month.JULY)).isBefore(YearMonth.of(2023, Month.AUGUST))).isFalse();
+    assertThat(Timespan.beginning(YearMonth.of(2023, Month.JULY)).isBefore(YearMonth.of(2024, Month.JANUARY))).isFalse();
+    assertThat(Timespan.beginning(YearMonth.of(2023, Month.MAY)).isBefore(YearMonth.of(2100, Month.MARCH))).isFalse();
+  }
+
+  @Test
+  void isBeforeYearMonthIsNullSafe() {
+    assertThat(Timespan.beginning(YearMonth.of(2023, Month.NOVEMBER)).isBefore((YearMonth) null)).isFalse();
+  }
+
+  @Test
+  void isBeforeDateReturnsTrue() {
+
+    assertThat(Timespan.beginning(LocalDate.of(2023, Month.NOVEMBER, 19))
+      .isBefore(LocalDate.of(2023, Month.NOVEMBER, 18))).isTrue();
+    assertThat(Timespan.beginning(LocalDate.of(2023, Month.NOVEMBER, 19))
+      .isBefore(LocalDate.of(2022, Month.DECEMBER, 25))).isTrue();
+  }
+
+  @Test
+  void isBeforeDateReturnsFalse() {
+
+    assertThat(Timespan.beginning(LocalDate.of(2023, Month.NOVEMBER, 19))
+      .isBefore(LocalDate.of(2023, Month.NOVEMBER, 19))).isFalse();
+    assertThat(Timespan.beginning(LocalDate.of(2023, Month.NOVEMBER, 19))
+      .isBefore(LocalDate.of(2023, Month.DECEMBER, 12))).isFalse();
+    assertThat(Timespan.beginning(LocalDate.of(2023, Month.NOVEMBER, 19))
+      .isBefore(LocalDate.of(2024, Month.JANUARY, 1))).isFalse();
+  }
+
+  @Test
+  void isBeforeDateIsNullSafe() {
+    assertThat(Timespan.beginning(LocalDate.of(2023, Month.NOVEMBER, 19)).isBefore((LocalDate) null)).isFalse();
+  }
+
+  @Test
+  void isBeforeDateTimeReturnsTrue() {
+
+    assertThat(Timespan.beginning(LocalDateTime.of(2023, Month.NOVEMBER, 19, 12, 24, 48, 0))
+      .isBefore(LocalDateTime.of(2022, Month.JANUARY, 1, 6, 12, 24, 0))).isTrue();
+    assertThat(Timespan.beginning(LocalDateTime.of(2023, Month.NOVEMBER, 19, 12, 24, 48, 0))
+      .isBefore(LocalDateTime.of(2023, Month.NOVEMBER, 19, 12, 24, 47, 0))).isTrue();
+  }
+
+  @Test
+  void isBeforeDateTimeReturnsFalse() {
+
+    assertThat(Timespan.beginning(LocalDateTime.of(2023, Month.NOVEMBER, 19, 12, 24, 48, 0))
+      .isBefore(LocalDateTime.of(2023, Month.NOVEMBER, 19, 12, 24, 48, 0))).isFalse();
+    assertThat(Timespan.beginning(LocalDateTime.of(2023, Month.NOVEMBER, 19, 12, 24, 48, 0))
+      .isBefore(LocalDateTime.of(2024, Month.FEBRUARY, 28, 11, 59, 59, 999))).isFalse();
+  }
+
+  @Test
+  void isBeforeDateTimeIsNullSafe() {
+    assertThat(Timespan.beginning(LocalDateTime.of(2023, Month.NOVEMBER, 19, 0, 9, 18, 0))
+      .isBefore((LocalDateTime) null)).isFalse();
+  }
+
+  @Test
+  void isBeforeTimeReturnsTrue() {
+    assertThat(Timespan.beginning(LocalTime.of(12, 25, 50, 500)).isBefore(LocalTime.of(6, 13, 30, 999))).isTrue();
+  }
+
+  @Test
+  void isBeforeTimeReturnsFalse() {
+    assertThat(Timespan.beginning(LocalTime.of(12, 25, 50, 500)).isBefore(LocalTime.of(12, 25, 50, 500))).isFalse();
+    assertThat(Timespan.beginning(LocalTime.of(12, 25, 50, 500)).isBefore(LocalTime.MAX)).isFalse();
+  }
+
+  @Test
+  void isBeforeTimeIsNullSafe() {
+    assertThat(Timespan.beginning(LocalTime.of(0, 10, 20, 0)).isBefore((LocalTime) null)).isFalse();
+  }
 }

@@ -494,47 +494,82 @@ public class Timespan implements Comparable<Timespan>, Renderable {
 		return time != null && isAfter(time.atDate(LocalDate.now()));
 	}
 
-	// Determine whether the given year is before this Timespan
+	/**
+	 * Determine whether the given {@link Year} is before this {@link Timespan}.
+	 *
+	 * @param year {@link Year} to compare with the {@link #getBegin() beginning} of this {@link Timespan}.
+	 * @return a boolean value indicating whether the given {@link Year} is before this {@link Timespan}.
+	 * @see #isBefore(YearMonth)
+	 * @see java.time.Year
+	 */
 	public boolean isBefore(@NotNull Year year) {
 		return year != null && isBefore(year.atMonth(Month.DECEMBER));
 	}
 
-	// Determine whether the given year/month is before this Timespan
+	/**
+	 * Determine whether the given {@link YearMonth} is before this {@link Timespan}.
+	 *
+	 * @param yearMonth {@link YearMonth} to compare with the {@link #getBegin() beginning} of this {@link Timespan}.
+	 * @return a boolean value indicating whether the given {@link YearMonth} is before this {@link Timespan}.
+	 * @see #isBefore(LocalDate)
+	 * @see java.time.YearMonth
+	 */
 	public boolean isBefore(@NotNull YearMonth yearMonth) {
 		return yearMonth != null && isBefore(yearMonth.atEndOfMonth());
 	}
 
-	// Determine whether the given date occurs is this Timespan
+	/**
+	 * Determine whether the given {@link LocalDate} is before this {@link Timespan}.
+	 *
+	 * @param date {@link LocalDate} to compare with the {@link #getBegin() beginning} of this {@link Timespan}.
+	 * @return a boolean value indicating whether the given {@link LocalDate} is before this {@link Timespan}.
+	 * @see #isBefore(LocalDateTime)
+	 * @see java.time.LocalDate
+	 */
 	public boolean isBefore(@NotNull LocalDate date) {
 		return date != null && isBefore(date.atTime(LocalTime.MAX));
 	}
 
-	// Determine whether the given date/time is before this Timespan
+	/**
+	 * Determine whether the given {@link LocalDateTime} is before this {@link Timespan}.
+	 *
+	 * @param dateTime {@link LocalDate} to compare with the {@link #getBegin() beginning} of this {@link Timespan}.
+	 * @return a boolean value indicating whether the given {@link LocalDateTime} is before this {@link Timespan}.
+	 * @see java.time.LocalDateTime
+	 * @see #getOptionalBegin()
+	 */
 	public boolean isBefore(@NotNull LocalDateTime dateTime) {
 		return dateTime != null && getOptionalBegin().map(dateTime::isBefore).orElse(false);
 	}
 
-	// Determine whether the given time occurs is this Timespan
+	/**
+	 * Determine whether the given {@link LocalTime} is before this {@link Timespan}.
+	 *
+	 * @param time {@link LocalTime} to compare with the {@link #getBegin() beginning} of this {@link Timespan}.
+	 * @return a boolean value indicating whether the given {@link LocalTime} is before this {@link Timespan}.
+	 * @see #isBefore(LocalDateTime)
+	 * @see java.time.LocalTime
+	 */
 	public boolean isBefore(@NotNull LocalTime time) {
 		return time != null && isBefore(time.atDate(LocalDate.now()));
 	}
 
-	// Determine whether the entire year is during this Timespan
+	// Determine whether the entire year occurs during this Timespan
 	public boolean isDuring(@NotNull Year year) {
 		return year != null && isDuring(year.atMonth(Month.JANUARY)) && isDuring(year.atMonth(Month.DECEMBER));
 	}
 
-	// Determine whether the entire month of the year is during this Timespan
+	// Determine whether the entire month of the year occurs during this Timespan
 	public boolean isDuring(@NotNull YearMonth yearMonth) {
 		return yearMonth != null && isDuring(yearMonth.atDay(1)) && isDuring(yearMonth.atEndOfMonth());
 	}
 
-	// Determine whether the entire day is during this Timespan
+	// Determine whether the entire day occurs during this Timespan
 	public boolean isDuring(@NotNull LocalDate date) {
 		return date != null && isDuring(date.atStartOfDay()) && isDuring(date.atTime(LocalTime.MAX));
 	}
 
-	// Determine whether the given date/time (instant in time) is during this Timespan
+	// Determine whether the given date/time (instant in time) occurs during this Timespan
 	public boolean isDuring(@NotNull LocalDateTime dateTime) {
 
 		return dateTime != null
@@ -542,7 +577,7 @@ public class Timespan implements Comparable<Timespan>, Renderable {
 			&& getOptionalEnd().map(end -> !dateTime.isAfter(end)).orElse(true);
 	}
 
-	// Determine whether the given time occurs is this Timespan
+	// Determine whether the given time occurs during this Timespan
 	public boolean isDuring(@NotNull LocalTime time) {
 		return time != null && isDuring(time.atDate(LocalDate.now()));
 	}
