@@ -49,6 +49,7 @@ import org.cp.elements.lang.reflect.FieldNotFoundException;
 import org.cp.elements.lang.reflect.MethodInvocationException;
 import org.cp.elements.lang.reflect.MethodNotFoundException;
 import org.cp.elements.lang.reflect.UnhandledMethodInvocationException;
+import org.cp.elements.management.ManagementException;
 import org.cp.elements.net.NetworkException;
 import org.cp.elements.net.NoAvailablePortException;
 import org.cp.elements.process.EmbeddedProcessExecutionException;
@@ -1518,6 +1519,36 @@ public abstract class ElementsExceptionsFactory {
       String message, Object... args) {
 
     return new UnhandledMethodInvocationException(format(message, args), cause);
+  }
+
+  // package org.cp.elements.management
+
+  /**
+   * Constructs a new {@link ManagementException} initialized with the given {@link String message}
+   * describing the exception.
+   *
+   * @param message {@link String} containing a message to describe the exception.
+   * @param args optional array of {@link Object arguments} used to replace the placeholders in the message.
+   * @return a new {@link ManagementException}.
+   * @see #newManagementException(Throwable, String, Object...)
+   * @see org.cp.elements.management.ManagementException
+   */
+  public static ManagementException newManagementException(String message, Object... args) {
+    return newManagementException(null, message, args);
+  }
+
+  /**
+   * Constructs a new {@link ManagementException} initialized with the given {@link String message}
+   * describing the exception along with a {@link Throwable cause} used as the reason the exception was thrown.
+   *
+   * @param cause {@link Throwable} used as the cause of the exception.
+   * @param message {@link String} containing a message to describe the exception.
+   * @param args optional array of {@link Object arguments} used to replace the placeholders in the message.
+   * @return a new {@link ManagementException}.
+   * @see org.cp.elements.management.ManagementException
+   */
+  public static ManagementException newManagementException(Throwable cause, String message, Object... args) {
+    return new ManagementException(format(message, args), cause);
   }
 
   // package org.cp.elements.net

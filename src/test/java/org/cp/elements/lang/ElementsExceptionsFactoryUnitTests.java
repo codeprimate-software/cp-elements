@@ -51,6 +51,7 @@ import static org.cp.elements.lang.ElementsExceptionsFactory.newIllegalTypeExcep
 import static org.cp.elements.lang.ElementsExceptionsFactory.newImmutableObjectException;
 import static org.cp.elements.lang.ElementsExceptionsFactory.newInitializationException;
 import static org.cp.elements.lang.ElementsExceptionsFactory.newLoserException;
+import static org.cp.elements.lang.ElementsExceptionsFactory.newManagementException;
 import static org.cp.elements.lang.ElementsExceptionsFactory.newMappingException;
 import static org.cp.elements.lang.ElementsExceptionsFactory.newMethodInvocationException;
 import static org.cp.elements.lang.ElementsExceptionsFactory.newMethodNotFoundException;
@@ -127,6 +128,7 @@ import org.cp.elements.lang.reflect.FieldNotFoundException;
 import org.cp.elements.lang.reflect.MethodInvocationException;
 import org.cp.elements.lang.reflect.MethodNotFoundException;
 import org.cp.elements.lang.reflect.UnhandledMethodInvocationException;
+import org.cp.elements.management.ManagementException;
 import org.cp.elements.net.NetworkException;
 import org.cp.elements.net.NoAvailablePortException;
 import org.cp.elements.process.EmbeddedProcessExecutionException;
@@ -682,6 +684,17 @@ public class ElementsExceptionsFactoryUnitTests {
   public void newUnhandledMethodInvocationExceptionWithFormattedMessageAndCause() {
     assertThrowable(newUnhandledMethodInvocationException(this.mockCause, "%s is a {1}", "This", "test"),
       UnhandledMethodInvocationException.class, "This is a test", this.mockCause);
+  }
+
+  @Test
+  public void newManagementExceptionWithMessage() {
+    assertThrowable(newManagementException("test"), ManagementException.class, "test");
+  }
+
+  @Test
+  public void newManagementExceptionWithFormattedMessageAndCause() {
+    assertThrowable(newManagementException(this.mockCause, "%s is a {1}", "This", "test"),
+      ManagementException.class, "This is a test", this.mockCause);
   }
 
   @Test
