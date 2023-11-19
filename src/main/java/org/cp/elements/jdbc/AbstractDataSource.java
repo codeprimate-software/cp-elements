@@ -15,17 +15,18 @@
  */
 package org.cp.elements.jdbc;
 
+import static org.cp.elements.lang.RuntimeExceptionsFactory.newUnsupportedOperationException;
+
 import java.io.PrintWriter;
 import java.sql.Connection;
-import java.util.logging.Logger;
 
 import javax.sql.DataSource;
 
 import org.cp.elements.lang.Constants;
 
 /**
- * {@link AbstractDataSource} is an abstract based class and implementation of the {@link DataSource} interface
- * enabling easy extension and support for {@link DataSource} operations.
+ * Abstract base class and implementation of the {@link DataSource} interface enabling easy extension and support
+ * for {@link DataSource} operations.
  *
  * @author John J. Blum
  * @see java.sql.Connection
@@ -37,52 +38,41 @@ public abstract class AbstractDataSource implements DataSource {
 
   @Override
   public Connection getConnection() {
-    throw new UnsupportedOperationException(Constants.OPERATION_NOT_SUPPORTED);
+    throw newUnsupportedOperationException(Constants.OPERATION_NOT_SUPPORTED);
   }
 
   @Override
   public Connection getConnection(String username, String password) {
-    throw new UnsupportedOperationException(Constants.OPERATION_NOT_SUPPORTED);
+    throw newUnsupportedOperationException(Constants.OPERATION_NOT_SUPPORTED);
   }
 
   @Override
   public PrintWriter getLogWriter() {
-    throw new UnsupportedOperationException(Constants.OPERATION_NOT_SUPPORTED);
+    throw newUnsupportedOperationException(Constants.OPERATION_NOT_SUPPORTED);
   }
 
   @Override
   public void setLogWriter(PrintWriter out) {
-    throw new UnsupportedOperationException(Constants.OPERATION_NOT_SUPPORTED);
+    throw newUnsupportedOperationException(Constants.OPERATION_NOT_SUPPORTED);
   }
 
   @Override
   public int getLoginTimeout() {
-    throw new UnsupportedOperationException(Constants.OPERATION_NOT_SUPPORTED);
+    throw newUnsupportedOperationException(Constants.OPERATION_NOT_SUPPORTED);
   }
 
   @Override
   public void setLoginTimeout(int seconds) {
-    throw new UnsupportedOperationException(Constants.OPERATION_NOT_SUPPORTED);
-  }
-
-  /**
-   * This method is only present in Java 8.
-   *
-   * @return the parent {@link Logger}.
-   * @see java.util.logging.Logger
-   */
-  //@Override
-  public Logger getParentLogger() {
-    throw new UnsupportedOperationException(Constants.OPERATION_NOT_SUPPORTED);
+    throw newUnsupportedOperationException(Constants.OPERATION_NOT_SUPPORTED);
   }
 
   @Override
   public boolean isWrapperFor(Class<?> interfaceType) {
-    throw new UnsupportedOperationException(Constants.OPERATION_NOT_SUPPORTED);
+    throw newUnsupportedOperationException(Constants.OPERATION_NOT_SUPPORTED);
   }
 
   @Override
   public <T> T unwrap(Class<T> interfaceType) {
-    throw new UnsupportedOperationException(Constants.OPERATION_NOT_SUPPORTED);
+    throw newUnsupportedOperationException(Constants.OPERATION_NOT_SUPPORTED);
   }
 }
