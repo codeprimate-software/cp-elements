@@ -7,8 +7,8 @@ This chapter covers Java language extensions and features provided by _Elements_
 === Domain Specific Languages (DSL)
 
 _Elements_ provides 5 different domain-specific languages (DSL) that you can use to write concise, yet expressive code.
-By statically importing the DSL language operators declared and defined in the `org.cp.elements.lang.LangExtensions`
-class, you can immediately write much more powerful code in fewer lines.
+By statically importing the DSL language operators defined in the `org.cp.elements.lang.LangExtensions` class,
+you can immediately write much more powerful code in fewer lines.
 
 [[elements-lang-dsl-assertThat]]
 ==== `assertThat` operator
@@ -24,17 +24,17 @@ For instance, a developer can assert that an object reference is not `null`.
 assertThat(objectReference).isNotNull();
 ----
 
-The `assertThat` operator and DSL provided by _Elements_ is very similar to https://assertj.github.io/doc/[AssertJ],
-and was partly inspired by AssertJ. However, Elements `assertThat` operator and DSL focuses on the most common
-and useful assertions and more refined expressions.
+The `assertThat` operator and DSL provided by _Elements_ is very similar in form and function to
+https://assertj.github.io/doc/[AssertJ], and was partly inspired by AssertJ. However, Elements `assertThat` operator
+and DSL focuses on the most common and useful assertions with more refined expressions.
 
-NOTE: For complete assertion coverage, we recommend developers use AssertJ.
+NOTE: For complete assertion capabilities, we recommend developers use AssertJ.
 
 Other common assertions include, but are not limited to:
 
 * `isAssignableTo(:Class<?>)` | `isInstanceOf(:Class<?>)`
 * `isComparableTo(:Coparable<?>)` | `isNotComparableTo(:Comparable<?>)`
-* `isEqualsTo(..)` | `isNotEqualTo(..)`
+* `isEqualTo(..)` | `isNotEqualTo(..)`
 * `isGreaterThan(..)`
 * `isGreaterThanAndLessThan(..)`
 * `isGreaterThanAndLessThanEqualTo(..)`
@@ -44,7 +44,7 @@ Other common assertions include, but are not limited to:
 * `hasText(..)`
 * `holdsLock(..)`
 * `isNotBlank()`
-* `isNotEmpty()` For: Arrays, Collections, Iterables, Maps and Strings
+* `isNotEmpty()` - Can be used for: Arrays, Collections, Iterables, Maps and Strings
 * `isFalse()` | `isTrue()`
 * `isLessThan(..)`
 * `isLessThanOrGreaterThan(..)`
@@ -122,10 +122,26 @@ assertThat(object).not().holdsLock();
 ----
 
 Certain assertions conveniently provide named negation variants, such as:
-`isNotEqualTo(:Object)` or `isNotSameAs(:Object)`.
+`isNotEqualTo(:Object)` or `isNotSameAs(:Object)`. That is the following:
+
+.Equivalent `isNotEqual(:Object)`
+[source,java]
+[subs="verbatim,attributes"]
+----
+assertThat(object).isNotEqualTo(anotherObject);
+----
+
+Is the same as:
+
+.Equivalent `not().isEqualTo(:Object)`
+[source,java]
+[subs="verbatim,attributes"]
+----
+assertThat(object).not().isEqualTo(anotherObject);
+----
 
 Unlike Java assertions, Elements assertions can be enabled or disabled using a complex expression, expressed with a
-`Condition` implementation.
+custom `Condition` implementation.
 
 .Conditional assertions
 [source,java]
@@ -138,6 +154,26 @@ assertThat(object).when(enabled).isValid(:Predicate)
 
 A `Condition` can be reused across assertions. Individual, or grouped assertions can each have custom `Conditions`
 of your choosing.
+
+1 last highlight with the `assertThat` operator is using the `isValid(:Predicate)` method. `isValid` accepts a
+`Predicate` allowing for complex conditions to be expressed that cannot be easily expressed with the provided,
+default operators, such as `isEqualTo(..)`.
+
+For instance:
+
+.Using `isValid(:Predicate)`
+[source,java]
+[subs="verbatim,attributes"]
+----
+Predicate<User> userPredicate = user -> session.getUser().equals(user);
+
+userPredicate.andThen(user -> user.getRole().getName().equals("ADMIN"));
+userPredicate.andThen(user -> user.isActive());
+
+assertThat(user).isInstanceOf(User.class)
+  .as(User.class)
+  .isValid(userPredicate);
+----
 
 The `assertThat(..)` DSL operator provides many more capabilities out-of-the-box.
 
@@ -170,7 +206,7 @@ more expression Exception assertions:
 [subs="verbatim,attributes"]
 ----
 assesrtThatThrowableOfType(UnauthroizedUserException.class)
-  .isThrownBy(args -> applicationCodeThrowingSecurityExceptions(unauthorizedUser))
+  .isThrownBy(args -> applicationCodeThrowingSecurityException(unauthorizedUser))
   .havingMessage("User [%s] is not authorized", unauthorizedUser)
   .causedBy(SecurityException.class)
   .havingMessage("Security access exception occurred")
