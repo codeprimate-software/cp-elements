@@ -49,7 +49,7 @@ import org.cp.elements.util.ArrayUtils;
  * @see org.cp.elements.lang.StringUtils
  * @since 1.0.0
  */
-public class StringUtilsTests {
+class StringUtilsTests {
 
   private <T> Iterable<T> toIterable(Iterator<T> iterator) {
     return () -> iterator;
@@ -575,50 +575,50 @@ public class StringUtilsTests {
   }
 
   @Test
-  public void padWithCharacter() {
+  void padRightWithCharacter() {
 
-    assertThat(StringUtils.pad("", 'x', 5)).isEqualTo("xxxxx");
-    assertThat(StringUtils.pad(" ", 'x', 5)).isEqualTo(" xxxx");
-    assertThat(StringUtils.pad("  ", 'x', 5)).isEqualTo("  xxx");
-    assertThat(StringUtils.pad("   ", 'x', 5)).isEqualTo("   xx");
-    assertThat(StringUtils.pad("    ", 'x', 5)).isEqualTo("    x");
-    assertThat(StringUtils.pad("     ", 'x', 5)).isEqualTo("     ");
-    assertThat(StringUtils.pad("xxxxx", 'x', 5)).isEqualTo("xxxxx");
-    assertThat(StringUtils.pad("x", 'x', 5)).isEqualTo("xxxxx");
-    assertThat(StringUtils.pad("xxX", 'x', 5)).isEqualTo("xxXxx");
-    assertThat(StringUtils.pad("xxxxx", 'X', 10)).isEqualTo("xxxxxXXXXX");
+    assertThat(StringUtils.padRight("", 'x', 5)).isEqualTo("xxxxx");
+    assertThat(StringUtils.padRight(" ", 'x', 5)).isEqualTo(" xxxx");
+    assertThat(StringUtils.padRight("  ", 'x', 5)).isEqualTo("  xxx");
+    assertThat(StringUtils.padRight("   ", 'x', 5)).isEqualTo("   xx");
+    assertThat(StringUtils.padRight("    ", 'x', 5)).isEqualTo("    x");
+    assertThat(StringUtils.padRight("     ", 'x', 5)).isEqualTo("     ");
+    assertThat(StringUtils.padRight("xxxxx", 'x', 5)).isEqualTo("xxxxx");
+    assertThat(StringUtils.padRight("x", 'x', 5)).isEqualTo("xxxxx");
+    assertThat(StringUtils.padRight("xxX", 'x', 5)).isEqualTo("xxXxx");
+    assertThat(StringUtils.padRight("xxxxx", 'X', 10)).isEqualTo("xxxxxXXXXX");
   }
 
   @Test
-  public void padWithIllegalLength() {
+  void padRightWithIllegalLength() {
 
     assertThatIllegalArgumentException()
-      .isThrownBy(() -> StringUtils.pad("test", -10))
+      .isThrownBy(() -> StringUtils.padRight("test", -10))
       .withMessage("[-10] must be greater than equal to 0")
       .withNoCause();
   }
 
   @Test
-  public void padWithNullIsNullSafe() {
+  void padRightWithNullIsNullSafe() {
 
-    assertThat(StringUtils.pad(null, 0)).isNull();
-    assertThat(StringUtils.pad(null, 2)).isEqualTo("  ");
-    assertThat(StringUtils.pad(null, 'x', 5)).isEqualTo("xxxxx");
+    assertThat(StringUtils.padRight(null, 0)).isNull();
+    assertThat(StringUtils.padRight(null, 2)).isEqualTo("  ");
+    assertThat(StringUtils.padRight(null, 'x', 5)).isEqualTo("xxxxx");
   }
 
   @Test
-  public void padWithSpaces() {
+  void padRightWithSpaces() {
 
-    assertThat(StringUtils.pad("test", ' ', 10)).isEqualTo("test      ");
-    assertThat(StringUtils.pad("test", ' ', 5)).isEqualTo("test ");
-    assertThat(StringUtils.pad("test", ' ', 4)).isEqualTo("test");
-    assertThat(StringUtils.pad("test", ' ', 1)).isEqualTo("test");
-    assertThat(StringUtils.pad("test", ' ', 0)).isEqualTo("test");
-    assertThat(StringUtils.pad("null", ' ', 2)).isEqualTo("null");
-    assertThat(StringUtils.pad("nil", ' ', 2)).isEqualTo("nil");
-    assertThat(StringUtils.pad("", ' ', 2)).isEqualTo("  ");
-    assertThat(StringUtils.pad(" ", ' ', 2)).isEqualTo("  ");
-    assertThat(StringUtils.pad("   ", ' ', 2)).isEqualTo("   ");
+    assertThat(StringUtils.padRight("test", ' ', 10)).isEqualTo("test      ");
+    assertThat(StringUtils.padRight("test", ' ', 5)).isEqualTo("test ");
+    assertThat(StringUtils.padRight("test", ' ', 4)).isEqualTo("test");
+    assertThat(StringUtils.padRight("test", ' ', 1)).isEqualTo("test");
+    assertThat(StringUtils.padRight("test", ' ', 0)).isEqualTo("test");
+    assertThat(StringUtils.padRight("null", ' ', 2)).isEqualTo("null");
+    assertThat(StringUtils.padRight("nil", ' ', 2)).isEqualTo("nil");
+    assertThat(StringUtils.padRight("", ' ', 2)).isEqualTo("  ");
+    assertThat(StringUtils.padRight(" ", ' ', 2)).isEqualTo("  ");
+    assertThat(StringUtils.padRight("   ", ' ', 2)).isEqualTo("   ");
   }
 
   @Test

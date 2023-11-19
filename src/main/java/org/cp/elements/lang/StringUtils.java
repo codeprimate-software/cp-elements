@@ -178,7 +178,7 @@ public abstract class StringUtils {
   @NullSafe
   public static boolean containsLetters(@Nullable String value) {
 
-    for (char chr: toCharArray(value)) {
+    for (char chr : toCharArray(value)) {
       if (Character.isLetter(chr)) {
         return true;
       }
@@ -459,48 +459,10 @@ public abstract class StringUtils {
   }
 
   /**
-   * Pads the given {@link String} with the specified {@link Integer number of spaces} to the right.
-   *
-   * @param value {@link String} to pad.
-   * @param length {@link Integer total length} of the given {@link String} with padding.
-   * @return the given {@link String} padded with spaces up to the specified {@link Integer length}.
-   * @see #pad(String, char, int)
-   */
-  @NullSafe
-  public static String pad(String value, int length) {
-    return pad(value, SINGLE_SPACE_CHAR, length);
-  }
-
-  /**
-   * Pads the given {@link String} with the specified number of characters to the right.
-   *
-   * @param value {@link String} to pad.
-   * @param padding {@link Character} used for padding.
-   * @param length the {@link Integer total length} of the given {@link String} with {@link Character padding}.
-   * @return the given {@link String} padded with the given {@link Character} up to the given {@link Integer length}.
-   * @throws IllegalArgumentException if {@link Integer length} is less than {@literal 0}.
-   */
-  @NullSafe
-  @SuppressWarnings("all")
-  public static String pad(String value, char padding, int length) {
-
-    assertThat(length)
-      .throwing(newIllegalArgumentException("[%d] must be greater than equal to 0", length))
-      .isGreaterThanEqualTo(0);
-
-    String resolvedValue = ObjectUtils.returnValueOrDefaultIfNull(value, EMPTY_STRING);
-
-    return length > 0
-      ? resolvedValue.concat(String.valueOf(padding).repeat(Math.max(length - resolvedValue.length(), 0)))
-      : value;
-  }
-
-  /**
-   * Pads the given {@link String value} up to the given {@link Integer length} with the whitespace character
-   * on the left.
+   * Pads the given {@link String value} with spaces on the left.
    *
    * @param value {@link String value} to pad.
-   * @param length {@link Integer length} of the value plus the padding.
+   * @param length {@link Integer total length} of the given {@link String value} with spaces.
    * @return the padded {@link String value}.
    * @throws IllegalArgumentException if {@link Integer length} is less than {@literal 0}.
    * @see #padLeft(String, char, int)
@@ -510,11 +472,11 @@ public abstract class StringUtils {
   }
 
   /**
-   * Pads the given {@link String value} up to the given {@link Integer length} with the given {@link Character}
-   * on the left.
+   * Pads the given {@link String value} with {@link Character padding} on the left.
    *
    * @param value {@link String value} to pad.
-   * @param length {@link Integer length} of the value plus the padding.
+   * @param padding {@link Character} to use as padding.
+   * @param length {@link Integer total length} of the given {@link String value} with {@link Character padding}.
    * @return the padded {@link String value}.
    * @throws IllegalArgumentException if {@link Integer length} is less than {@literal 0}.
    */
@@ -532,19 +494,54 @@ public abstract class StringUtils {
   }
 
   /**
+   * Pads the given {@link String value} with spaces on the right.
+   *
+   * @param value {@link String value} to pad.
+   * @param length {@link Integer total length} of the given {@link String value} with spaces.
+   * @return the padded {@link String value}.
+   * @throws IllegalArgumentException if {@link Integer length} is less than {@literal 0}.
+   * @see #padRight(String, char, int)
+   */
+  public static @Nullable String padRight(@Nullable String value, int length) {
+    return padRight(value, SINGLE_SPACE_CHAR, length);
+  }
+
+  /**
+   * Pads the given {@link String value} with {@link Character padding} to the right.
+   *
+   * @param value {@link String} to pad.
+   * @param padding {@link Character} to use as padding.
+   * @param length {@link Integer total length} of the given {@link String value} with {@link Character padding}.
+   * @return the padded {@link String value}.
+   * @throws IllegalArgumentException if {@link Integer length} is less than {@literal 0}.
+   */
+  public static @Nullable String padRight(@Nullable String value, char padding, int length) {
+
+    assertThat(length)
+      .throwing(newIllegalArgumentException("[%d] must be greater than equal to 0", length))
+      .isGreaterThanEqualTo(0);
+
+    String resolvedValue = ObjectUtils.returnValueOrDefaultIfNull(value, EMPTY_STRING);
+
+    return length > 0
+      ? resolvedValue.concat(String.valueOf(padding).repeat(Math.max(length - resolvedValue.length(), 0)))
+      : value;
+  }
+
+  /**
    * Null-safe method to replace the specified {@link String pattern} in the given {@link String} with
    * the replacement {@link String}.
    * <p>
    * For example, given the following String...
    * <p>
    * <code>
-   *   "///absolute//path/to/////some////file.ext"
+   * "///absolute//path/to/////some////file.ext"
    * </code>
    * <p>
    * When 'pattern' is "/+" and 'replacement' is "/", the resulting, returned String value will be...
    * <p>
    * <code>
-   *   "/absolute/path/to/some/file.ext"
+   * "/absolute/path/to/some/file.ext"
    * </code>
    *
    * @param value {@link String} on which to perform the pattern search and replace operation.
@@ -723,7 +720,7 @@ public abstract class StringUtils {
   @SuppressWarnings("all")
   public static String[] toStringArray(String delimitedValue, String delimiter) {
     return ArrayUtils.transform(ObjectUtils.returnFirstNonNullValue(delimitedValue, EMPTY_STRING).split(
-        defaultIfBlank(delimiter, COMMA_DELIMITER)), StringUtils::trim);
+      defaultIfBlank(delimiter, COMMA_DELIMITER)), StringUtils::trim);
   }
 
   /**
