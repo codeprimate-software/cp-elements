@@ -55,6 +55,7 @@ import static org.cp.elements.lang.ElementsExceptionsFactory.newManagementExcept
 import static org.cp.elements.lang.ElementsExceptionsFactory.newMappingException;
 import static org.cp.elements.lang.ElementsExceptionsFactory.newMethodInvocationException;
 import static org.cp.elements.lang.ElementsExceptionsFactory.newMethodNotFoundException;
+import static org.cp.elements.lang.ElementsExceptionsFactory.newMonitoringException;
 import static org.cp.elements.lang.ElementsExceptionsFactory.newNetworkException;
 import static org.cp.elements.lang.ElementsExceptionsFactory.newNoAvailablePortException;
 import static org.cp.elements.lang.ElementsExceptionsFactory.newNoSuchConstructorException;
@@ -129,6 +130,7 @@ import org.cp.elements.lang.reflect.MethodInvocationException;
 import org.cp.elements.lang.reflect.MethodNotFoundException;
 import org.cp.elements.lang.reflect.UnhandledMethodInvocationException;
 import org.cp.elements.management.ManagementException;
+import org.cp.elements.management.MonitoringException;
 import org.cp.elements.net.NetworkException;
 import org.cp.elements.net.NoAvailablePortException;
 import org.cp.elements.process.EmbeddedProcessExecutionException;
@@ -695,6 +697,17 @@ public class ElementsExceptionsFactoryUnitTests {
   public void newManagementExceptionWithFormattedMessageAndCause() {
     assertThrowable(newManagementException(this.mockCause, "%s is a {1}", "This", "test"),
       ManagementException.class, "This is a test", this.mockCause);
+  }
+
+  @Test
+  public void newMonitoringExceptionWithMessage() {
+    assertThrowable(newMonitoringException("test"), MonitoringException.class, "test");
+  }
+
+  @Test
+  public void newMonitoringExceptionWithFormattedMessageAndCause() {
+    assertThrowable(newMonitoringException(this.mockCause, "%s is a {1}", "This", "test"),
+      MonitoringException.class, "This is a test", this.mockCause);
   }
 
   @Test

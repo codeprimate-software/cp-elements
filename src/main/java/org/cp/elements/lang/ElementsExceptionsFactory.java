@@ -50,6 +50,7 @@ import org.cp.elements.lang.reflect.MethodInvocationException;
 import org.cp.elements.lang.reflect.MethodNotFoundException;
 import org.cp.elements.lang.reflect.UnhandledMethodInvocationException;
 import org.cp.elements.management.ManagementException;
+import org.cp.elements.management.MonitoringException;
 import org.cp.elements.net.NetworkException;
 import org.cp.elements.net.NoAvailablePortException;
 import org.cp.elements.process.EmbeddedProcessExecutionException;
@@ -131,6 +132,8 @@ import org.cp.elements.util.sort.SortException;
  * @see org.cp.elements.lang.reflect.MethodInvocationException
  * @see org.cp.elements.lang.reflect.MethodNotFoundException
  * @see org.cp.elements.lang.reflect.UnhandledMethodInvocationException
+ * @see org.cp.elements.management.ManagementException
+ * @see org.cp.elements.management.MonitoringException
  * @see org.cp.elements.net.NetworkException
  * @see org.cp.elements.net.NoAvailablePortException
  * @see org.cp.elements.process.EmbeddedProcessExecutionException
@@ -1549,6 +1552,34 @@ public abstract class ElementsExceptionsFactory {
    */
   public static ManagementException newManagementException(Throwable cause, String message, Object... args) {
     return new ManagementException(format(message, args), cause);
+  }
+
+  /**
+   * Constructs a new {@link MonitoringException} initialized with the given {@link String message}
+   * describing the exception.
+   *
+   * @param message {@link String} containing a message to describe the exception.
+   * @param args optional array of {@link Object arguments} used to replace the placeholders in the message.
+   * @return a new {@link MonitoringException}.
+   * @see #newMonitoringException(Throwable, String, Object...)
+   * @see org.cp.elements.management.MonitoringException
+   */
+  public static MonitoringException newMonitoringException(String message, Object... args) {
+    return newMonitoringException(null, message, args);
+  }
+
+  /**
+   * Constructs a new {@link MonitoringException} initialized with the given {@link String message}
+   * describing the exception along with a {@link Throwable cause} used as the reason the exception was thrown.
+   *
+   * @param cause {@link Throwable} used as the cause of the exception.
+   * @param message {@link String} containing a message to describe the exception.
+   * @param args optional array of {@link Object arguments} used to replace the placeholders in the message.
+   * @return a new {@link MonitoringException}.
+   * @see org.cp.elements.management.MonitoringException
+   */
+  public static MonitoringException newMonitoringException(Throwable cause, String message, Object... args) {
+    return new MonitoringException(format(message, args), cause);
   }
 
   // package org.cp.elements.net
