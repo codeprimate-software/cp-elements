@@ -25,7 +25,6 @@ import java.time.Month;
 import java.time.Year;
 import java.time.YearMonth;
 import java.util.Arrays;
-import java.util.Calendar;
 import java.util.function.Supplier;
 
 import org.junit.jupiter.api.Test;
@@ -572,13 +571,13 @@ class TimespanUnitTests {
 
   @Test
   void isAfterYearMonthReturnsTrue() {
-    assertThat(Timespan.ending(YearMonth.of(2023, Calendar.MARCH)).isAfter(YearMonth.of(2024, Calendar.FEBRUARY)))
+    assertThat(Timespan.ending(YearMonth.of(2023, Month.MARCH)).isAfter(YearMonth.of(2024, Month.FEBRUARY)))
       .isTrue();
   }
 
   @Test
   void isAfterYearMonthReturnsFalse() {
-    assertThat(Timespan.ending(YearMonth.of(2023, Calendar.APRIL)).isAfter(YearMonth.of(2022, Calendar.NOVEMBER)))
+    assertThat(Timespan.ending(YearMonth.of(2023, Month.APRIL)).isAfter(YearMonth.of(2022, Month.NOVEMBER)))
       .isFalse();
   }
 
@@ -736,5 +735,111 @@ class TimespanUnitTests {
   @Test
   void isBeforeTimeIsNullSafe() {
     assertThat(Timespan.beginning(LocalTime.of(0, 10, 20, 0)).isBefore((LocalTime) null)).isFalse();
+  }
+
+  @Test
+  void isDuringYearReturnsTrue() {
+    assertThat(Timespan.from(Year.of(2023)).to(Year.of(2023)).build().isDuring(Year.of(2023))).isTrue();
+    assertThat(Timespan.from(Year.of(2022)).to(Year.of(2024)).build().isDuring(Year.of(2023))).isTrue();
+  }
+
+  @Test
+  void isDuringYearReturnsFalse() {
+    assertThat(Timespan.from(Year.of(2023)).to(Year.of(2023)).build().isDuring(Year.of(2022))).isFalse();
+    assertThat(Timespan.from(Year.of(2023)).to(Year.of(2023)).build().isDuring(Year.of(2024))).isFalse();
+    assertThat(Timespan.from(Year.of(2022)).to(Year.of(2024)).build().isDuring(Year.of(1923))).isFalse();
+  }
+
+  @Test
+  void isDuringYearWithNullIsNullSafe() {
+    assertThat(Timespan.from(Year.of(2023)).to(Year.of(2023)).build().isDuring((Year) null)).isFalse();
+  }
+
+  @Test
+  void isDuringYearMonthReturnsTrue() {
+
+    YearMonth yearMonth = YearMonth.of(2023, Month.NOVEMBER);
+
+    assertThat(Timespan.from(yearMonth).to(yearMonth).build().isDuring(yearMonth)).isTrue();
+    assertThat(Timespan.from(yearMonth).to(yearMonth).build()
+      .isDuring(LocalDate.of(yearMonth.getYear(), yearMonth.getMonth(), 19))).isTrue();
+  }
+
+  @Test
+  void isDuringYearMonthReturnsFalse() {
+
+    YearMonth yearMonth = YearMonth.of(2023, Month.NOVEMBER);
+
+    assertThat(Timespan.from(yearMonth).to(yearMonth).build()
+      .isDuring(LocalDate.of(2022, yearMonth.getMonth(), 19))).isFalse();
+    assertThat(Timespan.from(yearMonth).to(yearMonth).build()
+      .isDuring(LocalDate.of(2024, yearMonth.getMonth(), 19))).isFalse();
+  }
+
+  @Test
+  void isDuringYearMonthWithNullIsNullSafe() {
+    YearMonth november2023 = YearMonth.of(2023, Month.NOVEMBER);
+    assertThat(Timespan.from(november2023).to(november2023).build().isDuring((YearMonth) null)).isFalse();
+  }
+
+  @Test
+  void isDuringDateReturnsTrue() {
+    LocalDate date = LocalDate.of(2023, Month.NOVEMBER, 19);
+    assertThat(Timespan.from(date).to(date).build().isDuring(date)).isTrue();
+    assertThat(Timespan.from(date).to(date).build().isDuring(LocalTime.now().atDate(date))).isTrue();
+  }
+
+  @Test
+  void isDuringDateReturnsFalse() {
+    LocalDate date = LocalDate.of(2023, Month.NOVEMBER, 19);
+    assertThat(Timespan.from(date).to(date).build().isDuring(LocalDate.of(2022, Month.NOVEMBER, 19))).isFalse();
+    assertThat(Timespan.from(date).to(date).build().isDuring(LocalDate.of(2024, Month.NOVEMBER, 19))).isFalse();
+  }
+
+  @Test
+  void isDuringDateWithNullIsNullSafe() {
+    LocalDate date = LocalDate.of(2023, Month.NOVEMBER, 19);
+    assertThat(Timespan.from(date).to(date).build().isDuring((LocalDate) null)).isFalse();
+  }
+
+  @Test
+  void isDuringDateTimeReturnsTrue() {
+    LocalDateTime now = LocalDateTime.now();
+    assertThat(Timespan.from(now).to(now).build().isDuring(now)).isTrue();
+  }
+
+  @Test
+  void isDuringDateTimeReturnsFalse() {
+    LocalDateTime dateTime = LocalDateTime.of(2023, Month.NOVEMBER, 19, 14, 41, 55, 999);
+    assertThat(Timespan.from(dateTime).to(dateTime).build().isDuring(LocalDateTime.now())).isFalse();
+  }
+
+  @Test
+  void isDuringDateTimeWithNullIsNullSafe() {
+    LocalDateTime dateTime = LocalDateTime.of(2023, Month.NOVEMBER, 19, 13, 30, 45, 500);
+    assertThat(Timespan.from(dateTime).to(dateTime).build().isDuring((LocalDateTime) null)).isFalse();
+  }
+
+  @Test
+  void isDuringTimeReturnsTrue() {
+    LocalTime now = LocalTime.now();
+    assertThat(Timespan.from(now).to(now).build().isDuring(now)).isTrue();
+    assertThat(Timespan.from(LocalTime.MIN).to(LocalTime.MAX).build().isDuring(now)).isTrue();
+  }
+
+  @Test
+  void isDuringTimeReturnsFalse() {
+
+    LocalTime time = LocalTime.of(14, 2, 30, 999);
+
+    assertThat(Timespan.from(time).to(time).build().isDuring(LocalTime.of(2, 2, 30, 999))).isFalse();
+    assertThat(Timespan.from(time).to(time).build().isDuring(time.atDate(LocalDate.of(2020, Month.NOVEMBER, 19))))
+      .isFalse();
+  }
+
+  @Test
+  void isDuringTimeWithNullIsNullSafe() {
+    LocalTime time = LocalTime.of(13, 30, 45, 500);
+    assertThat(Timespan.from(time).to(time).build().isDuring((LocalDateTime) null)).isFalse();
   }
 }

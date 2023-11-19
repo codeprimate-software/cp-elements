@@ -32,6 +32,7 @@ import org.cp.elements.lang.Renderable;
 import org.cp.elements.lang.annotation.Dsl;
 import org.cp.elements.lang.annotation.FluentApi;
 import org.cp.elements.lang.annotation.NotNull;
+import org.cp.elements.lang.annotation.NullSafe;
 import org.cp.elements.lang.annotation.Nullable;
 
 /**
@@ -442,7 +443,8 @@ public class Timespan implements Comparable<Timespan>, Renderable {
 	 * @see #isAfter(YearMonth)
 	 * @see java.time.Year
 	 */
-	public boolean isAfter(@NotNull Year year) {
+	@NullSafe
+	public boolean isAfter(Year year) {
 		return year != null && isAfter(year.atMonth(Month.JANUARY));
 	}
 
@@ -454,7 +456,8 @@ public class Timespan implements Comparable<Timespan>, Renderable {
 	 * @see #isAfter(LocalDate)
 	 * @see java.time.YearMonth
 	 */
-	public boolean isAfter(@NotNull YearMonth yearMonth) {
+	@NullSafe
+	public boolean isAfter(YearMonth yearMonth) {
 		return yearMonth != null && isAfter(yearMonth.atDay(1));
 	}
 
@@ -466,7 +469,8 @@ public class Timespan implements Comparable<Timespan>, Renderable {
 	 * @see #isAfter(LocalDateTime)
 	 * @see java.time.LocalDate
 	 */
-	public boolean isAfter(@NotNull LocalDate date) {
+	@NullSafe
+	public boolean isAfter(LocalDate date) {
 		return date != null && isAfter(date.atStartOfDay());
 	}
 
@@ -478,7 +482,8 @@ public class Timespan implements Comparable<Timespan>, Renderable {
 	 * @see java.time.LocalDateTime
 	 * @see #getOptionalEnd()
 	 */
-	public boolean isAfter(@NotNull LocalDateTime dateTime) {
+	@NullSafe
+	public boolean isAfter(LocalDateTime dateTime) {
 		return dateTime != null && getOptionalEnd().map(dateTime::isAfter).orElse(false);
 	}
 
@@ -490,7 +495,8 @@ public class Timespan implements Comparable<Timespan>, Renderable {
 	 * @see #isAfter(LocalDateTime)
 	 * @see java.time.LocalTime
 	 */
-	public boolean isAfter(@NotNull LocalTime time) {
+	@NullSafe
+	public boolean isAfter(LocalTime time) {
 		return time != null && isAfter(time.atDate(LocalDate.now()));
 	}
 
@@ -502,7 +508,8 @@ public class Timespan implements Comparable<Timespan>, Renderable {
 	 * @see #isBefore(YearMonth)
 	 * @see java.time.Year
 	 */
-	public boolean isBefore(@NotNull Year year) {
+	@NullSafe
+	public boolean isBefore(Year year) {
 		return year != null && isBefore(year.atMonth(Month.DECEMBER));
 	}
 
@@ -514,7 +521,8 @@ public class Timespan implements Comparable<Timespan>, Renderable {
 	 * @see #isBefore(LocalDate)
 	 * @see java.time.YearMonth
 	 */
-	public boolean isBefore(@NotNull YearMonth yearMonth) {
+	@NullSafe
+	public boolean isBefore(YearMonth yearMonth) {
 		return yearMonth != null && isBefore(yearMonth.atEndOfMonth());
 	}
 
@@ -526,7 +534,8 @@ public class Timespan implements Comparable<Timespan>, Renderable {
 	 * @see #isBefore(LocalDateTime)
 	 * @see java.time.LocalDate
 	 */
-	public boolean isBefore(@NotNull LocalDate date) {
+	@NullSafe
+	public boolean isBefore(LocalDate date) {
 		return date != null && isBefore(date.atTime(LocalTime.MAX));
 	}
 
@@ -538,7 +547,8 @@ public class Timespan implements Comparable<Timespan>, Renderable {
 	 * @see java.time.LocalDateTime
 	 * @see #getOptionalBegin()
 	 */
-	public boolean isBefore(@NotNull LocalDateTime dateTime) {
+	@NullSafe
+	public boolean isBefore(LocalDateTime dateTime) {
 		return dateTime != null && getOptionalBegin().map(dateTime::isBefore).orElse(false);
 	}
 
@@ -550,35 +560,75 @@ public class Timespan implements Comparable<Timespan>, Renderable {
 	 * @see #isBefore(LocalDateTime)
 	 * @see java.time.LocalTime
 	 */
-	public boolean isBefore(@NotNull LocalTime time) {
+	@NullSafe
+	public boolean isBefore(LocalTime time) {
 		return time != null && isBefore(time.atDate(LocalDate.now()));
 	}
 
-	// Determine whether the entire year occurs during this Timespan
-	public boolean isDuring(@NotNull Year year) {
+	/**
+	 * Determines whether the given {@link Year} occurs during this {@link Timespan}.
+	 *
+	 * @param year {@link Year} to compare with this {@link Timespan}.
+	 * @return a boolean value indicating whether the entire {@link Year} occurs within this {@link Timespan}.
+	 * @see #isDuring(YearMonth)
+	 * @see java.time.Year
+	 */
+	@NullSafe
+	public boolean isDuring(Year year) {
 		return year != null && isDuring(year.atMonth(Month.JANUARY)) && isDuring(year.atMonth(Month.DECEMBER));
 	}
 
-	// Determine whether the entire month of the year occurs during this Timespan
-	public boolean isDuring(@NotNull YearMonth yearMonth) {
+	/**
+	 * Determines whether the given {@link YearMonth} occurs during this {@link Timespan}.
+	 *
+	 * @param yearMonth {@link YearMonth} to compare with this {@link Timespan}.
+	 * @return a boolean value indicating whether the entire {@link YearMonth} occurs within this {@link Timespan}.
+	 * @see #isDuring(LocalDate)
+	 * @see java.time.YearMonth
+	 */
+	@NullSafe
+	public boolean isDuring(YearMonth yearMonth) {
 		return yearMonth != null && isDuring(yearMonth.atDay(1)) && isDuring(yearMonth.atEndOfMonth());
 	}
 
-	// Determine whether the entire day occurs during this Timespan
-	public boolean isDuring(@NotNull LocalDate date) {
+	/**
+	 * Determines whether the given {@link LocalDate} occurs during this {@link Timespan}.
+	 *
+	 * @param date {@link LocalDate} to compare with this {@link Timespan}.
+	 * @return a boolean value indicating whether the {@link LocalDate} occurs within this {@link Timespan}.
+	 * @see #isDuring(LocalDateTime)
+	 * @see java.time.LocalDate
+	 */
+	@NullSafe
+	public boolean isDuring(LocalDate date) {
 		return date != null && isDuring(date.atStartOfDay()) && isDuring(date.atTime(LocalTime.MAX));
 	}
 
-	// Determine whether the given date/time (instant in time) occurs during this Timespan
-	public boolean isDuring(@NotNull LocalDateTime dateTime) {
+	/**
+	 * Determines whether the given {@link LocalDateTime} occurs during this {@link Timespan}.
+	 *
+	 * @param dateTime {@link LocalDateTime} to compare with this {@link Timespan}.
+	 * @return a boolean value indicating whether the {@link LocalDateTime} occurs within this {@link Timespan}.
+	 * @see java.time.LocalDateTime
+	 */
+	@NullSafe
+	public boolean isDuring(LocalDateTime dateTime) {
 
 		return dateTime != null
 			&& getOptionalBegin().map(begin -> !dateTime.isBefore(begin)).orElse(true)
 			&& getOptionalEnd().map(end -> !dateTime.isAfter(end)).orElse(true);
 	}
 
-	// Determine whether the given time occurs during this Timespan
-	public boolean isDuring(@NotNull LocalTime time) {
+	/**
+	 * Determines whether the given {@link LocalTime} occurs during this {@link Timespan}.
+	 *
+	 * @param time {@link LocalTime} to compare with this {@link Timespan}.
+	 * @return a boolean value indicating whether the {@link LocalTime} occurs within this {@link Timespan}.
+	 * @see #isDuring(LocalDateTime)
+	 * @see java.time.LocalTime
+	 */
+	@NullSafe
+	public boolean isDuring(LocalTime time) {
 		return time != null && isDuring(time.atDate(LocalDate.now()));
 	}
 
@@ -598,8 +648,12 @@ public class Timespan implements Comparable<Timespan>, Renderable {
 		return getOptionalEnd().isEmpty();
 	}
 
-	public boolean isAllEternity() {
+	public boolean isAnEternity() {
 		return hasNoBeginning() && hasNoEnding();
+	}
+
+	public boolean isClosed() {
+		return isFinite();
 	}
 
 	public boolean isFinite() {
@@ -611,7 +665,7 @@ public class Timespan implements Comparable<Timespan>, Renderable {
 	}
 
 	public boolean isOpenEnded() {
-		return hasNoBeginning() || hasNoEnding();
+		return isInfinite();
 	}
 
 	@SuppressWarnings("all")
@@ -619,9 +673,9 @@ public class Timespan implements Comparable<Timespan>, Renderable {
 
 		boolean containedBeginning = this.hasNoBeginning() || isDuring(timespan.getBegin());
 		boolean containedEnding = this.hasNoEnding() || isDuring(timespan.getEnd());
-		boolean allTrue = !timespan.isAllEternity() && containedBeginning && containedEnding;
+		boolean allTrue = !timespan.isAnEternity() && containedBeginning && containedEnding;
 
-		return timespan != null && (this.isAllEternity() || allTrue);
+		return timespan != null && (this.isAnEternity() || allTrue);
 	}
 
 	public boolean isContainedBy(@NotNull Timespan timespan) {
@@ -630,7 +684,7 @@ public class Timespan implements Comparable<Timespan>, Renderable {
 
 	public boolean isOverlapping(@NotNull Timespan timespan) {
 
-		boolean anyTrue = this.isAllEternity() || timespan.isAllEternity()
+		boolean anyTrue = this.isAnEternity() || timespan.isAnEternity()
 			|| (timespan.hasNoBeginning() && isDuring(timespan.getEnd()))
 			|| (timespan.hasNoEnding() && isDuring(timespan.getBegin()));
 
