@@ -488,18 +488,11 @@ public abstract class StringUtils {
       .throwing(newIllegalArgumentException("[%d] must be greater than equal to 0", length))
       .isGreaterThanEqualTo(0);
 
-    if (length > 0) {
+    String resolvedValue = ObjectUtils.returnFirstNonNullValue(value, EMPTY_STRING);
 
-      StringBuilder builder = new StringBuilder(ObjectUtils.returnFirstNonNullValue(value, EMPTY_STRING));
-
-      while (length - builder.length() > 0) {
-        builder.append(padding);
-      }
-
-      return builder.toString();
-    }
-
-    return value;
+    return length > 0
+      ? resolvedValue.concat(String.valueOf(padding).repeat(Math.max(length - resolvedValue.length(), 0)))
+      : value;
   }
 
   /**
