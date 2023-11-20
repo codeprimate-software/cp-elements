@@ -1276,9 +1276,9 @@ public class PropertyUnitTests {
     @Setter
     private LocalDate birthdate;
 
-    @lombok.NonNull
     private final String name;
 
+    @SuppressWarnings("unused")
     public int getAge() {
 
       return Optional.ofNullable(getBirthdate())
@@ -1294,9 +1294,7 @@ public class PropertyUnitTests {
   }
 
   @FunctionalInterface
-  interface Person extends Nameable<String> {
-    String getName();
-  }
+  interface Person extends Nameable<String> { }
 
   @SuppressWarnings("unused")
   static class Vip extends Customer {

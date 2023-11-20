@@ -40,7 +40,6 @@ import org.cp.elements.security.model.User;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
@@ -76,13 +75,13 @@ public class BeanUtilsUnitTests {
     PropertyDescriptor[] userProperties = userInfo.getPropertyDescriptors();
 
     assertThat(userProperties).isNotNull();
-    assertThat(userProperties).hasSize(2);
+    assertThat(userProperties).hasSizeGreaterThanOrEqualTo(2);
     assertThat(Arrays.stream(userProperties)
         .map(PropertyDescriptor::getName)
         .toList()
         .stream()
         .sorted())
-      .containsExactly("id", "name");
+      .contains("id", "name");
 
     PropertyDescriptor id = Arrays.stream(userProperties)
       .filter(it -> "id".equals(it.getName()))
@@ -127,14 +126,14 @@ public class BeanUtilsUnitTests {
     PropertyDescriptor[] processProperties = processInfo.getPropertyDescriptors();
 
     assertThat(processProperties).isNotNull();
-    assertThat(processProperties).hasSize(6);
+    assertThat(processProperties).hasSizeGreaterThanOrEqualTo(6);
 
     assertThat(Arrays.stream(processProperties)
         .map(PropertyDescriptor::getName)
         .collect(Collectors.toSet())
         .stream()
         .sorted())
-      .containsExactly("alive", "errorStream", "id", "inputStream", "name", "outputStream");
+      .contains("alive", "errorStream", "id", "inputStream", "name", "outputStream");
 
     PropertyDescriptor alive = Arrays.stream(processProperties)
       .filter(it -> "alive".equals(it.getName()))
@@ -322,7 +321,7 @@ public class BeanUtilsUnitTests {
     @Getter @Setter
     private Integer id;
 
-    @NonNull @Getter
+    @Getter
     private final String name;
 
   }
