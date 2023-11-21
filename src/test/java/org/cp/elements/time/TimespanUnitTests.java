@@ -842,4 +842,92 @@ class TimespanUnitTests {
     LocalTime time = LocalTime.of(13, 30, 45, 500);
     assertThat(Timespan.from(time).to(time).build().isDuring((LocalDateTime) null)).isFalse();
   }
+
+  @Test
+  void hasBeginningWithStartOfTimespan() {
+    assertThat(Timespan.from(Year.of(2023)).to(Year.now()).build().hasBeginning()).isTrue();
+    assertThat(Timespan.beginning(Year.now()).hasBeginning()).isTrue();
+    assertThat(Timespan.fromNow().hasBeginning()).isTrue();
+  }
+
+  @Test
+  void hasBeginningWithNoBeginning() {
+    assertThat(Timespan.infinite().hasBeginning()).isFalse();
+    assertThat(Timespan.untilNow().hasBeginning()).isFalse();
+  }
+
+  @Test
+  void hasNoBeginningWithStartOfTimespan() {
+    assertThat(Timespan.from(Year.of(2023)).to(Year.now()).build().hasNoBeginning()).isFalse();
+    assertThat(Timespan.beginning(Year.now()).hasNoBeginning()).isFalse();
+    assertThat(Timespan.fromNow().hasNoBeginning()).isFalse();
+  }
+
+  @Test
+  void hasNoBeginningWithNoBeginning() {
+    assertThat(Timespan.infinite().hasNoBeginning()).isTrue();
+    assertThat(Timespan.untilNow().hasNoBeginning()).isTrue();
+  }
+
+  @Test
+  void hasEndingWithEndOfTimespan() {
+    assertThat(Timespan.from(Year.of(2023)).to(Year.now()).build().hasEnding()).isTrue();
+    assertThat(Timespan.ending(Year.now()).hasEnding()).isTrue();
+    assertThat(Timespan.untilNow().hasEnding()).isTrue();
+  }
+
+  @Test
+  void hasEndingWithNoEnding() {
+    assertThat(Timespan.infinite().hasEnding()).isFalse();
+    assertThat(Timespan.fromNow().hasEnding()).isFalse();
+  }
+
+  @Test
+  void hasNoEndingwithEndOfTimespan() {
+    assertThat(Timespan.from(Year.of(2023)).to(Year.now()).build().hasNoEnding()).isFalse();
+    assertThat(Timespan.ending(Year.now()).hasNoEnding()).isFalse();
+    assertThat(Timespan.untilNow().hasNoEnding()).isFalse();
+  }
+
+  @Test
+  void hasNoEndingWithNoEnding() {
+    assertThat(Timespan.infinite().hasNoEnding()).isTrue();
+    assertThat(Timespan.fromNow().hasNoEnding()).isTrue();
+  }
+
+  @Test
+  void isAnEternityReturnsTrue() {
+    assertThat(Timespan.infinite().isAnEternity()).isTrue();
+  }
+
+  @Test
+  void isAnEternityReturnsFalse() {
+    assertThat(Timespan.from(Year.of(2023)).to(Year.now()).build().isAnEternity()).isFalse();
+    assertThat(Timespan.fromNow().isAnEternity()).isFalse();
+    assertThat(Timespan.untilNow().isAnEternity()).isFalse();
+  }
+
+  @Test
+  void isFiniteReturnTrue() {
+    assertThat(Timespan.from(Year.of(2023)).to(Year.now()).build().isFinite()).isTrue();
+  }
+
+  @Test
+  void isFiniteReturnFalse() {
+    assertThat(Timespan.infinite().isFinite()).isFalse();
+    assertThat(Timespan.fromNow().isFinite()).isFalse();
+    assertThat(Timespan.untilNow().isFinite()).isFalse();
+  }
+
+  @Test
+  void isInfiniteReturnsTrue() {
+    assertThat(Timespan.infinite().isInfinite()).isTrue();
+    assertThat(Timespan.fromNow().isInfinite()).isTrue();
+    assertThat(Timespan.untilNow().isInfinite()).isTrue();
+  }
+
+  @Test
+  void isInfiniteReturnsFalse() {
+    assertThat(Timespan.from(Year.of(2023)).to(Year.now()).build().isInfinite()).isFalse();
+  }
 }

@@ -632,40 +632,79 @@ public class Timespan implements Comparable<Timespan>, Renderable {
 		return time != null && isDuring(time.atDate(LocalDate.now()));
 	}
 
+	/**
+	 * Determines whether this {@link Timespan} has a beginning, or start date and time.
+	 *
+	 * @return a boolean value indicating whether this {@link Timespan} has a beginning.
+	 * @see #getOptionalBegin()
+	 */
 	public boolean hasBeginning() {
 		return getOptionalBegin().isPresent();
 	}
 
+	/**
+	 * Determines whether this {@link Timespan} has an ending, or end date and time.
+	 *
+	 * @return a boolean value indicating whether this {@link Timespan} has an ending.
+	 * @see #getOptionalEnd()
+	 */
 	public boolean hasEnding() {
 		return getOptionalEnd().isPresent();
 	}
 
+	/**
+	 * Determines whether this {@link Timespan} has no beginning, or no start date and time.
+	 *
+	 * @return a boolean value indicating whether this {@link Timespan} has no beginning.
+	 * @see #getOptionalBegin()
+	 */
 	public boolean hasNoBeginning() {
 		return getOptionalBegin().isEmpty();
 	}
 
+	/**
+	 * Determines whether this {@link Timespan} has no ending, or end date and time.
+	 *
+	 * @return a boolean value indicating whether this {@link Timespan} has no ending.
+	 * @see #getOptionalEnd()
+	 */
 	public boolean hasNoEnding() {
 		return getOptionalEnd().isEmpty();
 	}
 
+	/**
+	 * Determines whether this {@link Timespan} represents for all {@literal eternity}, or for all of time.
+	 *
+	 * @return a boolean value indicating whether this {@link Timespan} represents for all {@literal eternity},
+	 * @see #hasNoBeginning()
+	 * @see #hasNoEnding()
+	 */
 	public boolean isAnEternity() {
 		return hasNoBeginning() && hasNoEnding();
 	}
 
-	public boolean isClosed() {
-		return isFinite();
-	}
-
+	/**
+	 * Determines whether this {@link Timespan} is {@literal finite}.
+	 *
+	 * @return a boolean value indicating whether this {@link Timespan} is {@literal finite}.
+	 * @see #hasBeginning()
+	 * @see #hasEnding()
+	 * @see #isInfinite()
+	 */
 	public boolean isFinite() {
 		return hasBeginning() && hasEnding();
 	}
 
+	/**
+	 * Determines whether this {@link Timespan} is {@literal infinite}.
+	 *
+	 * @return a boolean value indicating whether this {@link Timespan} is {@literal infinite}.
+	 * @see #hasNoBeginning()
+	 * @see #hasNoEnding()
+	 * @see #isFinite()
+	 */
 	public boolean isInfinite() {
 		return hasNoBeginning() || hasNoEnding();
-	}
-
-	public boolean isOpenEnded() {
-		return isInfinite();
 	}
 
 	@SuppressWarnings("all")
