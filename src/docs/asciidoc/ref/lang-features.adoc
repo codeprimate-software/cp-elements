@@ -326,3 +326,133 @@ Conveniently, the `is` operator offers shortcuts for some of the negated conditi
 ----
 boolean result = is(objectReference).notSameAs(otherObjectReference);
 ----
+
+[[elements-lang-design-patterns]]
+=== Software Design Patterns as Code
+
+In this section, we highlight several of Element's
+https://en.wikipedia.org/wiki/Software_design_pattern[Software Design Patterns] as Code.
+
+While Elements uses many different _Software Design Patterns_ in the library's implementation, the library
+defines specific types to represent design patterns commmonly used in software development.
+
+[[elements-lang-design-patterns-abstract-factory]]
+==== Abstract Factory Pattern
+
+Elements defines the `ObjectFactory` interface modeled after
+the https://en.wikipedia.org/wiki/Abstract_factory_pattern[Abstract Factory Software Design Pattern]
+
+.Builder interface
+[source,java]
+[subs="verbatim,attributes"]
+----
+inteface ObjectFactory<T> {
+    <T> T create(objectTypeName, Object... args);
+    <T> T create(objectTypeName, Class<?>[] paramterTypes, Object... args);
+    <T> T create(Class<?> objectType, Object... args);
+    <T> T create(Class<?> objectType, Class<?>[] paramterTypes, Object... args);
+}
+----
+
+With an `ObjectFactory`, you can construct any family of objects, such as automobiles.
+
+[[elements-lang-design-patterns-builder]]
+==== Builder Pattern
+
+Elements defines the `Builder` interface modeled after
+the https://en.wikipedia.org/wiki/Builder_pattern[Builder Software Design Pattern].
+
+.Builder interface
+[source,java]
+[subs="verbatim,attributes"]
+----
+inteface Builder<T> {
+    T build();
+}
+----
+
+A `Builder` allows for the construction logic of a complex object to be encapsulated in a specialized,
+implementing object.
+
+[[elements-lang-design-patterns-composite]]
+==== Composite Pattern
+
+Elements defines the `Composite` interface modeled after
+the https://en.wikipedia.org/wiki/Composite_pattern[Composite Software Design]. Pattern
+
+.Composite interface
+[source,java]
+[subs="verbatim,attributes"]
+----
+interface Composite<T> {
+    T composite(T one, T two);
+}
+---
+
+The `Composite` allows multiple, similar objects all implementing a common interface to be treated as a single instance.
+
+A `Composite` can be composed from an array or an `Iterable<T>` using:
+
+.Composing objects
+[source,java]
+[subs="verbatim,attributes"]
+----
+Compsite<User> users = Composite.of(User.as("JonDoe"), User.as("JaneDoe"));
+
+Composite<Action> actions = Composite.of(List.of(Action.as("load"), Action.as("save")));
+---
+
+[[elements-lang-design-patterns-dao]]
+==== Data Access Object (DAO) Pattern
+
+Elements models the Data Access Pattern (DAO) object implementing basic CRUD [ Create, Read, Update, Delete ]
+as well as simple query operations on persistent entities.
+
+Elements includes the `org.cp.elements.dao.DaoTemplate` class for executing basic CRUD and simple query operations.
+
+[[elements-lang-design-patterns-proxy]]
+==== Proxy Pattern
+
+Elements defines the `ProxyFactory` class to construct JDK Dynamic Proxies from interface to model
+the https://en.wikipedia.org/wiki/Proxy_pattern[Proxy Software Design Pattern].
+
+.ProxyFactory abstract class
+[source,java]
+[subs="verbatim,attributes"]
+----
+interface ProxyFactory<T> {
+  T newProxy(..);
+}
+----
+
+The `ProxyFactory` is part a Service Provider Interface (SPI) provided by Elements using the `ProxyService` class.
+So, while Elements uses JDK Dynamic Proxies by default, any type of object proxy can be plugged into the framework
+using the SPI.
+
+[[elements-lang-design-patterns-visitor]]
+==== Visitor Pattern
+
+Elements defines the `Visitor` interface modeled after
+the https://en.wikipedia.org/wiki/Visitor_pattern[Visitor Software Design Pattern].
+
+.Visitor interface
+[source,java]
+[subs="verbatim,attributes"]
+----
+interface Visitor {
+    visit(Visitable object);
+}
+----
+
+A `Visitor` walks the object graph of an object hierarchy to perform some operation on objects in the graph.
+
+To compliment the `Visitor` interface, the `Visitable` interface defines objects that can be visited by a `Visitor`.
+
+.Visitable interface
+[source,java]
+[subs="verbatim,attributes"]
+----
+interface Visitable {
+    accept(Visitor visitor);
+}
+----
