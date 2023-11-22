@@ -930,4 +930,84 @@ class TimespanUnitTests {
   void isInfiniteReturnsFalse() {
     assertThat(Timespan.from(Year.of(2023)).to(Year.now()).build().isInfinite()).isFalse();
   }
+
+  @Test
+  void infiniteTimespanContainsGivenTimespan() {
+
+    assertThat(Timespan.infinite().contains(Timespan.infinite())).isTrue();
+    assertThat(Timespan.infinite().contains(Timespan.from(Year.of(2011)).to(Year.now()).build())).isTrue();
+    assertThat(Timespan.from(Year.of(1998)).to(Year.now()).build()
+      .contains(Timespan.from(Year.of(1999)).to(Year.now().minusYears(1L)).build())).isTrue();
+  }
+
+  @Test
+  void timespanDoesNotContainGivenTimespan() {
+
+    assertThat(Timespan.from(Year.of(1998)).to(Year.now()).build().contains(Timespan.infinite())).isFalse();
+    assertThat(Timespan.from(Year.of(1999)).to(Year.now().minusYears(1L)).build()
+      .contains(Timespan.from(Year.of(1999)).to(Year.now()).build())).isFalse();
+  }
+
+  @Test
+  void timespanDoesNotContainOverlappingTimespan() {
+
+    assertThat(Timespan.from(Year.of(1998)).to(Year.now()).build()
+      .contains(Timespan.from(Year.of(1983)).to(Year.of(2011)).build())).isFalse();
+    assertThat(Timespan.from(Year.of(1998)).to(Year.now()).build()
+      .contains(Timespan.from(Year.of(2000)).to(Year.now().plusYears(5L)).build())).isFalse();
+  }
+
+  @Test
+  void timespanDoesNotContainNullIsNullSafe() {
+    assertThat(Timespan.infinite().contains(null)).isFalse();
+  }
+
+  @Test
+  void finiteTimespanIsContainedByTimespan() {
+
+    assertThat(Timespan.from(Year.now().minusYears(1L)).to(Year.now().plusYears(1L)).build()
+      .isContainedBy(Timespan.infinite())).isTrue();
+    assertThat(Timespan.from(Year.now().minusYears(1L)).to(Year.now().plusYears(1L)).build()
+      .isContainedBy(Timespan.from(Year.now().minusYears(10L)).to(Year.now().plusYears(5L)).build())).isTrue();
+  }
+
+  @Test
+  void infiniteTimespanIsNotContainedByTimespan() {
+
+    assertThat(Timespan.infinite().isContainedBy(Timespan.fromNow())).isFalse();
+    assertThat(Timespan.infinite().isContainedBy(Timespan.untilNow())).isFalse();
+    assertThat(Timespan.infinite().isContainedBy(Timespan.from(Year.of(1998)).to(Year.now()).build())).isFalse();
+  }
+
+  @Test
+  void timespanIsNotContainedByOverlappingTimespan() {
+
+    assertThat(Timespan.from(Year.of(1998)).to(Year.now()).build()
+      .isContainedBy(Timespan.from(Year.of(1983)).to(Year.of(2011)).build())).isFalse();
+    assertThat(Timespan.from(Year.of(1998)).to(Year.now()).build()
+      .isContainedBy(Timespan.from(Year.of(2000)).to(Year.now().plusYears(5L)).build())).isFalse();
+  }
+
+  @Test
+  void timespanIsNotContainedByNullIsNullSafe() {
+    assertThat(Timespan.from(Year.of(2020)).to(Year.now()).build().isContainedBy(null)).isFalse();
+  }
+
+  @Test
+  void timespanOverlapsWithOverlappingTimespan() {
+
+    assertThat(Timespan.from(Year.of(1998)).to(Year.now()).build()
+      .isOverlapping(Timespan.from(Year.of(1983)).to(Year.of(2011)).build())).isTrue();
+    assertThat(Timespan.from(Year.of(1998)).to(Year.now()).build()
+      .isOverlapping(Timespan.from(Year.of(2000)).to(Year.now().plusYears(5L)).build())).isTrue();
+  }
+
+  @Test
+  void timespanIsNotOverlappingWithOverlappingTimespan() {
+
+    assertThat(Timespan.from(Year.of(1998)).to(Year.now()).build()
+      .isNotOverlapping(Timespan.from(Year.of(1983)).to(Year.of(2011)).build())).isFalse();
+    assertThat(Timespan.from(Year.of(1998)).to(Year.now()).build()
+      .isNotOverlapping(Timespan.from(Year.of(2000)).to(Year.now().plusYears(5L)).build())).isFalse();
+  }
 }

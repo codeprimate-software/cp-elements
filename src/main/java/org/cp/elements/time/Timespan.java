@@ -707,29 +707,68 @@ public class Timespan implements Comparable<Timespan>, Renderable {
 		return hasNoBeginning() || hasNoEnding();
 	}
 
+	/**
+	 * Determines whether the given {@link Timespan} is entirely contained by this {@link Timespan}.
+	 *
+	 * @param timespan {@link Timespan} to test for containment.
+	 * @return a boolean value indicating whether the given {@link Timespan} is entirely contained
+	 * by this {@link Timespan}.
+	 * @see #isContainedBy(Timespan)
+	 */
+	@NullSafe
 	@SuppressWarnings("all")
-	public boolean isContained(@NotNull Timespan timespan) {
+	public boolean contains(@NotNull Timespan timespan) {
 
-		boolean containedBeginning = this.hasNoBeginning() || isDuring(timespan.getBegin());
-		boolean containedEnding = this.hasNoEnding() || isDuring(timespan.getEnd());
-		boolean allTrue = !timespan.isAnEternity() && containedBeginning && containedEnding;
+		Supplier<Boolean> allTrueSupplier = () -> {
 
-		return timespan != null && (this.isAnEternity() || allTrue);
+			boolean containedBeginning = this.hasNoBeginning() || isDuring(timespan.getBegin());
+			boolean containedEnding = this.hasNoEnding() || isDuring(timespan.getEnd());
+			boolean allTrue = !timespan.isAnEternity() && containedBeginning && containedEnding;
+
+			return allTrue;
+		};
+
+		return timespan != null && (isAnEternity() || allTrueSupplier.get());
 	}
 
+	/**
+	 * Determines whether the given {@link Timespan} entirely contains this {@link Timespan}.
+	 *
+	 * @param timespan {@link Timespan} to evaluate whether it contains this {@link Timespan}.
+	 * @return a boolean value indicating whether the given {@link Timespan} entirely contains this {@link Timespan}.
+	 * @see #contains(Timespan)
+	 */
+	@NullSafe
 	public boolean isContainedBy(@NotNull Timespan timespan) {
-		return timespan != null && timespan.isContained(this);
+		return timespan != null && timespan.contains(this);
 	}
 
+	/**
+	 * Determine whether this {@link Timespan} overlaps the given {@link Timespan}.
+	 *
+	 * @param timespan {@link Timespan} to evaluate.
+	 * @return a boolean value indicating whether this {@link Timespan} overlaps the given {@link Timespan}.
+	 * @see #isNotOverlapping(Timespan)
+	 */
+	@NullSafe
 	public boolean isOverlapping(@NotNull Timespan timespan) {
 
-		boolean anyTrue = this.isAnEternity() || timespan.isAnEternity()
+		Supplier<Boolean> anyTrue = () -> this.isAnEternity() || timespan.isAnEternity()
 			|| (timespan.hasNoBeginning() && isDuring(timespan.getEnd()))
-			|| (timespan.hasNoEnding() && isDuring(timespan.getBegin()));
+			|| (timespan.hasNoEnding() && isDuring(timespan.getBegin()))
+			|| isDuring(timespan.getBegin())
+			|| isDuring(timespan.getEnd());
 
-		return timespan != null && anyTrue;
+		return timespan != null && anyTrue.get();
 	}
 
+	/**
+	 * Determine whether this {@link Timespan} does not overlap with the given {@link Timespan}.
+	 *
+	 * @param timespan {@link Timespan} to evaluate.
+	 * @return a boolean value indicating whether this {@link Timespan} does not overlap with the given {@link Timespan}.
+	 * @see #isOverlapping(Timespan)
+	 */
 	public boolean isNotOverlapping(@NotNull Timespan timespan) {
 		return !isOverlapping(timespan);
 	}
