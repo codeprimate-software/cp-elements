@@ -1,6 +1,6 @@
 [[codeprimate-elements]]
 = Codeprimate Elements
-:version: 2.0.0-M3
+:version: 2.0.0-M4
 
 _Java Simplified. Extensions and Useful Constructs for the Java Platform._
 
@@ -88,6 +88,7 @@ Codeprimate Elements has comprehensive documentation:
 
 1. Baseline is Java SE (JDK/JRE) 17.0.
 2. Built with JDK 17.0.8 2023-July-18 LTS (build 17.0.8+9-LTS-211)
+3. Builds and supports Elements on Java 21 2023-09-19 LTS (build 21+35-LTS-2513)
 
 [[support]]
 == Supports
