@@ -46,7 +46,7 @@ public interface Verifier {
    */
   default @NotNull Verifier andThen(@Nullable Verifier verifier) {
 
-    return verifier == null ? this : (Verifiable<?> verifiable)  -> {
+    return verifier == null ? this : (Verifiable<?> verifiable) -> {
       this.verify(verifiable);
       verifier.verify(verifiable);
     };
