@@ -38,7 +38,7 @@ public interface Verifier {
   void verify(Verifiable<?> verifiable);
 
   /**
-   * Builder method used to compose {@link Verifier Verifiers} into a single, composite {@link Verifier}
+   * Builder method used to compose {@link Verifier Verifiers} into a single, composite {@link Verifier}.
    *
    * @param verifier {@link Verifier} to compose with this {@link Verifier}.
    * @return a new composite {@link Verifier} composed of this {@link Verifier} followed by the given {@link Verifier},
