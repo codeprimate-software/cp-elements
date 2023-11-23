@@ -3,6 +3,43 @@ Codeprimate Elements changelog.txt
 https://github.com/codeprimate-software/cp-elements/blob/master/changelog.txt
 
 
+2.0.0-M4 - 2023-November-23
+---------------------------
+Release Codeprimate Elements 2.0.0-M4 with updated reference documentation along with new features and enhancements.
+
+* Build on Oracle Java (JDK) 17.0.8 2023-07-18 LTS (build 17.0.8+9-LTS-211).
+* Builds and supports Elements on (up to) Java (JDK) 21 2023-09-19 LTS (build 21+35-LTS-2513).
+* Adds assertDirectory(:File) utility method to FileUtils.
+* Adds assertFile(:File) utility method to FileUtils.
+* Adds ifThen(..) method to the Elements lang CodeBlocks class.
+* Adds andThen(:Verifier) builder method to the Elements lang Verifier interface.
+* Adds padLeft(:String, padding, length) utility method to the Elements lang StringUtils class.
+* Adds assertNotEmpty(array) and assertNoNullElements(array) utility methods to ArrayUtils.
+* Adds assertNotEmpty(:Collection) and assertNoNullElements(collection) utility methods to CollectionUtils.
+* Adds assertNotEmpty(:Map) utility method to MapUtils.
+* Creates new NoSuchDirectoryException class in the org.cp.elements.io package and adds factory methods
+in ElementsExceptionsFactory.
+* Creates new ManagementException class in the org.cp.elements.management package and adds factory methods
+in ElementsExceptionsFactory.
+* Creates new MonitoringException class in the org.cp.elements.management package and adds factory methods
+in ElementsExceptionsFactory.
+* Creates the new CombinatorialMathFunctions class in the new org.cp.elements.math package.
+* Creates new ServiceNotProvidedException class in the org.cp.elements.service.provider package and adds factory methods
+to ElementsExceptionsFactory.
+* Creates new DurationFormatter class in the org.cp.elements.time package to parse String representations of
+durations of time into a java.time.Duration instance.
+* Creates new Timespan class in the org.cp.elements.time package modeling spans of time, or timeframes.
+* Edits reference documentation to include information on Software Design Patterns as Code in Elements
+to the Elements lang chapter.
+* Maps TimeUnits to ChronoUnits for all enumerated values.
+* Provides default no-op implementation of the validate() method in the Verifiable interface.
+* Renames StringUtils.pad(..) method to StringUtils.padRight(..).
+* Refactors the org.cp.elements.jdbc.AbstractDataSource class.
+* Reviews and refactors org.cp.elements.jdbc.SqlType.
+* Upgrades to Codeprimate Build 2.0.0-M5.
+* Upgrades to DataFaker 2.0.2.
+
+
 2.0.0-M3 - 2023-September-05
 ----------------------------
 Release Codeprimate Elements 2.0.0-M3 with updated reference documentation. Additionally, cleans up Checkstyle and PMD
