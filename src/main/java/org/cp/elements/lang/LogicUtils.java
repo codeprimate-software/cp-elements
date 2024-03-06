@@ -16,7 +16,7 @@
 package org.cp.elements.lang;
 
 /**
- * Abstract utility class containing common logic operations.
+ * Abstract utility class encapsulating common logic operations.
  *
  * @author John J. Blum
  * @since 1.0.0
