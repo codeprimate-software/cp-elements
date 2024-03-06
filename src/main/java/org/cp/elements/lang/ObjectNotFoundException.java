@@ -13,12 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.lang;
 
 /**
- * The ObjectNotFoundException class is a ResourceNotFoundException indicating that a object could not be found
- * in Java heap memory.
+ * Elements {@link ResourceNotFoundException} thrown when an object could not be found in Java heap memory.
  *
  * @author John J. Blum
  * @see java.lang.Object
@@ -29,42 +27,40 @@ package org.cp.elements.lang;
 public class ObjectNotFoundException extends ResourceNotFoundException {
 
   /**
-   * Default constructor creating an instance of the ObjectNotFoundException.
+   * Constructs a new, uninitialized {@link ObjectNotFoundException}.
    */
   public ObjectNotFoundException() {
   }
 
   /**
-   * Constructor to create an instance of the ObjectNotFoundException with a given message to describe the object
-   * not found error.
+   * Constructs a new {@link ObjectNotFoundException} initialized with the given {@link String message}
+   * describing the object not found error.
    *
-   * @param message a String value describing the nature of the object not found error.
+   * @param message {@link String} describing the object not found error.
    */
   public ObjectNotFoundException(final String message) {
     super(message);
   }
 
   /**
-   * Constructor to create an instance of the ObjectNotFoundException with the given Throwable to indicate the cause
-   * of the object not found error.
+   * Constructs a new {@link ObjectNotFoundException} initialized with the given {@link Throwable}
+   * used as the cause of this object not found error.
    *
-   * @param cause the Throwable indicating the cause of the object not found error.
-   * @see java.lang.Throwable
+   * @param cause {@link Throwable} used as the cause of the object not found error.
    */
   public ObjectNotFoundException(final Throwable cause) {
     super(cause);
   }
 
   /**
-   * Constructor to create an instance of the ObjectNotFoundException with a message to describe the object not found
-   * error and a Throwable to indicate the probable cause of the object not found error.
+   * Constructs a new {@link ObjectNotFoundException} initialized with the given {@link String message}
+   * describing the object not found error along with the given {@link Throwable} used as the cause of this
+   * object not found error.
    *
-   * @param message a String value describing the nature of the object not found error.
-   * @param cause the Throwable indicated as the cause of the object not found error.
-   * @see java.lang.Throwable
+   * @param message {@link String} describing the object not found error.
+   * @param cause {@link Throwable} used as the cause of the object not found error.
    */
   public ObjectNotFoundException(final String message, final Throwable cause) {
     super(message, cause);
   }
-
 }
