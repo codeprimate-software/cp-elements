@@ -16,7 +16,7 @@
 package org.cp.elements.lang;
 
 /**
- * The {@link Builder} interface defines a contract for {@link Object objects} who's {@link Class types}
+ * Interface defineing a contract for {@link Object objects} whose {@link Class types}
  * implement the {@literal Builder Software Design Pattern}.
  *
  * @author John Blum

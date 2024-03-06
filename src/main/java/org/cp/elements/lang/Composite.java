@@ -21,11 +21,11 @@ import org.cp.elements.util.ArrayUtils;
 import org.cp.elements.util.CollectionUtils;
 
 /**
- * The {@link Composite} interface defines a contract for {@link Object objects} who's {@link Class types}
+ * Interface defining a contract for {@link Object objects} whose {@link Class types}
  * implement the {@literal Composite Software Design Pattern}.
  *
  * @author John Blum
- * @param <T> {@link Class type} of the {@link Object} to {@literal compose}.
+ * @param <T> {@link Class type} of {@link Object} to {@literal compose}.
  * @see java.lang.FunctionalInterface
  * @see <a href="https://en.wikipedia.org/wiki/Composite_pattern">Compsite Software Design Pattern</a>
  * @since 1.0.0
