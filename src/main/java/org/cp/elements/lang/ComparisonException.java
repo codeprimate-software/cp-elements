@@ -13,12 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.lang;
 
 /**
- * The ComparisonException class is an IllegalArgumentException that indicates two Comparable objects failed
- * a relational comparison.
+ * Java {@link IllegalArgumentException} thrown when two {@link Comparable Comparable objects}
+ * are not comparable by equality.
  *
  * @author John J. Blum
  * @see java.lang.IllegalArgumentException
@@ -28,36 +27,38 @@ package org.cp.elements.lang;
 public class ComparisonException extends IllegalArgumentException {
 
   /**
-   * Default constructor creating an uninitialized instance of ComparisonException.
+   * Constructs a new, uninitialized instance of {@link ComparisonException}.
    */
   public ComparisonException() {
   }
 
   /**
-   * Constructs an instance of ComparisonException with the given message describing the relational comparison error.
+   * Constructs a new {@link ComparisonException} initialized with the given {@link String message}
+   * describing the comparison error.
    *
-   * @param message a String value describing the nature of the relational comparison error.
+   * @param message {@link String} describing the comparison error.
    */
   public ComparisonException(final String message) {
     super(message);
   }
 
   /**
-   * Constructs an instance of ComparisonException with the given Throwable indicating the cause
-   * of the relational comparison error.
+   * Constructs a new {@link ComparisonException} initialized with the given {@link Throwable}
+   * used as the cause of this comparison error.
    *
-   * @param cause the Throwable indicated as the cause of this relational comparison error.
+   * @param cause {@link Throwable} used as the cause of this comparison error.
    */
   public ComparisonException(final Throwable cause) {
     super(cause);
   }
 
   /**
-   * Constructs an instance of ComparisonException with a message describing the relational comparison error
-   * and a Throwable indicating the probable cause of the relational comparison error.
+   * Constructs a new {@link ComparisonException} initialized with the given {@link String message}
+   * describing this comparison error along with the given {@link Throwable} used as the cause
+   * of this comparison error.
    *
-   * @param message a String value describing the nature of the relational comparison error.
-   * @param cause the Throwable indicated as the cause of this relational comparison error.
+   * @param message {@link String} describing the comparison error.
+   * @param cause {@link Throwable} used as the cause of this comparison error.
    */
   public ComparisonException(final String message, final Throwable cause) {
     super(message, cause);
