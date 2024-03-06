@@ -13,13 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.lang;
 
 import java.util.Map;
 
 /**
- * The Initializer class is a utility class for performing Object initializations.
+ * Abstract base class used for performing {@link Object} initializations.
  *
  * @author John J. Blum
  * @see org.cp.elements.lang.Initable
@@ -30,7 +29,7 @@ import java.util.Map;
 public abstract class Initializer {
 
   /**
-   * Initializes an Object by calling it's init method if the Object is an instance of the Initable interface.
+   * Initializes an object by calling its init method if the Object is an instance of the Initable interface.
    *
    * @param initableObj the Object to be initialized.
    * @return a boolean value indicating whether the Object has been initialized.
@@ -47,7 +46,7 @@ public abstract class Initializer {
   }
 
   /**
-   * Initializes an Object by calling it's init method with the array of Object arguments if the Object is an instance
+   * Initializes an object by calling its init method with the array of Object arguments if the Object is an instance
    * of the ParameterizedInitable interface.  Calls the init(:Object) method with no arguments/parameters if the Object
    * is not an instance of the ParameterizedInitable interface.
    *
@@ -67,7 +66,7 @@ public abstract class Initializer {
   }
 
   /**
-   * Initializes an Object by calling it's init method with a Map of parameters if the Object is an instance of the
+   * Initializes an object by calling it init method with a Map of parameters if the Object is an instance of the
    * ParameterizedInitable interface.  Calls the init(:Object) method with no arguments/parameters if the Object is not
    * an instance of the ParameterizedInitable interface.
    *
