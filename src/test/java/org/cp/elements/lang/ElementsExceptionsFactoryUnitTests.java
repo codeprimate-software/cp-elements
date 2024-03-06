@@ -37,7 +37,7 @@ import static org.cp.elements.lang.ElementsExceptionsFactory.newDecompressionExc
 import static org.cp.elements.lang.ElementsExceptionsFactory.newDeserializationException;
 import static org.cp.elements.lang.ElementsExceptionsFactory.newEmbeddedProcessExecutionException;
 import static org.cp.elements.lang.ElementsExceptionsFactory.newEqualityException;
-import static org.cp.elements.lang.ElementsExceptionsFactory.newExpectationException;
+import static org.cp.elements.lang.ElementsExceptionsFactory.newExpectedException;
 import static org.cp.elements.lang.ElementsExceptionsFactory.newFailedTestException;
 import static org.cp.elements.lang.ElementsExceptionsFactory.newFieldAccessException;
 import static org.cp.elements.lang.ElementsExceptionsFactory.newFieldNotFoundException;
@@ -502,14 +502,14 @@ public class ElementsExceptionsFactoryUnitTests {
   }
 
   @Test
-  public void newExpectationExceptionWithMessage() {
-    assertThrowable(newExpectationException("test"), ExpectationException.class, "test");
+  public void newExpectedExceptionWithMessage() {
+    assertThrowable(ElementsExceptionsFactory.newExpectedException("test"), ExpectedException.class, "test");
   }
 
   @Test
-  public void newExpectationExceptionWithFormattedMessageAndCause() {
-    assertThrowable(newExpectationException(this.mockCause, "%s is a {1}", "This", "test"),
-      ExpectationException.class, "This is a test", this.mockCause);
+  public void newExpectedExceptionWithFormattedMessageAndCause() {
+    assertThrowable(newExpectedException(this.mockCause, "%s is a {1}", "This", "test"),
+      ExpectedException.class, "This is a test", this.mockCause);
   }
 
   @Test

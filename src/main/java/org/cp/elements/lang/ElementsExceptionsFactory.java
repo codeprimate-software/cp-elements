@@ -115,7 +115,7 @@ import org.cp.elements.util.sort.SortException;
  * @see org.cp.elements.lang.CloneException
  * @see org.cp.elements.lang.ComparisonException
  * @see org.cp.elements.lang.EqualityException
- * @see org.cp.elements.lang.ExpectationException
+ * @see ExpectedException
  * @see org.cp.elements.lang.IdentityException
  * @see org.cp.elements.lang.IllegalTypeException
  * @see org.cp.elements.lang.ImmutableObjectException
@@ -1012,32 +1012,32 @@ public abstract class ElementsExceptionsFactory {
   }
 
   /**
-   * Constructs a new {@link ExpectationException} initialized with the given {@link String message}
-   * to describe the {@link ExpectationException}.
+   * Constructs a new {@link ExpectedException} initialized with the given {@link String message}
+   * to describe the {@link ExpectedException}.
    *
    * @param message {@link String} containing a message to describe the exception.
    * @param args optional array of {@link Object arguments} used to replace the placeholders in the message.
-   * @return a new {@link ExpectationException}.
-   * @see #newExpectationException(Throwable, String, Object...)
-   * @see org.cp.elements.lang.ExpectationException
+   * @return a new {@link ExpectedException}.
+   * @see #newExpectedException(Throwable, String, Object...)
+   * @see ExpectedException
    */
-  public static ExpectationException newExpectationException(String message, Object... args) {
-    return newExpectationException(null, message, args);
+  public static ExpectedException newExpectedException(String message, Object... args) {
+    return newExpectedException(null, message, args);
   }
 
   /**
-   * Constructs a new {@link ExpectationException} initialized with the given {@link String message}
-   * to describe the {@link ExpectationException} along with a {@link Throwable cause} used as the reason
-   * why the {@link ExpectationException} was thrown.
+   * Constructs a new {@link ExpectedException} initialized with the given {@link String message}
+   * to describe the {@link ExpectedException} along with a {@link Throwable cause} used as the reason
+   * why the {@link ExpectedException} was thrown.
    *
    * @param cause {@link Throwable} used as the cause of the exception.
    * @param message {@link String} containing a message to describe the exception.
    * @param args optional array of {@link Object arguments} used to replace the placeholders in the message.
-   * @return a new {@link ExpectationException}.
-   * @see org.cp.elements.lang.ExpectationException
+   * @return a new {@link ExpectedException}.
+   * @see ExpectedException
    */
-  public static ExpectationException newExpectationException(Throwable cause, String message, Object... args) {
-    return new ExpectationException(format(message, args), cause);
+  public static ExpectedException newExpectedException(Throwable cause, String message, Object... args) {
+    return new ExpectedException(format(message, args), cause);
   }
 
   /**

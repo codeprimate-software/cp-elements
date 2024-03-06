@@ -15,8 +15,6 @@
  */
 package org.cp.elements.lang;
 
-import static org.cp.elements.lang.ElementsExceptionsFactory.newExpectationException;
-
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.util.Collection;
@@ -1718,18 +1716,18 @@ public abstract class LangExtensions {
     <R> Given<R> thenGiven(Function<T, R> extractionFunction);
 
     /**
-     * Throws an {@link ExpectationException} if the configured {@link #getTarget() target} has failed any expectations
+     * Throws an {@link ExpectedException} if the configured {@link #getTarget() target} has failed any expectations
      * made up to this call.
      *
      * @return this {@link Given} object.
-     * @throws ExpectationException if the configured {@link #getTarget() target} has failed any expectations made
+     * @throws ExpectedException if the configured {@link #getTarget() target} has failed any expectations made
      * up to this call.
      * @see #result()
      */
     default Given<T> throwOnFailedExpectations() {
 
       if (!result()) {
-        throw newExpectationException("Target [%s] has failed expectation(s)", getTarget());
+        throw ElementsExceptionsFactory.newExpectedException("Target [%s] has failed expectation(s)", getTarget());
       }
 
       return this;

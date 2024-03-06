@@ -2588,7 +2588,7 @@ public class LangExtensionsUnitTests {
   @Test
   public void givenNullObjectTestUsingThrowOnFailedExpectations() {
 
-    assertThatExceptionOfType(ExpectationException.class)
+    assertThatExceptionOfType(ExpectedException.class)
       .isThrownBy(() -> assertThat(given(null).throwOnFailedExpectations().result()).isTrue())
       .withMessage("Target [null] has failed expectation(s)")
       .withNoCause();
@@ -2656,7 +2656,7 @@ public class LangExtensionsUnitTests {
       TestLineItem.newLineItem(TestProduct.newProduct("ProductTwo", BigDecimal.valueOf(10.0d)), 1)
     ));
 
-    assertThatExceptionOfType(ExpectationException.class)
+    assertThatExceptionOfType(ExpectedException.class)
       .isThrownBy(() -> given(invoice)
         .expectThat(it -> BigDecimal.valueOf(100.0d).compareTo(it.getTotal()) > 0)
         .throwOnFailedExpectations()
