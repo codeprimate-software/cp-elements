@@ -16,8 +16,7 @@
 package org.cp.elements.lang;
 
 /**
- * The {@link DslExtension} interface is a marker interface for Java classes or methods
- * implementing a {@literal Domain Specific Language}.
+ * Interface defining a contract for Java classes or methods implementing a {@literal Domain Specific Language}.
  *
  * @author John Blum
  * @see org.cp.elements.lang.annotation.Dsl
