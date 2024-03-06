@@ -13,11 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.lang;
 
 /**
- * CloneException is a RuntimeException type indicating a clone, or copy operation failure.
+ * Java {@link RuntimeException} thrown on clone or copy operation failures.
  *
  * @author John J. Blum
  * @see java.lang.RuntimeException
@@ -27,38 +26,37 @@ package org.cp.elements.lang;
 public class CloneException extends RuntimeException {
 
   /**
-   * Constructs an uninitialized instance of the CloneException.
+   * Constructs a new, uninitialized instance of {@link CloneException}.
    */
   public CloneException() {
   }
 
   /**
-   * Constructor to create an instance of the CloneException with a given message describing the clone error.
+   * Constructs a new {@link CloneException} initialized with the given {@link String message}
+   * used to describe error.
    *
-   * @param message a String value describing the nature of the clone error.
+   * @param message {@link String} describing the clone error.
    */
   public CloneException(final String message) {
     super(message);
   }
 
   /**
-   * Constructor to create an instance of the CloneException with the given Throwable to indicate the cause
-   * of the clone error.
+   * Constructs a new {@link CloneException} initialized with the given {@link Throwable} used as the cause
+   * of this clone error.
    *
-   * @param cause the Throwable indicating the cause of the clone error.
-   * @see java.lang.Throwable
+   * @param cause {@link Throwable} used as the cause of this clone error.
    */
   public CloneException(final Throwable cause) {
     super(cause);
   }
 
   /**
-   * Constructor to create an instance of the CloneException with a message describing the clone error
-   * and a Throwable to indicate the probable cause of the clone error.
+   * Constructs a new {@link CloneException} initialized with the given {@link String message}
+   * describing this clone error along with the {@link Throwable} used as the cause of this clone error.
    *
-   * @param message a String value describing the nature of the clone error.
-   * @param cause the Throwable indicating the cause of the clone error.
-   * @see java.lang.Throwable
+   * @param message {@link String} describing the clone error.
+   * @param cause {@link Throwable} used as the cause of this clone error.
    */
   public CloneException(final String message, final Throwable cause) {
     super(message, cause);
