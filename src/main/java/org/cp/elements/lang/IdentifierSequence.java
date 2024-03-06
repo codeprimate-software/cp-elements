@@ -22,7 +22,7 @@ import org.cp.elements.lang.annotation.Nullable;
 
 /**
  * Java {@link FunctionalInterface} defining a contract for implementing objects
- * used to generate unique identifiers (IDs) for uniquely identify some {@link Object} or {@literal entity}.
+ * used to generate unique identifiers (IDs) for uniquely identifying some {@link Object} or {@literal entity}.
  *
  * @author John J. Blum
  * @param <T> {@link Comparable} {@link Class type} of the {@literal identifying value}.
