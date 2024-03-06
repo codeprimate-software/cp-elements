@@ -16,9 +16,9 @@
 package org.cp.elements.lang;
 
 /**
- * The {@link Lifecycle} interface defines a contract for implementing {@link Object Objects} that live out
- * a cycle of events from construction (instantiation) to configuration and then initialization, transitioning to
- * an executable, runnable (running) but interruptable state and finally, reaching its end-of-life by being destroyed.
+ * Interface defining a contract for implementing {@link Object Objects} that live out a cycle of events
+ * from construction (instantiation) to configuration and then initialization, transitioning to an executable,
+ * runnable (running), but interruptable state and finally, reaching its end-of-life by being destroyed.
  *
  * @author John J. Blum
  * @param <T> {@link Class type} of configuration metadata and settings.
