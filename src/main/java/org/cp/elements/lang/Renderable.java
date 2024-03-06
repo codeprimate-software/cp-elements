@@ -16,8 +16,7 @@
 package org.cp.elements.lang;
 
 /**
- * The {@link Renderable} interface defines a contract for objects that can be rendered as a {@link String}
- * using the given {@link Renderer}.
+ * Interface defining a contract for objects that can be rendered as a {@link String} using the given {@link Renderer}.
  *
  * @author John Blum
  * @see org.cp.elements.lang.Renderer
