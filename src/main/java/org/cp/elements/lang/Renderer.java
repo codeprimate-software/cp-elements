@@ -13,15 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.lang;
 
 /**
- * The {@link Renderer} interface defines a contract for objects responsible for rendering a target object
- * as a {@link String}.
+ * Interface defining a contract for implementing objects responsible for rendering another object as a {@link String}.
  *
  * @author John J. Blum
- * @param <T> the class type of the object to render.
+ * @param <T> {@link Class type} of {@link Object} to render.
  * @see java.lang.FunctionalInterface
  * @see java.lang.String
  * @since 1.0.0
@@ -31,11 +29,10 @@ package org.cp.elements.lang;
 public interface Renderer<T> {
 
   /**
-   * Renders the specified Object of generic type T as a String.
+   * Renders the given {@link Object} of generic type {@link T} as a {@link String}.
    *
-   * @param obj the Object to render as a String.
-   * @return a String representation of the specified Object.
-   * @see java.lang.String
+   * @param obj {@link Object} to render as a {@link String}.
+   * @return a {@link String} representation of the given  {@link Object}.
    */
   String render(T obj);
 
