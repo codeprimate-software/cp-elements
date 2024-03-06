@@ -23,7 +23,7 @@ import org.cp.elements.lang.annotation.Nullable;
 import org.cp.elements.util.ArrayUtils;
 
 /**
- * Abstract utility class providing methods for processing {@link Boolean values}.
+ * Abstract utility class providing methods for processing {@link Boolean Booleans}.
  *
  * @author John J. Blum
  * @see java.lang.Boolean
