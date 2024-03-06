@@ -13,12 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.lang;
 
 /**
- * The ResourceNotFoundException class is a RuntimeException indicating that a specified Resource could not be found
- * on the running system.
+ * Java {@link RuntimeException} thrown when a {@literal resource} could not be found on the running system.
  *
  * @author John J. Blum
  * @see java.lang.RuntimeException
@@ -28,39 +26,38 @@ package org.cp.elements.lang;
 public class ResourceNotFoundException extends RuntimeException {
 
   /**
-   * Default constructor creating an instance of the ResourceNotFoundException.
+   * Constructs a new, initialized instance of {@link ResourceNotFoundException}.
    */
   public ResourceNotFoundException() {
   }
 
   /**
-   * Constructor to create an instance of the ResourceNotFoundException with a given message to describe
-   * the resource not found error.
+   * Constructs a new {@link ResourceNotFoundException} initialized with the given {@link String message}
+   * describing the resource not found error.
    *
-   * @param message a String value describing the nature of the resource not found error.
+   * @param message {@link String} describing the resource not found error.
    */
   public ResourceNotFoundException(final String message) {
     super(message);
   }
 
   /**
-   * Constructor to create an instance of the ResourceNotFoundException with the given Throwable to indicate the cause
-   * of the resource not found error.
+   * Constructs a new {@link ResourceNotFoundException} initalized with the given {@link Throwable}
+   * used as the cause of this resource not found error.
    *
-   * @param cause the Throwable indicating the cause of the resource not found error.
-   * @see java.lang.Throwable
+   * @param cause {@link Throwable} used as the cause of the resource not found error.
    */
   public ResourceNotFoundException(final Throwable cause) {
     super(cause);
   }
 
   /**
-   * Constructor to create an instance of the ResourceNotFoundException with a message to describe the resource
-   * not found error and a Throwable to indicate the probable cause of the resource not found error.
+   * Constructs a new {@link ResourceNotFoundException} initialized with the given {@link String message}
+   * describing the resource not found error along with a {@link Throwable} used as the cause of this
+   * resource not found error.
    *
-   * @param message a String value describing the nature of the resource not found error.
-   * @param cause the Throwable indicating the cause of the resource not found error.
-   * @see java.lang.Throwable
+   * @param message {@link String} describing the resource not found error.
+   * @param cause {@link Throwable} used as the cause of the resource not found error.
    */
   public ResourceNotFoundException(final String message, final Throwable cause) {
     super(message, cause);
