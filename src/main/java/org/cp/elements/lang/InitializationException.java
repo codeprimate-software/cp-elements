@@ -13,12 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.lang;
 
 /**
- * The InitializationException class is a RuntimeException indicating an error during initialization
- * of a runtime application class or component.
+ * Java {@link RuntimeException} thrown when an error occurs during initialization of a runtime application class
+ * or component.
  *
  * @author John J. Blum
  * @see java.lang.RuntimeException
@@ -28,41 +27,39 @@ package org.cp.elements.lang;
 public class InitializationException extends RuntimeException {
 
   /**
-   * Constructs an uninitialized instance of the InitializationException.
+   * Constructs a new, uninitialized instance of {@link InitializationException}.
    */
   public InitializationException() {
   }
 
   /**
-   * Constructs an instance of the InitializationException initialized with the given message describing
-   * the initialization error.
+   * Constructs a new {@link InitializationException} initialized with the given {@link String message}
+   * describing this exception.
    *
-   * @param message a String describing the nature of the initialization error.
+   * @param message {@link String} describing this exception.
    */
-  public InitializationException(final String message) {
+  public InitializationException(String message) {
     super(message);
   }
 
   /**
-   * Constructs an instance of the InitializationException initialized with the given Throwable to indicate
-   * the cause of the initialization error.
+   * Constructs a new {@link InitializationException} initialized with the given {@link Throwable}
+   * used as the cause of this exception.
    *
-   * @param cause the Throwable indicating the cause of the initialization error.
-   * @see java.lang.Throwable
+   * @param cause {@link Throwable} used as the cause of this exception.
    */
-  public InitializationException(final Throwable cause) {
+  public InitializationException(Throwable cause) {
     super(cause);
   }
 
   /**
-   * Constructs an instance of the InitializationException initialized with the given message describing
-   * the initialization error along with the Throwable indicating the probable cause of the initialization error.
+   * Constructs a new {@link InitializationException} initialized with the given {@link String message}
+   * describing this exception along with the given {@link Throwable} used as the cause of this exception.
    *
-   * @param message a String describing the nature of the initialization error.
-   * @param cause the Throwable indicating the cause of the initialization error.
-   * @see java.lang.Throwable
+   * @param message {@link String} describing this exception.
+   * @param cause {@link Throwable} used as the cause of this exception.
    */
-  public InitializationException(final String message, final Throwable cause) {
+  public InitializationException(String message, Throwable cause) {
     super(message, cause);
   }
 
