@@ -23,10 +23,10 @@ import org.cp.elements.lang.annotation.NotNull;
 import org.cp.elements.lang.annotation.Nullable;
 
 /**
- * {@link Object} factory used to construct and initialize different types of {@link RuntimeException RuntimeExceptions}
- * with the added convenience of optional {@link Throwable causes} and message formatting.
+ * Abstract object factory used to construct and initialize common Java {@link RuntimeException RuntimeExceptions}
+ * with the added convenience of optional {@link Throwable causes} and {@link String message} formatting.
  * <p>
- * This {@link Object} factory creates the most common {@link RuntimeException RuntimeExceptions}.
+ * This object factory can be used to create the most common types of Java {@link RuntimeException RuntimeExceptions}.
  *
  * @author John Blum
  * @see java.lang.RuntimeException
