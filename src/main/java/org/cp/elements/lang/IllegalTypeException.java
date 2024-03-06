@@ -13,11 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.lang;
 
 /**
- * The IllegalTypeException class is a {@link RuntimeException} that indicates an object is not of the expected type.
+ * Java {@link RuntimeException} thrown when an {@lin Object} is not of the expected {@link Class type}.
  *
  * @author John J. Blum
  * @see java.lang.RuntimeException
@@ -27,38 +26,37 @@ package org.cp.elements.lang;
 public class IllegalTypeException extends RuntimeException {
 
   /**
-   * Constructs an uninitialized instance of IllegalTypeException.
+   * Constructs a new, uninitialized instance of {@link IllegalTypeException}.
    */
   public IllegalTypeException() {
   }
 
   /**
-   * Constructs an instance of IllegalTypeException initialized with the given message to describe the error.
+   * Constructs a new {@link IllegalTypeException} initialized with the given {@link String message}
+   * describing this exception.
    *
-   * @param message a String describing the cause of this exception.
+   * @param message {@link String} describing this exception.
    */
   public IllegalTypeException(String message) {
     super(message);
   }
 
   /**
-   * Constructs an instance of IllegalTypeException initialized with the given {@link Throwable} indicating
-   * the cause of this exception.
+   * Constructs a new {@link IllegalTypeException} initialized with the given {@link Throwable}
+   * used as the cause of this exception.
    *
-   * @param cause a {@link Throwable} object that caused this exception.
-   * @see java.lang.Throwable
+   * @param cause a {@link Throwable} object used as caused this exception.
    */
   public IllegalTypeException(Throwable cause) {
     super(cause);
   }
 
   /**
-   * Constructs an instance of IllegalTypeException initialized with the given message to describe the error
-   * along with the {@link Throwable} causing this exception.
+   * Constructs a new {@link IllegalTypeException} initialized with the given {@link String message}
+   * describing this exception along with the {@link Throwable} used as the cause of this exception.
    *
-   * @param message a String describing the cause of this exception.
-   * @param cause a {@link Throwable} object that caused this exception.
-   * @see java.lang.Throwable
+   * @param message {@link String} describing this exception.
+   * @param cause a {@link Throwable} object used as caused this exception.
    */
   public IllegalTypeException(String message, Throwable cause) {
     super(message, cause);
