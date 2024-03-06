@@ -24,7 +24,8 @@ import org.cp.elements.lang.annotation.NotNull;
 import org.cp.elements.lang.annotation.Nullable;
 
 /**
- * {@link Object} factory used to construct and initialize common, {@literal checked} {@link Exception Exceptions}.
+ * Abstract object factory used to construct and initialize common, {@literal checked}
+ * Java {@link Exception Exceptions}.
  *
  * @author John Blum
  * @see java.lang.Exception
