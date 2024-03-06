@@ -13,11 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.lang;
 
 /**
- * The IdentityException class is an IllegalArgumentException indicating that an object is suffering an identity crisis.
+ * Java {@link IllegalArgumentException} thrown when {@link Object} is suffering an identity crisis.
  *
  * @author John J. Blum
  * @see java.lang.IllegalArgumentException
@@ -27,37 +26,38 @@ package org.cp.elements.lang;
 public class IdentityException extends IllegalArgumentException {
 
   /**
-   * Default constructor creating an instance of the IdentityException.
+   * Construct a new, uninitialized instance of {@link IdentityException}.
    */
   public IdentityException() {
   }
 
   /**
-   * Constructor to create an instance of the IdentityException with the given message to describe the identity
-   * comparison error.
+   * Constructs a new {@link IdentityException} initialized with the given {@link String message}
+   * describing the identity error.
    *
-   * @param message a String value describing the nature of the identity comparison error.
+   * @param message {@link String} describing the identity error.
    */
   public IdentityException(final String message) {
     super(message);
   }
 
   /**
-   * Constructor to create an instance of the IdentityException with the given Throwable to indicate the cause
-   * of the identity comparison error.
+   * Construct a new {@link IdentityException} initialized with the given {@link Throwable}
+   * used as the cause of this identity error.
    *
-   * @param cause the Throwable indicated as the cause of this equality comparison error.
+   * @param cause {@link Throwable} used as the cause of this equality error.
    */
   public IdentityException(final Throwable cause) {
     super(cause);
   }
 
   /**
-   * Constructor to create an instance of the IdentityException with a message to describe the identity comparison error
-   * and a Throwable to indicate the probable cause of the identity comparison error.
+   * Constructs a new {@link IdentityException} initialized with the given {@link String message}
+   * describing the identity error along with the given {@link Throwable} used as the cause
+   * of this identity error.
    *
-   * @param message a String value describing the nature of the identity comparison error.
-   * @param cause the Throwable indicated as the cause of this identity comparison error.
+   * @param message {@link String} describing the identity error.
+   * @param cause {@link Throwable} used as the cause of this equality error.
    */
   public IdentityException(final String message, final Throwable cause) {
     super(message, cause);
