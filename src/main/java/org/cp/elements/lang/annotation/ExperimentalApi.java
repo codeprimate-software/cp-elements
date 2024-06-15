@@ -24,7 +24,7 @@ import java.lang.annotation.Target;
 import java.lang.reflect.Method;
 
 /**
- * The {@link Experimental} annotation marks a {@link Class} or {@link Method} as experimental, or in development yet.
+ * Java Annotation marks a {@link Class} or {@link Method} as experimental, or in development yet.
  *
  * @author John Blum
  * @see java.lang.annotation.Annotation
@@ -39,6 +39,6 @@ import java.lang.reflect.Method;
 @Retention(RetentionPolicy.SOURCE)
 @Target({ ElementType.ANNOTATION_TYPE, ElementType.CONSTRUCTOR, ElementType.METHOD, ElementType.TYPE })
 @SuppressWarnings("unused")
-public @interface Experimental {
+public @interface ExperimentalApi {
 
 }

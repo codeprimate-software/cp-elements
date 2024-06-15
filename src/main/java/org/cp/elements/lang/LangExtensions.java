@@ -27,7 +27,7 @@ import java.util.function.Supplier;
 
 import org.cp.elements.data.conversion.provider.SimpleTypeConversions;
 import org.cp.elements.lang.annotation.Dsl;
-import org.cp.elements.lang.annotation.Experimental;
+import org.cp.elements.lang.annotation.ExperimentalApi;
 import org.cp.elements.lang.annotation.FluentApi;
 import org.cp.elements.lang.annotation.NotNull;
 import org.cp.elements.lang.annotation.Nullable;
@@ -53,7 +53,7 @@ import org.cp.elements.text.FormatUtils;
  * @see org.cp.elements.lang.FluentApiExtension
  * @see org.cp.elements.lang.annotation.Dsl
  * @see org.cp.elements.lang.annotation.FluentApi
- * @see org.cp.elements.lang.annotation.Experimental
+ * @see ExperimentalApi
  * @see org.cp.elements.lang.reflect.MethodInterceptor
  * @see org.cp.elements.lang.reflect.MethodInvocation
  * @see org.cp.elements.lang.reflect.ProxyFactory
@@ -80,11 +80,11 @@ public abstract class LangExtensions {
    * @see org.cp.elements.lang.reflect.ProxyFactory#adviseWith(MethodInterceptor[])
    * @see SafeNavigationHandler#newSafeNavigationHandler(ProxyFactory)
    * @see org.cp.elements.lang.reflect.ProxyFactory#newProxy()
-   * @see org.cp.elements.lang.annotation.Experimental
+   * @see ExperimentalApi
    * @see org.cp.elements.lang.annotation.Dsl
    */
   @Dsl
-  @Experimental
+  @ExperimentalApi
   public static <T> T $(T obj, Class<?>... interfaces) {
 
     ProxyFactory<T> proxyFactory = ProxyFactory.newProxyFactory(obj, interfaces);

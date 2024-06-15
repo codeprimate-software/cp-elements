@@ -25,7 +25,7 @@ import java.util.Set;
 
 import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.MathUtils;
-import org.cp.elements.lang.annotation.Experimental;
+import org.cp.elements.lang.annotation.ExperimentalApi;
 import org.cp.elements.lang.annotation.NotNull;
 
 /**
@@ -51,7 +51,7 @@ public abstract class CombinatorialMathFunctions {
    * @see List
    */
   // TODO: Analyze performance and research more efficient / optimal ways for computing combinations.
-  @Experimental
+  @ExperimentalApi
   public static @NotNull <T> List<List<T>> combinations(@NotNull List<T> list) {
 
     Assert.notNull(list, "List is required");
