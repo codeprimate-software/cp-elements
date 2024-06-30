@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.util;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.cp.elements.lang.ThrowableAssertions.assertThatUnsupportedOperationException;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -26,7 +26,7 @@ import java.util.concurrent.ConcurrentMap;
 import org.junit.jupiter.api.Test;
 
 /**
- * Unit tests for {@link MapBuilder}.
+ * Unit Tests for {@link MapBuilder}.
  *
  * @author John Blum
  * @see java.util.Map
@@ -34,10 +34,10 @@ import org.junit.jupiter.api.Test;
  * @see org.cp.elements.util.MapBuilder
  * @since 1.0.0
  */
-public class MapBuilderTests {
+public class MapBuilderUnitTests {
 
   @Test
-  public void newConcurrentMapIsCorrect() {
+  void newConcurrentMapIsCorrect() {
 
     MapBuilder<?, ?> mapBuilder = MapBuilder.newConcurrentMap();
 
@@ -47,7 +47,7 @@ public class MapBuilderTests {
   }
 
   @Test
-  public void newHashMapIsCorrect() {
+  void newHashMapIsCorrect() {
 
     MapBuilder<?, ?> mapBuilder = MapBuilder.newHashMap();
 
@@ -57,7 +57,7 @@ public class MapBuilderTests {
   }
 
   @Test
-  public void newSortedMapIsCorrect() {
+  void newSortedMapIsCorrect() {
 
     MapBuilder<?, ?> mapBuilder = MapBuilder.newSortedMap();
 
@@ -67,66 +67,66 @@ public class MapBuilderTests {
   }
 
   @Test
-  public void putOneEntryAndBuildIsCorrect() {
+  void putSingleEntryAndBuildMap() {
 
     Map<String, Object> map = MapBuilder.<String, Object>newHashMap()
-      .put("one", 1)
+      .put("A", 1)
       .build();
 
     assertThat(map).isNotNull();
     assertThat(map).hasSize(1);
-    assertThat(map).containsEntry("one", 1);
+    assertThat(map).containsEntry("A", 1);
   }
 
   @Test
-  public void putTwoEntriesAndBuildIsCorrect() {
+  void putTwoEntriesAndBuildMap() {
 
     Map<String, Object> map = MapBuilder.<String, Object>newHashMap()
-      .put("one", 1)
-      .put("two", 2)
+      .put("A", 1)
+      .put("B", 2)
       .build();
 
     assertThat(map).isNotNull();
     assertThat(map).hasSize(2);
-    assertThat(map).containsEntry("one", 1);
-    assertThat(map).containsEntry("two", 2);
+    assertThat(map).containsEntry("A", 1);
+    assertThat(map).containsEntry("B", 2);
   }
 
   @Test
-  public void putAllFromMapAndBuildIsCorrect() {
+  void putAllFromMapAndBuildNewMap() {
 
     Map<String, Object> source = new HashMap<>();
 
-    source.put("one", 1);
-    source.put("two", 2);
-    source.put("three", 3);
+    source.put("A", 1);
+    source.put("B", 2);
+    source.put("C", 3);
 
     Map<String, Object> target = MapBuilder.<String, Object>newHashMap()
       .putAll(source)
       .build();
 
-    assertThat(target).isNotNull();
+    assertThat(target).isNotNull().isNotSameAs(source);
     assertThat(target).hasSize(source.size());
     assertThat(target).containsAllEntriesOf(source);
   }
 
   @Test
-  public void putIfAbsentAndBuildIsCorrect() {
+  void putIfAbsentAndBuildMap() {
 
     Map<String, Object> map = MapBuilder.<String, Object>newHashMap()
-      .putIfAbsent("one", 1)
-      .putIfAbsent("one", 3)
-      .putIfAbsent("two", 2)
+      .putIfAbsent("A", 1)
+      .putIfAbsent("A", 3)
+      .putIfAbsent("B", 2)
       .build();
 
     assertThat(map).isNotNull();
     assertThat(map).hasSize(2);
-    assertThat(map).containsEntry("one", 1);
-    assertThat(map).containsEntry("two", 2);
+    assertThat(map).containsEntry("A", 1);
+    assertThat(map).containsEntry("B", 2);
   }
 
   @Test
-  public void putsSortedIsCorrect() {
+  void putAndSortEntriesThenBuildMap() {
 
     Map<Integer, String> map = MapBuilder.<Integer, String>newSortedMap()
       .put(3, "three")
@@ -145,5 +145,30 @@ public class MapBuilderTests {
     for (Integer key : map.keySet()) {
       assertThat(key).isEqualTo(++expectedKey);
     }
+  }
+
+  @Test
+  void buildUnmodifiableMap() {
+
+    MapBuilder<Object, Object> mapBuilder = MapBuilder.newHashMap()
+      .put("A", 1);
+
+    MapBuilder<Object, Object> unmodifiableMapBuilder = mapBuilder.makeUnmodifiable();
+
+    assertThat(unmodifiableMapBuilder).isNotNull().isNotSameAs(mapBuilder);
+
+    Map<Object, Object> map = unmodifiableMapBuilder.build();
+
+    assertThat(map).isNotNull();
+    assertThat(map).hasSize(1);
+    assertThat(map).isUnmodifiable();
+  }
+
+  @Test
+  void buildUnmodifiableMapAndMutateDuringBuild() {
+
+    assertThatUnsupportedOperationException()
+      .isThrownBy(args -> MapBuilder.newHashMap().makeUnmodifiable().put("A", 1).build())
+      .withNoCause();
   }
 }

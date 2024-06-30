@@ -15,6 +15,7 @@
  */
 package org.cp.elements.util;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.SortedMap;
@@ -27,8 +28,8 @@ import org.cp.elements.lang.ObjectUtils;
 import org.cp.elements.lang.annotation.NotNull;
 
 /**
- * The {@link MapBuilder} class is an implementation of the Builder Software Design Pattern and is used to build
- * a {@link Map} implementation with a mapping of keys and values.
+ * Implementation of the {@literal Builder Software Design Pattern} used to build a {@link Map} implementation
+ * containing a mapping of keys and values.
  *
  * @author John Blum
  * @param <KEY> {@link Class type} of the {@link Map} key.
@@ -43,14 +44,12 @@ import org.cp.elements.lang.annotation.NotNull;
 @SuppressWarnings("all")
 public class MapBuilder<KEY, VALUE> implements Builder<Map<KEY, VALUE>> {
 
-  private final Map<KEY, VALUE> map;
-
   /**
    * Factory method used to construct a new {@link MapBuilder} initialized with a {@link ConcurrentMap} implementation.
    *
    * @param <KEY> {@link Class type} of the {@link Map} key.
    * @param <VALUE> {@link Class type} of the {@link Map} value.
-   * @return a new instance of {@link MapBuilder} initialized with a {@link ConcurrentMap}.
+   * @return a new {@link MapBuilder} initialized with a {@link ConcurrentMap}.
    * @see java.util.concurrent.ConcurrentMap
    * @see #MapBuilder(Map)
    */
@@ -63,7 +62,7 @@ public class MapBuilder<KEY, VALUE> implements Builder<Map<KEY, VALUE>> {
    *
    * @param <KEY> {@link Class type} of the {@link Map} key.
    * @param <VALUE> {@link Class type} of the {@link Map} value.
-   * @return a new instance of {@link MapBuilder} initialized with a {@link HashMap}.
+   * @return a new {@link MapBuilder} initialized with a {@link HashMap}.
    * @see java.util.HashMap
    * @see #MapBuilder(Map)
    */
@@ -76,7 +75,7 @@ public class MapBuilder<KEY, VALUE> implements Builder<Map<KEY, VALUE>> {
    *
    * @param <KEY> {@link Class type} of the {@link Map} key.
    * @param <VALUE> {@link Class type} of the {@link Map} value.
-   * @return a new instance of {@link MapBuilder} initialized with a {@link SortedMap}.
+   * @return a new {@link MapBuilder} initialized with a {@link SortedMap}.
    * @see java.util.SortedMap
    * @see #MapBuilder(Map)
    */
@@ -84,10 +83,12 @@ public class MapBuilder<KEY, VALUE> implements Builder<Map<KEY, VALUE>> {
     return new MapBuilder<>(new TreeMap<>());
   }
 
+  private final Map<KEY, VALUE> map;
+
   /**
    * Constructs a new {@link MapBuilder} initialized with the given {@link Map}.
    *
-   * @param map {@link Map} to build (populate with {@link Map#put(Object, Object) put} operations;
+   * @param map {@link Map} to build, populated with {@link Map#put(Object, Object) put} operations;
    * must not be {@literal null}.
    * @throws IllegalArgumentException if {@link Map} is {@literal null}.
    * @see java.util.Map
@@ -145,6 +146,16 @@ public class MapBuilder<KEY, VALUE> implements Builder<Map<KEY, VALUE>> {
   public @NotNull MapBuilder<KEY, VALUE> putIfAbsent(KEY key, VALUE value) {
     getMap().putIfAbsent(key, value);
     return this;
+  }
+
+  /**
+   * Makes the {@link Map} unmodifiable.
+   *
+   * @return a new {@link MapBuilder} with an unmodifiable {@link Map} of the existing {@link #getMap() Map}.
+   * @see java.util.Collections#unmodifiableMap(Map)
+   */
+  public @NotNull MapBuilder<KEY, VALUE> makeUnmodifiable() {
+    return new MapBuilder<>(Collections.unmodifiableMap(getMap()));
   }
 
   /**
