@@ -136,14 +136,14 @@ public abstract class FunctionUtils {
   }
 
   /**
-   * Factory method used to construct a new {@link Supplier} that does nothing.
+   * Factory method used to construct a new {@link Supplier} that returns {@literal null}.
    *
    * @param <T> {@link Class type} of {@link Object} returned by the {@link Supplier}.
-   * @return a noop {@link Supplier} that does nothing and returns {@literal null}.
+   * @return a {@link Supplier} returning {@literal null}.
    * @see java.util.function.Supplier
    */
   @NullSafe
-  public static @NotNull <T> Supplier<T> noopSupplier() {
+  public static @NotNull <T> Supplier<T> nullReturningSupplier() {
     return () -> null;
   }
 
@@ -213,7 +213,7 @@ public abstract class FunctionUtils {
    */
   @NullSafe
   public static @NotNull <T> Supplier<T> nullSafeSupplier(Supplier<T> supplier) {
-    return supplier != null ? supplier : noopSupplier();
+    return supplier != null ? supplier : nullReturningSupplier();
   }
 
   /**

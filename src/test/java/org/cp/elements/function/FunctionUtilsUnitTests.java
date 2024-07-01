@@ -298,7 +298,7 @@ public class FunctionUtilsUnitTests {
   @Test
   public void noopSupplierIsCorrect() {
 
-    Supplier<User<?>> supplier = FunctionUtils.noopSupplier();
+    Supplier<User<?>> supplier = FunctionUtils.nullReturningSupplier();
 
     assertThat(supplier).isNotNull();
     assertThat(supplier.get()).isNull();
