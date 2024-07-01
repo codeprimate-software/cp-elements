@@ -22,6 +22,7 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.function.BiFunction;
 
 import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.Builder;
@@ -157,6 +158,18 @@ public class MapBuilder<KEY, VALUE> implements Builder<Map<KEY, VALUE>> {
    */
   public @NotNull MapBuilder<KEY, VALUE> makeUnmodifiable() {
     return new MapBuilder<>(Collections.unmodifiableMap(getMap()));
+  }
+
+  /**
+   * Computes a new {@link VALUE value} for an existing {@link Map.Entry}.
+   *
+   * @param key {@link KEY} ot remap.
+   * @param function {@link Function} used to compute a new value.
+   * @return this {@link MapBuilder}.
+   */
+  public @NotNull MapBuilder<KEY, VALUE> putIfPresent(KEY key, BiFunction<KEY, VALUE, ? extends VALUE> function) {
+    getMap().computeIfPresent(key, function);
+    return this;
   }
 
   /**

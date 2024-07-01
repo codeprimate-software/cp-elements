@@ -76,33 +76,7 @@ public class MapBuilderUnitTests {
   }
 
   @Test
-  void putSingleEntryAndBuildMap() {
-
-    Map<String, Object> map = MapBuilder.<String, Object>newHashMap()
-      .put("A", 1)
-      .build();
-
-    assertThat(map).isNotNull();
-    assertThat(map).hasSize(1);
-    assertThat(map).containsEntry("A", 1);
-  }
-
-  @Test
-  void putTwoEntriesAndBuildMap() {
-
-    Map<String, Object> map = MapBuilder.<String, Object>newHashMap()
-      .put("A", 1)
-      .put("B", 2)
-      .build();
-
-    assertThat(map).isNotNull();
-    assertThat(map).hasSize(2);
-    assertThat(map).containsEntry("A", 1);
-    assertThat(map).containsEntry("B", 2);
-  }
-
-  @Test
-  void putAllFromMapAndBuildNewMap() {
+  void putAllFromMapThenBuildNewMap() {
 
     Map<String, Object> source = new HashMap<>();
 
@@ -120,7 +94,33 @@ public class MapBuilderUnitTests {
   }
 
   @Test
-  void putIfAbsentAndBuildMap() {
+  void putSingleEntryThenBuildMap() {
+
+    Map<String, Object> map = MapBuilder.<String, Object>newHashMap()
+      .put("A", 1)
+      .build();
+
+    assertThat(map).isNotNull();
+    assertThat(map).hasSize(1);
+    assertThat(map).containsEntry("A", 1);
+  }
+
+  @Test
+  void putTwoEntriesThenBuildMap() {
+
+    Map<String, Object> map = MapBuilder.<String, Object>newHashMap()
+      .put("A", 1)
+      .put("B", 2)
+      .build();
+
+    assertThat(map).isNotNull();
+    assertThat(map).hasSize(2);
+    assertThat(map).containsEntry("A", 1);
+    assertThat(map).containsEntry("B", 2);
+  }
+
+  @Test
+  void putIfAbsentThenBuildMap() {
 
     Map<String, Object> map = MapBuilder.<String, Object>newHashMap()
       .putIfAbsent("A", 1)
@@ -132,6 +132,21 @@ public class MapBuilderUnitTests {
     assertThat(map).hasSize(2);
     assertThat(map).containsEntry("A", 1);
     assertThat(map).containsEntry("B", 2);
+  }
+
+  @Test
+  void putIfPresentTheBuildMap() {
+
+    Map<String, Object> map = MapBuilder.<String, Object>newHashMap()
+      .put("A", 1)
+      .putIfPresent("B", (key, value) -> 2)
+      .putIfPresent("A", (key, value) -> ((int) value) * 2)
+      .build();
+
+    assertThat(map).isNotNull();
+    assertThat(map).hasSize(1);
+    assertThat(map).containsEntry("A", 2);
+    assertThat(map).doesNotContainKey("B");
   }
 
   @Test
