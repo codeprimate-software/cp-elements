@@ -16,6 +16,7 @@
 package org.cp.elements.data.conversion;
 
 import static org.cp.elements.lang.RuntimeExceptionsFactory.newIllegalStateException;
+import static org.cp.elements.lang.RuntimeExceptionsFactory.newUnsupportedOperationException;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -248,6 +249,6 @@ public abstract class AbstractConverter<S, T> implements Converter<S, T> {
    */
   @Override
   public T convert(S value) {
-    throw new UnsupportedOperationException(Constants.OPERATION_NOT_SUPPORTED);
+    throw newUnsupportedOperationException(Constants.OPERATION_NOT_SUPPORTED);
   }
 }
