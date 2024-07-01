@@ -68,7 +68,7 @@ public interface Serializer {
    * @see java.nio.ByteBuffer#array()
    * @see #serialize(Object)
    */
-  @NotNull default byte[] toByteArray(@NotNull Object target) {
+  default @NotNull byte[] toByteArray(@NotNull Object target) {
 
     Assert.notNull(target, "Object to serialize is required");
 
