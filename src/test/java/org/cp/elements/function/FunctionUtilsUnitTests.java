@@ -347,7 +347,7 @@ public class FunctionUtilsUnitTests {
 
     Predicate<?> mockPredicate = mock(Predicate.class);
 
-    assertThat(FunctionUtils.nullSafePredicateMatchAll(mockPredicate)).isSameAs(mockPredicate);
+    assertThat(FunctionUtils.nullSafePredicateMatchingAll(mockPredicate)).isSameAs(mockPredicate);
 
     verifyNoInteractions(mockPredicate);
   }
@@ -355,7 +355,7 @@ public class FunctionUtilsUnitTests {
   @Test
   public void nullSafePredicateMatchAllWithNullPredicate() {
 
-    Predicate<Object> predicate = FunctionUtils.nullSafePredicateMatchAll(null);
+    Predicate<Object> predicate = FunctionUtils.nullSafePredicateMatchingAll(null);
 
     assertThat(predicate).isNotNull();
     assertThat(predicate.test("test")).isTrue();

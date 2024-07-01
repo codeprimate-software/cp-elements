@@ -81,13 +81,13 @@ public abstract class FunctionUtils {
    * in the array.
    * @param predicates array of {@link Predicate Predicates} to compose.
    * @return a composition of {@link Predicate Predicates} from the given array.
-   * @see #nullSafePredicateMatchAll(Predicate)
+   * @see #nullSafePredicateMatchingAll(Predicate)
    */
   @NullSafe
   @SuppressWarnings("unchecked")
   public static @NotNull <T> Predicate<T> composeAnd(@NotNull Predicate<T>... predicates) {
 
-    Predicate<T> composition = nullSafePredicateMatchAll(null);
+    Predicate<T> composition = nullSafePredicateMatchingAll(null);
 
     for (Predicate<T> predicate : ArrayUtils.nullSafeArray(predicates, Predicate.class)) {
       if (predicate != null) {
@@ -184,7 +184,7 @@ public abstract class FunctionUtils {
    * @see java.util.function.Predicate
    */
   @NullSafe
-  public static @NotNull <T> Predicate<T> nullSafePredicateMatchAll(@Nullable Predicate<T> predicate) {
+  public static @NotNull <T> Predicate<T> nullSafePredicateMatchingAll(@Nullable Predicate<T> predicate) {
     return predicate != null ? predicate : argument -> true;
   }
 
@@ -195,7 +195,7 @@ public abstract class FunctionUtils {
    * @param predicate {@link Predicate} to evaluate for {@literal null}.
    * @return the given {@link Predicate} if not {@literal null} or a new {@link Predicate}
    * with a {@link Predicate#test(Object)} that always evaluates to {@literal false}.
-   * @see #nullSafePredicateMatchAll(Predicate)
+   * @see #nullSafePredicateMatchingAll(Predicate)
    * @see java.util.function.Predicate
    */
   @NullSafe

@@ -196,7 +196,7 @@ public class Properties implements Iterable<Property>, Streamable<Property> {
   public @NotNull Stream<Property> findBy(@Nullable Predicate<Property> predicate) {
 
     return getProperties().stream()
-      .filter(FunctionUtils.nullSafePredicateMatchAll(predicate));
+      .filter(FunctionUtils.nullSafePredicateMatchingAll(predicate));
   }
 
   /**
