@@ -15,6 +15,8 @@
  */
 package org.cp.elements.util;
 
+import static org.cp.elements.lang.RuntimeExceptionsFactory.newIllegalStateException;
+
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -170,6 +172,22 @@ public class MapBuilder<KEY, VALUE> implements Builder<Map<KEY, VALUE>> {
   public @NotNull MapBuilder<KEY, VALUE> putIfPresent(KEY key, BiFunction<KEY, VALUE, ? extends VALUE> function) {
     getMap().computeIfPresent(key, function);
     return this;
+  }
+
+  /**
+   * Makes the underlying {@link Map} a {@literal Singleton}.
+   *
+   * @return a new {@link MapBuilder} from the existing {@link Map} as a {@literal Singleton}.
+   * @throws IllegalArgumentException if the {@link Map} has no entires or more than 1 entry.
+   */
+  public @NotNull MapBuilder<KEY, VALUE> singleton() {
+
+    KEY key = getMap().keySet().stream()
+      .filter(it -> map.size() == 1)
+      .findFirst()
+      .orElseThrow(() -> newIllegalStateException("Expected Map of size 1; but was [%s]", getMap().size()));
+
+    return new MapBuilder<>(Collections.singletonMap(key, getMap().get(key)));
   }
 
   /**

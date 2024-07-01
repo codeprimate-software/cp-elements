@@ -172,6 +172,48 @@ public class MapBuilderUnitTests {
   }
 
   @Test
+  void buildSingletonMap() {
+
+    Map<Object, Object> map = MapBuilder.newHashMap()
+      .put("A", 1)
+      .singleton()
+      .build();
+
+    assertThat(map).isNotNull();
+    assertThat(map).hasSize(1);
+    assertThat(map).containsEntry("A", 1);
+
+    assertThatUnsupportedOperationException()
+      .isThrownBy(args -> map.put("B", 2))
+      .withNoCause();
+
+    assertThat(map).hasSize(1);
+    assertThat(map).containsEntry("A", 1);
+  }
+
+  @Test
+  void buildSingletonMapFromMapWithNoEntries() {
+
+    assertThatIllegalStateException()
+      .isThrownBy(args -> MapBuilder.newHashMap().singleton().build())
+      .havingMessage("Expected Map of size 1; but was [0]")
+      .withNoCause();
+  }
+
+  @Test
+  void buildSingletonMapFromMapWithTwoEntrieds() {
+
+    assertThatIllegalStateException()
+      .isThrownBy(args -> MapBuilder.newHashMap()
+        .put("A", 1)
+        .put("B", 2)
+        .singleton()
+        .build())
+      .havingMessage("Expected Map of size 1; but was [2]")
+      .withNoCause();
+  }
+
+  @Test
   void buildSynchronizedMap() throws Throwable {
 
     TestFramework.runOnce(new SynchronizedMapBuilderMultithreadedTestCase(MapBuilder.<Object, Integer>newHashMap()
