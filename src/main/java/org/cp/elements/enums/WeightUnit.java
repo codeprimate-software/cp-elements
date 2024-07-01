@@ -97,7 +97,7 @@ public enum WeightUnit {
   private static @Nullable WeightUnit valueOf(@NotNull Predicate<WeightUnit> predicate) {
 
     return Arrays.stream(values())
-      .filter(FunctionUtils.nullSafePredicateMatchNone(predicate))
+      .filter(FunctionUtils.nullSafePredicateMatchingNone(predicate))
       .findFirst()
       .orElse(null);
   }

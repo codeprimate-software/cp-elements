@@ -72,7 +72,7 @@ public enum HttpMethod {
   private static @Nullable HttpMethod valueOf(@NotNull Predicate<HttpMethod> httpMethodPredicate) {
 
     for (HttpMethod httpMethod : values()) {
-      if (FunctionUtils.nullSafePredicateMatchNone(httpMethodPredicate).test(httpMethod)) {
+      if (FunctionUtils.nullSafePredicateMatchingNone(httpMethodPredicate).test(httpMethod)) {
         return httpMethod;
       }
     }

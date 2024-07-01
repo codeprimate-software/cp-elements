@@ -120,7 +120,7 @@ public enum LengthUnit {
   private static @Nullable LengthUnit valueOf(@NotNull Predicate<LengthUnit> predicate) {
 
     return Arrays.stream(values())
-      .filter(FunctionUtils.nullSafePredicateMatchNone(predicate))
+      .filter(FunctionUtils.nullSafePredicateMatchingNone(predicate))
       .findFirst()
       .orElse(null);
   }

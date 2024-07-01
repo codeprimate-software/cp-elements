@@ -86,7 +86,7 @@ public enum ServicePort {
   private static @Nullable ServicePort valueOf(@NotNull Predicate<ServicePort> servicePortPredicate) {
 
     for (ServicePort servicePort : values()) {
-      if (FunctionUtils.nullSafePredicateMatchNone(servicePortPredicate).test(servicePort)) {
+      if (FunctionUtils.nullSafePredicateMatchingNone(servicePortPredicate).test(servicePort)) {
         return servicePort;
       }
     }

@@ -75,7 +75,7 @@ public enum Protocol {
   private static @Nullable Protocol valueOf(@NotNull Predicate<Protocol> protocolPredicate) {
 
     for (Protocol protocol : values()) {
-      if (FunctionUtils.nullSafePredicateMatchNone(protocolPredicate).test(protocol)) {
+      if (FunctionUtils.nullSafePredicateMatchingNone(protocolPredicate).test(protocol)) {
         return protocol;
       }
     }

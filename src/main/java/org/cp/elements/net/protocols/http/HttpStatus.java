@@ -119,7 +119,7 @@ public enum HttpStatus {
   private static @Nullable HttpStatus valueOf(@NotNull Predicate<HttpStatus> httpStatusPredicate) {
 
     for (HttpStatus httpStatus : values()) {
-      if (FunctionUtils.nullSafePredicateMatchNone(httpStatusPredicate).test(httpStatus)) {
+      if (FunctionUtils.nullSafePredicateMatchingNone(httpStatusPredicate).test(httpStatus)) {
         return httpStatus;
       }
     }

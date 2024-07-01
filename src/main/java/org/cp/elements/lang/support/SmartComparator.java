@@ -200,7 +200,7 @@ public class SmartComparator implements Comparator<Object>, Iterable<ComparatorD
 
     return StreamUtils.stream(this)
       .filter(Objects::nonNull)
-      .filter(comparatorDescriptor -> FunctionUtils.nullSafePredicateMatchNone(comparatorDescriptorPredicate)
+      .filter(comparatorDescriptor -> FunctionUtils.nullSafePredicateMatchingNone(comparatorDescriptorPredicate)
         .test(comparatorDescriptor))
       .findFirst();
   }

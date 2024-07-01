@@ -73,7 +73,7 @@ public enum Order {
   private static @Nullable Order valueOfPredicate(@NotNull Predicate<Order> predicate) {
 
     return Arrays.stream(values())
-      .filter(FunctionUtils.nullSafePredicateMatchNone(predicate))
+      .filter(FunctionUtils.nullSafePredicateMatchingNone(predicate))
       .findFirst()
       .orElse(null);
   }

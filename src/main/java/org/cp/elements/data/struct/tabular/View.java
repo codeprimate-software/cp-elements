@@ -203,7 +203,7 @@ public interface View extends Iterable<Row>, Nameable<String> {
    */
   default Optional<Row> getRow(@NotNull Predicate<Row> predicate) {
 
-    Predicate<Row> resolvedPredicate = FunctionUtils.nullSafePredicateMatchNone(predicate);
+    Predicate<Row> resolvedPredicate = FunctionUtils.nullSafePredicateMatchingNone(predicate);
 
     return StreamUtils.stream(rows())
       .filter(resolvedPredicate)
