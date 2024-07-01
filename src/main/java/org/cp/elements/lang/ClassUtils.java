@@ -1055,13 +1055,14 @@ public abstract class ClassUtils {
   @SuppressWarnings("all")
   public static @NotNull Class<?> toRawType(@Nullable Type type) {
 
-    Type resolvedType = type instanceof ParameterizedType ? ((ParameterizedType) type).getRawType()
-      : type instanceof TypeVariable ? safeGetValue(() -> loadClass(((TypeVariable<?>) type).getName()), Object.class)
+    Type resolvedType = type instanceof ParameterizedType parameterizedType ? parameterizedType.getRawType()
+      : type instanceof TypeVariable typeVariable ? safeGetValue(() -> loadClass(typeVariable.getName()), Object.class)
       : type;
 
-    return Class.class.cast(Optional.ofNullable(resolvedType)
-      .filter(it -> it instanceof Class)
-      .orElseThrow(() -> newIllegalArgumentException("[%1$s] is not resolvable as a %2$s",
-        type, Class.class.getName())));
+    if (resolvedType instanceof Class<?> classType) {
+      return classType;
+    }
+
+    throw newIllegalArgumentException("[%1$s] is not resolvable as a %2$s", type, Class.class.getName());
   }
 }
