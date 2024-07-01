@@ -16,6 +16,7 @@
 package org.cp.elements.util;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.cp.elements.lang.ThrowableAssertions.assertThatIllegalStateException;
 import static org.cp.elements.lang.ThrowableAssertions.assertThatUnsupportedOperationException;
 
 import java.util.HashMap;
@@ -24,6 +25,14 @@ import java.util.SortedMap;
 import java.util.concurrent.ConcurrentMap;
 
 import org.junit.jupiter.api.Test;
+
+import org.cp.elements.lang.ObjectUtils;
+
+import edu.umd.cs.mtc.MultithreadedTestCase;
+import edu.umd.cs.mtc.TestFramework;
+
+import lombok.AccessLevel;
+import lombok.Getter;
 
 /**
  * Unit Tests for {@link MapBuilder}.
@@ -148,6 +157,23 @@ public class MapBuilderUnitTests {
   }
 
   @Test
+  void buildSynchronizedMap() throws Throwable {
+
+    TestFramework.runOnce(new SynchronizedMapBuilderMultithreadedTestCase(MapBuilder.<Object, Integer>newHashMap()
+      .synchronize()
+      .build()));
+  }
+
+  @Test
+  void buildSynchronizedMapWithConcurrentMap() {
+
+    assertThatIllegalStateException()
+      .isThrownBy(args -> MapBuilder.newConcurrentMap().synchronize().build())
+      .havingMessage("Map implementation is already a ConcurrentMap [java.util.concurrent.ConcurrentHashMap]")
+      .withNoCause();
+  }
+
+  @Test
   void buildUnmodifiableMap() {
 
     MapBuilder<Object, Object> mapBuilder = MapBuilder.newHashMap()
@@ -170,5 +196,40 @@ public class MapBuilderUnitTests {
     assertThatUnsupportedOperationException()
       .isThrownBy(args -> MapBuilder.newHashMap().makeUnmodifiable().put("A", 1).build())
       .withNoCause();
+  }
+
+  @Getter(AccessLevel.PACKAGE)
+  static class SynchronizedMapBuilderMultithreadedTestCase extends MultithreadedTestCase {
+
+    private final Map<Object, Integer> map;
+
+    SynchronizedMapBuilderMultithreadedTestCase(Map<Object, Integer> map) {
+      this.map = ObjectUtils.requireObject(map, "Map under test is required");
+    }
+
+    public void thread1() throws Exception {
+      Thread.currentThread().setName("Map Put Thread 1");
+      getMap().put("A", 1);
+      getMap().putIfAbsent("C", 3);
+      waitForTick(2);
+      getMap().computeIfPresent("C", (key, value) -> value + 1);
+    }
+
+    public void thread2() throws Exception {
+      Thread.currentThread().setName("Map Put Thread 2)");
+      getMap().put("B", 2);
+      waitForTick(1);
+      getMap().computeIfPresent("C", (key, value) -> {
+        waitForTick(3);
+        return value + 1;
+      });
+    }
+
+    @Override
+    public void finish() {
+      assertThat(getMap()).containsEntry("A", 1);
+      assertThat(getMap()).containsEntry("B", 2);
+      assertThat(getMap()).containsEntry("C", 5);
+    }
   }
 }

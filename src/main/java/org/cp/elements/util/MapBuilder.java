@@ -23,6 +23,7 @@ import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
+import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.Builder;
 import org.cp.elements.lang.ObjectUtils;
 import org.cp.elements.lang.annotation.NotNull;
@@ -151,11 +152,26 @@ public class MapBuilder<KEY, VALUE> implements Builder<Map<KEY, VALUE>> {
   /**
    * Makes the {@link Map} unmodifiable.
    *
-   * @return a new {@link MapBuilder} with an unmodifiable {@link Map} of the existing {@link #getMap() Map}.
+   * @return a new {@link MapBuilder} with an unmodifiable {@link Map} from the existing {@link #getMap() Map}.
    * @see java.util.Collections#unmodifiableMap(Map)
    */
   public @NotNull MapBuilder<KEY, VALUE> makeUnmodifiable() {
     return new MapBuilder<>(Collections.unmodifiableMap(getMap()));
+  }
+
+  /**
+   * Synchronizes {@link Map} operations during build.
+   *
+   * @return a new {@link MapBuilder} with a synchronized {@link Map} from the existing {@link #getMap() Map}.
+   * @throws IllegalStateException if {@link Map} is a {@link ConcurrentMap}.
+   * @see java.util.Collections#synchronizedMap(Map)
+   */
+  public @NotNull MapBuilder<KEY, VALUE> synchronize() {
+
+    Assert.state(!(getMap() instanceof ConcurrentMap<?, ?>), () ->
+      "Map implementation is already a ConcurrentMap [%s]".formatted(getMap().getClass().getName()));
+
+    return new MapBuilder<>(Collections.synchronizedMap(getMap()));
   }
 
   /**
