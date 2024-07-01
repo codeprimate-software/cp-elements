@@ -54,6 +54,7 @@ import org.cp.elements.data.conversion.converters.ShortConverter;
 import org.cp.elements.data.conversion.converters.StringConverter;
 import org.cp.elements.data.conversion.converters.URIConverter;
 import org.cp.elements.data.conversion.converters.URLConverter;
+import org.cp.elements.data.conversion.converters.UUIDConverter;
 import org.cp.elements.lang.Identifiable;
 
 /**
@@ -91,6 +92,7 @@ public class SimpleConversionServiceTests {
     expectedRegisteredConverters.add(StringConverter.class);
     expectedRegisteredConverters.add(URIConverter.class);
     expectedRegisteredConverters.add(URLConverter.class);
+    expectedRegisteredConverters.add(UUIDConverter.class);
 
     for (Converter<?, ?> converter : this.conversionService) {
       assertThat(expectedRegisteredConverters.remove(converter.getClass()))
