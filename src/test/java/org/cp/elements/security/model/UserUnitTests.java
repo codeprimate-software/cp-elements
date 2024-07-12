@@ -22,9 +22,12 @@ import static org.mockito.Mockito.doCallRealMethod;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 
+import java.io.IOException;
 import java.util.Arrays;
 
 import org.junit.jupiter.api.Test;
+
+import org.cp.elements.io.IOUtils;
 
 /**
  * Unit Tests for {@link User}.
@@ -105,5 +108,21 @@ public class UserUnitTests {
         .isThrownBy(() -> User.named(illegalUsername))
         .withMessage("Username [%s] is required", illegalUsername)
         .withNoCause());
+  }
+
+  @Test
+  void serializeDeserializeUser() throws ClassNotFoundException, IOException {
+
+    User<Integer> user = User.<Integer>named("jonDoe").identifiedBy(1);
+
+    byte[] data = IOUtils.serialize(user);
+
+    assertThat(data).isNotNull().isNotEmpty();
+
+    User<Integer> deserializedUser = IOUtils.deserialize(data);
+
+    assertThat(deserializedUser).isNotNull().isNotSameAs(user);
+    assertThat(deserializedUser.getName()).isEqualTo(user.getName());
+    assertThat(deserializedUser.getId()).isEqualTo(user.getId());
   }
 }

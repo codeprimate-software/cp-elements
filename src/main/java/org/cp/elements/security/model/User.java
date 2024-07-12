@@ -15,6 +15,8 @@
  */
 package org.cp.elements.security.model;
 
+import java.io.Serializable;
+
 import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.Identifiable;
 import org.cp.elements.lang.Nameable;
@@ -26,12 +28,14 @@ import org.cp.elements.lang.annotation.NotNull;
  * @author John Blum
  * @param <ID> {@link Class type} of the identifier.
  * @see java.lang.Comparable
+ * @see java.io.Serializable
  * @see org.cp.elements.lang.Identifiable
  * @see org.cp.elements.lang.Nameable
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
-public interface User<ID extends Comparable<ID>> extends Comparable<User<ID>>, Identifiable<ID>, Nameable<String> {
+public interface User<ID extends Comparable<ID>>
+    extends Comparable<User<ID>>, Identifiable<ID>, Nameable<String>, Serializable {
 
   /**
    * Factory method used to construct a new {@link User} with the given, required {@link String name}.
