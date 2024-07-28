@@ -48,18 +48,18 @@ public interface Composite<T> {
    * Composes the array of {@link Object objects} of type {@link T} into a single {@link Composite}
    * object of type {@link T} acting as a single {@link Object} of type {@link T}.
    *
-   * @param objects array of {@link Object objects} to compose.
+   * @param array array of {@link Object objects} to compose.
    * @return an {@link Object} of type {@link T} composed of the array of {@link Object objects} of type {@link T}.
    * Returns {@literal null} if the array is {@literal null} or {@literal empty}.
    * @see #compose(Object, Object)
    */
   @NullSafe
   @SuppressWarnings({ "unchecked", "varargs" })
-  default @Nullable T compose(T... objects) {
+  default @Nullable T compose(T... array) {
 
     T composite = null;
 
-    for (T object : ArrayUtils.nullSafeArray(objects)) {
+    for (T object : ArrayUtils.nullSafeArray(array)) {
       composite = compose(composite, object);
     }
 
