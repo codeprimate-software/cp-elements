@@ -144,6 +144,16 @@
 
   <profiles>
     <profile>
+      <id>java22</id>
+      <activation>
+        <jdk>[22,)</jdk>
+      </activation>
+      <properties>
+        <java.version>22</java.version>
+        <maven.compiler.release>${java.version}</maven.compiler.release>
+      </properties>
+    </profile>
+    <profile>
       <id>java21</id>
       <activation>
         <jdk>[21,)</jdk>
