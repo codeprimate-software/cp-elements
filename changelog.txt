@@ -3,6 +3,29 @@ Codeprimate Elements changelog.txt
 https://github.com/codeprimate-software/cp-elements/blob/master/changelog.txt
 
 
+2.0.0-M5 - 2024-July-29
+-----------------------
+Release Codeprimate Elements 2.0.0-M5 with minor new features and enhancements.
+
+* Build on Oracle Java (JDK) 17.0.12 2024-07-16 LTS (build 17.0.12+8-LTS-286).
+* Builds and supports Elements on (up to) Java (JDK) 21 2024-07-16 LTS (build 21.0.4+8-LTS-274).
+* Builds and supports Elements on (up to) Java (JDK) 22 2024-07-16 (build 22.0.2+9-70).
+* Adds makeUnmodifiable() method to o.c.elements.util.MapBuilder.
+* Adds putIfAbsent(..) method to o.c.elements.util.MapBuilder.
+* Adds singleton() method to o.c.elements.util.MapBuilder.
+* Adds synchronize() method to o.c.elements.util.MapBuilder.
+* Creates UUIDConverter class in org.cp.elements.data.conversion.converter package.
+* Edits Javadoc across API.
+* Makes o.c.elements.security.model.User Serializable.
+* Renames ExpectationException to ExpectedException.
+* Renames Experimental annotation to ExperimentalApi.
+* Renames noopSupplier() method to nullReturningSupplier() in FunctionUtils.
+* Renames nullSafePredicateMatchAll(:Predicate) method to nullSafePredicateMatchingAll(..) in FunctionUtils.
+* Renames nullSafePredicateMatchNone(:Predicate) method to nullSafePredicateMatchinNone(..) in FunctionUtils.
+* Upgrades to Codeprimate Maven Build 2.0.0-M6.
+* Upgrades to Maven Wrapper 3.3.2 with Maven 3.9.8.
+
+
 2.0.0-M4 - 2023-November-23
 ---------------------------
 Release Codeprimate Elements 2.0.0-M4 with updated reference documentation along with new features and enhancements.
