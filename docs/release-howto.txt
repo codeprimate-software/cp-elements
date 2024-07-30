@@ -6,7 +6,7 @@ Version Qualifier is 1 of: [ SNAPSHOT, M# (Milestone #; e.g. M2), RC# (Release C
 
 For example: 2.0.0-SNAPSHOT, 2.0.0-M1, 2.0.0-RC1, 2.0.0, 2.0.1
 
-1. Build with all supported JDK [LTS] versions from baseline forward, for example: [ JDK17, JDK20 ].
+1. Build with all supported JDK [LTS] versions from baseline forward, for example: [ JDK17, JDK21, JDK22, ... ].
 
 2. `mvn -P code-analysis,docs,prepare-release clean install site`
 
