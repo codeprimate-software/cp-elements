@@ -16,7 +16,7 @@
 package org.cp.elements.lang;
 
 /**
- * Java {@link RuntimeException} thrown when an {@lin Object} is not of the expected {@link Class type}.
+ * Java {@link RuntimeException} thrown when an {@link Object} is not of the expected {@link Class type}.
  *
  * @author John J. Blum
  * @see java.lang.RuntimeException
