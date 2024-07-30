@@ -1,6 +1,6 @@
 [[codeprimate-elements]]
 = Codeprimate Elements
-:version: 2.0.0-M4
+:version: 2.0.0-M5
 
 _Java Simplified. Extensions and Useful Constructs for the Java Platform._
 
