@@ -61,6 +61,7 @@ import org.cp.elements.process.ProcessNotRespondingException;
 import org.cp.elements.security.AbstractSecurityException;
 import org.cp.elements.security.AuthenticationException;
 import org.cp.elements.security.AuthorizationException;
+import org.cp.elements.security.model.UserNotFoundException;
 import org.cp.elements.service.ServiceException;
 import org.cp.elements.service.ServiceInvocationException;
 import org.cp.elements.service.ServiceUnavailableException;
@@ -115,7 +116,7 @@ import org.cp.elements.util.sort.SortException;
  * @see org.cp.elements.lang.CloneException
  * @see org.cp.elements.lang.ComparisonException
  * @see org.cp.elements.lang.EqualityException
- * @see ExpectedException
+ * @see org.cp.elements.lang.ExpectedException
  * @see org.cp.elements.lang.IdentityException
  * @see org.cp.elements.lang.IllegalTypeException
  * @see org.cp.elements.lang.ImmutableObjectException
@@ -144,6 +145,7 @@ import org.cp.elements.util.sort.SortException;
  * @see org.cp.elements.security.AuthenticationException
  * @see org.cp.elements.security.AuthorizationException
  * @see org.cp.elements.security.AbstractSecurityException
+ * @see org.cp.elements.security.model.UserNotFoundException
  * @see org.cp.elements.service.ServiceException
  * @see org.cp.elements.service.ServiceInvocationException
  * @see org.cp.elements.service.ServiceUnavailableException
@@ -1863,7 +1865,7 @@ public abstract class ElementsExceptionsFactory {
    * @param args optional array of {@link Object arguments} used to replace the placeholders in the message.
    * @return a new {@link AbstractSecurityException}.
    * @see #newSecurityException(Throwable, String, Object...)
-   * @see AbstractSecurityException
+   * @see org.cp.elements.security.AbstractSecurityException
    */
   public static AbstractSecurityException newSecurityException(String message, Object... args) {
     return newSecurityException(null, message, args);
@@ -1878,10 +1880,41 @@ public abstract class ElementsExceptionsFactory {
    * @param message {@link String} containing a message to describe the exception.
    * @param args optional array of {@link Object arguments} used to replace the placeholders in the message.
    * @return a new {@link AbstractSecurityException}.
-   * @see AbstractSecurityException
+   * @see org.cp.elements.security.AbstractSecurityException
    */
   public static AbstractSecurityException newSecurityException(Throwable cause, String message, Object... args) {
     return new AbstractSecurityException(format(message, args), cause) { };
+  }
+
+  // org.cp.elements.security.model
+
+  /**
+   * Constructs a new {@link UserNotFoundException} initialized with the given {@link String message}
+   * to describe the {@link UserNotFoundException}.
+   *
+   * @param message {@link String} containing a message to describe the exception.
+   * @param args optional array of {@link Object arguments} used to replace the placeholders in the message.
+   * @return a new {@link UserNotFoundException}.
+   * @see #newUserNotFoundException(Throwable, String, Object...)
+   * @see org.cp.elements.security.model.UserNotFoundException
+   */
+  public static UserNotFoundException newUserNotFoundException(String message, Object... args) {
+    return newUserNotFoundException(null, message, args);
+  }
+
+  /**
+   * Constructs a new {@link UserNotFoundException} initialized with the given {@link String message}
+   * to describe the {@link UserNotFoundException} along with a {@link Throwable cause} used as the reason
+   * why the {@link UserNotFoundException} was thrown.
+   *
+   * @param cause {@link Throwable} used as the cause of the exception.
+   * @param message {@link String} containing a message to describe the exception.
+   * @param args optional array of {@link Object arguments} used to replace the placeholders in the message.
+   * @return a new {@link UserNotFoundException}.
+   * @see org.cp.elements.security.model.UserNotFoundException
+   */
+  public static UserNotFoundException newUserNotFoundException(Throwable cause, String message, Object... args) {
+    return new UserNotFoundException(format(message, args), cause);
   }
 
   // TODO: Edit Javadoc

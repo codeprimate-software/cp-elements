@@ -92,6 +92,7 @@ import static org.cp.elements.lang.ElementsExceptionsFactory.newUndeclaredProper
 import static org.cp.elements.lang.ElementsExceptionsFactory.newUndefinedPropertyException;
 import static org.cp.elements.lang.ElementsExceptionsFactory.newUnhandledMethodInvocationException;
 import static org.cp.elements.lang.ElementsExceptionsFactory.newUserException;
+import static org.cp.elements.lang.ElementsExceptionsFactory.newUserNotFoundException;
 import static org.cp.elements.lang.ElementsExceptionsFactory.newWriteOnlyException;
 
 import org.junit.jupiter.api.Test;
@@ -141,6 +142,7 @@ import org.cp.elements.process.ProcessNotRespondingException;
 import org.cp.elements.security.AbstractSecurityException;
 import org.cp.elements.security.AuthenticationException;
 import org.cp.elements.security.AuthorizationException;
+import org.cp.elements.security.model.UserNotFoundException;
 import org.cp.elements.service.ServiceException;
 import org.cp.elements.service.ServiceInvocationException;
 import org.cp.elements.service.ServiceUnavailableException;
@@ -818,6 +820,17 @@ public class ElementsExceptionsFactoryUnitTests {
   public void newSecurityExceptionWithFormattedMessageAndCause() {
     assertThrowable(newSecurityException(this.mockCause, "%s is a {1}", "This", "test"),
       AbstractSecurityException.class, "This is a test", this.mockCause);
+  }
+
+  @Test
+  public void newUserNotFoundExceptionWithMessage() {
+    assertThrowable(newUserNotFoundException("test"), UserNotFoundException.class, "test");
+  }
+
+  @Test
+  public void newUserNotFoundExceptionWithFormattedMessageAndCause() {
+    assertThrowable(newUserNotFoundException(this.mockCause, "%s is a {1}", "This", "test"),
+      UserNotFoundException.class, "This is a test", this.mockCause);
   }
 
   @Test
