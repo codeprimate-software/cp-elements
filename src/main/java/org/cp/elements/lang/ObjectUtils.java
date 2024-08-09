@@ -144,11 +144,11 @@ public abstract class ObjectUtils extends ReflectionUtils {
    * @param <T> {@link Class type} of the {@link Object return value}.
    * @param operation {@link ThrowableOperation} to execute.
    * @return the {@link Object result} of the {@link ThrowableOperation}.
-   * @see #doOperationSafely(ThrowableOperation, Object)
+   * @see #doSafely(ThrowableOperation, Object)
    * @see org.cp.elements.lang.ThrowableOperation
    */
-  public static @Nullable <T> T doOperationSafely(@NotNull ThrowableOperation<T> operation) {
-    return doOperationSafely(operation, (T) null);
+  public static @Nullable <T> T doSafely(@NotNull ThrowableOperation<T> operation) {
+    return doSafely(operation, (T) null);
   }
 
   /**
@@ -161,14 +161,14 @@ public abstract class ObjectUtils extends ReflectionUtils {
    * @param defaultValue {@link Object} to return if the {@link ThrowableOperation} throws a {@link Throwable}.
    * @return the {@link Object result} of the {@link ThrowableOperation} or the {@link Object default value}
    * if the {@link ThrowableOperation} throws a {@link Throwable}.
-   * @see #doOperationSafely(ThrowableOperation, Supplier)
+   * @see #doSafely(ThrowableOperation, Supplier)
    * @see org.cp.elements.lang.ThrowableOperation
    */
-  public static @Nullable <T> T doOperationSafely(@NotNull ThrowableOperation<T> operation, @NotNull T defaultValue) {
+  public static @Nullable <T> T doSafely(@NotNull ThrowableOperation<T> operation, @NotNull T defaultValue) {
 
     Supplier<T> valueSupplier = () -> defaultValue;
 
-    return doOperationSafely(operation, valueSupplier);
+    return doSafely(operation, valueSupplier);
   }
 
   /**
@@ -185,17 +185,17 @@ public abstract class ObjectUtils extends ReflectionUtils {
    * @throws IllegalStateException if the {@link ThrowableOperation} throws a {@link Throwable} and the {@link Supplier}
    * supplies a {@literal null} {@link Object value}.
    * @see #returnValueOrThrowIfNull(Object, RuntimeException)
-   * @see #doOperationSafely(ThrowableOperation, Function)
+   * @see #doSafely(ThrowableOperation, Function)
    * @see org.cp.elements.lang.ThrowableOperation
    * @see java.util.function.Supplier
    */
-  public static @Nullable <T> T doOperationSafely(@NotNull ThrowableOperation<T> operation,
+  public static @Nullable <T> T doSafely(@NotNull ThrowableOperation<T> operation,
       @NotNull Supplier<T> valueSupplier) {
 
     Function<Throwable, T> throwableHandler = cause -> returnValueOrThrowIfNull(valueSupplier.get(),
       newIllegalStateException(cause, "Failed to execute operation [%s]", operation));
 
-    return doOperationSafely(operation, throwableHandler);
+    return doSafely(operation, throwableHandler);
   }
 
   /**
@@ -210,7 +210,7 @@ public abstract class ObjectUtils extends ReflectionUtils {
    * @see org.cp.elements.lang.ThrowableOperation
    * @see java.util.function.Function
    */
-  public static @Nullable <T> T doOperationSafely(@NotNull ThrowableOperation<T> operation,
+  public static @Nullable <T> T doSafely(@NotNull ThrowableOperation<T> operation,
       @NotNull Function<Throwable, T> throwableHandler) {
 
     try {

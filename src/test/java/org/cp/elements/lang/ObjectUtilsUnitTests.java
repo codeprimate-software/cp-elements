@@ -175,15 +175,15 @@ public class ObjectUtilsUnitTests {
   }
 
   @Test
-  public void doOperationSafelyReturnsResult() {
-    assertThat(ObjectUtils.<String>doOperationSafely(arguments -> "test")).isEqualTo("test");
+  public void doSafelyReturnsResult() {
+    assertThat(ObjectUtils.<String>doSafely(arguments -> "test")).isEqualTo("test");
   }
 
   @Test
-  public void doOperationSafelyThrowsIllegalStateException() {
+  public void doSafelyThrowsIllegalStateException() {
 
     ThrowableAssertions.assertThatIllegalStateException()
-      .isThrownBy(args -> ObjectUtils.doOperationSafely(arguments -> { throw new Exception("ERROR"); }))
+      .isThrownBy(args -> ObjectUtils.doSafely(arguments -> { throw new Exception("ERROR"); }))
       .havingMessageContaining("Failed to execute operation")
       .causedBy(Exception.class)
       .havingMessage("ERROR")
@@ -191,21 +191,21 @@ public class ObjectUtilsUnitTests {
   }
 
   @Test
-  public void doOperationSafelyWithDefaultValueReturnsResult() {
-    assertThat(ObjectUtils.doOperationSafely(arguments -> "test", "default")).isEqualTo("test");
+  public void doSafelyWithDefaultValueReturnsResult() {
+    assertThat(ObjectUtils.doSafely(arguments -> "test", "default")).isEqualTo("test");
   }
 
   @Test
-  public void doOperationSafelyWithDefaultValueReturnsDefaultValue() {
-    assertThat(ObjectUtils.doOperationSafely(arguments -> { throw new Exception("ERROR"); }, "default"))
+  public void doSafelyWithDefaultValueReturnsDefaultValue() {
+    assertThat(ObjectUtils.doSafely(arguments -> { throw new Exception("ERROR"); }, "default"))
       .isEqualTo("default");
   }
 
   @Test
-  public void doOperationSafelyWithDefaultValueThrowsIllegalStateException() {
+  public void doSafelyWithDefaultValueThrowsIllegalStateException() {
 
     ThrowableAssertions.assertThatIllegalStateException()
-      .isThrownBy(args -> ObjectUtils.doOperationSafely(arguments -> { throw new Exception("ERROR"); }, (Object) null))
+      .isThrownBy(args -> ObjectUtils.doSafely(arguments -> { throw new Exception("ERROR"); }, (Object) null))
       .havingMessageContaining("Failed to execute operation")
       .causedBy(Exception.class)
       .havingMessage("ERROR")
@@ -213,21 +213,21 @@ public class ObjectUtilsUnitTests {
   }
 
   @Test
-  public void doOperationSafelyWithSuppliedValueReturnsResult() {
-    assertThat(ObjectUtils.<Object>doOperationSafely(arguments -> "test", () -> "supplied")).isEqualTo("test");
+  public void doSafelyWithSuppliedValueReturnsResult() {
+    assertThat(ObjectUtils.<Object>doSafely(arguments -> "test", () -> "supplied")).isEqualTo("test");
   }
 
   @Test
-  public void doOperationSafelyWithSuppliedValueReturnsSuppliedValue() {
-    assertThat(ObjectUtils.<Object>doOperationSafely(arguments -> { throw new Exception("ERROR"); }, () -> "supplied"))
+  public void doSafelyWithSuppliedValueReturnsSuppliedValue() {
+    assertThat(ObjectUtils.<Object>doSafely(arguments -> { throw new Exception("ERROR"); }, () -> "supplied"))
       .isEqualTo("supplied");
   }
 
   @Test
-  public void doOperationSafelyWithSuppliedValueThrowsIllegalStateException() {
+  public void doSafelyWithSuppliedValueThrowsIllegalStateException() {
 
     ThrowableAssertions.assertThatIllegalStateException()
-      .isThrownBy(args -> ObjectUtils.<Object>doOperationSafely(arguments -> {
+      .isThrownBy(args -> ObjectUtils.<Object>doSafely(arguments -> {
         throw new Exception("ERROR"); }, () -> null))
       .havingMessageContaining("Failed to execute operation")
       .causedBy(Exception.class)
@@ -236,22 +236,22 @@ public class ObjectUtilsUnitTests {
   }
 
   @Test
-  public void doOperationSafelyWithFunctionReturnsResult() {
-    assertThat(ObjectUtils.<Object>doOperationSafely(arguments -> "test",
+  public void doSafelyWithFunctionReturnsResult() {
+    assertThat(ObjectUtils.<Object>doSafely(arguments -> "test",
       cause -> { throw new RuntimeException("ERROR", cause); })).isEqualTo("test");
   }
 
   @Test
-  public void doOperationSafelyWithFunctionReturnsFunctionResult() {
-    assertThat(ObjectUtils.<Object>doOperationSafely(arguments -> { throw new Exception("ERROR"); },
+  public void doSafelyWithFunctionReturnsFunctionResult() {
+    assertThat(ObjectUtils.<Object>doSafely(arguments -> { throw new Exception("ERROR"); },
       cause -> "functionResult" )).isEqualTo("functionResult");
   }
 
   @Test
-  public void doOperationSafelyWithFunctionThrowsFunctionException() {
+  public void doSafelyWithFunctionThrowsFunctionException() {
 
     ThrowableAssertions.assertThatThrowableOfType(TestException.class)
-      .isThrownBy(args -> ObjectUtils.<Object>doOperationSafely(arguments -> { throw new Error("ERROR"); },
+      .isThrownBy(args -> ObjectUtils.<Object>doSafely(arguments -> { throw new Error("ERROR"); },
         cause -> { throw new TestException("TEST EXCEPTION", cause); }))
       .havingMessage("TEST EXCEPTION")
       .causedBy(Error.class)
