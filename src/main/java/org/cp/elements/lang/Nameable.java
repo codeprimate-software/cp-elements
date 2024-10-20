@@ -28,6 +28,19 @@ package org.cp.elements.lang;
 public interface Nameable<T> {
 
   /**
+   * Factory method used to construct a new {@link Nameable} object initialized with
+   * the given, required {@link T name}.
+   *
+   * @param <T> {@link Class type} of the name.
+   * @param name {@link T name} of the {@link Nameable object}.
+   * @return a new {@link Nameable object} initialized with the given, required {@link T name}.
+   */
+  static <T> Nameable<T> named(T name) {
+    Assert.notNull(name, "Name is required");
+    return () -> name;
+  }
+
+  /**
    * Returns the name of this object.
    *
    * @return the name of this object.
