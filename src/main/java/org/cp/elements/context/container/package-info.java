@@ -17,7 +17,7 @@
  * The Elements {@literal context.container} package contains an implementation of
  * the {@literal Dependency Injection Software Design Pattern} in order to make use of
  * {@literal Inversion of Control (IOC)} between application classes and components in a
- * hightly cohesive, loosely coupled fashion.
+ * highly cohesive, loosely coupled fashion.
  *
  * @author John Blum
  * @see org.cp.elements.context.container.DependencyInjection
