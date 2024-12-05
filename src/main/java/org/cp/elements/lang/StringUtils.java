@@ -459,6 +459,19 @@ public abstract class StringUtils {
   }
 
   /**
+   * Determines whether the given {@link String} has no text.
+   *
+   * @param value {@link String} to evaluate.
+   * @return a boolean value indicating whether the given {@link String} has text.
+   * Returns {@literal true} if the {@link String} has no text, or {@literal false}
+   * if the {@link String} contains text.
+   * @see #hasText(String)
+   */
+  public static boolean noText(@Nullable String value) {
+    return !hasText(value);
+  }
+
+  /**
    * Pads the given {@link String value} with spaces on the left.
    *
    * @param value {@link String value} to pad.

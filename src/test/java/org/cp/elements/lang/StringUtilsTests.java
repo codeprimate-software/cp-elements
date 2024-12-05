@@ -515,7 +515,7 @@ class StringUtilsTests {
   }
 
   @Test
-  public void testLength() {
+  public void length() {
 
     assertThat(StringUtils.length(null)).isEqualTo(0);
     assertThat(StringUtils.length("")).isEqualTo(0);
@@ -525,6 +525,18 @@ class StringUtilsTests {
     assertThat(StringUtils.length("nil")).isEqualTo(3);
     assertThat(StringUtils.length("null")).isEqualTo(4);
     assertThat(StringUtils.length("test")).isEqualTo(4);
+  }
+
+  @Test
+  void noTextWhenStringContainsNoTextReturnsTrue() {
+    Arrays.asList(null, "", "  ", "\0").forEach(string ->
+      assertThat(StringUtils.noText(string)).isTrue());
+  }
+
+  @Test
+  void noTextWhenStringContainsTextReturnsFalse() {
+    Arrays.asList("test", "null", "nil", "empty", "_").forEach(string ->
+      assertThat(StringUtils.noText(string)).isFalse());
   }
 
   @Test
