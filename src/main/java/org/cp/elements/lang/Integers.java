@@ -65,20 +65,6 @@ public abstract class Integers {
   }
 
   /**
-   * Converts a {@link Integer positive number} into a {@link Integer negative number}
-   * and converts a {@link Integer negative number} into a {@link Integer positive number}.
-   * <p>
-   * If the given {@link Integer number} is {@literal 0}, then {@literal 0} is returned.
-   *
-   * @param number {@link Integer} to invert.
-   * @return the inverted {@link Integer number}.
-   * @see java.lang.Integer
-   */
-  public static int invert(int number) {
-    return number * -1;
-  }
-
-  /**
    * Null-safe method used to determine whether the given {@link Integer value} is greater than {@literal 0}.
    *
    * @param value {@link Integer value} to evaluate.
@@ -138,5 +124,19 @@ public abstract class Integers {
   @NullSafe
   public static boolean isZero(@Nullable Integer value) {
     return ZERO.equals(value);
+  }
+
+  /**
+   * Converts a {@link Integer positive number} into a {@link Integer negative number}
+   * and converts a {@link Integer negative number} into a {@link Integer positive number}.
+   * <p>
+   * If the given {@link Integer number} is {@literal 0}, then {@literal 0} is returned.
+   *
+   * @param number {@link Integer} to invert.
+   * @return the inverted {@link Integer number}.
+   * @see java.lang.Integer
+   */
+  public static int negate(int number) {
+    return number * -1;
   }
 }

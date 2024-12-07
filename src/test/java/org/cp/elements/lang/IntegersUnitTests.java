@@ -46,34 +46,6 @@ public class IntegersUnitTests {
   }
 
   @Test
-  public void invertNegativeNumber() {
-
-    for (int number = 1; number < 100_000; number *= 2) {
-      int negativeNumber = number * -1;
-      assertThat(Integers.invert(negativeNumber)).isEqualTo(number);
-    }
-  }
-
-  @Test
-  public void invertPositiveNumber() {
-
-    for (int number = 1; number < 100_000; number *= 2) {
-      int negativeNumber = number * -1;
-      assertThat(Integers.invert(number)).isEqualTo(negativeNumber);
-    }
-  }
-
-  @Test
-  public void invertPositiveNumberThenInvertNegativeNumber() {
-    assertThat(Integers.invert(Integers.invert(4))).isEqualTo(4);
-  }
-
-  @Test
-  public void invertZero() {
-    assertThat(Integers.invert(0)).isZero();
-  }
-
-  @Test
   public void minusOneIsNotGreaterThanZero() {
     assertThat(Integers.isGreaterThanZero(-1)).isFalse();
   }
@@ -204,5 +176,33 @@ public class IntegersUnitTests {
   @Test
   public void zeroIsZero() {
     assertThat(Integers.isZero(0)).isTrue();
+  }
+
+  @Test
+  public void negateNegativeNumber() {
+
+    for (int number = 1; number < 100_000; number *= 2) {
+      int negativeNumber = number * -1;
+      assertThat(Integers.negate(negativeNumber)).isEqualTo(number);
+    }
+  }
+
+  @Test
+  public void negatePositiveNumber() {
+
+    for (int number = 1; number < 100_000; number *= 2) {
+      int negativeNumber = number * -1;
+      assertThat(Integers.negate(number)).isEqualTo(negativeNumber);
+    }
+  }
+
+  @Test
+  public void negatePositiveNumberThenInvertNegativeNumber() {
+    assertThat(Integers.negate(Integers.negate(4))).isEqualTo(4);
+  }
+
+  @Test
+  public void negateZero() {
+    assertThat(Integers.negate(0)).isZero();
   }
 }

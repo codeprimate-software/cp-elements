@@ -143,7 +143,7 @@ public class SmartComparator implements Comparator<Object>, Iterable<ComparatorD
         catch (ClassCastException tryAgain) {
           if (TypeUtils.isComparable(objectTwo)) {
             try {
-              return Integers.invert(((Comparable) objectTwo).compareTo(objectOne));
+              return Integers.negate(((Comparable) objectTwo).compareTo(objectOne));
             }
             catch (ClassCastException ignore) {
               // "Oh well, whatever, never mind" - Nirvana, Smells Like Teen Spirit
