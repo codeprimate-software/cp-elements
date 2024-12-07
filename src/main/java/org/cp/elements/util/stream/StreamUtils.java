@@ -115,8 +115,7 @@ public abstract class StreamUtils {
 
     Assert.notNull(iterable, "Iterable is required");
 
-    return iterable instanceof Collection
-      ? ((Collection<T>) iterable).stream()
+    return iterable instanceof Collection<T> collection ? collection.stream()
       : StreamSupport.stream(iterable.spliterator(), false);
   }
 
