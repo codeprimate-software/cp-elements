@@ -521,10 +521,7 @@ public interface Cache<KEY extends Comparable<KEY>, VALUE>
     Supplier<Cache.Entry<KEY, VALUE>> cacheEntrySupplier = () -> new Cache.Entry<>() {
 
       private <T> T assertCacheEntryExists(T returnValue) {
-
-        Assert.state(contains(getKey()),
-          () -> String.format("Cache [%s] no longer contains key [%s]", getName(), getKey()));
-
+        Assert.state(contains(getKey()), () -> "Cache [%s] no longer contains key [%s]".formatted(getName(), getKey()));
         return returnValue;
       }
 
@@ -539,7 +536,9 @@ public interface Cache<KEY extends Comparable<KEY>, VALUE>
       }
     };
 
-    return contains(key) ? cacheEntrySupplier.get() : null;
+    return contains(key)
+      ? cacheEntrySupplier.get()
+      : null;
   }
 
   /**
