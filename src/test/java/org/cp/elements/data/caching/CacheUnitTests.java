@@ -51,7 +51,6 @@ import org.cp.elements.test.annotation.SubjectUnderTest;
 import org.cp.elements.util.ArrayUtils;
 import org.cp.elements.util.CollectionUtils;
 import org.cp.elements.util.MapBuilder;
-
 import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -78,7 +77,7 @@ import lombok.Setter;
  */
 @ExtendWith(MockitoExtension.class)
 @SuppressWarnings({ "rawtypes", "unchecked" })
-public class CacheUnitTests {
+class CacheUnitTests {
 
   @Mock
   @SubjectUnderTest
@@ -107,7 +106,7 @@ public class CacheUnitTests {
   }
 
   @Test
-  public void getCacheLockReturnsNullByDefault() {
+  void getCacheLockReturnsNullByDefault() {
 
     doCallRealMethod().when(this.cache).getLock();
 
@@ -118,7 +117,7 @@ public class CacheUnitTests {
   }
 
   @Test
-  public void isEmptyReturnsTrueWhenSizeIsZero() {
+  void isEmptyReturnsTrueWhenSizeIsZero() {
 
     doReturn(0L).when(this.cache).size();
     doCallRealMethod().when(this.cache).isEmpty();
@@ -132,7 +131,7 @@ public class CacheUnitTests {
   }
 
   @Test
-  public void isEmptyReturnsFalseWhenSizeIsNotZero() {
+  void isEmptyReturnsFalseWhenSizeIsNotZero() {
 
     doReturn(1L).doReturn(-1L).when(this.cache).size();
     doCallRealMethod().when(this.cache).isEmpty();
@@ -147,7 +146,20 @@ public class CacheUnitTests {
   }
 
   @Test
-  public void clearCache() {
+  void isNotEmptyCallsEmpty() {
+
+    doReturn(false).when(this.cache).isEmpty();
+    doCallRealMethod().when(this.cache).isNotEmpty();
+
+    assertThat(this.cache.isNotEmpty()).isTrue();
+
+    verify(this.cache, times(1)).isNotEmpty();
+    verify(this.cache, times(1)).isEmpty();
+    verifyNoMoreInteractions(this.cache);
+  }
+
+  @Test
+  void clearCache() {
 
     doReturn(CollectionUtils.asSet("KeyOne", "KeyTwo", "KeyThree")).when(this.cache).keys();
     doCallRealMethod().when(this.cache).clear();
@@ -164,7 +176,7 @@ public class CacheUnitTests {
   }
 
   @Test
-  public void clearEmptyCache() {
+  void clearEmptyCache() {
 
     doReturn(Collections.emptySet()).when(this.cache).keys();
     doCallRealMethod().when(this.cache).clear();
@@ -179,7 +191,7 @@ public class CacheUnitTests {
   }
 
   @Test
-  public void containsKeyWhenKeyIsPresentReturnsTrue() {
+  void containsKeyWhenKeyIsPresentReturnsTrue() {
 
     doReturn(ArrayUtils.asIterable(mockCacheEntry("keyOne", "A"), mockCacheEntry("keyTwo", "B")).spliterator())
       .when(this.cache).spliterator();
@@ -193,7 +205,7 @@ public class CacheUnitTests {
   }
 
   @Test
-  public void containsNonExistingKeyReturnsFalse() {
+  void containsNonExistingKeyReturnsFalse() {
 
     doReturn(ArrayUtils.asIterable(mockCacheEntry("testKey", "A")).spliterator()).when(this.cache).spliterator();
     doCallRealMethod().when(this.cache).contains(any());
@@ -206,7 +218,7 @@ public class CacheUnitTests {
   }
 
   @Test
-  public void containsNullKeyReturnsFalse() {
+  void containsNullKeyReturnsFalse() {
 
     doCallRealMethod().when(this.cache).contains(any());
 
@@ -217,7 +229,7 @@ public class CacheUnitTests {
   }
 
   @Test
-  public void containsAllWithArrayWhenAllKeysArePresentReturnsTrue() {
+  void containsAllWithArrayWhenAllKeysArePresentReturnsTrue() {
 
     doReturn(true).when(this.cache).contains(any());
     doCallRealMethod().when(this.cache).containsAll(any(Comparable[].class));
@@ -236,7 +248,7 @@ public class CacheUnitTests {
   }
 
   @Test
-  public void containsAllWithArrayWhenJustOneKeyIsNotPresentReturnsFalse() {
+  void containsAllWithArrayWhenJustOneKeyIsNotPresentReturnsFalse() {
 
     doReturn(true, false, true).when(this.cache).contains(any());
     doCallRealMethod().when(this.cache).containsAll(any(Comparable[].class));
@@ -256,7 +268,7 @@ public class CacheUnitTests {
   }
 
   @Test
-  public void containsAllWithEmptyArrayReturnsFalse() {
+  void containsAllWithEmptyArrayReturnsFalse() {
 
     assertThat(this.cache.containsAll()).isFalse();
 
@@ -266,7 +278,7 @@ public class CacheUnitTests {
   }
 
   @Test
-  public void containsAllWithNullArrayIsNullSafeAndReturnsFalse() {
+  void containsAllWithNullArrayIsNullSafeAndReturnsFalse() {
 
     doCallRealMethod().when(this.cache).containsAll(ArgumentMatchers.<Comparable[]>any());
 
@@ -278,7 +290,7 @@ public class CacheUnitTests {
   }
 
   @Test
-  public void containsAllWithIterableWhenAllKeysArePresentReturnsTrue() {
+  void containsAllWithIterableWhenAllKeysArePresentReturnsTrue() {
 
     doReturn(true).when(this.cache).contains(any());
     doCallRealMethod().when(this.cache).containsAll(any(Iterable.class));
@@ -295,7 +307,7 @@ public class CacheUnitTests {
   }
 
   @Test
-  public void containsAllWithIterableWhenJustOneKeyIsNotPresentReturnsFalse() {
+  void containsAllWithIterableWhenJustOneKeyIsNotPresentReturnsFalse() {
 
     doReturn(true, false, true).when(this.cache).contains(any());
     doCallRealMethod().when(this.cache).containsAll(any(Iterable.class));
@@ -313,7 +325,7 @@ public class CacheUnitTests {
   }
 
   @Test
-  public void containsAllWithEmptyIterableReturnsFalse() {
+  void containsAllWithEmptyIterableReturnsFalse() {
 
     doCallRealMethod().when(this.cache).containsAll(any(Iterable.class));
 
@@ -325,7 +337,7 @@ public class CacheUnitTests {
   }
 
   @Test
-  public void containsAllWithNullIterableIsNullSafeAndReturnsFalse() {
+  void containsAllWithNullIterableIsNullSafeAndReturnsFalse() {
 
     doCallRealMethod().when(this.cache).containsAll(ArgumentMatchers.<Iterable>any());
 
@@ -337,7 +349,7 @@ public class CacheUnitTests {
   }
 
   @Test
-  public void containsAnyWithArrayWhenJustOneKeyIsPresentReturnsTrue() {
+  void containsAnyWithArrayWhenJustOneKeyIsPresentReturnsTrue() {
 
     doReturn(false, true, false).when(this.cache).contains(any());
     doCallRealMethod().when(this.cache).containsAny(any(Comparable[].class));
@@ -357,7 +369,7 @@ public class CacheUnitTests {
   }
 
   @Test
-  public void containsAnyWithArrayWhenNoKeysArePresentReturnsFalse() {
+  void containsAnyWithArrayWhenNoKeysArePresentReturnsFalse() {
 
     doReturn(false).when(this.cache).contains(any());
     doCallRealMethod().when(this.cache).containsAny(any(Comparable[].class));
@@ -376,7 +388,7 @@ public class CacheUnitTests {
   }
 
   @Test
-  public void containsAnyWithEmptyArrayReturnsFalse() {
+  void containsAnyWithEmptyArrayReturnsFalse() {
 
     assertThat(this.cache.containsAny()).isFalse();
 
@@ -386,7 +398,7 @@ public class CacheUnitTests {
   }
 
   @Test
-  public void containsAnyWithNullArrayIsNullSafeAndReturnsFalse() {
+  void containsAnyWithNullArrayIsNullSafeAndReturnsFalse() {
 
     doCallRealMethod().when(this.cache).containsAny(ArgumentMatchers.<Comparable[]>any());
 
@@ -398,7 +410,7 @@ public class CacheUnitTests {
   }
 
   @Test
-  public void containsAnyWithIterableWhenJustOneKeyIsPresentReturnsTrue() {
+  void containsAnyWithIterableWhenJustOneKeyIsPresentReturnsTrue() {
 
     doReturn(false, true, false).when(this.cache).contains(any());
     doCallRealMethod().when(this.cache).containsAny(any(Iterable.class));
@@ -416,7 +428,7 @@ public class CacheUnitTests {
   }
 
   @Test
-  public void containsAnyWithIterableWhenNoKeysArePresentReturnsFalse() {
+  void containsAnyWithIterableWhenNoKeysArePresentReturnsFalse() {
 
     doReturn(false).when(this.cache).contains(any());
     doCallRealMethod().when(this.cache).containsAny(any(Iterable.class));
@@ -433,7 +445,7 @@ public class CacheUnitTests {
   }
 
   @Test
-  public void containsAnyWithEmptyIterableReturnsFalse() {
+  void containsAnyWithEmptyIterableReturnsFalse() {
 
     doCallRealMethod().when(this.cache).containsAny(any(Iterable.class));
 
@@ -445,7 +457,7 @@ public class CacheUnitTests {
   }
 
   @Test
-  public void containsAnyWithNullIterableIsNullSafeAndReturnsFalse() {
+  void containsAnyWithNullIterableIsNullSafeAndReturnsFalse() {
 
     doCallRealMethod().when(this.cache).containsAny(ArgumentMatchers.<Iterable>any());
 
@@ -457,7 +469,7 @@ public class CacheUnitTests {
   }
 
   @Test
-  public void evictAllWithArray() {
+  void evictAllWithArray() {
 
     doCallRealMethod().when(this.cache).evictAll(any(Comparable[].class));
 
@@ -475,7 +487,7 @@ public class CacheUnitTests {
   }
 
   @Test
-  public void evictAllWithEmptyArray() {
+  void evictAllWithEmptyArray() {
 
     this.cache.evictAll();
 
@@ -485,7 +497,7 @@ public class CacheUnitTests {
   }
 
   @Test
-  public void evictAllWithNullArray() {
+  void evictAllWithNullArray() {
 
     doCallRealMethod().when(this.cache).evictAll(ArgumentMatchers.<Comparable[]>any());
 
@@ -497,7 +509,7 @@ public class CacheUnitTests {
   }
 
   @Test
-  public void evictAllWithIterable() {
+  void evictAllWithIterable() {
 
     doCallRealMethod().when(this.cache).evictAll(any(Iterable.class));
 
@@ -513,7 +525,7 @@ public class CacheUnitTests {
   }
 
   @Test
-  public void evictAllWithEmptyIterable() {
+  void evictAllWithEmptyIterable() {
 
     doCallRealMethod().when(this.cache).evictAll(any(Iterable.class));
 
@@ -525,7 +537,7 @@ public class CacheUnitTests {
   }
 
   @Test
-  public void evictAllWithNullIterable() {
+  void evictAllWithNullIterable() {
 
     doCallRealMethod().when(this.cache).evictAll(ArgumentMatchers.<Iterable>any());
 
@@ -537,7 +549,7 @@ public class CacheUnitTests {
   }
 
   @Test
-  public void fromMapIsCorrect() {
+  void fromMapIsCorrect() {
 
     Map map = MapBuilder.newHashMap()
       .put(1, "one")
@@ -558,7 +570,7 @@ public class CacheUnitTests {
   }
 
   @Test
-  public void fromEmptyMapIsCorrect() {
+  void fromEmptyMapIsCorrect() {
 
     this.cache.from(Collections.emptyMap());
 
@@ -567,7 +579,7 @@ public class CacheUnitTests {
   }
 
   @Test
-  public void fromNullMapIsCorrect() {
+  void fromNullMapIsCorrect() {
 
     this.cache.from(null);
 
@@ -576,7 +588,7 @@ public class CacheUnitTests {
   }
 
   @Test
-  public void getValueForExistingKey() {
+  void getValueForExistingKey() {
 
     doReturn(ArrayUtils.asIterable(mockCacheEntry("keyOne", "A"), mockCacheEntry("keyTwo", "B")).spliterator())
       .when(this.cache).spliterator();
@@ -591,7 +603,7 @@ public class CacheUnitTests {
   }
 
   @Test
-  public void getValueForNonExistingKey() {
+  void getValueForNonExistingKey() {
 
     doReturn(ArrayUtils.asIterable(mockCacheEntry("testKey", "A")).spliterator())
       .when(this.cache).spliterator();
@@ -606,7 +618,7 @@ public class CacheUnitTests {
   }
 
   @Test
-  public void getValueForNullKeyIsNullSafeReturnsNull() {
+  void getValueForNullKeyIsNullSafeReturnsNull() {
 
     doCallRealMethod().when(this.cache).get(any());
 
@@ -617,7 +629,7 @@ public class CacheUnitTests {
   }
 
   @Test
-  public void getAllWithArrayReturnsList() {
+  void getAllWithArrayReturnsList() {
 
     doReturn("A", "B", "C").when(this.cache).get(any());
     doCallRealMethod().when(this.cache).getAll(any(Comparable[].class));
@@ -633,7 +645,7 @@ public class CacheUnitTests {
   }
 
   @Test
-  public void getAllWithArrayHavingNullKeysReturnsListContainingNullValues() {
+  void getAllWithArrayHavingNullKeysReturnsListContainingNullValues() {
 
     doReturn("A", null, "C").when(this.cache).get(any());
     doCallRealMethod().when(this.cache).getAll(any(), isNull(), any());
@@ -649,7 +661,7 @@ public class CacheUnitTests {
   }
 
   @Test
-  public void getAllWithEmptyArrayReturnsEmptyList() {
+  void getAllWithEmptyArrayReturnsEmptyList() {
 
     assertThat(this.cache.getAll()).isEmpty();
 
@@ -659,7 +671,7 @@ public class CacheUnitTests {
   }
 
   @Test
-  public void getAllWithNullArrayIsNullSafeReturnsEmptyList() {
+  void getAllWithNullArrayIsNullSafeReturnsEmptyList() {
 
     doCallRealMethod().when(this.cache).getAll(ArgumentMatchers.<Comparable[]>any());
 
@@ -671,7 +683,7 @@ public class CacheUnitTests {
   }
 
   @Test
-  public void getAllWithIterableReturnsList() {
+  void getAllWithIterableReturnsList() {
 
     doReturn("A", "B", "C").when(this.cache).get(any());
     doCallRealMethod().when(this.cache).getAll(any(Iterable.class));
@@ -687,7 +699,7 @@ public class CacheUnitTests {
   }
 
   @Test
-  public void getAllWithIterableHavingNullKeysReturnsListContainingNullValues() {
+  void getAllWithIterableHavingNullKeysReturnsListContainingNullValues() {
 
     doReturn("A", null, "C").when(this.cache).get(any());
     doCallRealMethod().when(this.cache).getAll(any(Iterable.class));
@@ -703,7 +715,7 @@ public class CacheUnitTests {
   }
 
   @Test
-  public void getAllWithEmptyIterableReturnsEmptyList() {
+  void getAllWithEmptyIterableReturnsEmptyList() {
 
     doCallRealMethod().when(this.cache).getAll(any(Iterable.class));
 
@@ -715,7 +727,7 @@ public class CacheUnitTests {
   }
 
   @Test
-  public void getAllWithNullIterableIsNullSafeReturnsEmptyList() {
+  void getAllWithNullIterableIsNullSafeReturnsEmptyList() {
 
     doCallRealMethod().when(this.cache).getAll(ArgumentMatchers.<Iterable>any());
 
@@ -727,7 +739,7 @@ public class CacheUnitTests {
   }
 
   @Test
-  public void getAndEvictWithKey() {
+  void getAndEvictWithKey() {
 
     doReturn("A").when(this.cache).get(any());
     doCallRealMethod().when(this.cache).getAndEvict(any(Comparable.class));
@@ -742,7 +754,7 @@ public class CacheUnitTests {
   }
 
   @Test
-  public void getAndEvictWithKeyAndExpectedValueDoesEviction() {
+  void getAndEvictWithKeyAndExpectedValueDoesEviction() {
 
     doReturn("A").when(this.cache).get(any());
     doCallRealMethod().when(this.cache).getAndEvict(any(Comparable.class), any());
@@ -757,7 +769,7 @@ public class CacheUnitTests {
   }
 
   @Test
-  public void getAndEvictWithKeyAndExpectedValueDoesNotEvict() {
+  void getAndEvictWithKeyAndExpectedValueDoesNotEvict() {
 
     doReturn("A").when(this.cache).get(any());
     doCallRealMethod().when(this.cache).getAndEvict(any(Comparable.class), any());
@@ -772,7 +784,7 @@ public class CacheUnitTests {
   }
 
   @Test
-  public void getAndPutIsCorrect() {
+  void getAndPutIsCorrect() {
 
     doReturn("A").when(this.cache).get(any());
     doCallRealMethod().when(this.cache).getAndPut(any(), any());
@@ -787,7 +799,7 @@ public class CacheUnitTests {
   }
 
   @Test
-  public void getAndReplaceWithKeyWhenContainsKey() {
+  void getAndReplaceWithKeyWhenContainsKey() {
 
     doReturn(true).when(this.cache).contains(any());
     doReturn("A").when(this.cache).get(any());
@@ -804,7 +816,7 @@ public class CacheUnitTests {
   }
 
   @Test
-  public void getAndReplaceWithKeyWhenKeyNotPresent() {
+  void getAndReplaceWithKeyWhenKeyNotPresent() {
 
     doReturn(false).when(this.cache).contains(any());
     doCallRealMethod().when(this.cache).getAndReplace(any(), any());
@@ -818,7 +830,7 @@ public class CacheUnitTests {
   }
 
   @Test
-  public void getAndReplaceWithKeyAndExistingValueWhenContainsKeyAndValuesMatch() {
+  void getAndReplaceWithKeyAndExistingValueWhenContainsKeyAndValuesMatch() {
 
     doReturn(true).when(this.cache).contains(any());
     doReturn("A").when(this.cache).get(any());
@@ -835,7 +847,7 @@ public class CacheUnitTests {
   }
 
   @Test
-  public void getAndReplaceWithKeyAndExistingValueWhenKeyNotPresent() {
+  void getAndReplaceWithKeyAndExistingValueWhenKeyNotPresent() {
 
     doReturn(false).when(this.cache).contains(any());
     doCallRealMethod().when(this.cache).getAndReplace(any(), any(), any());
@@ -849,7 +861,7 @@ public class CacheUnitTests {
   }
 
   @Test
-  public void getAndReplaceWithKeyAndExistingValueWhenValuesDoNotMatch() {
+  void getAndReplaceWithKeyAndExistingValueWhenValuesDoNotMatch() {
 
     doReturn(true).when(this.cache).contains(any());
     doReturn("C").when(this.cache).get(any());
@@ -865,7 +877,7 @@ public class CacheUnitTests {
   }
 
   @Test
-  public void getCacheEntryForKey() {
+  void getCacheEntryForKey() {
 
     AtomicReference<Object> value = new AtomicReference<>("A");
 
@@ -891,7 +903,7 @@ public class CacheUnitTests {
   }
 
   @Test
-  public void getEntryForNonExistingKey() {
+  void getEntryForNonExistingKey() {
 
     doReturn(false).when(this.cache).contains(any());
     doCallRealMethod().when(this.cache).getEntry(any());
@@ -904,7 +916,7 @@ public class CacheUnitTests {
   }
 
   @Test
-  public void getEntryOperationsAfterDetached() {
+  void getEntryOperationsAfterDetached() {
 
     doReturn("MockCache").when(this.cache).getName();
     doReturn(true, true, false).when(this.cache).contains(eq("mockKey"));
@@ -930,7 +942,7 @@ public class CacheUnitTests {
   }
 
   @Test
-  public void keysReturnsKeysFromAllCacheEntries() {
+  void keysReturnsKeysFromAllCacheEntries() {
 
     doReturn(ArrayUtils.asIterable(mockCacheEntry("keyOne", "A"), mockCacheEntry("keyTwo", "B")).spliterator())
       .when(this.cache).spliterator();
@@ -944,7 +956,7 @@ public class CacheUnitTests {
   }
 
   @Test
-  public void keysFromEmptyCacheReturnsEmptySet() {
+  void keysFromEmptyCacheReturnsEmptySet() {
 
     doReturn(CollectionUtils.emptyIterable().spliterator()).when(this.cache).spliterator();
     doCallRealMethod().when(this.cache).keys();
@@ -960,7 +972,7 @@ public class CacheUnitTests {
   }
 
   @Test
-  public void putCacheEntryIsCorrect() {
+  void putCacheEntryIsCorrect() {
 
     Cache.Entry<?, ?> mockCacheEntry = mockCacheEntry(1, "A");
 
@@ -976,7 +988,7 @@ public class CacheUnitTests {
 
   @Test
   @SuppressWarnings("all")
-  public void putNullCacheEntry() {
+  void putNullCacheEntry() {
 
     doCallRealMethod().when(this.cache).put(ArgumentMatchers.<Cache.Entry<?, ?>>any());
 
@@ -990,7 +1002,7 @@ public class CacheUnitTests {
   }
 
   @Test
-  public void putEntity() {
+  void putEntity() {
 
     Identifiable<Integer> mockEntity = mockIdentifiable(1);
 
@@ -1006,7 +1018,7 @@ public class CacheUnitTests {
   }
 
   @Test
-  public void putEntityWithNullIdThrowsIllegalArgumentException() {
+  void putEntityWithNullIdThrowsIllegalArgumentException() {
 
     Identifiable<Integer> mockEntity = mockIdentifiable(null);
 
@@ -1023,7 +1035,7 @@ public class CacheUnitTests {
   }
 
   @Test
-  public void putNullEntityThrowsIllegalArgumentException() {
+  void putNullEntityThrowsIllegalArgumentException() {
 
     doCallRealMethod().when(this.cache).put(ArgumentMatchers.<Identifiable<?>>any());
 
@@ -1038,7 +1050,7 @@ public class CacheUnitTests {
   }
 
   @Test
-  public void putAllWithArray() {
+  void putAllWithArray() {
 
     Person jonDoe = Person.newPerson().named("Jon", "Doe").identifiedBy(1L);
     Person janeDoe = Person.newPerson().named("Jane", "Doe").identifiedBy(2L);
@@ -1058,7 +1070,7 @@ public class CacheUnitTests {
   }
 
   @Test
-  public void putAllWithArrayContainingNullEntityThrowsIllegalArgumentException() {
+  void putAllWithArrayContainingNullEntityThrowsIllegalArgumentException() {
 
     Person jonDoe = Person.newPerson().named("Jon", "Doe").identifiedBy(1L);
     Person janeDoe = Person.newPerson().named("Jane", "Doe").identifiedBy(2L);
@@ -1078,7 +1090,7 @@ public class CacheUnitTests {
   }
 
   @Test
-  public void putAllWithArrayContainingEntityWithNullIdThrowsIllegalArgumentException() {
+  void putAllWithArrayContainingEntityWithNullIdThrowsIllegalArgumentException() {
 
     Person jonDoe = Person.newPerson().named("Jon", "Doe");
     Person janeDoe = Person.newPerson().named("Jane", "Doe").identifiedBy(2L);
@@ -1099,7 +1111,7 @@ public class CacheUnitTests {
   }
 
   @Test
-  public void putAllWithEmptyArray() {
+  void putAllWithEmptyArray() {
 
     this.cache.putAll();
 
@@ -1110,7 +1122,7 @@ public class CacheUnitTests {
   }
 
   @Test
-  public void putAllWithNullArray() {
+  void putAllWithNullArray() {
 
     doCallRealMethod().when(this.cache).putAll(ArgumentMatchers.<Identifiable<?>[]>any());
 
@@ -1123,7 +1135,7 @@ public class CacheUnitTests {
   }
 
   @Test
-  public void putAllWithIterable() {
+  void putAllWithIterable() {
 
     Person cookieDoe = Person.newPerson().named("Cookie", "Doe").identifiedBy(1L);
     Person lanDoe = Person.newPerson().named("Lan", "Doe").identifiedBy(2L);
@@ -1143,7 +1155,7 @@ public class CacheUnitTests {
   }
 
   @Test
-  public void putAllWithIterableContainingNullEntitiesThrowsIllegalArgumentException() {
+  void putAllWithIterableContainingNullEntitiesThrowsIllegalArgumentException() {
 
     Person jonDoe = Person.newPerson().named("Jon", "Doe").identifiedBy(1L);
     Person janeDoe = Person.newPerson().named("Jane", "Doe").identifiedBy(2L);
@@ -1163,7 +1175,7 @@ public class CacheUnitTests {
   }
 
   @Test
-  public void putAllWithIterableContainingEntityWithNullIdThrowsIllegalArgumentException() {
+  void putAllWithIterableContainingEntityWithNullIdThrowsIllegalArgumentException() {
 
     Person jonDoe = Person.newPerson().named("Jon", "Doe");
     Person janeDoe = Person.newPerson().named("Jane", "Doe").identifiedBy(2L);
@@ -1184,7 +1196,7 @@ public class CacheUnitTests {
   }
 
   @Test
-  public void putAllWithEmptyIterable() {
+  void putAllWithEmptyIterable() {
 
     doCallRealMethod().when(this.cache).putAll(any(Iterable.class));
 
@@ -1197,7 +1209,7 @@ public class CacheUnitTests {
   }
 
   @Test
-  public void putAllWithNullIterable() {
+  void putAllWithNullIterable() {
 
     doCallRealMethod().when(this.cache).putAll(ArgumentMatchers.<Iterable<Identifiable<?>>>any());
 
@@ -1210,7 +1222,7 @@ public class CacheUnitTests {
   }
 
   @Test
-  public void putIfAbsentWithKeyValue() {
+  void putIfAbsentWithKeyValue() {
 
     doReturn(false).when(this.cache).contains(any());
     doCallRealMethod().when(this.cache).putIfAbsent(any(), any());
@@ -1226,7 +1238,7 @@ public class CacheUnitTests {
   }
 
   @Test
-  public void putIfAbsentWithKeyValueUsingExistingKey() {
+  void putIfAbsentWithKeyValueUsingExistingKey() {
 
     doReturn(true).when(this.cache).contains(any());
     doReturn("existingValue").when(this.cache).get(any());
@@ -1243,7 +1255,7 @@ public class CacheUnitTests {
   }
 
   @Test
-  public void putIfAbsentWithKeyValueUsingNullKeyThrowsIllegalArgumentException() {
+  void putIfAbsentWithKeyValueUsingNullKeyThrowsIllegalArgumentException() {
 
     doCallRealMethod().when(this.cache).putIfAbsent(any(), any());
 
@@ -1257,7 +1269,7 @@ public class CacheUnitTests {
   }
 
   @Test
-  public void putIfAbsentWithEntity() {
+  void putIfAbsentWithEntity() {
 
     doReturn(false).when(this.cache).contains(any());
     doCallRealMethod().when(this.cache).putIfAbsent(any(Identifiable.class));
@@ -1276,7 +1288,7 @@ public class CacheUnitTests {
   }
 
   @Test
-  public void putIfAbsentWithExistingEntity() {
+  void putIfAbsentWithExistingEntity() {
 
     Identifiable<Integer> mockEntity = mockIdentifiable(1);
 
@@ -1298,7 +1310,7 @@ public class CacheUnitTests {
   }
 
   @Test
-  public void putIfAbsentWithEntityHavingNullId() {
+  void putIfAbsentWithEntityHavingNullId() {
 
     Identifiable<Integer> mockEntity = mockIdentifiable(null);
 
@@ -1315,7 +1327,7 @@ public class CacheUnitTests {
   }
 
   @Test
-  public void putIfAbsentWithNullEntity() {
+  void putIfAbsentWithNullEntity() {
 
     doCallRealMethod().when(this.cache).putIfAbsent(any());
 
@@ -1329,7 +1341,7 @@ public class CacheUnitTests {
   }
 
   @Test
-  public void putIfPresentWithKeyValue() {
+  void putIfPresentWithKeyValue() {
 
     doReturn(true).when(this.cache).contains(any());
     doReturn("existingValue").when(this.cache).get(any());
@@ -1346,7 +1358,7 @@ public class CacheUnitTests {
   }
 
   @Test
-  public void putIfPresentWithKeyValueUsingNonExistingKey() {
+  void putIfPresentWithKeyValueUsingNonExistingKey() {
 
     doReturn(false).when(this.cache).contains(any());
     doCallRealMethod().when(this.cache).putIfPresent(any(), any());
@@ -1362,7 +1374,7 @@ public class CacheUnitTests {
   }
 
   @Test
-  public void putIfPresentWithKeyValueUsingNullKeyThrowsIllegalArgumentException() {
+  void putIfPresentWithKeyValueUsingNullKeyThrowsIllegalArgumentException() {
 
     doCallRealMethod().when(this.cache).putIfPresent(any(), any());
 
@@ -1376,7 +1388,7 @@ public class CacheUnitTests {
   }
 
   @Test
-  public void putIfPresentWithEntity() {
+  void putIfPresentWithEntity() {
 
     Identifiable<Integer> mockEntity = mockIdentifiable(1);
 
@@ -1398,7 +1410,7 @@ public class CacheUnitTests {
   }
 
   @Test
-  public void putIfPresentWithEntityHavingNullId() {
+  void putIfPresentWithEntityHavingNullId() {
 
     Identifiable<Integer> mockEntity = mockIdentifiable(null);
 
@@ -1415,7 +1427,7 @@ public class CacheUnitTests {
   }
 
   @Test
-  public void putIfPresentWithNonExistingEntity() {
+  void putIfPresentWithNonExistingEntity() {
 
     Identifiable<Integer> mockEntity = mockIdentifiable(1);
 
@@ -1432,7 +1444,7 @@ public class CacheUnitTests {
   }
 
   @Test
-  public void putIfPresentWithNullEntity() {
+  void putIfPresentWithNullEntity() {
 
     doCallRealMethod().when(this.cache).putIfPresent(any());
 
@@ -1446,7 +1458,7 @@ public class CacheUnitTests {
   }
 
   @Test
-  public void sizeOfCacheWithNoEntriesReturnsZero() {
+  void sizeOfCacheWithNoEntriesReturnsZero() {
 
     doReturn(CollectionUtils.emptyIterable().spliterator()).when(this.cache).spliterator();
     doCallRealMethod().when(this.cache).size();
@@ -1459,7 +1471,7 @@ public class CacheUnitTests {
   }
 
   @Test
-  public void sizeOfCacheWithSingleEntryReturnsOne() {
+  void sizeOfCacheWithSingleEntryReturnsOne() {
 
     doReturn(ArrayUtils.asIterable(mockCacheEntry(1, "mock")).spliterator())
       .when(this.cache).spliterator();
@@ -1474,7 +1486,7 @@ public class CacheUnitTests {
   }
 
   @Test
-  public void sizeOfCacheWithTwoEntriesReturnsTwo() {
+  void sizeOfCacheWithTwoEntriesReturnsTwo() {
 
     doReturn(ArrayUtils.asIterable(mockCacheEntry(1, "mock"), mockCacheEntry(2, "test")).spliterator())
       .when(this.cache).spliterator();
@@ -1489,7 +1501,7 @@ public class CacheUnitTests {
   }
 
   @Test
-  public void toMap() {
+  void toMap() {
 
     doReturn(CollectionUtils.asSet(1, 2)).when(this.cache).keys();
     doReturn("A").when(this.cache).get(eq(1));
@@ -1505,7 +1517,7 @@ public class CacheUnitTests {
   }
 
   @Test
-  public void toMapFromEmptyCache() {
+  void toMapFromEmptyCache() {
 
     doReturn(Collections.emptySet()).when(this.cache).keys();
     doCallRealMethod().when(this.cache).toMap();

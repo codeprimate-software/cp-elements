@@ -34,6 +34,7 @@ import org.cp.elements.lang.Identifiable;
 import org.cp.elements.lang.Nameable;
 import org.cp.elements.lang.ObjectUtils;
 import org.cp.elements.lang.Sourced;
+import org.cp.elements.lang.annotation.Alias;
 import org.cp.elements.lang.annotation.NotNull;
 import org.cp.elements.lang.annotation.NullSafe;
 import org.cp.elements.lang.annotation.Nullable;
@@ -101,11 +102,25 @@ public interface Cache<KEY extends Comparable<KEY>, VALUE>
    * Determines whether this {@link Cache} contains any {@link Cache.Entry entries}.
    *
    * @return a boolean value indicating whether this {@link Cache} contains any {@link Cache.Entry entries}.
+   * @see #isNotEmpty()
    * @see #size()
    */
   @NullSafe
   default boolean isEmpty() {
     return ThreadUtils.runAtomically(getLock(), () -> size() == 0L);
+  }
+
+  /**
+   * Determines whether this {@link Cache} contains any {@link Cache.Entry entries}.
+   * <p/>
+   * Alias for {@link #isEmpty()}.
+   *
+   * @return a boolean value indicating whether this {@link Cache} contains any {@link Cache.Entry entries}.
+   * @see #isEmpty()
+   */
+  @Alias(forMember = "isEmpty")
+  default boolean isNotEmpty() {
+    return !isEmpty();
   }
 
   /**
