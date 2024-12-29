@@ -28,6 +28,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.Identifiable;
@@ -43,6 +44,7 @@ import org.cp.elements.util.ArrayUtils;
 import org.cp.elements.util.CollectionUtils;
 import org.cp.elements.util.MapUtils;
 import org.cp.elements.util.stream.StreamUtils;
+import org.cp.elements.util.stream.Streamable;
 
 /**
  * Abstract Data Type (ADT) defining a cache data structure, mapping {@link KEY keys} to {@link VALUE values}
@@ -78,11 +80,12 @@ import org.cp.elements.util.stream.StreamUtils;
  * @see org.cp.elements.data.caching.Cache.Entry
  * @see org.cp.elements.lang.Identifiable
  * @see org.cp.elements.lang.Nameable
+ * @see org.cp.elements.util.stream.Streamable
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
 public interface Cache<KEY extends Comparable<KEY>, VALUE>
-    extends Iterable<Cache.Entry<KEY, VALUE>>, Nameable<String> {
+    extends Iterable<Cache.Entry<KEY, VALUE>>, Nameable<String>, Streamable<Cache.Entry<KEY, VALUE>> {
 
   /**
    * Gets the configured {@link Object lock} used to run operations on this {@link Cache} atomically / synchronously.
@@ -143,9 +146,7 @@ public interface Cache<KEY extends Comparable<KEY>, VALUE>
    * @see #iterator()
    */
   default boolean contains(KEY key) {
-
-    return key != null && StreamUtils.stream(this)
-      .anyMatch(cacheEntry -> ObjectUtils.equals(cacheEntry.getKey(), key));
+    return key != null && stream().anyMatch(cacheEntry -> ObjectUtils.equals(cacheEntry.getKey(), key));
   }
 
   /**
@@ -236,8 +237,9 @@ public interface Cache<KEY extends Comparable<KEY>, VALUE>
   default void evictAll(KEY... keys) {
 
     if (ArrayUtils.isNotEmpty(keys)) {
-      ThreadUtils.runAtomically(getLock(), () ->
-        Arrays.stream(keys).filter(Objects::nonNull).forEach(this::evict));
+      ThreadUtils.runAtomically(getLock(), () -> Arrays.stream(keys)
+        .filter(Objects::nonNull)
+        .forEach(this::evict));
     }
   }
 
@@ -255,8 +257,9 @@ public interface Cache<KEY extends Comparable<KEY>, VALUE>
   default void evictAll(Iterable<KEY> keys) {
 
     if (CollectionUtils.isNotEmpty(keys)) {
-      ThreadUtils.runAtomically(getLock(), () ->
-        StreamUtils.stream(keys).filter(Objects::nonNull).forEach(this::evict));
+      ThreadUtils.runAtomically(getLock(), () -> StreamUtils.stream(keys)
+        .filter(Objects::nonNull)
+        .forEach(this::evict));
     }
   }
 
@@ -270,8 +273,7 @@ public interface Cache<KEY extends Comparable<KEY>, VALUE>
   default void from(@Nullable Map<KEY, VALUE> map) {
 
     if (MapUtils.isNotEmpty(map)) {
-      ThreadUtils.runAtomically(getLock(), () ->
-        map.entrySet().stream()
+      ThreadUtils.runAtomically(getLock(), () -> map.entrySet().stream()
           .filter(mapEntry -> given(mapEntry).thenGiven(Map.Entry::getKey).expectThat(Objects::nonNull).result())
           .map(Cache.Entry::from)
           .forEach(this::put));
@@ -297,7 +299,7 @@ public interface Cache<KEY extends Comparable<KEY>, VALUE>
    */
   default @Nullable VALUE get(@NotNull KEY key) {
 
-    return key != null ? StreamUtils.stream(this)
+    return key != null ? stream()
       .filter(cacheEntry -> ObjectUtils.equals(cacheEntry.getKey(), key))
       .findFirst()
       .map(Cache.Entry::getValue)
@@ -536,9 +538,7 @@ public interface Cache<KEY extends Comparable<KEY>, VALUE>
       }
     };
 
-    return contains(key)
-      ? cacheEntrySupplier.get()
-      : null;
+    return contains(key) ? cacheEntrySupplier.get() : null;
   }
 
   /**
@@ -552,7 +552,7 @@ public interface Cache<KEY extends Comparable<KEY>, VALUE>
    */
   default Set<KEY> keys() {
 
-    return StreamUtils.stream(this)
+    return stream()
       .map(Cache.Entry::getKey)
       .collect(Collectors.toSet());
   }
@@ -803,7 +803,11 @@ public interface Cache<KEY extends Comparable<KEY>, VALUE>
    * @see #isEmpty()
    */
   default long size() {
-    return StreamUtils.stream(this).count();
+    return stream().count();
+  }
+
+  default Stream<Entry<KEY, VALUE>> stream() {
+    return StreamUtils.stream(this);
   }
 
   /**

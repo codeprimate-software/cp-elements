@@ -66,12 +66,9 @@ import lombok.Setter;
  * @author John Blum
  * @see java.util.Map
  * @see org.junit.jupiter.api.Test
- * @see org.mockito.Mock
  * @see org.mockito.Mockito
- * @see org.mockito.junit.jupiter.MockitoExtension
  * @see org.cp.elements.data.caching.AbstractCache
  * @see org.cp.elements.data.caching.Cache
- * @see org.cp.elements.lang.Identifiable
  * @see org.cp.elements.util.MapBuilder
  * @since 1.0.0
  */
@@ -195,11 +192,14 @@ class CacheUnitTests {
 
     doReturn(ArrayUtils.asIterable(mockCacheEntry("keyOne", "A"), mockCacheEntry("keyTwo", "B")).spliterator())
       .when(this.cache).spliterator();
+
     doCallRealMethod().when(this.cache).contains(any());
+    doCallRealMethod().when(this.cache).stream();
 
     assertThat(this.cache.contains("keyTwo")).isTrue();
 
     verify(this.cache, times(1)).contains(eq("keyTwo"));
+    verify(this.cache, times(1)).stream();
     verify(this.cache, times(1)).spliterator();
     verifyNoMoreInteractions(this.cache);
   }
@@ -209,11 +209,13 @@ class CacheUnitTests {
 
     doReturn(ArrayUtils.asIterable(mockCacheEntry("testKey", "A")).spliterator()).when(this.cache).spliterator();
     doCallRealMethod().when(this.cache).contains(any());
+    doCallRealMethod().when(this.cache).stream();
 
     assertThat(this.cache.contains("mockKey")).isFalse();
 
     verify(this.cache, times(1)).contains(eq("mockKey"));
     verify(this.cache, times(1)).spliterator();
+    verify(this.cache, times(1)).stream();
     verifyNoMoreInteractions(this.cache);
   }
 
@@ -594,10 +596,12 @@ class CacheUnitTests {
       .when(this.cache).spliterator();
 
     doCallRealMethod().when(this.cache).get(any());
+    doCallRealMethod().when(this.cache).stream();
 
     assertThat(this.cache.get("keyTwo")).isEqualTo("B");
 
     verify(this.cache, times(1)).get(eq("keyTwo"));
+    verify(this.cache, times(1)).stream();
     verify(this.cache, times(1)).spliterator();
     verifyNoMoreInteractions(this.cache);
   }
@@ -609,10 +613,12 @@ class CacheUnitTests {
       .when(this.cache).spliterator();
 
     doCallRealMethod().when(this.cache).get(any());
+    doCallRealMethod().when(this.cache).stream();
 
     assertThat(this.cache.get("mockKey")).isNull();
 
     verify(this.cache, times(1)).get(eq("mockKey"));
+    verify(this.cache, times(1)).stream();
     verify(this.cache, times(1)).spliterator();
     verifyNoMoreInteractions(this.cache);
   }
@@ -946,11 +952,14 @@ class CacheUnitTests {
 
     doReturn(ArrayUtils.asIterable(mockCacheEntry("keyOne", "A"), mockCacheEntry("keyTwo", "B")).spliterator())
       .when(this.cache).spliterator();
+
     doCallRealMethod().when(this.cache).keys();
+    doCallRealMethod().when(this.cache).stream();
 
     assertThat(this.cache.keys()).containsExactlyInAnyOrder("keyOne", "keyTwo");
 
     verify(this.cache, times(1)).keys();
+    verify(this.cache, times(1)).stream();
     verify(this.cache, times(1)).spliterator();
     verifyNoMoreInteractions(this.cache);
   }
@@ -959,6 +968,7 @@ class CacheUnitTests {
   void keysFromEmptyCacheReturnsEmptySet() {
 
     doReturn(CollectionUtils.emptyIterable().spliterator()).when(this.cache).spliterator();
+    doCallRealMethod().when(this.cache).stream();
     doCallRealMethod().when(this.cache).keys();
 
     Set<?> keys = this.cache.keys();
@@ -967,6 +977,7 @@ class CacheUnitTests {
     assertThat(keys).isEmpty();
 
     verify(this.cache, times(1)).keys();
+    verify(this.cache, times(1)).stream();
     verify(this.cache, times(1)).spliterator();
     verifyNoMoreInteractions(this.cache);
   }
@@ -1462,10 +1473,12 @@ class CacheUnitTests {
 
     doReturn(CollectionUtils.emptyIterable().spliterator()).when(this.cache).spliterator();
     doCallRealMethod().when(this.cache).size();
+    doCallRealMethod().when(this.cache).stream();
 
     assertThat(this.cache.size()).isZero();
 
     verify(this.cache, times(1)).size();
+    verify(this.cache, times(1)).stream();
     verify(this.cache, times(1)).spliterator();
     verifyNoMoreInteractions(this.cache);
   }
@@ -1475,12 +1488,14 @@ class CacheUnitTests {
 
     doReturn(ArrayUtils.asIterable(mockCacheEntry(1, "mock")).spliterator())
       .when(this.cache).spliterator();
+    doCallRealMethod().when(this.cache).stream();
 
     doCallRealMethod().when(this.cache).size();
 
     assertThat(this.cache.size()).isOne();
 
     verify(this.cache, times(1)).size();
+    verify(this.cache, times(1)).stream();
     verify(this.cache, times(1)).spliterator();
     verifyNoMoreInteractions(this.cache);
   }
@@ -1492,10 +1507,12 @@ class CacheUnitTests {
       .when(this.cache).spliterator();
 
     doCallRealMethod().when(this.cache).size();
+    doCallRealMethod().when(this.cache).stream();
 
     assertThat(this.cache.size()).isEqualTo(2);
 
     verify(this.cache, times(1)).size();
+    verify(this.cache, times(1)).stream();
     verify(this.cache, times(1)).spliterator();
     verifyNoMoreInteractions(this.cache);
   }
