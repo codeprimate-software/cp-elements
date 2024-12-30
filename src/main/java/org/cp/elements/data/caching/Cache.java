@@ -571,7 +571,7 @@ public interface Cache<KEY extends Comparable<KEY>, VALUE>
    *
    * @param cacheEntry {@link Cache.Entry} to stare in this {@link Cache};
    * must not be {@literal null}.
-   * @throws IllegalArgumentException if the {@link Cache.Entry} is {@literal null}.
+   * @throws IllegalArgumentException if {@link Cache.Entry} is {@literal null}.
    * @see org.cp.elements.data.caching.Cache.Entry
    */
   default void put(@NotNull Cache.Entry<KEY, VALUE> cacheEntry) {
@@ -672,7 +672,7 @@ public interface Cache<KEY extends Comparable<KEY>, VALUE>
    * @param key {@link KEY} used to map the {@link VALUE value}; must not be {@literal null}.
    * @param value {@link VALUE} to put in this {@link Cache} mapped to the given {@link KEY key}.
    * @return the existing {@link VALUE value} if present, otherwise return {@literal null}.
-   * @throws IllegalArgumentException if the {@link KEY key} is {@literal null}.
+   * @throws IllegalArgumentException if {@link KEY key} is {@literal null}.
    * @see #putIfPresent(Comparable, Object)
    * @see #contains(Comparable)
    * @see #get(Comparable)
@@ -694,12 +694,13 @@ public interface Cache<KEY extends Comparable<KEY>, VALUE>
   }
 
   /**
-   * Puts the {@link KEY} and {@link VALUE} from the given {@link Cache.Entry} in this {@link Cache},
+   * Puts the {@link KEY} and {@link VALUE} from the given {@link Cache.Entry} in this {@link Cache} if absent.
    *
    * @param cacheEntry {@link Cache.Entry} containing the {@link KEY} and {@link VALUE} to put in this {@link Cache}.
-   * @return the existing {@link VALUE} mapped to the {@link KEY} from the {@link Cache.Entry}.
+   * @return the existing {@link VALUE} mapped to the {@link Cache.Entry} {@link KEY} in this {@link Cache}.
    * @throws IllegalArgumentException if {@link Cache.Entry} is {@literal null}.
    * @see org.cp.elements.data.caching.Cache.Entry
+   * @see #putIfAbsent(Comparable, Object)
    */
   default VALUE putIfAbsent(@NotNull Cache.Entry<KEY, VALUE>  cacheEntry) {
 
@@ -719,10 +720,7 @@ public interface Cache<KEY extends Comparable<KEY>, VALUE>
    * @throws IllegalArgumentException if the {@link Identifiable object} or its {@link Identifiable#getId() ID}
    * is {@literal null}.
    * @see org.cp.elements.lang.Identifiable
-   * @see #putIfPresent(Identifiable)
-   * @see #contains(Comparable)
-   * @see #get(Comparable)
-   * @see #put(Comparable, Object)
+   * @see #putIfAbsent(Comparable, Object)
    */
   @SuppressWarnings("unchecked")
   default VALUE putIfAbsent(@NotNull Identifiable<KEY> entity) {
@@ -765,6 +763,22 @@ public interface Cache<KEY extends Comparable<KEY>, VALUE>
 
       return null;
     });
+  }
+
+  /**
+   * Puts the {@link KEY} and {@link VALUE} from the given {@link Cache.Entry} in this {@link Cache} if present.
+   *
+   * @param cacheEntry {@link Cache.Entry} containing the {@link KEY} and {@link VALUE} to put in this {@link Cache}.
+   * @return the existing {@link VALUE} mapped to the {@link Cache.Entry} {@link KEY} in this {@link Cache}.
+   * @throws IllegalArgumentException if {@link Cache.Entry} is {@literal null}.
+   * @see org.cp.elements.data.caching.Cache.Entry
+   * @see #putIfPresent(Comparable, Object)
+   */
+  default VALUE putIfPresent(Cache.Entry<KEY, VALUE> cacheEntry) {
+
+    Assert.notNull(cacheEntry, "Cache.Entry to put if present is required");
+
+    return ThreadUtils.runAtomically(getLock(), () -> putIfPresent(cacheEntry.getKey(), cacheEntry.getValue()));
   }
 
   /**

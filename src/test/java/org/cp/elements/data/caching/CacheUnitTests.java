@@ -1282,18 +1282,16 @@ class CacheUnitTests {
   @Test
   void putIfAbsentWithCacheEntry() {
 
-    Cache.Entry<?, ?> mockCacheEntry = mock(Cache.Entry.class);
+    Cache.Entry<?, ?> mockCacheEntry = mockCacheEntry("TestKey", "TestValue");
 
-    doReturn("TestKey").when(mockCacheEntry).getKey();
-    doReturn("TestValue").when(mockCacheEntry).getValue();
     doCallRealMethod().when(this.cache).putIfAbsent(any(Cache.Entry.class));
 
     assertThat(this.cache.putIfAbsent(mockCacheEntry)).isNull();
 
     verify(this.cache, times(1)).putIfAbsent(eq(mockCacheEntry));
+    verify(this.cache, times(1)).getLock();
     verify(mockCacheEntry, times(1)).getKey();
     verify(mockCacheEntry, times(1)).getValue();
-    verify(this.cache, times(1)).getLock();
     verify(this.cache, times(1)).putIfAbsent(eq("TestKey"), eq("TestValue"));
     verifyNoMoreInteractions(this.cache, mockCacheEntry);
   }
@@ -1406,6 +1404,37 @@ class CacheUnitTests {
   }
 
   @Test
+  void putIfPresentWithCacheEntry() {
+
+    Cache.Entry<?, ?> mockCacheEntry = mockCacheEntry("TestKey", "TestValue");
+
+    doCallRealMethod().when(this.cache).putIfPresent(any(Cache.Entry.class));
+
+    assertThat(this.cache.putIfPresent(mockCacheEntry)).isNull();
+
+    verify(this.cache, times(1)).putIfPresent(eq(mockCacheEntry));
+    verify(this.cache, times(1)).getLock();
+    verify(mockCacheEntry, times(1)).getKey();
+    verify(mockCacheEntry, times(1)).getValue();
+    verify(this.cache, times(1)).putIfPresent(eq("TestKey"), eq("TestValue"));
+    verifyNoMoreInteractions(this.cache, mockCacheEntry);
+  }
+
+  @Test
+  void putIfPresentWithNullCacheEntry() {
+
+    doCallRealMethod().when(this.cache).putIfPresent(Mockito.<Cache.Entry<?, ?>>any());
+
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> this.cache.putIfPresent((Cache.Entry<?, ?>) null))
+      .withMessage("Cache.Entry to put if present is required")
+      .withNoCause();
+
+    verify(this.cache, times(1)).putIfPresent(isNull(Cache.Entry.class));
+    verifyNoMoreInteractions(this.cache);
+  }
+
+  @Test
   void putIfPresentWithEntity() {
 
     Identifiable<Integer> mockEntity = mockIdentifiable(1);
@@ -1464,14 +1493,14 @@ class CacheUnitTests {
   @Test
   void putIfPresentWithNullEntity() {
 
-    doCallRealMethod().when(this.cache).putIfPresent(any());
+    doCallRealMethod().when(this.cache).putIfPresent(Mockito.<Identifiable<?>>any());
 
     assertThatIllegalArgumentException()
-      .isThrownBy(() -> this.cache.putIfPresent(null))
+      .isThrownBy(() -> this.cache.putIfPresent((Identifiable<?>) null))
       .withMessage("Entity to cache is required")
       .withNoCause();
 
-    verify(this.cache, times(1)).putIfPresent(isNull());
+    verify(this.cache, times(1)).putIfPresent(isNull(Identifiable.class));
     verifyNoMoreInteractions(this.cache);
   }
 
