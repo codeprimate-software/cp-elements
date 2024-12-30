@@ -91,7 +91,7 @@ public class CacheEntryUnitTests {
     assertThat(cacheEntryCopy.getValue()).isEqualTo(2);
     assertThat(cacheEntryCopy.materialize()).isSameAs(cacheEntryCopy);
 
-    verify(mockCacheEntry, times(2)).getKey();
+    verify(mockCacheEntry, times(1)).getKey();
     verify(mockCacheEntry, times(1)).getSource();
     verify(mockCacheEntry, times(6)).getValue();
     verifyNoMoreInteractions(mockCacheEntry);
@@ -122,6 +122,7 @@ public class CacheEntryUnitTests {
 
     verify(mockCacheEntry, times(1)).getKey();
     verify(mockCacheEntry, times(1)).getValue();
+    verify(mockCacheEntry, times(1)).getSource();
     verifyNoMoreInteractions(mockCacheEntry);
   }
 
@@ -131,15 +132,15 @@ public class CacheEntryUnitTests {
 
     Map.Entry<String, ?> mockMapEntry = mock(Map.Entry.class);
 
-    doReturn("mockKey").when(mockMapEntry).getKey();
+    doReturn("MockKey").when(mockMapEntry).getKey();
     doReturn(1, 2, 4).when(mockMapEntry).getValue();
 
     Cache.Entry<String, ?> cacheEntry = Cache.Entry.from(mockMapEntry);
 
     assertThat(cacheEntry).isNotNull();
     assertThat(cacheEntry).isNotSameAs(mockMapEntry);
-    assertThat(cacheEntry.getKey()).isEqualTo("mockKey");
-    assertThat(cacheEntry.getKey()).isEqualTo("mockKey");
+    assertThat(cacheEntry.getKey()).isEqualTo("MockKey");
+    assertThat(cacheEntry.getKey()).isEqualTo("MockKey");
     assertThat(cacheEntry.getSource()).isNull();
     assertThat(cacheEntry.getValue()).isEqualTo(1);
     assertThat(mockMapEntry.getValue()).isEqualTo(2);
@@ -147,7 +148,7 @@ public class CacheEntryUnitTests {
     assertThat(cacheEntry.getValue()).isEqualTo(1);
     assertThat(cacheEntry.materialize()).isSameAs(cacheEntry);
 
-    verify(mockMapEntry, times(2)).getKey();
+    verify(mockMapEntry, times(1)).getKey();
     verify(mockMapEntry, times(3)).getValue();
     verifyNoMoreInteractions(mockMapEntry);
   }
@@ -331,7 +332,7 @@ public class CacheEntryUnitTests {
 
     Cache<?, ?> mockCache = mock(Cache.class);
 
-    Cache.Entry<?, ?> mockCacheEntry = mockCacheEntry("testKey", "mockValue");
+    Cache.Entry<?, ?> mockCacheEntry = mockCacheEntry("TestKey", "MockValue");
 
     doReturn(mockCache).when(mockCacheEntry).getSource();
     doCallRealMethod().when(mockCacheEntry).materialize();
@@ -343,13 +344,13 @@ public class CacheEntryUnitTests {
 
     IntStream.range(0, 10).forEach(count -> {
       assertThat(materializedCacheEntry.getSource()).isSameAs(mockCache);
-      assertThat(materializedCacheEntry.getKey()).isEqualTo("testKey");
-      assertThat(materializedCacheEntry.getValue()).isEqualTo("mockValue");
+      assertThat(materializedCacheEntry.getKey()).isEqualTo("TestKey");
+      assertThat(materializedCacheEntry.getValue()).isEqualTo("MockValue");
     });
 
     verify(mockCacheEntry, times(1)).materialize();
-    verify(mockCacheEntry, times(10)).getSource();
-    verify(mockCacheEntry, times(10)).getKey();
+    verify(mockCacheEntry, times(1)).getSource();
+    verify(mockCacheEntry, times(1)).getKey();
     verify(mockCacheEntry, times(1)).getValue();
     verifyNoMoreInteractions(mockCacheEntry);
     verifyNoInteractions(mockCache);

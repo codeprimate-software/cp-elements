@@ -47,38 +47,37 @@ import org.cp.elements.util.stream.StreamUtils;
 import org.cp.elements.util.stream.Streamable;
 
 /**
- * Abstract Data Type (ADT) defining a cache data structure, mapping {@link KEY keys} to {@link VALUE values}
+ * Abstract Data Type (ADT) modeling a cache data structure, mapping {@link KEY keys} to {@link VALUE values}
  * in-memory for quick access.
  * <p>
  * Caches are used in cases when, given identical input, the data access operation returns the same output. Caching
- * is ideal for fact access to infrequently changing data, or relatively static data compared to transactional data
- * that is frequently changing. Although, caches can be used to store and process transactional data as well, caches
+ * is ideal for fast access to infrequently changing data, or relatively static data compared to transactional data
+ * that is frequently changing. Although caches can be used to store and process transactional data as well, caches
  * excel when the number of reads exceeds the number of writes.
  * <p>
  * Caching providers and implementors of this {@link Cache} interface, must minimally provide implementations of
  * the following {@link Cache} operations:
- *
+ * <p>
  * <ul>
  *   <li>{@link #evict(Comparable)}</li>
  *   <li>{@link #get(Comparable)}</li>
  *   <li>{@link #put(Comparable, Object)}</li>
  * </ul>
  * <p>
- * If the {@link Cache} implementation should support atomic (synchronous) operations with locking,
- * then caching providers should additionally override the {@link #getLock()} method to return a {@literal non-null}
- * {@link Object} to be used as the {@literal lock}.
+ * If the {@link Cache} implementation should support atomic, synchronous operations using locking, then caching
+ * providers should additionally override the {@link #getLock()} method and return a {@literal non-null} {@link Object}
+ * to be used as the {@literal lock}.
  *
  * @author John Blum
- * @param <KEY> {@link Comparable} {@link Class type} of {@literal keys} used for mapping by this {@link Cache}.
+ * @param <KEY> {@link Comparable} {@link Class type} of the {@literal keys} used for mapping by this {@link Cache}.
  * @param <VALUE> {@link Class type} of {@link VALUE values} stored in this {@link Cache}.
  * @see java.lang.Comparable
  * @see java.lang.Iterable
  * @see java.util.Map
- * @see org.cp.elements.data.caching.provider.ConcurrentMapCache
- * @see org.cp.elements.data.caching.support.CachingTemplate
  * @see org.cp.elements.data.caching.AbstractCache
  * @see org.cp.elements.data.caching.Cache.Entry
- * @see org.cp.elements.lang.Identifiable
+ * @see org.cp.elements.data.caching.provider.ConcurrentMapCache
+ * @see org.cp.elements.data.caching.support.CachingTemplate
  * @see org.cp.elements.lang.Nameable
  * @see org.cp.elements.util.stream.Streamable
  * @since 1.0.0
@@ -127,7 +126,7 @@ public interface Cache<KEY extends Comparable<KEY>, VALUE>
   }
 
   /**
-   * Clears the entire contents of (all {@link Cache.Entry entries} from) this {@link Cache}.
+   * Clears the entire contents of this {@link Cache}.
    *
    * @see #evictAll(Iterable)
    * @see #keys()
@@ -162,8 +161,8 @@ public interface Cache<KEY extends Comparable<KEY>, VALUE>
   @NullSafe
   @SuppressWarnings("unchecked")
   default boolean containsAll(KEY... keys) {
-    return ArrayUtils.isNotEmpty(keys) && ThreadUtils.runAtomically(getLock(), () ->
-      Arrays.stream(keys).allMatch(this::contains));
+    return ArrayUtils.isNotEmpty(keys)
+      && ThreadUtils.runAtomically(getLock(), () -> Arrays.stream(keys).allMatch(this::contains));
   }
 
   /**
@@ -179,8 +178,8 @@ public interface Cache<KEY extends Comparable<KEY>, VALUE>
    */
   @NullSafe
   default boolean containsAll(Iterable<KEY> keys) {
-    return CollectionUtils.isNotEmpty(keys) && ThreadUtils.runAtomically(getLock(), () ->
-      StreamUtils.stream(keys).allMatch(this::contains));
+    return CollectionUtils.isNotEmpty(keys)
+      && ThreadUtils.runAtomically(getLock(), () -> StreamUtils.stream(keys).allMatch(this::contains));
   }
 
   /**
@@ -196,8 +195,8 @@ public interface Cache<KEY extends Comparable<KEY>, VALUE>
   @NullSafe
   @SuppressWarnings("unchecked")
   default boolean containsAny(KEY... keys) {
-    return ArrayUtils.isNotEmpty(keys) && ThreadUtils.runAtomically(getLock(), () ->
-      Arrays.stream(keys).anyMatch(this::contains));
+    return ArrayUtils.isNotEmpty(keys)
+      && ThreadUtils.runAtomically(getLock(), () -> Arrays.stream(keys).anyMatch(this::contains));
   }
 
   /**
@@ -213,8 +212,8 @@ public interface Cache<KEY extends Comparable<KEY>, VALUE>
    */
   @NullSafe
   default boolean containsAny(Iterable<KEY> keys) {
-    return CollectionUtils.isNotEmpty(keys) && ThreadUtils.runAtomically(getLock(), () ->
-      StreamUtils.stream(keys).anyMatch(this::contains));
+    return CollectionUtils.isNotEmpty(keys)
+      && ThreadUtils.runAtomically(getLock(), () -> StreamUtils.stream(keys).anyMatch(this::contains));
   }
 
   /**
@@ -295,16 +294,16 @@ public interface Cache<KEY extends Comparable<KEY>, VALUE>
    * if an {@link Cache.Entry entry} with the given {@link KEY key} does not exist,
    * or a {@link VALUE value} for the given {@link KEY key} is {@literal null}.
    * @see #put(Comparable, Object)
-   * @see #iterator()
+   * @see #stream()
    */
   default @Nullable VALUE get(@NotNull KEY key) {
 
-    return key != null ? stream()
-      .filter(cacheEntry -> ObjectUtils.equals(cacheEntry.getKey(), key))
-      .findFirst()
-      .map(Cache.Entry::getValue)
-      .orElse(null)
-      : null;
+    return key == null ? null
+      : stream()
+        .filter(cacheEntry -> ObjectUtils.equals(cacheEntry.getKey(), key))
+        .findFirst()
+        .map(Cache.Entry::getValue)
+        .orElse(null);
   }
 
   /**
@@ -329,7 +328,7 @@ public interface Cache<KEY extends Comparable<KEY>, VALUE>
     if (ArrayUtils.isNotEmpty(keys)) {
       return ThreadUtils.runAtomically(getLock(), () -> Arrays.stream(keys)
         .map(this::get)
-        .collect(Collectors.toList()));
+        .toList());
     }
 
     return Collections.emptyList();
@@ -358,7 +357,7 @@ public interface Cache<KEY extends Comparable<KEY>, VALUE>
     if (CollectionUtils.isNotEmpty(keys)) {
       return ThreadUtils.runAtomically(getLock(), () -> StreamUtils.stream(keys)
         .map(this::get)
-        .collect(Collectors.toList()));
+        .toList());
     }
 
     return Collections.emptyList();
@@ -372,8 +371,8 @@ public interface Cache<KEY extends Comparable<KEY>, VALUE>
    * @return the {@link VALUE value} currently mapped to the given {@link KEY key}
    * or return {@literal null} if the given {@link KEY key} was not mapped to a {@link VALUE value}.
    * @see #getAndEvict(Comparable, Object)
-   * @see #evict(Comparable)
    * @see #get(Comparable)
+   * @see #evict(Comparable)
    */
   default VALUE getAndEvict(KEY key) {
 
@@ -395,8 +394,8 @@ public interface Cache<KEY extends Comparable<KEY>, VALUE>
    * @return the {@link VALUE existing value} currently mapped to the given {@link KEY key}
    * or return {@literal null} if the given {@link KEY key} was not mapped to a {@link VALUE value}.
    * @see #getAndEvict(Comparable)
-   * @see #evict(Comparable)
    * @see #get(Comparable)
+   * @see #evict(Comparable)
    */
   default VALUE getAndEvict(KEY key, VALUE expectedValue) {
 
@@ -423,8 +422,8 @@ public interface Cache<KEY extends Comparable<KEY>, VALUE>
    * @param newValue {@link VALUE new value} to map to the given {@link KEY key}.
    * @return the {@link VALUE existing value} mapped to the given {@link KEY key}
    * or return {@literal null} if the given {@link KEY key} was not mapped to a {@link VALUE value}.
-   * @see #put(Comparable, Object)
    * @see #get(Comparable)
+   * @see #put(Comparable, Object)
    */
   default VALUE getAndPut(KEY key, VALUE newValue) {
 
@@ -448,9 +447,9 @@ public interface Cache<KEY extends Comparable<KEY>, VALUE>
    * @return the {@link VALUE existing value} mapped to the given {@link KEY key}
    * or return {@literal null} if the given {@link KEY key} was not mapped to a {@link VALUE value}.
    * @see #getAndReplace(Comparable, Object, Object)
-   * @see #put(Comparable, Object)
    * @see #contains(Comparable)
    * @see #get(Comparable)
+   * @see #put(Comparable, Object)
    */
   default VALUE getAndReplace(KEY key, VALUE newValue) {
 
@@ -481,9 +480,9 @@ public interface Cache<KEY extends Comparable<KEY>, VALUE>
    * @return the {@link VALUE existing value} mapped to the given {@link KEY key}
    * or return {@literal null} if the given {@link KEY key} was not mapped to a {@link VALUE value}.
    * @see #getAndReplace(Comparable, Object)
-   * @see #put(Comparable, Object)
    * @see #contains(Comparable)
    * @see #get(Comparable)
+   * @see #put(Comparable, Object)
    */
   default VALUE getAndReplace(KEY key, VALUE expectedValue, VALUE newValue) {
 
@@ -548,7 +547,7 @@ public interface Cache<KEY extends Comparable<KEY>, VALUE>
    * Returns an {@link Set#isEmpty() empty Set} if there are no {@link Cache.Entry entries}
    * in this {@link Cache}.
    * @see java.util.Set
-   * @see #iterator()
+   * @see #stream()
    */
   default Set<KEY> keys() {
 
@@ -621,17 +620,17 @@ public interface Cache<KEY extends Comparable<KEY>, VALUE>
    * @throws IllegalArgumentException if any {@link Identifiable object} or its {@link Identifiable#getId() ID}
    * is {@literal null}.
    * @see org.cp.elements.lang.Identifiable
-   * @see #put(Comparable, Object)
-   * @see #put(Identifiable)
    * @see #putAll(Iterable)
+   * @see #put(Identifiable)
    */
   @NullSafe
   @SuppressWarnings("unchecked")
   default void putAll(Identifiable<KEY>... entities) {
 
     if (ArrayUtils.isNotEmpty(entities)) {
-      ThreadUtils.runAtomically(getLock(), () ->
-        Arrays.stream(entities).filter(Objects::nonNull).forEach(this::put));
+      ThreadUtils.runAtomically(getLock(), () -> Arrays.stream(entities)
+        .filter(Objects::nonNull)
+        .forEach(this::put));
     }
   }
 
@@ -652,7 +651,6 @@ public interface Cache<KEY extends Comparable<KEY>, VALUE>
    * @throws IllegalArgumentException if any {@link Identifiable object} or its {@link Identifiable#getId() ID}
    * is {@literal null}.
    * @see org.cp.elements.lang.Identifiable
-   * @see #put(Comparable, Object)
    * @see #putAll(Identifiable[])
    * @see #put(Identifiable)
    * @see java.lang.Iterable
@@ -661,8 +659,9 @@ public interface Cache<KEY extends Comparable<KEY>, VALUE>
   default void putAll(Iterable<Identifiable<KEY>> entities) {
 
     if (CollectionUtils.isNotEmpty(entities)) {
-      ThreadUtils.runAtomically(getLock(), () ->
-        StreamUtils.stream(entities).filter(Objects::nonNull).forEach(this::put));
+      ThreadUtils.runAtomically(getLock(), () -> StreamUtils.stream(entities)
+        .filter(Objects::nonNull)
+        .forEach(this::put));
     }
   }
 
@@ -675,9 +674,9 @@ public interface Cache<KEY extends Comparable<KEY>, VALUE>
    * @return the existing {@link VALUE value} if present, otherwise return {@literal null}.
    * @throws IllegalArgumentException if the {@link KEY key} is {@literal null}.
    * @see #putIfPresent(Comparable, Object)
-   * @see #put(Comparable, Object)
    * @see #contains(Comparable)
    * @see #get(Comparable)
+   * @see #put(Comparable, Object)
    */
   default VALUE putIfAbsent(KEY key, VALUE value) {
 
@@ -706,9 +705,9 @@ public interface Cache<KEY extends Comparable<KEY>, VALUE>
    * is {@literal null}.
    * @see org.cp.elements.lang.Identifiable
    * @see #putIfPresent(Identifiable)
-   * @see #put(Comparable, Object)
    * @see #contains(Comparable)
    * @see #get(Comparable)
+   * @see #put(Comparable, Object)
    */
   @SuppressWarnings("unchecked")
   default VALUE putIfAbsent(@NotNull Identifiable<KEY> entity) {
@@ -741,9 +740,9 @@ public interface Cache<KEY extends Comparable<KEY>, VALUE>
    * @return the existing {@link VALUE value} if present, otherwise return {@literal null}.
    * @throws IllegalArgumentException if the {@link KEY key} is {@literal null}.
    * @see #putIfAbsent(Comparable, Object)
-   * @see #put(Comparable, Object)
    * @see #contains(Comparable)
    * @see #get(Comparable)
+   * @see #put(Comparable, Object)
    */
   default VALUE putIfPresent(KEY key, VALUE newValue) {
 
@@ -772,9 +771,9 @@ public interface Cache<KEY extends Comparable<KEY>, VALUE>
    * @throws IllegalArgumentException if the {@link Identifiable object} is {@literal null}.
    * @see org.cp.elements.lang.Identifiable
    * @see #putIfAbsent(Identifiable)
-   * @see #put(Comparable, Object)
    * @see #contains(Comparable)
    * @see #get(Comparable)
+   * @see #put(Comparable, Object)
    */
   @SuppressWarnings("unchecked")
   default VALUE putIfPresent(Identifiable<KEY> newEntity) {
@@ -806,7 +805,14 @@ public interface Cache<KEY extends Comparable<KEY>, VALUE>
     return stream().count();
   }
 
-  default Stream<Entry<KEY, VALUE>> stream() {
+  /**
+   * {@link Stream} the {@link Cache.Entry Entries} in this {@link Cache}.
+   *
+   * @return {@link Stream} of the {@link Cache.Entry Entries} in this {@link Cache}.
+   * @see org.cp.elements.data.caching.Cache.Entry
+   * @see java.util.stream.Stream
+   */
+  default Stream<Cache.Entry<KEY, VALUE>> stream() {
     return StreamUtils.stream(this);
   }
 
@@ -824,10 +830,10 @@ public interface Cache<KEY extends Comparable<KEY>, VALUE>
   }
 
   /**
-   * Abstract Data Type (ADT) modeling a {@link Cache} {@literal entry} mapping a {@link KEY key}
-   * to a {@link VALUE value} in this {@link Cache}.
+   * Abstract Data Type (ADT) modeling an {@literal entry} in the {@link Cache}
+   * mapping a {@link KEY key} to a {@link VALUE value}.
    *
-   * @param <KEY> {@link Comparable} {@link Class type} of {@literal keys} used for mapping by this {@link Cache}.
+   * @param <KEY> {@link Comparable} {@link Class type} of the {@literal keys} used for mapping by this {@link Cache}.
    * @param <VALUE> {@link Class type} of {@link VALUE values} stored in this {@link Cache}.
    * @see java.lang.FunctionalInterface
    * @see org.cp.elements.lang.Sourced
@@ -835,7 +841,7 @@ public interface Cache<KEY extends Comparable<KEY>, VALUE>
    */
   @FunctionalInterface
   interface Entry<KEY extends Comparable<KEY>, VALUE>
-      extends Sourced<Cache<KEY, VALUE>>, Comparable<Cache.Entry<KEY, VALUE>> {
+      extends Comparable<Cache.Entry<KEY, VALUE>>, Sourced<Cache<KEY, VALUE>> {
 
     /**
      * Factory method used to copy a given, required {@link Cache.Entry} as a new instance.
@@ -857,16 +863,19 @@ public interface Cache<KEY extends Comparable<KEY>, VALUE>
 
       return new Entry<>() {
 
+        private final Cache<KEY, VALUE> source = cacheEntry.getSource();
+
+        private final KEY cacheEntryKey = cacheEntry.getKey();
         private final VALUE cacheEntryValue = cacheEntry.getValue();
 
         @Override
         public @NotNull KEY getKey() {
-          return cacheEntry.getKey();
+          return this.cacheEntryKey;
         }
 
         @Override
         public @NotNull Cache<KEY, VALUE> getSource() {
-          return cacheEntry.getSource();
+          return this.source;
         }
 
         @Override
@@ -904,11 +913,12 @@ public interface Cache<KEY extends Comparable<KEY>, VALUE>
 
       return new Entry<>() {
 
+        private final KEY mapEntryKey = mapEntry.getKey();
         private final VALUE mapEntryValue = mapEntry.getValue();
 
         @Override
         public KEY getKey() {
-          return mapEntry.getKey();
+          return this.mapEntryKey;
         }
 
         @Override
