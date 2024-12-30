@@ -30,21 +30,22 @@ and DSL focuses on the most common and useful assertions with more refined expre
 
 NOTE: For complete assertion capabilities, we recommend developers use AssertJ.
 
-Other common assertions include, but are not limited to:
+Common assertions include, but are not limited to:
 
 * `isAssignableTo(:Class<?>)` | `isInstanceOf(:Class<?>)`
 * `isComparableTo(:Coparable<?>)` | `isNotComparableTo(:Comparable<?>)`
-* `isEqualTo(..)` | `isNotEqualTo(..)`
+* `isEqualTo(:Object)` | `isNotEqualTo(:Object)`
 * `isGreaterThan(..)`
 * `isGreaterThanAndLessThan(..)`
 * `isGreaterThanAndLessThanEqualTo(..)`
 * `isGreaterThanEqualTo(..)`
 * `isGreaterThanEqualToAndLessThan(..)`
 * `isGreaterThanEqualToAndLessThanEqualTo(..)`
-* `hasText(..)`
-* `holdsLock(..)`
+* `hasText()`
+* `holdsLock(:Object)`
 * `isNotBlank()`
 * `isNotEmpty()` - Can be used for: Arrays, Collections, Iterables, Maps and Strings
+* `isNotNull()`
 * `isFalse()` | `isTrue()`
 * `isLessThan(..)`
 * `isLessThanOrGreaterThan(..)`
@@ -366,7 +367,7 @@ the https://en.wikipedia.org/wiki/Builder_pattern[Builder Software Design Patter
 [source,java]
 [subs="verbatim,attributes"]
 ----
-inteface Builder<T> {
+interface Builder<T> {
     T build();
 }
 ----
@@ -387,7 +388,7 @@ the https://en.wikipedia.org/wiki/Composite_pattern[Composite Software Design]. 
 interface Composite<T> {
     T composite(T one, T two);
 }
----
+----
 
 The `Composite` allows multiple, similar objects all implementing a common interface to be treated as a single instance.
 
@@ -400,7 +401,7 @@ A `Composite` can be composed from an array or an `Iterable<T>` using:
 Compsite<User> users = Composite.of(User.as("JonDoe"), User.as("JaneDoe"));
 
 Composite<Action> actions = Composite.of(List.of(Action.as("load"), Action.as("save")));
----
+----
 
 [[elements-lang-design-patterns-dao]]
 ==== Data Access Object (DAO) Pattern
