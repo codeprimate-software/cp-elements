@@ -53,6 +53,7 @@ import org.cp.elements.util.CollectionUtils;
 import org.cp.elements.util.MapBuilder;
 import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.quality.Strictness;
 
@@ -1280,6 +1281,39 @@ class CacheUnitTests {
   }
 
   @Test
+  void putIfAbsentWithCacheEntry() {
+
+    Cache.Entry<?, ?> mockCacheEntry = mock(Cache.Entry.class);
+
+    doReturn("TestKey").when(mockCacheEntry).getKey();
+    doReturn("TestValue").when(mockCacheEntry).getValue();
+    doCallRealMethod().when(this.cache).putIfAbsent(any(Cache.Entry.class));
+
+    assertThat(this.cache.putIfAbsent(mockCacheEntry)).isNull();
+
+    verify(this.cache, times(1)).putIfAbsent(eq(mockCacheEntry));
+    verify(mockCacheEntry, times(1)).getKey();
+    verify(mockCacheEntry, times(1)).getValue();
+    verify(this.cache, times(1)).getLock();
+    verify(this.cache, times(1)).putIfAbsent(eq("TestKey"), eq("TestValue"));
+    verifyNoMoreInteractions(this.cache, mockCacheEntry);
+  }
+
+  @Test
+  void putIfAbsentWithNullCacheEntry() {
+
+    doCallRealMethod().when(this.cache).putIfAbsent(Mockito.<Cache.Entry<?, ?>>any());
+
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> this.cache.putIfAbsent((Cache.Entry<?, ?>) null))
+      .withMessage("Cache.Entry to put when absent is required")
+      .withNoCause();
+
+    verify(this.cache, times(1)).putIfAbsent(isNull(Cache.Entry.class));
+    verifyNoMoreInteractions(this.cache);
+  }
+
+  @Test
   void putIfAbsentWithEntity() {
 
     doReturn(false).when(this.cache).contains(any());
@@ -1340,14 +1374,14 @@ class CacheUnitTests {
   @Test
   void putIfAbsentWithNullEntity() {
 
-    doCallRealMethod().when(this.cache).putIfAbsent(any());
+    doCallRealMethod().when(this.cache).putIfAbsent(Mockito.<Identifiable>any());
 
     assertThatIllegalArgumentException()
-      .isThrownBy(() -> this.cache.putIfAbsent(null))
+      .isThrownBy(() -> this.cache.putIfAbsent((Identifiable<?>) null))
       .withMessage("Entity to cache is required")
       .withNoCause();
 
-    verify(this.cache, times(1)).putIfAbsent(isNull());
+    verify(this.cache, times(1)).putIfAbsent(isNull(Identifiable.class));
     verifyNoMoreInteractions(this.cache);
   }
 

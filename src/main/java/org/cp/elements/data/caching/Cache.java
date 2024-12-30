@@ -694,6 +694,21 @@ public interface Cache<KEY extends Comparable<KEY>, VALUE>
   }
 
   /**
+   * Puts the {@link KEY} and {@link VALUE} from the given {@link Cache.Entry} in this {@link Cache},
+   *
+   * @param cacheEntry {@link Cache.Entry} containing the {@link KEY} and {@link VALUE} to put in this {@link Cache}.
+   * @return the existing {@link VALUE} mapped to the {@link KEY} from the {@link Cache.Entry}.
+   * @throws IllegalArgumentException if {@link Cache.Entry} is {@literal null}.
+   * @see org.cp.elements.data.caching.Cache.Entry
+   */
+  default VALUE putIfAbsent(@NotNull Cache.Entry<KEY, VALUE>  cacheEntry) {
+
+    Assert.notNull(cacheEntry, "Cache.Entry to put when absent is required");
+
+    return ThreadUtils.runAtomically(getLock(), () -> putIfAbsent(cacheEntry.getKey(), cacheEntry.getValue()));
+  }
+
+  /**
    * Puts the {@link Identifiable object} in this {@link Cache} mapped to its {@link Identifiable#getId() ID}
    * iff the {@link Identifiable object} is not {@literal null} and the {@link Identifiable object}
    * is not already present in this {@link Cache}.
