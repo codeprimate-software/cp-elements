@@ -733,15 +733,7 @@ public interface Cache<KEY extends Comparable<KEY>, VALUE>
 
     Assert.notNull(entityId, "ID of the entity to cache is required");
 
-    return ThreadUtils.runAtomically(getLock(), () -> {
-      if (!contains(entityId)) {
-        put(entityId, (VALUE) entity);
-        return null;
-      }
-      else {
-        return get(entityId);
-      }
-    });
+    return putIfAbsent(entityId, (VALUE) entity);
   }
 
   /**

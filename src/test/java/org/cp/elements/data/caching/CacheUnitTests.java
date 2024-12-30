@@ -19,7 +19,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.ArgumentMatchers.isNull;
@@ -1316,7 +1315,6 @@ class CacheUnitTests {
   @Test
   void putIfAbsentWithEntity() {
 
-    doReturn(false).when(this.cache).contains(any());
     doCallRealMethod().when(this.cache).putIfAbsent(any(Identifiable.class));
 
     Identifiable<Integer> mockEntity = mockIdentifiable(1);
@@ -1324,34 +1322,9 @@ class CacheUnitTests {
     assertThat(this.cache.putIfAbsent(mockEntity)).isNull();
 
     verify(this.cache, times(1)).putIfAbsent(eq(mockEntity));
-    verify(this.cache, times(1)).getLock();
-    verify(this.cache, times(1)).contains(eq(1));
-    verify(this.cache, times(1)).put(eq(1), eq(mockEntity));
-    verify(this.cache, never()).get(anyLong());
     verify(mockEntity, times(1)).getId();
+    verify(this.cache, times(1)).putIfAbsent(eq(1), eq(mockEntity));
     verifyNoMoreInteractions(this.cache, mockEntity);
-  }
-
-  @Test
-  void putIfAbsentWithExistingEntity() {
-
-    Identifiable<Integer> mockEntity = mockIdentifiable(1);
-
-    Person bobDoe = Person.newPerson().named("Bob", "Doe").identifiedBy(1L);
-
-    doReturn(true).when(this.cache).contains(any());
-    doReturn(mockEntity).when(this.cache).get(eq(1L));
-    doCallRealMethod().when(this.cache).putIfAbsent(any(Identifiable.class));
-
-    assertThat(this.cache.putIfAbsent(bobDoe)).isEqualTo(mockEntity);
-
-    verify(this.cache, times(1)).putIfAbsent(eq(bobDoe));
-    verify(this.cache, times(1)).getLock();
-    verify(this.cache, times(1)).contains(eq(1L));
-    verify(this.cache, times(1)).get(eq(1L));
-    verify(this.cache, never()).put(any(), any());
-    verifyNoMoreInteractions(this.cache);
-    verifyNoInteractions(mockEntity);
   }
 
   @Test
