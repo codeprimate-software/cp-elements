@@ -30,8 +30,8 @@ import org.cp.elements.lang.annotation.Nullable;
 /**
  * The {@link CachingTemplate} class is an implementation of the {@literal Template Method Software Design Pattern}
  * wrapping and delegating to a {@link Cache} in order to provide additional capabilities such as
- * {@literal Look-Aside Caching} ({@literal Cache-Aside Caching}), cache puts on successful service method completion
- * and cache eviction when a service method performs an update.
+ * {@literal Cache-Aside Caching} (aka {@literal Look-Aside Caching}), cache puts on successful service method
+ * completion and cache eviction when a service method performs an update.
  * <p>
  * This Template additionally performs locking for both read and write data access operations when using the wrapped
  * {@link Cache} in order to coordinate concurrent {@link Cache} operations in a multi-Thread environment.
@@ -107,6 +107,19 @@ public class CachingTemplate<KEY extends Comparable<KEY>, VALUE> {
   }
 
   /**
+   * Constructs a new {@link ReadWriteLock}.
+   * <p>
+   * The {@link Lock} is reentrant.
+   *
+   * @return a new {@link ReadWriteLock}.
+   * @see java.util.concurrent.locks.ReentrantReadWriteLock
+   * @see java.util.concurrent.locks.ReadWriteLock
+   */
+  protected @NotNull ReadWriteLock newReadWriteLock() {
+    return new ReentrantReadWriteLock();
+  }
+
+  /**
    * Returns a reference to the configured {@link Cache} used by this template.
    *
    * @return a reference to the configured {@link Cache} used by this template.
@@ -126,19 +139,6 @@ public class CachingTemplate<KEY extends Comparable<KEY>, VALUE> {
    */
   protected @NotNull ReadWriteLock getLock() {
     return this.lock;
-  }
-
-  /**
-   * Constructs a new {@link ReadWriteLock}.
-   * <p>
-   * The {@link Lock} is reentrant.
-   *
-   * @return a new {@link ReadWriteLock}.
-   * @see java.util.concurrent.locks.ReentrantReadWriteLock
-   * @see java.util.concurrent.locks.ReadWriteLock
-   */
-  protected @NotNull ReadWriteLock newReadWriteLock() {
-    return new ReentrantReadWriteLock();
   }
 
   /**
