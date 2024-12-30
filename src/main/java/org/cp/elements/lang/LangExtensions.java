@@ -45,15 +45,12 @@ import org.cp.elements.text.FormatUtils;
  * @see java.lang.reflect.InvocationHandler
  * @see java.lang.reflect.Method
  * @see java.util.Optional
- * @see java.util.function.Function
- * @see java.util.function.Predicate
- * @see java.util.function.Supplier
  * @see org.cp.elements.lang.Assert
  * @see org.cp.elements.lang.DslExtension
  * @see org.cp.elements.lang.FluentApiExtension
  * @see org.cp.elements.lang.annotation.Dsl
+ * @see org.cp.elements.lang.annotation.ExperimentalApi
  * @see org.cp.elements.lang.annotation.FluentApi
- * @see ExperimentalApi
  * @see org.cp.elements.lang.reflect.MethodInterceptor
  * @see org.cp.elements.lang.reflect.MethodInvocation
  * @see org.cp.elements.lang.reflect.ProxyFactory
