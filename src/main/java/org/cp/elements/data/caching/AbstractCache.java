@@ -92,7 +92,7 @@ public abstract class AbstractCache<KEY extends Comparable<KEY>, VALUE> implemen
    */
   @Override
   public void clear() {
-    throw new UnsupportedOperationException("Clear is not supported");
+    throw newUnsupportedOperationException("Clear is not supported");
   }
 
   /**
