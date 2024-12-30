@@ -60,18 +60,19 @@ class CollectionUtilsTests {
   private <T> void assertElements(Collection<T> collection, T... elements) {
 
     assertThat(collection).isNotNull();
-    assertThat(collection.size()).isEqualTo(elements.length);
-    assertThat(collection.containsAll(asCollection(elements))).isTrue();
+    assertThat(collection).hasSize(elements.length);
+    assertThat(collection).containsAll(asCollection(elements));
   }
 
+  @SuppressWarnings("all")
   private <T> void assertShuffled(Iterable<T> source, Iterable<T> target) {
 
     assertThat(source != null && source.iterator().hasNext())
-      .describedAs("'source' must not be null and must have elements")
+      .describedAs("Source must not be null and must have elements")
       .isTrue();
 
     assertThat(target != null && target.iterator().hasNext())
-      .describedAs("'target' must not be null and must have elements")
+      .describedAs("Target must not be null and must have elements")
       .isTrue();
 
     Iterator<T> targetIterator = target.iterator();
@@ -1715,6 +1716,45 @@ class CollectionUtilsTests {
   }
 
   @Test
+  void unmodifiableIterable() {
+
+    Iterable<String> unmofiableIterable =
+      CollectionUtils.unmodifiableIterable(asIterable("test", "testing", "tested"));
+
+    assertThat(unmofiableIterable).isNotNull();
+    assertThat(unmofiableIterable).containsExactly("test", "testing", "tested");
+  }
+
+  @Test
+  void unmodifiableIterableIsImmutable() {
+
+    Iterable<String> iterable = CollectionUtils.unmodifiableIterable(asIterable("test"));
+
+    assertThat(iterable).isNotNull();
+    assertThat(iterable).containsExactly("test");
+
+    assertThatExceptionOfType(UnsupportedOperationException.class)
+      .isThrownBy(() -> {
+        Iterator<String> iterator = iterable.iterator();
+        iterator.next();
+        iterator.remove();
+      })
+      .withMessage("Iterator is immutable")
+      .withNoCause();
+
+    assertThat(iterable).containsExactly("test");
+  }
+
+  @Test
+  void unmodifiableIterableWithNullIterable() {
+
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> CollectionUtils.unmodifiableIterable(null))
+      .withMessage("Iterable is required")
+      .withNoCause();
+  }
+
+  @Test
   public void unmodifiableIterator() {
 
     String[] elements = { "test", "testing", "tested" };
@@ -1724,7 +1764,7 @@ class CollectionUtilsTests {
     assertThat(unmodifiableIterator).isNotNull();
 
     for (String element : elements) {
-      assertThat(unmodifiableIterator.hasNext()).isTrue();
+      assertThat(unmodifiableIterator).hasNext();
       assertThat(unmodifiableIterator.next()).isEqualTo(element);
     }
 
@@ -1758,6 +1798,7 @@ class CollectionUtilsTests {
       .withNoCause();
   }
 
+  @SuppressWarnings("all")
   record Person(String firstName, String lastName){
 
     public static Person newPerson(String firstName, String lastName) {

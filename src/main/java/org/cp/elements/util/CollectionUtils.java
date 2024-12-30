@@ -826,6 +826,21 @@ public abstract class CollectionUtils {
   }
 
   /**
+   * Returns an immutable {@link Iterable} implementation wrapping the given {@link Iterable} to prevent modifications.
+   *
+   * @param <T> {@link Class type} of the {@link Object elements} contained in the {@link Iterable}.
+   * @param iterable {@link Iterable} to make immutable; required.
+   * @return an immutable {@link Iterable} from the given {@link Iterable}.
+   * @throws IllegalArgumentException if {@link Iterable} is {@literal null}.
+   * @see #unmodifiableIterator(Iterator)
+   * @see java.lang.Iterable
+   */
+  public static @NotNull <T> Iterable<T> unmodifiableIterable(@NotNull Iterable<T> iterable) {
+    Assert.notNull(iterable, "Iterable is required");
+    return () -> unmodifiableIterator(iterable.iterator());
+  }
+
+  /**
    * Returns an immutable {@link Iterator} implementation wrapping the given {@link Iterator} to prevent modifications
    * through invocations of the {@link Iterator#remove()} method.
    *
