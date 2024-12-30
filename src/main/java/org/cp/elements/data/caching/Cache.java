@@ -790,11 +790,8 @@ public interface Cache<KEY extends Comparable<KEY>, VALUE>
    * @return the existing {@link VALUE value} if present, otherwise return {@literal null}.
    * @throws ClassCastException if the {@link Identifiable} object is not an instance of {@link VALUE}.
    * @throws IllegalArgumentException if the {@link Identifiable object} is {@literal null}.
+   * @see #putIfPresent(Comparable, Object)
    * @see org.cp.elements.lang.Identifiable
-   * @see #putIfAbsent(Identifiable)
-   * @see #contains(Comparable)
-   * @see #get(Comparable)
-   * @see #put(Comparable, Object)
    */
   @SuppressWarnings("unchecked")
   default VALUE putIfPresent(Identifiable<KEY> newEntity) {
@@ -803,16 +800,7 @@ public interface Cache<KEY extends Comparable<KEY>, VALUE>
 
     KEY entityId = newEntity.getId();
 
-    return ThreadUtils.runAtomically(getLock(), () -> {
-
-      if (contains(entityId)) {
-        VALUE existingValue = get(entityId);
-        put(entityId, (VALUE) newEntity);
-        return existingValue;
-      }
-
-      return null;
-    });
+    return putIfPresent(entityId, (VALUE) newEntity);
   }
 
   /**

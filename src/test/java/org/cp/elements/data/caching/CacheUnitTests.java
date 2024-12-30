@@ -1441,17 +1441,13 @@ class CacheUnitTests {
 
     Person bobDoe = Person.newPerson().named("Bob", "Doe").identifiedBy(1L);
 
-    doReturn(true).when(this.cache).contains(any());
-    doReturn(mockEntity).when(this.cache).get(eq(1L));
+    doReturn(mockEntity).when(this.cache).putIfPresent(eq(1L), eq(bobDoe));
     doCallRealMethod().when(this.cache).putIfPresent(any(Identifiable.class));
 
     assertThat(this.cache.putIfPresent(bobDoe)).isEqualTo(mockEntity);
 
     verify(this.cache, times(1)).putIfPresent(eq(bobDoe));
-    verify(this.cache, times(1)).getLock();
-    verify(this.cache, times(1)).contains(eq(1L));
-    verify(this.cache, times(1)).get(eq(1L));
-    verify(this.cache, times(1)).put(eq(1L), eq(bobDoe));
+    verify(this.cache, times(1)).putIfPresent(eq(1L), eq(bobDoe));
     verifyNoMoreInteractions(this.cache);
     verifyNoInteractions(mockEntity);
   }
@@ -1461,32 +1457,13 @@ class CacheUnitTests {
 
     Identifiable<Integer> mockEntity = mockIdentifiable(null);
 
-    doReturn(false).when(this.cache).contains(isNull());
     doCallRealMethod().when(this.cache).putIfPresent(any(Identifiable.class));
 
     assertThat(this.cache.putIfPresent(mockEntity)).isNull();
 
     verify(this.cache, times(1)).putIfPresent(eq(mockEntity));
-    verify(this.cache, times(1)).getLock();
-    verify(this.cache, times(1)).contains(isNull());
     verify(mockEntity, times(1)).getId();
-    verifyNoMoreInteractions(this.cache, mockEntity);
-  }
-
-  @Test
-  void putIfPresentWithNonExistingEntity() {
-
-    Identifiable<Integer> mockEntity = mockIdentifiable(1);
-
-    doReturn(false).when(this.cache).contains(any());
-    doCallRealMethod().when(this.cache).putIfPresent(any(Identifiable.class));
-
-    assertThat(this.cache.putIfPresent(mockEntity)).isNull();
-
-    verify(this.cache, times(1)).putIfPresent(eq(mockEntity));
-    verify(this.cache, times(1)).getLock();
-    verify(this.cache, times(1)).contains(eq(1));
-    verify(mockEntity, times(1)).getId();
+    verify(this.cache, times(1)).putIfPresent(isNull(), eq(mockEntity));
     verifyNoMoreInteractions(this.cache, mockEntity);
   }
 
