@@ -18,6 +18,7 @@ package org.cp.elements.function;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.time.Instant;
+import java.util.Arrays;
 
 import org.junit.jupiter.api.Test;
 
@@ -30,10 +31,22 @@ import org.junit.jupiter.api.Test;
  * @see org.cp.elements.function.CannedPredicates
  * @since 1.0.0
  */
-public class CannedPredicatesUnitTests {
+class CannedPredicatesUnitTests {
 
   @Test
-  public void defaultWithAnyObjectIsTrue() {
+  void acceptAllWithAnyObjectReturnsTrue() {
+
+    Arrays.asList(new Object(), false, 'x', 0, Math.PI, "TEST", Instant.now()).forEach(value ->
+      assertThat(CannedPredicates.ACCEPT_ALL.test(value)).isTrue());
+  }
+
+  @Test
+  void acceptAllWithNullReturnsTrue() {
+    assertThat(CannedPredicates.ACCEPT_ALL.test(null)).isTrue();
+  }
+
+  @Test
+  void defaultWithAnyObjectIsTrue() {
 
     assertThat(CannedPredicates.DEFAULT.test(new Object())).isTrue();
     assertThat(CannedPredicates.DEFAULT.test(false)).isTrue();
@@ -45,19 +58,19 @@ public class CannedPredicatesUnitTests {
   }
 
   @Test
-  public void defaultWithNullIsTrue() {
+  void defaultWithNullIsTrue() {
     assertThat(CannedPredicates.DEFAULT.test(null)).isTrue();
   }
 
   @Test
-  public void isFalseWithFalse() {
+  void isFalseWithFalse() {
 
     assertThat(CannedPredicates.IS_FALSE.test(false)).isTrue();
     assertThat(CannedPredicates.IS_FALSE.test(Boolean.FALSE)).isTrue();
   }
 
   @Test
-  public void isFalseWithNonBooleanValueIsFalse() {
+  void isFalseWithNonBooleanValueIsFalse() {
 
     assertThat(CannedPredicates.IS_FALSE.test(new Object())).isFalse();
     assertThat(CannedPredicates.IS_FALSE.test('X')).isFalse();
@@ -67,26 +80,26 @@ public class CannedPredicatesUnitTests {
   }
 
   @Test
-  public void isFalseWithNullIsFalse() {
+  void isFalseWithNullIsFalse() {
     assertThat(CannedPredicates.IS_FALSE.test(null)).isFalse();
   }
 
   @Test
-  public void isFalseWithTrue() {
+  void isFalseWithTrue() {
 
     assertThat(CannedPredicates.IS_FALSE.test(true)).isFalse();
     assertThat(CannedPredicates.IS_FALSE.test(Boolean.TRUE)).isFalse();
   }
 
   @Test
-  public void isTrueWithTrue() {
+  void isTrueWithTrue() {
 
     assertThat(CannedPredicates.IS_TRUE.test(true)).isTrue();
     assertThat(CannedPredicates.IS_TRUE.test(Boolean.TRUE)).isTrue();
   }
 
   @Test
-  public void isTrueWithNonBooleanValuesIsFalse() {
+  void isTrueWithNonBooleanValuesIsFalse() {
 
     assertThat(CannedPredicates.IS_TRUE.test(new Object())).isFalse();
     assertThat(CannedPredicates.IS_TRUE.test('X')).isFalse();
@@ -96,7 +109,7 @@ public class CannedPredicatesUnitTests {
   }
 
   @Test
-  public void isTrueWithNullBooleanValueIsFalse() {
+  void isTrueWithNullBooleanValueIsFalse() {
     assertThat(CannedPredicates.IS_TRUE.test(null)).isFalse();
   }
 
@@ -108,7 +121,7 @@ public class CannedPredicatesUnitTests {
   }
 
   @Test
-  public void notNullWithNonNullObject() {
+  void notNullWithNonNullObject() {
 
     assertThat(CannedPredicates.NOT_NULL.test(new Object())).isTrue();
     assertThat(CannedPredicates.NOT_NULL.test('X')).isTrue();
@@ -118,7 +131,19 @@ public class CannedPredicatesUnitTests {
   }
 
   @Test
-  public void notNullWithNullObject() {
+  void notNullWithNullObject() {
     assertThat(CannedPredicates.NOT_NULL.test(null)).isFalse();
+  }
+
+  @Test
+  void rejectAllWithAnyObjectReturnsTrue() {
+
+    Arrays.asList(new Object(), false, 'x', 0, Math.PI, "TEST", Instant.now()).forEach(value ->
+      assertThat(CannedPredicates.REJECT_ALL.test(value)).isFalse());
+  }
+
+  @Test
+  void rejectAllWithNullReturnsTrue() {
+    assertThat(CannedPredicates.REJECT_ALL.test(null)).isFalse();
   }
 }

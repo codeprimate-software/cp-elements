@@ -28,10 +28,10 @@ import java.util.function.Predicate;
 @SuppressWarnings("unused")
 public enum CannedPredicates implements Predicate<Object> {
 
-  DEFAULT {
+  ACCEPT_ALL {
 
     @Override
-    public boolean test(Object value) {
+    public boolean test(Object o) {
       return true;
     }
   },
@@ -59,4 +59,15 @@ public enum CannedPredicates implements Predicate<Object> {
       return Objects.nonNull(value);
     }
   },
+
+  REJECT_ALL {
+
+    @Override
+    public boolean test(Object value) {
+      return false;
+    }
+  };
+
+  public static final CannedPredicates DEFAULT = ACCEPT_ALL;
+
 }
