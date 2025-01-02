@@ -16,6 +16,7 @@
 package org.cp.elements.data.oql;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 
 import java.util.Comparator;
 import java.util.Set;
@@ -43,6 +44,55 @@ import lombok.ToString;
 public class OqlUnitTests {
 
   @Test
+  void projection() {
+
+    Projection<Person, String> projection = Oql.Projection.<Person, String>of(String.class)
+      .fromType(Person.class)
+      .mappedWith(Person::getName);
+
+    assertThat(projection).isNotNull();
+    assertThat(projection.getFromType()).isEqualTo(Person.class);
+    assertThat(projection.getType()).isEqualTo(String.class);
+    assertThat(projection.map(Person.named("Jon", "Doe"))).isEqualTo("Jon Doe");
+  }
+
+  @Test
+  void projectionOfNullType() {
+
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> Oql.Projection.of(null))
+      .withMessage("Type is required")
+      .withNoCause();
+  }
+
+  @Test
+  void projectionStarWithNullType() {
+
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> Oql.Projection.star(null))
+      .withMessage("Type is required")
+      .withNoCause();
+  }
+
+  @Test
+  void projectionWithNullFromType() {
+
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> Projection.of(String.class).fromType(null))
+      .withMessage("From type is required")
+      .withNoCause();
+  }
+
+  @Test
+  void projectionWithNullFunction() {
+
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> Projection.of(String.class).mappedWith(null))
+      .withMessage("Mapping Function is required")
+      .withNoCause();
+  }
+
+  @Test
   void queryAll() {
 
     Set<Person> people = Set.of(
@@ -61,7 +111,7 @@ public class OqlUnitTests {
   }
 
   @Test
-  void queryProjected() {
+  void queryProjection() {
 
     Set<Person> people = Set.of(
       Person.named("Pie", "Doe"),
@@ -81,7 +131,7 @@ public class OqlUnitTests {
   }
 
   @Test
-  void queryProjectedAndOrdered() {
+  void queryProjectionWithOrdering() {
 
     Set<Person> people = Set.of(
       Person.named("Jane", "Doe").withAge(48),
@@ -102,7 +152,7 @@ public class OqlUnitTests {
   }
 
   @Test
-  void queryProjectedOrderedAndFiltered() {
+  void queryProjectionWithOrderingAndFilter() {
 
     Set<Person> people = Set.of(
       Person.named("Pie", "Doe").withAge(16),

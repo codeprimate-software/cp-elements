@@ -52,12 +52,37 @@ public interface Oql extends DslExtension, FluentApiExtension {
 
   String NO_FROM = "From not initialized";
 
+  /**
+   * Returns the default configured {@link Oql} service provider implementation.
+   *
+   * @return the default configured {@link Oql} service provider implementation.
+   * @see org.cp.elements.data.oql.provider.SimpleOqlProvider
+   */
   static Oql defaultProvider() {
     return Oql.Provider.getLoader().getServiceInstance();
   }
 
+  /**
+   * Returns the {@link Oql} service provider implementation of the {@literal OQL} {@link QueryExecutor}.
+   *
+   * @param <S> {@link Class type} of {@link Object elements} in the {@link Iterable collection} being queried.
+   * @param <T> {@link Class type} of the {@link Projection}.
+   * @return the {@link Oql} service provider implementation of the {@literal OQL} {@link QueryExecutor}.
+   * @see org.cp.elements.data.oql.provider.SimpleQueryExecutor
+   * @see org.cp.elements.data.oql.Oql.QueryExecutor
+   */
   <S, T> QueryExecutor<S, T> executor();
 
+  /**
+   * Declares the {@link Select selected data} from the {@link Iterable collection} of {@link Object elements}.
+   *
+   * @param <S> {@link Class type} of {@link Object elements} in the {@link Iterable collection} being queried.
+   * @param <T> {@link Class type} of the {@link Projection}.
+   * @param projection {@link Projection} used to {@literal project} the {@link Object elements}
+   * in the {@link Iterable collection}.
+   * @return a {@link Select object} modeling the selection with the {@link Projection}.
+   * @see org.cp.elements.data.oql.Oql.Select
+   */
   @Dsl
   <S, T> Select<S, T> select(Projection<S, T> projection);
 
@@ -96,7 +121,36 @@ public interface Oql extends DslExtension, FluentApiExtension {
       };
     }
 
+    @SuppressWarnings("unchecked")
+    default Class<S> getFromType() {
+      return (Class<S>) Object.class;
+    }
+
     Class<T> getType();
+
+    @Dsl
+    default Projection<S, T> fromType(Class<S> type) {
+
+      Assert.notNull(type, "From type is required");
+
+      return new Projection<>() {
+
+        @Override
+        public Class<S> getFromType() {
+          return type;
+        }
+
+        @Override
+        public Class<T> getType() {
+          return Projection.this.getType();
+        }
+
+        @Override
+        public T map(S target) {
+          return Projection.this.map(target);
+        }
+      };
+    }
 
     @Dsl
     default Projection<S, T> mappedWith(@NotNull Function<S, T> mapper) {
@@ -104,6 +158,11 @@ public interface Oql extends DslExtension, FluentApiExtension {
       Assert.notNull(mapper, "Mapping Function is required");
 
       return new Projection<>() {
+
+        @Override
+        public Class<S> getFromType() {
+          return Projection.this.getFromType();
+        }
 
         @Override
         public Class<T> getType() {
