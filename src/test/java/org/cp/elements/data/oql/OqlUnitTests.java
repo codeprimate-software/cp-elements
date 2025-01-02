@@ -101,7 +101,8 @@ public class OqlUnitTests {
       Person.named("Pie", "Doe")
     );
 
-    Iterable<Person> result = Oql.defaultProvider().select(Projection.star(Person.class))
+    Iterable<Person> result = Oql.defaultProvider()
+      .select(Projection.star(Person.class))
       .from(people)
       .execute();
 
@@ -122,7 +123,8 @@ public class OqlUnitTests {
     Projection<Person, String> projection = Projection.<Person, String>of(String.class)
       .mappedWith(Person::getName);
 
-    Iterable<String> result = Oql.defaultProvider().select(projection)
+    Iterable<String> result = Oql.defaultProvider()
+      .select(projection)
       .from(people)
       .execute();
 
@@ -142,7 +144,8 @@ public class OqlUnitTests {
     Projection<Person, String> projection = Projection.<Person, String>of(String.class)
       .mappedWith(Person::getName);
 
-    Iterable<String> result = Oql.defaultProvider().select(projection)
+    Iterable<String> result = Oql.defaultProvider()
+      .select(projection)
       .from(people)
       .orderBy(Comparator.comparing(Person::getAge))
       .execute();
@@ -165,7 +168,8 @@ public class OqlUnitTests {
     Projection<Person, String> projection = Projection.<Person, String>of(String.class)
       .mappedWith(Person::getName);
 
-    Iterable<String> result = Oql.defaultProvider().select(projection)
+    Iterable<String> result = Oql.defaultProvider()
+      .select(projection)
       .from(people)
       .where(person -> "doe".equalsIgnoreCase(person.getLastName()))
       .and(person -> person.getAge() > 40)
@@ -175,6 +179,37 @@ public class OqlUnitTests {
 
     assertThat(result).isNotNull();
     assertThat(result).containsExactly("Jane Doe", "Jon Doe");
+  }
+
+  @Test
+  void queryProjectionWithOrCondition() {
+
+    Set<Person> people = Set.of(
+      Person.named("Jon", "Doe").withAge(42),
+      Person.named("Jane", "Doe").withAge(48),
+      Person.named("Bob", "Doe").withAge(24),
+      Person.named("Cookie", "Doe").withAge(8),
+      Person.named("Dill", "Doe").withAge(51),
+      Person.named("Fro", "Doe").withAge(21),
+      Person.named("Joe", "Doe").withAge(12),
+      Person.named("Moe", "Doe").withAge(19),
+      Person.named("Pie", "Doe").withAge(16),
+      Person.named("Sour", "Doe").withAge(13)
+    );
+
+    Projection<Person, String> projection = Projection.<Person, String>of(String.class)
+      .mappedWith(Person::getName);
+
+    Iterable<String> result = Oql.defaultProvider()
+      .select(projection)
+      .from(people)
+      .where(person -> person.getAge() < 13)
+      .or(person -> person.getAge() > 50)
+      .orderBy(Comparator.comparing(Person::getAge))
+      .execute();
+
+    assertThat(result).isNotNull();
+    assertThat(result).containsExactly("Cookie Doe", "Joe Doe", "Dill Doe");
   }
 
   @Getter

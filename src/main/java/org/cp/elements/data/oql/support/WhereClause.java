@@ -89,6 +89,6 @@ public record WhereClause<S, T>(From<S, T> from, Predicate<S> predicate) impleme
 
   @Override
   public OrderBy<S, T> orderBy(Comparator<S> comparator) {
-    return OrderByClause.of(getFrom(), comparator);
+    return OrderByClause.copy(OrderByClause.of(getFrom(), comparator));
   }
 }
