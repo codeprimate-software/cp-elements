@@ -13,11 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.data.mapping;
 
 /**
- * The {@link MappingException} class is a {@link RuntimeException} thrown when a data mapping error occurs.
+ * Java {@link RuntimeException} thrown when a data mapping error occurs.
  *
  * @author John Blum
  * @see java.lang.RuntimeException
