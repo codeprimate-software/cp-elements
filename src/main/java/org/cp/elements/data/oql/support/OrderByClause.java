@@ -58,7 +58,7 @@ public record OrderByClause<S, T>(From<S, T> from, Comparator<S> comparator) imp
   }
 
   private static <S> Comparator<S> defaultSort() {
-    return (comparableOne, comparableTwo) -> 0;
+    return new NoOrder<>();
   }
 
   public OrderByClause {
@@ -84,5 +84,18 @@ public record OrderByClause<S, T>(From<S, T> from, Comparator<S> comparator) imp
   @Override
   public OrderBy<S, T> thenOrderBy(Comparator<S> comparator) {
     return copy(OrderBy.super.thenOrderBy(comparator));
+  }
+
+  protected static class NoOrder<S> implements Comparator<S> {
+
+    @Override
+    public int compare(S comparableOne, S comparableTwo) {
+      return 0;
+    }
+
+    @Override
+    public String toString() {
+      return "No Order";
+    }
   }
 }
