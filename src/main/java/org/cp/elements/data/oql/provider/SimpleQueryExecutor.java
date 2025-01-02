@@ -91,11 +91,6 @@ public class SimpleQueryExecutor<S, T> implements Oql.QueryExecutor<S, T> {
     return (comparableOne, comparableTwo) -> 0;
   }
 
-  private List<T> sort(List<T> list, Comparator<T> comparator) {
-    list.sort(comparator);
-    return list;
-  }
-
   private <S> Stream<S> stream(Iterable<S> collection) {
     return StreamUtils.stream(CollectionUtils.nullSafeIterable(collection));
   }
