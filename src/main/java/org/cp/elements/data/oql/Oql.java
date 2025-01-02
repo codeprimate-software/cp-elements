@@ -206,7 +206,9 @@ public interface Oql extends DslExtension, FluentApiExtension {
 
     Select<S, T> getSelection();
 
-    Class<S> getType();
+    default Class<S> getType() {
+      return getSelection().getProjection().getFromType();
+    }
 
     default Optional<Where<S, T>> getWhere() {
       return Optional.empty();
