@@ -75,6 +75,18 @@ public abstract class StreamUtils {
   }
 
   /**
+   * Null-safe method ued to evaluate a given {@link Streamable} for a {@literal null} reference.
+   *
+   * @param <T> {@link Class type} of elements in the {@link Stream}.
+   * @param streamable {@link Streamable} object to evaluate.
+   * @return the given {@link Streamable} if not {@literal null}, otherwise return an empty {@link Streamable}.
+   * @see org.cp.elements.util.stream.Streamable
+   */
+  public static @NotNull <T> Streamable<T> nullSafeStreamable(@Nullable Streamable<T> streamable) {
+    return streamable != null ? streamable : StreamUtils::empty;
+  }
+
+  /**
    * Returns a {@link Stream} from the given array of elements.
    *
    * @param <T> {@link Class type} of elements in the array.

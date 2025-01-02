@@ -82,6 +82,25 @@ public class StreamUtilsUnitTests {
   }
 
   @Test
+  void nullSafeStreamableWithNonNullStreamable() {
+
+    Streamable<?> mockStreamable = mock(Streamable.class);
+
+    assertThat(StreamUtils.nullSafeStreamable(mockStreamable)).isSameAs(mockStreamable);
+
+    verifyNoInteractions(mockStreamable);
+  }
+
+  @Test
+  void nullSafeStreamableWithNullStreamableIsNullSafe() {
+
+    Streamable<?> streamable = StreamUtils.nullSafeStreamable(null);
+
+    assertThat(streamable).isNotNull();
+    assertThat(streamable.stream()).isEmpty();
+  }
+
+  @Test
   public void streamFromArray() {
 
     String[] array = { "test", "testing", "tested" };
