@@ -48,7 +48,7 @@ public class SimpleQueryExecutor<S, T> implements Oql.QueryExecutor<S, T> {
 
     Iterable<S> collection = query.collection();
 
-    Select<S, T> selection = query.getSelection();
+    Select<S, T> selection = query.selection();
 
     Stream<T> stream = stream(collection)
       .filter(resolvePredicate(query))
@@ -67,7 +67,7 @@ public class SimpleQueryExecutor<S, T> implements Oql.QueryExecutor<S, T> {
   @SuppressWarnings("unchecked")
   private Predicate<S> resolvePredicate(Query<S, T> query) {
 
-    return query.getPredicate()
+    return query.predicate()
       .map(Where::getPredicate)
       .orElseGet(() -> (Predicate<S>) CannedPredicates.ACCEPT_ALL);
   }
@@ -82,7 +82,7 @@ public class SimpleQueryExecutor<S, T> implements Oql.QueryExecutor<S, T> {
 
   private Comparator<S> resolveSort(Query<S, T> query) {
 
-    return query.getOrder()
+    return query.orderBy()
       .map(OrderBy::getOrder)
       .orElseGet(this::defaultSort);
   }

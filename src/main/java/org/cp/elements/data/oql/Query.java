@@ -49,19 +49,19 @@ public interface Query<S, T> {
 
   From<S, T> getFrom();
 
-  default Select<S, T> getSelection() {
+  default Select<S, T> selection() {
     return getFrom().getSelection();
   }
 
-  default Optional<Where<S, T>> getPredicate() {
+  default Optional<Where<S, T>> predicate() {
     return getFrom().getWhere();
   }
 
-  default Optional<OrderBy<S, T>> getOrder() {
+  default Optional<OrderBy<S, T>> orderBy() {
     return getFrom().getOrderBy();
   }
 
-  default Optional<GroupBy<S, T>> getGrouping() {
+  default Optional<GroupBy<S, T>> groupBy() {
     return getFrom().getGroupBy();
   }
 
