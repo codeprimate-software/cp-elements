@@ -33,6 +33,8 @@ import org.cp.elements.lang.annotation.Dsl;
 import org.cp.elements.lang.annotation.FluentApi;
 import org.cp.elements.lang.annotation.NotNull;
 import org.cp.elements.service.loader.ServiceLoaderSupport;
+import org.cp.elements.util.CollectionUtils;
+import org.cp.elements.util.stream.StreamUtils;
 
 /**
  * Interface defining an {@literal Object Query Language (OQL)}
@@ -86,6 +88,14 @@ public interface Oql extends DslExtension, FluentApiExtension {
   @Dsl
   <S, T> Select<S, T> select(Projection<S, T> projection);
 
+  /**
+   * Interface defining a contract to {@literal project} an {@link Object element} from the {@link Iterable collection}
+   * into an {@link Object} of the declared {@link Class type} as defined by the {@link ObjectMapper object mapping}.
+   *
+   * @param <S> {@link Class type} of {@link Object elements} in the {@link Iterable collection} being queried.
+   * @param <T> {@link Class type} of the {@link Projection}.
+   * @see org.cp.elements.data.oql.Oql.ObjectMapper
+   */
   @FunctionalInterface
   interface Projection<S, T> extends ObjectMapper<S, T> {
 
@@ -372,6 +382,11 @@ public interface Oql extends DslExtension, FluentApiExtension {
   }
 
   interface Executable<T> {
+
+    default Long count() {
+      Iterable<T> results = execute();
+      return StreamUtils.stream(CollectionUtils.nullSafeIterable(results)).count();
+    }
 
     default Iterable<T> execute() {
       throw newUnsupportedOperationException(Constants.UNSUPPORTED_OPERATION);

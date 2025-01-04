@@ -43,6 +43,21 @@ import lombok.ToString;
  */
 public class OqlUnitTests {
 
+  private static final Set<Person> PEOPLE = Set.of(
+    Person.named("Jon", "Doe").withAge(42).asMale(),
+    Person.named("Jane", "Doe").withAge(48).asFemale(),
+    Person.named("Bob", "Doe").withAge(24).asMale(),
+    Person.named("Cookie", "Doe").withAge(8).asFemale(),
+    Person.named("Dill", "Doe").withAge(51).asMale(),
+    Person.named("Fro", "Doe").withAge(21).asMale(),
+    Person.named("Hoe", "Doe").withAge(33).asFemale(),
+    Person.named("Joe", "Doe").withAge(12).asMale(),
+    Person.named("Lan", "Doe").withAge(47).asMale(),
+    Person.named("Moe", "Doe").withAge(19).asMale(),
+    Person.named("Pie", "Doe").withAge(16).asFemale(),
+    Person.named("Sour", "Doe").withAge(13).asFemale()
+  );
+
   @Test
   void projection() {
 
@@ -184,25 +199,12 @@ public class OqlUnitTests {
   @Test
   void queryProjectionWithOrCondition() {
 
-    Set<Person> people = Set.of(
-      Person.named("Jon", "Doe").withAge(42),
-      Person.named("Jane", "Doe").withAge(48),
-      Person.named("Bob", "Doe").withAge(24),
-      Person.named("Cookie", "Doe").withAge(8),
-      Person.named("Dill", "Doe").withAge(51),
-      Person.named("Fro", "Doe").withAge(21),
-      Person.named("Joe", "Doe").withAge(12),
-      Person.named("Moe", "Doe").withAge(19),
-      Person.named("Pie", "Doe").withAge(16),
-      Person.named("Sour", "Doe").withAge(13)
-    );
-
     Projection<Person, String> projection = Projection.<Person, String>of(String.class)
       .mappedWith(Person::getName);
 
     Iterable<String> result = Oql.defaultProvider()
       .select(projection)
-      .from(people)
+      .from(PEOPLE)
       .where(person -> person.getAge() < 13)
       .or(person -> person.getAge() > 50)
       .orderBy(Comparator.comparing(Person::getAge))
@@ -210,6 +212,72 @@ public class OqlUnitTests {
 
     assertThat(result).isNotNull();
     assertThat(result).containsExactly("Cookie Doe", "Joe Doe", "Dill Doe");
+  }
+
+  @Test
+  void countAll() {
+
+    Long count = Oql.defaultProvider()
+      .select(Projection.star(Person.class))
+      .from(PEOPLE)
+      .count();
+
+    assertThat(count).isNotNull();
+    assertThat(count).isEqualTo(PEOPLE.size());
+  }
+
+  @Test
+  void countFemales() {
+
+    Long count = Oql.defaultProvider()
+      .select(Projection.star(Person.class))
+      .from(PEOPLE)
+      .where(Person::isFemale)
+      .count();
+
+    assertThat(count).isNotNull();
+    assertThat(count).isEqualTo(5L);
+  }
+
+  @Test
+  void countMatureMales() {
+
+    Long count = Oql.defaultProvider()
+      .select(Projection.star(Person.class))
+      .from(PEOPLE)
+      .where(Person::isMale)
+      .and(person -> person.getAge() > 17)
+      .count();
+
+    assertThat(count).isNotNull();
+    assertThat(count).isEqualTo(6L);
+  }
+
+  @Test
+  void countTeenagers() {
+
+    Long count = Oql.defaultProvider()
+      .select(Projection.star(Person.class))
+      .from(PEOPLE)
+      .where(person -> person.getAge() > 12)
+      .and(person -> person.getAge() < 17)
+      .count();
+
+    assertThat(count).isNotNull();
+    assertThat(count).isEqualTo(2L);
+  }
+
+  @Test
+  void countZero() {
+
+    Long count = Oql.defaultProvider()
+      .select(Projection.star(Person.class))
+      .from(PEOPLE)
+      .where(Person::isNonBinary)
+      .count();
+
+    assertThat(count).isNotNull();
+    assertThat(count).isZero();
   }
 
   @Getter
@@ -227,6 +295,8 @@ public class OqlUnitTests {
     private final String firstName;
     private final String lastName;
 
+    private Gender gender;
+
     private int age;
 
     @Override
@@ -239,10 +309,45 @@ public class OqlUnitTests {
       return NAME_FORMAT.formatted(getFirstName(), getLastName());
     }
 
+    boolean isFemale() {
+      return Gender.isFemale(getGender());
+    }
+
+    boolean isMale() {
+      return Gender.isMale(getGender());
+    }
+
+    boolean isNonBinary() {
+      return getGender() == null;
+    }
+
+    Person asFemale() {
+      this.gender = Gender.FEMALE;
+      return this;
+    }
+
+    Person asMale() {
+      this.gender = Gender.MALE;
+      return this;
+    }
+
     Person withAge(int age) {
       Assert.isTrue(age > 0, "Person's age must be greater than 0");
       this.age = age;
       return this;
+    }
+  }
+
+  enum Gender {
+
+    FEMALE, MALE;
+
+    static boolean isFemale(Gender gender) {
+      return FEMALE.equals(gender);
+    }
+
+    static boolean isMale(Gender gender) {
+      return MALE.equals(gender);
     }
   }
 }
