@@ -57,6 +57,8 @@ public class OqlUnitTests {
     Person.named("Sour", "Doe").withAge(13).asFemale()
   );
 
+  private static final Person[] PEOPLE_ARRAY = PEOPLE.toArray(new Person[0]);
+
   @Test
   void projection() {
 
@@ -307,6 +309,29 @@ public class OqlUnitTests {
 
     assertThat(count).isNotNull();
     assertThat(count).isZero();
+  }
+
+  @Test
+  void oqlAsQuery() {
+
+    Query<Person, String> query = Oql.defaultProvider()
+      .select(Oql.Projection.<Person, String>of(String.class).mappedWith(Person::getName))
+      .from(PEOPLE)
+      .where(person -> "doe".equalsIgnoreCase(person.getLastName()))
+      .orderBy(Comparator.comparing(Person::getAge)).descending()
+      .asQuery();
+
+    assertThat(query).isNotNull();
+    assertThat(query.selection()).isNotNull();
+    assertThat(query.selection().isDistinct()).isFalse();
+    assertThat(query.selection().getProjection()).isNotNull();
+    assertThat(query.selection().getProjection().getType()).isEqualTo(String.class);
+    assertThat(query.selection().getProjection().getFromType()).isEqualTo(Person.class);
+    assertThat(query.getFrom()).isNotNull();
+    assertThat(query.getFrom().getCollection()).containsExactlyInAnyOrder(PEOPLE_ARRAY);
+    assertThat(query.predicate()).isPresent();
+    assertThat(query.orderBy()).isPresent();
+    assertThat(query.groupBy()).isNotPresent();
   }
 
   @Getter
