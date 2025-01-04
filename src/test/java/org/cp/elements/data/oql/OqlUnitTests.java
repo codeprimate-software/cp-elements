@@ -23,7 +23,6 @@ import java.util.Set;
 
 import org.junit.jupiter.api.Test;
 
-import org.cp.elements.data.oql.Oql.Projection;
 import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.Nameable;
 
@@ -61,7 +60,7 @@ public class OqlUnitTests {
   @Test
   void projection() {
 
-    Projection<Person, String> projection = Oql.Projection.<Person, String>of(String.class)
+    Oql.Projection<Person, String> projection = Oql.Projection.<Person, String>of(String.class)
       .fromType(Person.class)
       .mappedWith(Person::getName);
 
@@ -84,7 +83,7 @@ public class OqlUnitTests {
   void projectionWithNullFromType() {
 
     assertThatIllegalArgumentException()
-      .isThrownBy(() -> Projection.of(String.class).fromType(null))
+      .isThrownBy(() -> Oql.Projection.of(String.class).fromType(null))
       .withMessage("From type is required")
       .withNoCause();
   }
@@ -93,9 +92,35 @@ public class OqlUnitTests {
   void projectionWithNullFunction() {
 
     assertThatIllegalArgumentException()
-      .isThrownBy(() -> Projection.of(String.class).mappedWith(null))
+      .isThrownBy(() -> Oql.Projection.of(String.class).mappedWith(null))
       .withMessage("Mapping Function is required")
       .withNoCause();
+  }
+
+  @Test
+  void projectionWithSelection() {
+
+    Oql.Projection<Person, String> projection = Oql.Projection.of(String.class);
+
+    projection = Oql.defaultProvider()
+      .select(projection)
+      .from(PEOPLE)
+      .getSelection()
+      .getProjection();
+
+    assertThat(projection).isNotNull();
+    assertThat(projection.getType()).isEqualTo(String.class);
+    assertThat(projection.getFromType()).isEqualTo(Person.class);
+  }
+
+  @Test
+  void projectionWithoutSelection() {
+
+    Oql.Projection<Person, Person> projection = Oql.Projection.star();
+
+    assertThat(projection).isNotNull();
+    assertThat(projection.getType()).isEqualTo(Object.class);
+    assertThat(projection.getFromType()).isEqualTo(Object.class);
   }
 
   @Test
@@ -126,7 +151,7 @@ public class OqlUnitTests {
       Person.named("Jane", "Doe")
     );
 
-    Projection<Person, String> projection = Projection.<Person, String>of(String.class)
+    Oql.Projection<Person, String> projection = Oql.Projection.<Person, String>of(String.class)
       .mappedWith(Person::getName);
 
     Iterable<String> result = Oql.defaultProvider()
@@ -147,7 +172,7 @@ public class OqlUnitTests {
       Person.named("Jon", "Doe").withAge(42)
     );
 
-    Projection<Person, String> projection = Projection.<Person, String>of(String.class)
+    Oql.Projection<Person, String> projection = Oql.Projection.<Person, String>of(String.class)
       .mappedWith(Person::getName);
 
     Iterable<String> result = Oql.defaultProvider()
@@ -171,7 +196,7 @@ public class OqlUnitTests {
       Person.named("Sandy", "Handy").withAge(47)
     );
 
-    Projection<Person, String> projection = Projection.<Person, String>of(String.class)
+    Oql.Projection<Person, String> projection = Oql.Projection.<Person, String>of(String.class)
       .mappedWith(Person::getName);
 
     Iterable<String> result = Oql.defaultProvider()
@@ -190,7 +215,7 @@ public class OqlUnitTests {
   @Test
   void queryProjectionWithOrCondition() {
 
-    Projection<Person, String> projection = Projection.<Person, String>of(String.class)
+    Oql.Projection<Person, String> projection = Oql.Projection.<Person, String>of(String.class)
       .mappedWith(Person::getName);
 
     Iterable<String> result = Oql.defaultProvider()

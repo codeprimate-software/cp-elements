@@ -25,6 +25,7 @@ import org.cp.elements.data.oql.Oql.From;
 import org.cp.elements.data.oql.Oql.GroupBy;
 import org.cp.elements.data.oql.Oql.Grouping;
 import org.cp.elements.data.oql.Oql.OrderBy;
+import org.cp.elements.data.oql.Oql.Projection;
 import org.cp.elements.data.oql.Oql.Select;
 import org.cp.elements.data.oql.Oql.Where;
 import org.cp.elements.lang.Assert;
@@ -126,7 +127,18 @@ public class FromClause<S, T> implements Oql.From<S, T> {
 
   protected FromClause<S, T> withSelection(Select<S, T> selection) {
     this.selection = ObjectUtils.requireObject(selection, "Selection is required");
+    initProjectionFromType(selection);
     return this;
+  }
+
+  private void initProjectionFromType(Select<S, T> selection) {
+
+    Projection<S, T> projection = selection.getProjection();
+    Class<S> fromType = selection.getProjection().getFromType();
+
+    if (Object.class.equals(fromType)) {
+      projection.fromType(getType());
+    }
   }
 
   protected FromClause<S, T> withWhere(Where<S, T> where) {
