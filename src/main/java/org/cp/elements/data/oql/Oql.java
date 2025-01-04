@@ -42,6 +42,9 @@ import org.cp.elements.util.stream.StreamUtils;
  *
  * @author John Blum
  * @see java.lang.Iterable
+ * @see java.util.Comparator
+ * @see java.util.function.Function
+ * @see java.util.function.Predicate
  * @see org.cp.elements.lang.DslExtension
  * @see org.cp.elements.lang.FluentApiExtension
  * @see org.cp.elements.lang.annotation.Dsl
@@ -245,13 +248,13 @@ public interface Oql extends DslExtension, FluentApiExtension {
       throw newUnsupportedOperationException(Constants.UNSUPPORTED_OPERATION);
     }
 
+    default Query<S, T> asQuery() {
+      return Query.from(this);
+    }
+
     @Override
     default Iterable<T> execute() {
       return asQuery().execute();
-    }
-
-    default Query<S, T> asQuery() {
-      return Query.from(this);
     }
   }
 
@@ -303,9 +306,13 @@ public interface Oql extends DslExtension, FluentApiExtension {
       throw newUnsupportedOperationException(Constants.UNSUPPORTED_OPERATION);
     }
 
+    default Query<S, T> asQuery() {
+      return getFrom().asQuery();
+    }
+
     @Override
     default Iterable<T> execute() {
-      return getFrom().execute();
+      return asQuery().execute();
     }
   }
 
@@ -352,9 +359,13 @@ public interface Oql extends DslExtension, FluentApiExtension {
       return of(getFrom(), this.getOrder().thenComparing(comparator));
     }
 
+    default Query<S, T> asQuery() {
+      return getFrom().asQuery();
+    }
+
     @Override
     default Iterable<T> execute() {
-      return getFrom().execute();
+      return asQuery().execute();
     }
   }
 
@@ -373,12 +384,21 @@ public interface Oql extends DslExtension, FluentApiExtension {
       throw newUnsupportedOperationException(Constants.UNSUPPORTED_OPERATION);
     }
 
+    default Query<S, T> asQuery() {
+      return getFrom().asQuery();
+    }
+
     @Override
     default Iterable<T> execute() {
-      return getFrom().execute();
+      return asQuery().execute();
     }
   }
 
+  /**
+   * Interface defining a contract for an {@literal OQL} query statement that can be executed or counted.
+   *
+   * @param <T> {@link Class type} of the result.
+   */
   interface Executable<T> {
 
     default Long count() {
@@ -391,9 +411,19 @@ public interface Oql extends DslExtension, FluentApiExtension {
     }
   }
 
+  /**
+   * Interface defining a group of similar {@link Object elements} from a {@link Iterable collection}.
+   */
   interface Grouping {
   }
 
+  /**
+   * Interface defining a contract for an {@literal OQL} {@link Object} capable of
+   * mapping one {@link Class type} to another.
+   *
+   * @param <S> source {@link Class type}.
+   * @param <T> target {@link Class type}.
+   */
   interface ObjectMapper<S, T> {
 
     default T map(S target) {
@@ -421,6 +451,12 @@ public interface Oql extends DslExtension, FluentApiExtension {
     }
   }
 
+  /**
+   * Component capable of executing an {@literal OQL} query.
+   *
+   * @param <S> {@link Class type} defining the {@link Object elements} in the {@link Iterable collection} to query.
+   * @param <T> {@link Class type} of {@link Object project elements} in the {@link Iterable result}.
+   */
   interface QueryExecutor<S, T> {
 
     default Iterable<T> execute(Query<S, T> query) {
