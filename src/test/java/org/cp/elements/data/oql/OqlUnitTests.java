@@ -81,15 +81,6 @@ public class OqlUnitTests {
   }
 
   @Test
-  void projectionStarWithNullType() {
-
-    assertThatIllegalArgumentException()
-      .isThrownBy(() -> Oql.Projection.star(null))
-      .withMessage("Type is required")
-      .withNoCause();
-  }
-
-  @Test
   void projectionWithNullFromType() {
 
     assertThatIllegalArgumentException()
@@ -117,7 +108,7 @@ public class OqlUnitTests {
     );
 
     Iterable<Person> result = Oql.defaultProvider()
-      .select(Projection.star(Person.class))
+      .select(Oql.Projection.<Person>star())
       .from(people)
       .execute();
 
@@ -218,7 +209,7 @@ public class OqlUnitTests {
   void countAll() {
 
     Long count = Oql.defaultProvider()
-      .select(Projection.star(Person.class))
+      .select(Oql.Projection.<Person>star())
       .from(PEOPLE)
       .count();
 
@@ -230,7 +221,7 @@ public class OqlUnitTests {
   void countFemales() {
 
     Long count = Oql.defaultProvider()
-      .select(Projection.star(Person.class))
+      .select(Oql.Projection.<Person>star())
       .from(PEOPLE)
       .where(Person::isFemale)
       .count();
@@ -243,7 +234,7 @@ public class OqlUnitTests {
   void countMatureMales() {
 
     Long count = Oql.defaultProvider()
-      .select(Projection.star(Person.class))
+      .select(Oql.Projection.<Person>star())
       .from(PEOPLE)
       .where(Person::isMale)
       .and(person -> person.getAge() > 17)
@@ -254,10 +245,23 @@ public class OqlUnitTests {
   }
 
   @Test
+  void countOne() {
+
+    Long count = Oql.defaultProvider()
+      .select(Oql.Projection.<Person>star())
+      .from(PEOPLE)
+      .where(person -> person.getName().equalsIgnoreCase("jon doe"))
+      .count();
+
+    assertThat(count).isNotNull();
+    assertThat(count).isOne();
+  }
+
+  @Test
   void countTeenagers() {
 
     Long count = Oql.defaultProvider()
-      .select(Projection.star(Person.class))
+      .select(Oql.Projection.<Person>star())
       .from(PEOPLE)
       .where(person -> person.getAge() > 12)
       .and(person -> person.getAge() < 17)
@@ -271,7 +275,7 @@ public class OqlUnitTests {
   void countZero() {
 
     Long count = Oql.defaultProvider()
-      .select(Projection.star(Person.class))
+      .select(Oql.Projection.<Person>star())
       .from(PEOPLE)
       .where(Person::isNonBinary)
       .count();

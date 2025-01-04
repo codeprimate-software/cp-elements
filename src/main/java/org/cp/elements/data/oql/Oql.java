@@ -106,9 +106,7 @@ public interface Oql extends DslExtension, FluentApiExtension {
     }
 
     @Dsl
-    static <S> Projection<S, S> star(Class<S> type) {
-
-      Assert.notNull(type, "Type is required");
+    static <S> Projection<S, S> star() {
 
       return new Projection<>() {
 
@@ -116,7 +114,7 @@ public interface Oql extends DslExtension, FluentApiExtension {
 
         @Override
         public Class<S> getType() {
-          return type;
+          return getFromType();
         }
 
         @Override
