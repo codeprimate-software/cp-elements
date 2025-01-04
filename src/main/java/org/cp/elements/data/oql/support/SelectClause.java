@@ -50,7 +50,7 @@ public class SelectClause<S, T> implements Oql.Select<S, T> {
   private final Projection<S, T> projection;
 
   public SelectClause(@NotNull Projection<S, T> projection) {
-    this.projection = ObjectUtils.requireObject(projection, "Projection is required");
+    this.projection = ProjectionWrapper.wrap(projection);
   }
 
   @Override
@@ -87,6 +87,48 @@ public class SelectClause<S, T> implements Oql.Select<S, T> {
     @Override
     public From<S, T> from(Iterable<S> collection) {
       return buildFrom(select(), collection);
+    }
+  }
+
+  static class ProjectionWrapper<S, T> implements Oql.Projection<S, T> {
+
+    static <S, T> ProjectionWrapper<S, T> wrap(@NotNull Projection<S, T> projection) {
+      return new ProjectionWrapper<>(projection);
+    }
+
+    private volatile Class<S> fromType;
+
+    private final Projection<S, T> projection;
+
+    ProjectionWrapper(@NotNull Projection<S, T> projection) {
+      this.projection = ObjectUtils.requireObject(projection, "Projection is required");
+    }
+
+    @Override
+    public Class<S> getFromType() {
+      Class<S> fromType = this.fromType;
+      return fromType != null ? fromType
+        : getProjection().getFromType();
+    }
+
+    protected Projection<S, T> getProjection() {
+      return this.projection;
+    }
+
+    @Override
+    public Class<T> getType() {
+      return getProjection().getType();
+    }
+
+    @Override
+    public Projection<S, T> fromType(Class<S> type) {
+      this.fromType = type;
+      return this;
+    }
+
+    @Override
+    public T map(S target) {
+      return getProjection().map(target);
     }
   }
 }
