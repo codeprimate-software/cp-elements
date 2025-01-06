@@ -23,8 +23,11 @@ import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.stream.Stream;
 
 import org.cp.elements.data.mapping.UndefinedMappingException;
+import org.cp.elements.function.CannedPredicates;
+import org.cp.elements.function.FunctionUtils;
 import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.Constants;
 import org.cp.elements.lang.DslExtension;
@@ -33,8 +36,10 @@ import org.cp.elements.lang.annotation.Dsl;
 import org.cp.elements.lang.annotation.FluentApi;
 import org.cp.elements.lang.annotation.NotNull;
 import org.cp.elements.service.loader.ServiceLoaderSupport;
+import org.cp.elements.util.ArrayUtils;
 import org.cp.elements.util.CollectionUtils;
 import org.cp.elements.util.stream.StreamUtils;
+import org.cp.elements.util.stream.Streamable;
 
 /**
  * Interface defining an {@literal Object Query Language (OQL)}
@@ -244,7 +249,7 @@ public interface Oql extends DslExtension, FluentApiExtension {
     }
 
     @Dsl
-    default GroupBy<S, T> groupBy(Grouping grouping) {
+    default GroupBy<S, T> groupBy(Grouping<S> grouping) {
       throw newUnsupportedOperationException(Constants.UNSUPPORTED_OPERATION);
     }
 
@@ -302,7 +307,7 @@ public interface Oql extends DslExtension, FluentApiExtension {
     }
 
     @Dsl
-    default GroupBy<S, T> groupBy(Grouping grouping) {
+    default GroupBy<S, T> groupBy(Grouping<S> grouping) {
       throw newUnsupportedOperationException(Constants.UNSUPPORTED_OPERATION);
     }
 
@@ -319,7 +324,7 @@ public interface Oql extends DslExtension, FluentApiExtension {
   @FunctionalInterface
   interface OrderBy<S, T> extends Executable<T> {
 
-    static <S, T> OrderBy<S, T> of(From<S, T> from, Comparator<S> comparator) {
+    static <S, T> OrderBy<S, T> of(@NotNull From<S, T> from, @NotNull Comparator<S> comparator) {
 
       Assert.notNull(from, "From is required");
       Assert.notNull(comparator, "Comparator is required");
@@ -372,12 +377,61 @@ public interface Oql extends DslExtension, FluentApiExtension {
   @FunctionalInterface
   interface GroupBy<S, T> extends Executable<T> {
 
+    static <S, T> GroupBy<S, T> of(From<S, T> from, Grouping<S> grouping) {
+
+      Assert.notNull(from, "From is required");
+      Assert.notNull(grouping, "Grouping is required");
+
+      return new GroupBy<>() {
+
+        @Override
+        public From<S, T> getFrom() {
+          return from;
+        }
+
+        @Override
+        public Grouping<S> getGrouping() {
+          return grouping;
+        }
+      };
+    }
+
     default From<S, T> getFrom() {
       throw newIllegalStateException(NO_FROM);
     }
 
+    Grouping<S> getGrouping();
+
+    @SuppressWarnings("unchecked")
+    default Predicate<T> getPredicate() {
+      return (Predicate<T>) CannedPredicates.ACCEPT_ALL;
+    }
+
+    default S compute(S target) {
+      throw newUnsupportedOperationException(Constants.UNSUPPORTED_OPERATION);
+    }
+
     @Dsl
-    GroupBy<S, T> having(Predicate<T> predicate);
+    default GroupBy<S, T> having(Predicate<T> predicate) {
+
+      return new GroupBy<>() {
+
+        @Override
+        public From<S, T> getFrom() {
+          return GroupBy.this.getFrom();
+        }
+
+        @Override
+        public Grouping<S> getGrouping() {
+          return GroupBy.this.getGrouping();
+        }
+
+        @Override
+        public Predicate<T> getPredicate() {
+          return FunctionUtils.nullSafePredicateMatchingAll(predicate);
+        }
+      };
+    }
 
     @Dsl
     default OrderBy<S, T> orderBy(Comparator<S> comparator) {
@@ -413,8 +467,33 @@ public interface Oql extends DslExtension, FluentApiExtension {
 
   /**
    * Interface defining a group of similar {@link Object elements} from a {@link Iterable collection}.
+   *
+   * @param <S> {@link Class type} of {@link Object} from which the {@link Object value}
+   * used in the grouping is calculated.
+   * @see org.cp.elements.util.stream.Streamable
+   * @see java.lang.FunctionalInterface
+   * @see java.lang.Iterable
    */
-  interface Grouping {
+  @FunctionalInterface
+  interface Grouping<S> extends Iterable<Function<S, ?>>, Streamable<Function<S, ?>> {
+
+    @SafeVarargs
+    static <S> Grouping<S> of(Function<S, ?>... functions) {
+      return ArrayUtils.asIterable(functions)::iterator;
+    }
+
+    default int group(S target) {
+
+      return stream()
+        .map(function -> function.apply(target))
+        .map(Object::hashCode)
+        .reduce(Integer::sum)
+        .orElse(0);
+    }
+
+    default Stream<Function<S, ?>> stream() {
+      return StreamUtils.stream(this);
+    }
   }
 
   /**
