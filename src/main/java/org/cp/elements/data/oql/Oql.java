@@ -137,15 +137,27 @@ public interface Oql extends DslExtension, FluentApiExtension {
       };
     }
 
+    /**
+     * Gets the {@link Class type} of the {@link Object elements} in the collection being queried.
+     * <p>
+     * Defaults to {@link Object} class.
+     *
+     * @return the {@link Class type} of the {@link Object elements} in the collection being queried.
+     */
     @SuppressWarnings("unchecked")
     default Class<S> getFromType() {
       return (Class<S>) Object.class;
     }
 
+    /**
+     * Gets the {@link Class type} of the projected query result.
+     *
+     * @return the {@link Class type} of the projected query result.
+     */
     Class<T> getType();
 
     @Dsl
-    default Projection<S, T> fromType(Class<S> type) {
+    default Projection<S, T> fromType(@NotNull Class<S> type) {
 
       Assert.notNull(type, "From type is required");
 
