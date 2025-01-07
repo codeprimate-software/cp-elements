@@ -21,6 +21,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Predicate;
 
 import org.cp.elements.data.oql.Oql;
+import org.cp.elements.data.oql.Oql.Executable;
 import org.cp.elements.data.oql.Oql.From;
 import org.cp.elements.data.oql.Oql.GroupBy;
 import org.cp.elements.data.oql.Oql.Grouping;
@@ -48,6 +49,8 @@ public class FromClause<S, T> implements Oql.From<S, T> {
   public static <S, T> FromClause.Builder<S, T> collection(Iterable<S> collection) {
     return new Builder<>(collection);
   }
+
+  private volatile long limit = Oql.From.DEFAULT_LIMIT;
 
   private final AtomicReference<Class<S>> elementType = new AtomicReference<>();
 
@@ -102,6 +105,11 @@ public class FromClause<S, T> implements Oql.From<S, T> {
   }
 
   @Override
+  public long getLimit() {
+    return this.limit;
+  }
+
+  @Override
   public Optional<GroupBy<S, T>> getGroupBy() {
     return Optional.ofNullable(this.groupBy);
   }
@@ -118,6 +126,13 @@ public class FromClause<S, T> implements Oql.From<S, T> {
     OrderBy<S, T> orderBy = OrderByClause.of(this, comparator);
     withOrderBy(orderBy);
     return orderBy;
+  }
+
+  @Override
+  public Executable<T> limit(long limit) {
+    Assert.isTrue(limit > 0, "Limit [%d] must be greater than 0");
+    this.limit = limit;
+    return this;
   }
 
   @Override

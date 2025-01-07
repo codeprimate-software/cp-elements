@@ -230,6 +230,8 @@ public interface Oql extends DslExtension, FluentApiExtension {
 
   interface From<S, T> extends Executable<T> {
 
+    long DEFAULT_LIMIT = Long.MAX_VALUE;
+
     Iterable<S> getCollection();
 
     Select<S, T> getSelection();
@@ -246,6 +248,10 @@ public interface Oql extends DslExtension, FluentApiExtension {
       return Optional.empty();
     }
 
+    default long getLimit() {
+      return Long.MAX_VALUE;
+    }
+
     default Optional<GroupBy<S, T>> getGroupBy() {
       return Optional.empty();
     }
@@ -257,6 +263,11 @@ public interface Oql extends DslExtension, FluentApiExtension {
 
     @Dsl
     default OrderBy<S, T> orderBy(Comparator<S> comparator) {
+      throw newUnsupportedOperationException(Constants.UNSUPPORTED_OPERATION);
+    }
+
+    @Dsl
+    default Executable<T> limit(long limit) {
       throw newUnsupportedOperationException(Constants.UNSUPPORTED_OPERATION);
     }
 
@@ -319,6 +330,11 @@ public interface Oql extends DslExtension, FluentApiExtension {
     }
 
     @Dsl
+    default Executable<T> limit(long limit) {
+      return getFrom().limit(limit);
+    }
+
+    @Dsl
     default GroupBy<S, T> groupBy(Grouping<S> grouping) {
       throw newUnsupportedOperationException(Constants.UNSUPPORTED_OPERATION);
     }
@@ -369,6 +385,11 @@ public interface Oql extends DslExtension, FluentApiExtension {
     @Dsl
     default OrderBy<S, T> descending() {
       return of(getFrom(), getOrder().reversed());
+    }
+
+    @Dsl
+    default Executable<T> limit(long limit) {
+      return getFrom().limit(limit);
     }
 
     @Dsl
@@ -443,6 +464,11 @@ public interface Oql extends DslExtension, FluentApiExtension {
           return FunctionUtils.nullSafePredicateMatchingAll(predicate);
         }
       };
+    }
+
+    @Dsl
+    default Executable<T> limit(long limit) {
+      return getFrom().limit(limit);
     }
 
     @Dsl
@@ -547,6 +573,7 @@ public interface Oql extends DslExtension, FluentApiExtension {
    *
    * @param <S> {@link Class type} defining the {@link Object elements} in the {@link Iterable collection} to query.
    * @param <T> {@link Class type} of {@link Object project elements} in the {@link Iterable result}.
+   * @see org.cp.elements.data.oql.Query
    */
   interface QueryExecutor<S, T> {
 

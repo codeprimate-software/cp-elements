@@ -129,8 +129,8 @@ public class OqlUnitTests {
   void queryAll() {
 
     Set<Person> people = Set.of(
-      Person.named("Jon", "Doe"),
       Person.named("Jane", "Doe"),
+      Person.named("Jon", "Doe"),
       Person.named("Pie", "Doe")
     );
 
@@ -142,6 +142,20 @@ public class OqlUnitTests {
     assertThat(result).isNotNull();
     assertThat(result).isNotSameAs(people);
     assertThat(result).containsAll(people);
+  }
+
+  @Test
+  void queryLimit() {
+
+    Iterable<Person> result = Oql.defaultProvider()
+      .select(Oql.Projection.<Person>star())
+      .from(PEOPLE)
+      .limit(1)
+      .execute();
+
+    assertThat(result).isNotNull();
+    assertThat(result).hasSize(1);
+    assertThat(PEOPLE).containsAll(result);
   }
 
   @Test
@@ -188,6 +202,23 @@ public class OqlUnitTests {
   }
 
   @Test
+  void queryProjectionWithOrderingAndLimit() {
+
+    Oql.Projection<Person, String> projection = Oql.Projection.<Person, String>as(String.class)
+      .mappedWith(Person::getName);
+
+    Iterable<String> result = Oql.defaultProvider()
+      .select(projection)
+      .from(PEOPLE)
+      .orderBy(Comparator.comparing(Person::getAge).reversed())
+      .limit(4)
+      .execute();
+
+    assertThat(result).isNotNull();
+    assertThat(result).containsExactly("Dill Doe", "Jane Doe", "Lan Doe", "Jon Doe");
+  }
+
+  @Test
   void queryProjectionWithOrderingAndFilter() {
 
     Set<Person> people = Set.of(
@@ -212,6 +243,28 @@ public class OqlUnitTests {
 
     assertThat(result).isNotNull();
     assertThat(result).containsExactly("Jane Doe", "Jon Doe");
+  }
+
+  @Test
+  void queryProjectionWithFilteringAndLimit() {
+
+    Iterable<Person> sortedPeople = PEOPLE.stream()
+      .sorted(Comparator.comparing(Person::getAge))
+      .toList();
+
+    Oql.Projection<Person, String> projection = Oql.Projection.<Person, String>as(String.class)
+      .mappedWith(Person::getName);
+
+    Iterable<String> result = Oql.defaultProvider()
+      .select(projection)
+      .from(sortedPeople)
+      .where(Person::isFemale)
+      .and(person -> person.getAge() < 18)
+      .limit(2)
+      .execute();
+
+    assertThat(result).isNotNull();
+    assertThat(result).containsExactly("Cookie Doe", "Sour Doe");
   }
 
   @Test
