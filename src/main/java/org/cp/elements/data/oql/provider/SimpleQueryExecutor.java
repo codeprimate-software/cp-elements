@@ -59,7 +59,7 @@ public class SimpleQueryExecutor<S, T> implements Oql.QueryExecutor<S, T> {
       stream = stream.distinct();
     }
 
-    stream = stream.limit(query.getFrom().getLimit());
+    stream = stream.limit(query.limit());
 
     List<T> results = stream.toList();
 

@@ -61,6 +61,10 @@ public interface Query<S, T> {
     return getFrom().getOrderBy();
   }
 
+  default long limit() {
+    return getFrom().getLimit();
+  }
+
   default Optional<GroupBy<S, T>> groupBy() {
     return getFrom().getGroupBy();
   }
