@@ -108,7 +108,7 @@ public interface Oql extends DslExtension, FluentApiExtension {
   interface Projection<S, T> extends ObjectMapper<S, T> {
 
     @Dsl
-    static <S, T> Projection<S, T> of(Class<T> type) {
+    static <S, T> Projection<S, T> as(Class<T> type) {
       Assert.notNull(type, "Type is required");
       return () -> type;
     }

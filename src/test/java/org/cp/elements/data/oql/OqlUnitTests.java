@@ -62,7 +62,7 @@ public class OqlUnitTests {
   @Test
   void projection() {
 
-    Oql.Projection<Person, String> projection = Oql.Projection.<Person, String>of(String.class)
+    Oql.Projection<Person, String> projection = Oql.Projection.<Person, String>as(String.class)
       .fromType(Person.class)
       .mappedWith(Person::getName);
 
@@ -76,7 +76,7 @@ public class OqlUnitTests {
   void projectionOfNullType() {
 
     assertThatIllegalArgumentException()
-      .isThrownBy(() -> Oql.Projection.of(null))
+      .isThrownBy(() -> Oql.Projection.as(null))
       .withMessage("Type is required")
       .withNoCause();
   }
@@ -85,7 +85,7 @@ public class OqlUnitTests {
   void projectionWithNullFromType() {
 
     assertThatIllegalArgumentException()
-      .isThrownBy(() -> Oql.Projection.of(String.class).fromType(null))
+      .isThrownBy(() -> Oql.Projection.as(String.class).fromType(null))
       .withMessage("From type is required")
       .withNoCause();
   }
@@ -94,7 +94,7 @@ public class OqlUnitTests {
   void projectionWithNullFunction() {
 
     assertThatIllegalArgumentException()
-      .isThrownBy(() -> Oql.Projection.of(String.class).mappedWith(null))
+      .isThrownBy(() -> Oql.Projection.as(String.class).mappedWith(null))
       .withMessage("Mapping Function is required")
       .withNoCause();
   }
@@ -102,7 +102,7 @@ public class OqlUnitTests {
   @Test
   void projectionWithSelection() {
 
-    Oql.Projection<Person, String> projection = Oql.Projection.of(String.class);
+    Oql.Projection<Person, String> projection = Oql.Projection.as(String.class);
 
     projection = Oql.defaultProvider()
       .select(projection)
@@ -153,7 +153,7 @@ public class OqlUnitTests {
       Person.named("Jane", "Doe")
     );
 
-    Oql.Projection<Person, String> projection = Oql.Projection.<Person, String>of(String.class)
+    Oql.Projection<Person, String> projection = Oql.Projection.<Person, String>as(String.class)
       .mappedWith(Person::getName);
 
     Iterable<String> result = Oql.defaultProvider()
@@ -174,7 +174,7 @@ public class OqlUnitTests {
       Person.named("Jon", "Doe").withAge(42)
     );
 
-    Oql.Projection<Person, String> projection = Oql.Projection.<Person, String>of(String.class)
+    Oql.Projection<Person, String> projection = Oql.Projection.<Person, String>as(String.class)
       .mappedWith(Person::getName);
 
     Iterable<String> result = Oql.defaultProvider()
@@ -198,7 +198,7 @@ public class OqlUnitTests {
       Person.named("Sandy", "Handy").withAge(47)
     );
 
-    Oql.Projection<Person, String> projection = Oql.Projection.<Person, String>of(String.class)
+    Oql.Projection<Person, String> projection = Oql.Projection.<Person, String>as(String.class)
       .mappedWith(Person::getName);
 
     Iterable<String> result = Oql.defaultProvider()
@@ -217,7 +217,7 @@ public class OqlUnitTests {
   @Test
   void queryProjectionWithOrCondition() {
 
-    Oql.Projection<Person, String> projection = Oql.Projection.<Person, String>of(String.class)
+    Oql.Projection<Person, String> projection = Oql.Projection.<Person, String>as(String.class)
       .mappedWith(Person::getName);
 
     Iterable<String> result = Oql.defaultProvider()
@@ -315,7 +315,7 @@ public class OqlUnitTests {
   void oqlAsQuery() {
 
     Query<Person, String> query = Oql.defaultProvider()
-      .select(Oql.Projection.<Person, String>of(String.class).mappedWith(Person::getName))
+      .select(Oql.Projection.<Person, String>as(String.class).mappedWith(Person::getName))
       .from(PEOPLE)
       .where(person -> "doe".equalsIgnoreCase(person.getLastName()))
       .orderBy(Comparator.comparing(Person::getAge)).descending()
