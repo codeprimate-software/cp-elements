@@ -121,7 +121,7 @@ public class FromClause<S, T> implements Oql.From<S, T> {
   }
 
   @Override
-  public GroupBy<S, T> groupBy(@NotNull Grouping grouping) {
+  public GroupBy<S, T> groupBy(@NotNull Grouping<S> grouping) {
     return From.super.groupBy(grouping);
   }
 
