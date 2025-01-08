@@ -228,11 +228,16 @@ public interface Oql extends DslExtension, FluentApiExtension {
     @Dsl From<S, T> from(Iterable<S> collection);
   }
 
-  interface From<S, T> extends FromReference<S, T>, Executable<T> {
+  interface From<S, T> extends ExecutableQuery<S, T> {
 
     long DEFAULT_LIMIT = Long.MAX_VALUE;
 
     Iterable<S> getCollection();
+
+    @Override
+    default From<S, T> getFrom() {
+      return this;
+    }
 
     Select<S, T> getSelection();
 
@@ -256,11 +261,6 @@ public interface Oql extends DslExtension, FluentApiExtension {
       return Optional.empty();
     }
 
-    @Override
-    default From<S, T> getFrom() {
-      return this;
-    }
-
     @Dsl
     default Where<S, T> where(Predicate<S> predicate) {
       throw newUnsupportedOperationException(Constants.UNSUPPORTED_OPERATION);
@@ -280,19 +280,10 @@ public interface Oql extends DslExtension, FluentApiExtension {
     default GroupBy<S, T> groupBy(Grouping<S> grouping) {
       throw newUnsupportedOperationException(Constants.UNSUPPORTED_OPERATION);
     }
-
-    default Query<S, T> asQuery() {
-      return Query.from(this);
-    }
-
-    @Override
-    default Iterable<T> execute() {
-      return asQuery().execute();
-    }
   }
 
   @FunctionalInterface
-  interface Where<S, T> extends FromReference<S, T>, Executable<T> {
+  interface Where<S, T> extends ExecutableQuery<S, T> {
 
     static <S, T> Where<S, T> compose(@NotNull Where<S, T> where, @NotNull Predicate<S> predicate) {
 
@@ -339,19 +330,10 @@ public interface Oql extends DslExtension, FluentApiExtension {
     default GroupBy<S, T> groupBy(Grouping<S> grouping) {
       throw newUnsupportedOperationException(Constants.UNSUPPORTED_OPERATION);
     }
-
-    default Query<S, T> asQuery() {
-      return getFrom().asQuery();
-    }
-
-    @Override
-    default Iterable<T> execute() {
-      return asQuery().execute();
-    }
   }
 
   @FunctionalInterface
-  interface OrderBy<S, T> extends FromReference<S, T>, Executable<T> {
+  interface OrderBy<S, T> extends ExecutableQuery<S, T> {
 
     static <S, T> OrderBy<S, T> of(@NotNull From<S, T> from, @NotNull Comparator<S> comparator) {
 
@@ -393,19 +375,10 @@ public interface Oql extends DslExtension, FluentApiExtension {
     default OrderBy<S, T> thenOrderBy(Comparator<S> comparator) {
       return of(getFrom(), this.getOrder().thenComparing(comparator));
     }
-
-    default Query<S, T> asQuery() {
-      return getFrom().asQuery();
-    }
-
-    @Override
-    default Iterable<T> execute() {
-      return asQuery().execute();
-    }
   }
 
   @FunctionalInterface
-  interface GroupBy<S, T> extends FromReference<S, T>, Executable<T> {
+  interface GroupBy<S, T> extends ExecutableQuery<S, T> {
 
     static <S, T> GroupBy<S, T> of(@NotNull From<S, T> from, @NotNull Grouping<S> grouping) {
 
@@ -468,15 +441,6 @@ public interface Oql extends DslExtension, FluentApiExtension {
     default OrderBy<S, T> orderBy(Comparator<S> comparator) {
       throw newUnsupportedOperationException(Constants.UNSUPPORTED_OPERATION);
     }
-
-    default Query<S, T> asQuery() {
-      return getFrom().asQuery();
-    }
-
-    @Override
-    default Iterable<T> execute() {
-      return asQuery().execute();
-    }
   }
 
   /**
@@ -493,6 +457,27 @@ public interface Oql extends DslExtension, FluentApiExtension {
 
     default Iterable<T> execute() {
       throw newUnsupportedOperationException(Constants.UNSUPPORTED_OPERATION);
+    }
+  }
+
+  /**
+   * Interface defining an {@literal OQL} statement as an {@link Executable} {@link Query}
+   * with a {@link FromReference referecne} to the {@link From} clause.
+   *
+   * @param <S> source {@link Class type}.
+   * @param <T> target {@link Class type}.
+   * @see org.cp.elements.data.oql.Oql.FromReference
+   * @see org.cp.elements.data.oql.Oql.Executable
+   */
+  interface ExecutableQuery<S, T> extends Executable<T>, FromReference<S, T> {
+
+    default Query<S, T> asQuery() {
+      return Query.from(getFrom());
+    }
+
+    @Override
+    default Iterable<T> execute() {
+      return asQuery().execute();
     }
   }
 
