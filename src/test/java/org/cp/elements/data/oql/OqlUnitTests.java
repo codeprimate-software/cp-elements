@@ -391,6 +391,7 @@ public class OqlUnitTests {
   @ToString
   @EqualsAndHashCode
   @RequiredArgsConstructor(access = AccessLevel.PACKAGE)
+  @SuppressWarnings("unused")
   static class Person implements Comparable<Person>, Nameable<String> {
 
     static final String NAME_FORMAT = "%s %s";
@@ -435,6 +436,11 @@ public class OqlUnitTests {
 
     Person asMale() {
       this.gender = Gender.MALE;
+      return this;
+    }
+
+    Person asNonBinary() {
+      this.gender = null;
       return this;
     }
 
