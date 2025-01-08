@@ -228,7 +228,7 @@ public interface Oql extends DslExtension, FluentApiExtension {
     @Dsl From<S, T> from(Iterable<S> collection);
   }
 
-  interface From<S, T> extends Executable<T> {
+  interface From<S, T> extends FromReference<S, T>, Executable<T> {
 
     long DEFAULT_LIMIT = Long.MAX_VALUE;
 
@@ -249,11 +249,16 @@ public interface Oql extends DslExtension, FluentApiExtension {
     }
 
     default long getLimit() {
-      return Long.MAX_VALUE;
+      return DEFAULT_LIMIT;
     }
 
     default Optional<GroupBy<S, T>> getGroupBy() {
       return Optional.empty();
+    }
+
+    @Override
+    default From<S, T> getFrom() {
+      return this;
     }
 
     @Dsl
@@ -287,7 +292,7 @@ public interface Oql extends DslExtension, FluentApiExtension {
   }
 
   @FunctionalInterface
-  interface Where<S, T> extends Executable<T> {
+  interface Where<S, T> extends FromReference<S, T>, Executable<T> {
 
     static <S, T> Where<S, T> compose(@NotNull Where<S, T> where, @NotNull Predicate<S> predicate) {
 
@@ -306,10 +311,6 @@ public interface Oql extends DslExtension, FluentApiExtension {
           return predicate;
         }
       };
-    }
-
-    default From<S, T> getFrom() {
-      throw newIllegalStateException(NO_FROM);
     }
 
     Predicate<S> getPredicate();
@@ -350,7 +351,7 @@ public interface Oql extends DslExtension, FluentApiExtension {
   }
 
   @FunctionalInterface
-  interface OrderBy<S, T> extends Executable<T> {
+  interface OrderBy<S, T> extends FromReference<S, T>, Executable<T> {
 
     static <S, T> OrderBy<S, T> of(@NotNull From<S, T> from, @NotNull Comparator<S> comparator) {
 
@@ -369,10 +370,6 @@ public interface Oql extends DslExtension, FluentApiExtension {
           return comparator;
         }
       };
-    }
-
-    default From<S, T> getFrom() {
-      throw newIllegalStateException(NO_FROM);
     }
 
     Comparator<S> getOrder();
@@ -408,7 +405,7 @@ public interface Oql extends DslExtension, FluentApiExtension {
   }
 
   @FunctionalInterface
-  interface GroupBy<S, T> extends Executable<T> {
+  interface GroupBy<S, T> extends FromReference<S, T>, Executable<T> {
 
     static <S, T> GroupBy<S, T> of(@NotNull From<S, T> from, @NotNull Grouping<S> grouping) {
 
@@ -427,10 +424,6 @@ public interface Oql extends DslExtension, FluentApiExtension {
           return grouping;
         }
       };
-    }
-
-    default From<S, T> getFrom() {
-      throw newIllegalStateException(NO_FROM);
     }
 
     Grouping<S> getGrouping();
@@ -500,6 +493,20 @@ public interface Oql extends DslExtension, FluentApiExtension {
 
     default Iterable<T> execute() {
       throw newUnsupportedOperationException(Constants.UNSUPPORTED_OPERATION);
+    }
+  }
+
+  /**
+   * Interface defining a {@literal reference} to an instance of {@link From}.
+   *
+   * @param <S> source {@link Class type}.
+   * @param <T> target {@link Class type}.
+   * @see org.cp.elements.data.oql.Oql.From
+   */
+  interface FromReference<S, T> {
+
+    default From<S, T> getFrom() {
+      throw newIllegalStateException(NO_FROM);
     }
   }
 
