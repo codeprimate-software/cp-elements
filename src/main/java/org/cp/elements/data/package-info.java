@@ -15,12 +15,14 @@
  */
 /**
  * The Elements {@literal data} package is concerned with all things, data, such as caching, compression, conversion,
- * mapping, serialization and complex data structures.
+ * mapping, querying, serialization and complex data structures.
  *
  * @author John Blum
  * @see org.cp.elements.data.caching.Cache
  * @see org.cp.elements.data.compression.Compressor
+ * @see org.cp.elements.data.conversion.Converter
  * @see org.cp.elements.data.conversion.ConversionService
+ * @see org.cp.elements.data.oql.Oql
  * @see org.cp.elements.data.serialization.Serializer
  * @see org.cp.elements.data.struct.BloomFilter
  * @see org.cp.elements.data.struct.KeyValue
