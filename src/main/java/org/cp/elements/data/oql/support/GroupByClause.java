@@ -26,6 +26,7 @@ import org.cp.elements.data.oql.Oql.From;
 import org.cp.elements.data.oql.Oql.Grouping;
 import org.cp.elements.data.oql.Oql.OrderBy;
 import org.cp.elements.lang.Assert;
+import org.cp.elements.lang.Numbered;
 import org.cp.elements.lang.ObjectUtils;
 import org.cp.elements.lang.annotation.NotNull;
 
@@ -112,7 +113,7 @@ public class GroupByClause<S, T> implements Oql.GroupBy<S, T> {
     return OrderByClause.copy(OrderBy.of(getFrom(), comparator));
   }
 
-  public static class Group<S, T> {
+  public static class Group<S, T> implements Numbered {
 
     static <S, T> Group<S, T> with(Oql.GroupBy<S, T> groupBy, int number) {
       return new Group<>(groupBy, number);
@@ -133,8 +134,7 @@ public class GroupByClause<S, T> implements Oql.GroupBy<S, T> {
       return this.groupBy;
     }
 
-    @SuppressWarnings("all")
-    public int getNumber() {
+    public long getNumber() {
       return this.number;
     }
 
