@@ -410,7 +410,7 @@ public interface Oql extends DslExtension, FluentApiExtension {
   @FunctionalInterface
   interface GroupBy<S, T> extends Executable<T> {
 
-    static <S, T> GroupBy<S, T> of(From<S, T> from, Grouping<S> grouping) {
+    static <S, T> GroupBy<S, T> of(@NotNull From<S, T> from, @NotNull Grouping<S> grouping) {
 
       Assert.notNull(from, "From is required");
       Assert.notNull(grouping, "Grouping is required");
@@ -487,7 +487,7 @@ public interface Oql extends DslExtension, FluentApiExtension {
   }
 
   /**
-   * Interface defining a contract for an {@literal OQL} query statement that can be executed or counted.
+   * Interface defining a contract for an {@literal OQL} {@link Query} that can be executed or counted.
    *
    * @param <T> {@link Class type} of the result.
    */
@@ -504,7 +504,7 @@ public interface Oql extends DslExtension, FluentApiExtension {
   }
 
   /**
-   * Interface defining a group of similar {@link Object elements} from a {@link Iterable collection}.
+   * Interface defining a {@literal group} of similar {@link Object elements} from a {@link Iterable collection}.
    *
    * @param <S> {@link Class type} of {@link Object} from which the {@link Object value}
    * used in the grouping is calculated.
@@ -535,8 +535,8 @@ public interface Oql extends DslExtension, FluentApiExtension {
   }
 
   /**
-   * Interface defining a contract for an {@literal OQL} {@link Object} capable of
-   * mapping one {@link Class type} to another.
+   * Interface defining a contract for an {@literal OQL} component capable of mapping an {@link Object}
+   * from one {@link Class type} to another {@link Class type}.
    *
    * @param <S> source {@link Class type}.
    * @param <T> target {@link Class type}.
@@ -569,7 +569,7 @@ public interface Oql extends DslExtension, FluentApiExtension {
   }
 
   /**
-   * Component capable of executing an {@literal OQL} query.
+   * {@literal OQL} component capable of executing an {@literal OQL} {@link Query}.
    *
    * @param <S> {@link Class type} defining the {@link Object elements} in the {@link Iterable collection} to query.
    * @param <T> {@link Class type} of {@link Object project elements} in the {@link Iterable result}.
