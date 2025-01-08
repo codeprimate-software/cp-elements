@@ -36,11 +36,12 @@ import org.cp.elements.lang.annotation.NotNull;
  * @see org.cp.elements.data.oql.Oql.Where
  * @see org.cp.elements.data.oql.Oql.OrderBy
  * @see org.cp.elements.data.oql.Oql.GroupBy
+ * @see org.cp.elements.data.oql.Oql.Executable
  * @since 2.0.0
  */
 @FunctionalInterface
 @SuppressWarnings("unused")
-public interface Query<S, T> {
+public interface Query<S, T> extends Oql.Executable<T> {
 
   static <S, T> Query<S, T> from(@NotNull From<S, T> from) {
     Assert.notNull(from, "From is required");
