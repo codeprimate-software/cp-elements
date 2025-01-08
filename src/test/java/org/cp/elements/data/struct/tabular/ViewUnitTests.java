@@ -39,11 +39,12 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Predicate;
+import java.util.stream.Stream;
 
 import org.junit.jupiter.api.Test;
 
 import org.cp.elements.data.struct.tabular.query.Query;
-
+import org.cp.elements.util.CollectionUtils;
 import org.mockito.ArgumentMatchers;
 
 /**
@@ -55,7 +56,7 @@ import org.mockito.ArgumentMatchers;
  * @see org.cp.elements.data.struct.tabular.View
  * @since 1.0.0
  */
-public class ViewUnitTests {
+class ViewUnitTests {
 
   private Column<?> mockColumn(String name) {
 
@@ -80,7 +81,7 @@ public class ViewUnitTests {
   }
 
   @Test
-  public void containsExistingColumnReturnsTrue() {
+  void containsExistingColumnReturnsTrue() {
 
     Column<?> mockColumn = mockColumn("MockColumn");
 
@@ -98,7 +99,7 @@ public class ViewUnitTests {
   }
 
   @Test
-  public void containsNonExistingColumnReturnsFalse() {
+  void containsNonExistingColumnReturnsFalse() {
 
     Column<?> mockColumn = mockColumn("MockColumn");
 
@@ -116,7 +117,7 @@ public class ViewUnitTests {
   }
 
   @Test
-  public void containsNullColumnIsNullSafeReturnsFalse() {
+  void containsNullColumnIsNullSafeReturnsFalse() {
 
     View mockView = mock(View.class);
 
@@ -130,7 +131,7 @@ public class ViewUnitTests {
   }
 
   @Test
-  public void containsColumnWithNameReturnsTrue() {
+  void containsColumnWithNameReturnsTrue() {
 
     Column<?> mockColumnOne = mockColumn("A");
     Column<?> mockColumnTwo = mockColumn("B");
@@ -156,7 +157,7 @@ public class ViewUnitTests {
   }
 
   @Test
-  public void containsColumnWithNonExistingNameReturnsFalse() {
+  void containsColumnWithNonExistingNameReturnsFalse() {
 
     Column<?> mockColumnOne = mockColumn("A");
     Column<?> mockColumnTwo = mockColumn("B");
@@ -180,7 +181,7 @@ public class ViewUnitTests {
   }
 
   @Test
-  public void containsColumnWithInvalidNameIsSafeReturnsFalse() {
+  void containsColumnWithInvalidNameIsSafeReturnsFalse() {
 
     Column<?> mockColumnOne = mockColumn("A");
     Column<?> mockColumnTwo = mockColumn("B");
@@ -202,7 +203,7 @@ public class ViewUnitTests {
 
   @Test
   @SuppressWarnings("unchecked")
-  public void countReturnsZero() {
+  void countReturnsZero() {
 
     Row mockRowOne = mockRow("ONE");
     Row mockRowTwo = mockRow("TWO");
@@ -222,7 +223,7 @@ public class ViewUnitTests {
 
   @Test
   @SuppressWarnings("unchecked")
-  public void countReturnsSize() {
+  void countReturnsSize() {
 
     Row mockRowOne = mockRow("ONE");
     Row mockRowTwo = mockRow("TWO");
@@ -242,7 +243,7 @@ public class ViewUnitTests {
 
   @Test
   @SuppressWarnings("unchecked")
-  public void countReturnsOne() {
+  void countReturnsOne() {
 
     Row mockRowOne = mockRow("ONE");
     Row mockRowTwo = mockRow("TWO");
@@ -262,7 +263,7 @@ public class ViewUnitTests {
 
   @Test
   @SuppressWarnings({ "rawtypes", "unchecked" })
-  public void countReturnsNumberOfMatchingRows() {
+  void countReturnsNumberOfMatchingRows() {
 
     Predicate mockPredicate = mock(Predicate.class);
 
@@ -290,7 +291,7 @@ public class ViewUnitTests {
   }
 
   @Test
-  public void countWithNullPredicateThrowsIllegalArgumentException() {
+  void countWithNullPredicateThrowsIllegalArgumentException() {
 
     View mockView = mock(View.class);
 
@@ -307,7 +308,7 @@ public class ViewUnitTests {
   }
 
   @Test
-  public void getColumnAtIndexReturnsColumn() {
+  void getColumnAtIndexReturnsColumn() {
 
     Column<?> mockColumnOne = mockColumn("A");
     Column<?> mockColumnTwo = mockColumn("B");
@@ -329,7 +330,7 @@ public class ViewUnitTests {
   }
 
   @Test
-  public void getColumnAtNegativeIndexThrowsException() {
+  void getColumnAtNegativeIndexThrowsException() {
 
     View mockView = mock(View.class);
 
@@ -346,7 +347,7 @@ public class ViewUnitTests {
   }
 
   @Test
-  public void getColumnAtOutOfBoundsIndexThrowsException() {
+  void getColumnAtOutOfBoundsIndexThrowsException() {
 
     Column<?> mockColumnOne = mockColumn("A");
     Column<?> mockColumnTwo = mockColumn("B");
@@ -369,7 +370,7 @@ public class ViewUnitTests {
   }
 
   @Test
-  public void getColumnWithNameReturnsColumn() {
+  void getColumnWithNameReturnsColumn() {
 
     Column<?> mockColumnOne = mockColumn("A");
     Column<?> mockColumnTwo = mockColumn("B");
@@ -392,7 +393,7 @@ public class ViewUnitTests {
   }
 
   @Test
-  public void getColumnWithInvalidNamesIsSafeReturnsEmptyOptional() {
+  void getColumnWithInvalidNamesIsSafeReturnsEmptyOptional() {
 
     Column<?> mockColumn = mockColumn("MockColumn");
 
@@ -412,7 +413,7 @@ public class ViewUnitTests {
   }
 
   @Test
-  public void getColumnWithNonExistingNameReturnsEmptyOptional() {
+  void getColumnWithNonExistingNameReturnsEmptyOptional() {
 
     Column<?> mockColumn = mockColumn("MockColumn");
 
@@ -430,7 +431,7 @@ public class ViewUnitTests {
   }
 
   @Test
-  public void getRowAtIndexReturnsRow() {
+  void getRowAtIndexReturnsRow() {
 
     Row mockRowOne = mockRow("ONE");
     Row mockRowTwo = mockRow("TWO");
@@ -456,7 +457,7 @@ public class ViewUnitTests {
   }
 
   @Test
-  public void getRowAtNegativeIndexThrowsException() {
+  void getRowAtNegativeIndexThrowsException() {
 
     Row mockRow = mockRow("ONE");
 
@@ -478,7 +479,7 @@ public class ViewUnitTests {
   }
 
   @Test
-  public void getRowAtOutOfBoundsIndexThrowsException() {
+  void getRowAtOutOfBoundsIndexThrowsException() {
 
     Row mockRow = mockRow("ONE");
 
@@ -501,7 +502,7 @@ public class ViewUnitTests {
   }
 
   @Test
-  public void getRowAtOverflowIndexThrowsException() {
+  void getRowAtOverflowIndexThrowsException() {
 
     Row mockRowOne = mockRow("ONE");
     Row mockRowTwo = mockRow("TWO");
@@ -526,7 +527,7 @@ public class ViewUnitTests {
   }
 
   @Test
-  public void getRowWithPredicateReturnsRow() {
+  void getRowWithPredicateReturnsRow() {
 
     Row mockRowOne = mockRow("ONE");
     Row mockRowTwo = mockRow("TWO");
@@ -545,7 +546,7 @@ public class ViewUnitTests {
   }
 
   @Test
-  public void getRowWithPredicateReturnsEmptyOptional() {
+  void getRowWithPredicateReturnsEmptyOptional() {
 
     Row mockRowOne = mockRow("ONE");
     Row mockRowTwo = mockRow("TWO");
@@ -563,7 +564,7 @@ public class ViewUnitTests {
   }
 
   @Test
-  public void getRowWithNullPredicateIsNullSafeReturnsEmptyOptional() {
+  void getRowWithNullPredicateIsNullSafeReturnsEmptyOptional() {
 
     Row mockRowOne = mockRow("ONE");
     Row mockRowTwo = mockRow("TWO");
@@ -581,7 +582,7 @@ public class ViewUnitTests {
   }
 
   @Test
-  public void getValueFromRowIndexAndColumnIndexReturnsValue() {
+  void getValueFromRowIndexAndColumnIndexReturnsValue() {
 
     Row mockRow = mock(Row.class);
 
@@ -600,7 +601,7 @@ public class ViewUnitTests {
   }
 
   @Test
-  public void getValueFromRowIndexAndColumnNameReturnsValue() {
+  void getValueFromRowIndexAndColumnNameReturnsValue() {
 
     View mockView = mock(View.class);
 
@@ -617,7 +618,7 @@ public class ViewUnitTests {
   }
 
   @Test
-  public void getValueFromRowIndexAndInvalidColumnNameThrowsException() {
+  void getValueFromRowIndexAndInvalidColumnNameThrowsException() {
 
     View mockView = mockView("MockView");
 
@@ -637,7 +638,7 @@ public class ViewUnitTests {
   }
 
   @Test
-  public void getValueFromRowIndexAndColumnReturnsValue() {
+  void getValueFromRowIndexAndColumnReturnsValue() {
 
     Column<?> mockColumn = mock(Column.class);
 
@@ -657,7 +658,7 @@ public class ViewUnitTests {
   }
 
   @Test
-  public void getValueFromRowIndexAndInvalidColumnThrowsException() {
+  void getValueFromRowIndexAndInvalidColumnThrowsException() {
 
     Column<?> mockColumn = mock(Column.class);
 
@@ -679,7 +680,7 @@ public class ViewUnitTests {
   }
 
   @Test
-  public void indexOfColumnReturnsIndex() {
+  void indexOfColumnReturnsIndex() {
 
     Column<?> mockColumn = mockColumn("MockColumn");
 
@@ -697,7 +698,7 @@ public class ViewUnitTests {
   }
 
   @Test
-  public void indexOfNonExistingColumnReturnsMinusOne() {
+  void indexOfNonExistingColumnReturnsMinusOne() {
 
     Column<?> mockColumn = mockColumn("NonExistingColumn");
 
@@ -715,7 +716,7 @@ public class ViewUnitTests {
   }
 
   @Test
-  public void indexOfNullColumnIsNullSafeReturnsMinusOne() {
+  void indexOfNullColumnIsNullSafeReturnsMinusOne() {
 
     View mockView = mock(View.class);
 
@@ -729,7 +730,7 @@ public class ViewUnitTests {
   }
 
   @Test
-  public void indexOfColumnNameReturnsIndex() {
+  void indexOfColumnNameReturnsIndex() {
 
     Column<?> mockColumnOne = mockColumn("A");
     Column<?> mockColumnTwo = mockColumn("B");
@@ -754,7 +755,7 @@ public class ViewUnitTests {
   }
 
   @Test
-  public void indexOfColumnNameWithNoColumnsIsSafeReturnsMinusOne() {
+  void indexOfColumnNameWithNoColumnsIsSafeReturnsMinusOne() {
 
     View mockView = mock(View.class);
 
@@ -769,7 +770,7 @@ public class ViewUnitTests {
   }
 
   @Test
-  public void indexOfNonExistingColumnNameReturnsMinusOne() {
+  void indexOfNonExistingColumnNameReturnsMinusOne() {
 
     Column<?> mockColumnOne = mockColumn("A");
     Column<?> mockColumnTwo = mockColumn("B");
@@ -792,7 +793,7 @@ public class ViewUnitTests {
   }
 
   @Test
-  public void indexOfNullColumnNameIsNullSafeReturnsMinusOne() {
+  void indexOfNullColumnNameIsNullSafeReturnsMinusOne() {
 
     Column<?> mockColumnOne = mockColumn("A");
     Column<?> mockColumnTwo = mockColumn("B");
@@ -813,7 +814,7 @@ public class ViewUnitTests {
 
   @Test
   @SuppressWarnings("all")
-  public void indexOfRowReturnsIndex() {
+  void indexOfRowReturnsIndex() {
 
     Row mockRowOne = mock(Row.class);
     Row mockRowTwo = mock(Row.class);
@@ -835,7 +836,7 @@ public class ViewUnitTests {
   }
 
   @Test
-  public void indexOfRowWithNoRowsIsSafeReturnsMinusOne() {
+  void indexOfRowWithNoRowsIsSafeReturnsMinusOne() {
 
     Row mockRow = mock(Row.class);
 
@@ -854,7 +855,7 @@ public class ViewUnitTests {
 
   @Test
   @SuppressWarnings("all")
-  public void indexOfNonExitingRowReturnsMinusOne() {
+  void indexOfNonExitingRowReturnsMinusOne() {
 
     Row mockRowOne = mock(Row.class);
     Row mockRowTwo = mock(Row.class);
@@ -873,7 +874,7 @@ public class ViewUnitTests {
   }
 
   @Test
-  public void indexOfNullRowIsNullSafeReturnsMinusOne() {
+  void indexOfNullRowIsNullSafeReturnsMinusOne() {
 
     View mockView = mock(View.class);
 
@@ -887,7 +888,7 @@ public class ViewUnitTests {
   }
 
   @Test
-  public void isEmptyReturnsTrue() {
+  void isEmptyReturnsTrue() {
 
     View mockView = mock(View.class);
 
@@ -902,7 +903,7 @@ public class ViewUnitTests {
   }
 
   @Test
-  public void isEmptyReturnsFalse() {
+  void isEmptyReturnsFalse() {
 
     View mockView = mock(View.class);
 
@@ -917,7 +918,7 @@ public class ViewUnitTests {
   }
 
   @Test
-  public void queryReturnsResults() {
+  void queryReturnsResults() {
 
     Query mockQuery = mock(Query.class);
 
@@ -938,7 +939,7 @@ public class ViewUnitTests {
   }
 
   @Test
-  public void queryWithNullQueryThrowsException() {
+  void queryWithNullQueryThrowsException() {
 
     View mockView = mock(View.class);
 
@@ -954,7 +955,7 @@ public class ViewUnitTests {
   }
 
   @Test
-  public void rowsReturnsThis() {
+  void rowsReturnsThis() {
 
     View mockView = mock(View.class);
 
@@ -967,7 +968,7 @@ public class ViewUnitTests {
   }
 
   @Test
-  public void sizeReturnsCount() {
+  void sizeReturnsCount() {
 
     View mockView = mock(View.class);
 
@@ -982,7 +983,7 @@ public class ViewUnitTests {
   }
 
   @Test
-  public void sizeReturnsRowCount() {
+  void sizeReturnsRowCount() {
 
     Row mockRow = mock(Row.class);
 
@@ -999,5 +1000,23 @@ public class ViewUnitTests {
     verify(mockView, times(1)).rows();
     verifyNoMoreInteractions(mockView);
     verifyNoInteractions(mockRow);
+  }
+
+  @Test
+  void streamCallsSpliterator() {
+
+    View mockView = mock(View.class);
+
+    doReturn(CollectionUtils.emptyIterable().spliterator()).when(mockView).spliterator();
+    doCallRealMethod().when(mockView).stream();
+
+    Stream<?> stream = mockView.stream();
+
+    assertThat(stream).isNotNull();
+    assertThat(stream).isEmpty();
+
+    verify(mockView, times(1)).stream();
+    verify(mockView, times(1)).spliterator();
+    verifyNoMoreInteractions(mockView);
   }
 }

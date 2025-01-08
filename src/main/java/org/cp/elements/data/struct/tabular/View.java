@@ -20,6 +20,7 @@ import static org.cp.elements.lang.RuntimeExceptionsFactory.newIndexOutOfBoundsE
 import java.util.Comparator;
 import java.util.Optional;
 import java.util.function.Predicate;
+import java.util.stream.Stream;
 
 import org.cp.elements.data.struct.tabular.query.Query;
 import org.cp.elements.function.FunctionUtils;
@@ -31,6 +32,7 @@ import org.cp.elements.lang.annotation.NotNull;
 import org.cp.elements.lang.annotation.NullSafe;
 import org.cp.elements.lang.annotation.Nullable;
 import org.cp.elements.util.stream.StreamUtils;
+import org.cp.elements.util.stream.Streamable;
 
 /**
  * Abstract Data Type (ADT) defining a limited view, projection, or image of a tabular data structure.
@@ -44,9 +46,10 @@ import org.cp.elements.util.stream.StreamUtils;
  * @see org.cp.elements.data.struct.tabular.Table
  * @see org.cp.elements.data.struct.tabular.query.Query
  * @see org.cp.elements.lang.Nameable
+ * @see org.cp.elements.util.stream.Streamable
  * @since 1.0.0
  */
-public interface View extends Iterable<Row>, Nameable<String> {
+public interface View extends Iterable<Row>, Nameable<String>, Streamable<Row> {
 
   /**
    * Returns an {@link Iterable} iterating over the {@link Column Columns} in this {@link View}.
@@ -404,5 +407,16 @@ public interface View extends Iterable<Row>, Nameable<String> {
    */
   default int size() {
     return count(row -> true);
+  }
+
+  /**
+   * Streams the {@link Row Rows} in this {@link View}.
+   *
+   * @return a {@link Stream} of {@link Row Rows} in this {@link View}.
+   * @see org.cp.elements.data.struct.tabular.Row
+   * @see java.util.stream.Stream
+   */
+  default Stream<Row> stream() {
+    return StreamUtils.stream(this);
   }
 }
