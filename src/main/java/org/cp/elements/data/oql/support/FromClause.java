@@ -21,7 +21,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Predicate;
 
 import org.cp.elements.data.oql.Oql;
-import org.cp.elements.data.oql.Oql.Executable;
+import org.cp.elements.data.oql.Oql.ExecutableQuery;
 import org.cp.elements.data.oql.Oql.From;
 import org.cp.elements.data.oql.Oql.GroupBy;
 import org.cp.elements.data.oql.Oql.Grouping;
@@ -129,7 +129,7 @@ public class FromClause<S, T> implements Oql.From<S, T> {
   }
 
   @Override
-  public Executable<T> limit(long limit) {
+  public ExecutableQuery<S, T> limit(long limit) {
     Assert.isTrue(limit > 0, "Limit [%d] must be greater than 0");
     this.limit = limit;
     return this;

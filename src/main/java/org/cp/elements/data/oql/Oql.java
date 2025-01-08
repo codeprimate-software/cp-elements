@@ -228,9 +228,7 @@ public interface Oql extends DslExtension, FluentApiExtension {
     @Dsl From<S, T> from(Iterable<S> collection);
   }
 
-  interface From<S, T> extends ExecutableQuery<S, T> {
-
-    long DEFAULT_LIMIT = Long.MAX_VALUE;
+  interface From<S, T> extends ExecutableQuery<S, T>, Limited<S, T> {
 
     Iterable<S> getCollection();
 
@@ -253,10 +251,6 @@ public interface Oql extends DslExtension, FluentApiExtension {
       return Optional.empty();
     }
 
-    default long getLimit() {
-      return DEFAULT_LIMIT;
-    }
-
     default Optional<GroupBy<S, T>> getGroupBy() {
       return Optional.empty();
     }
@@ -272,7 +266,7 @@ public interface Oql extends DslExtension, FluentApiExtension {
     }
 
     @Dsl
-    default Executable<T> limit(long limit) {
+    default ExecutableQuery<S, T> limit(long limit) {
       throw newUnsupportedOperationException(Constants.UNSUPPORTED_OPERATION);
     }
 
@@ -283,7 +277,7 @@ public interface Oql extends DslExtension, FluentApiExtension {
   }
 
   @FunctionalInterface
-  interface Where<S, T> extends ExecutableQuery<S, T> {
+  interface Where<S, T> extends ExecutableQuery<S, T>, Limited<S, T> {
 
     static <S, T> Where<S, T> compose(@NotNull Where<S, T> where, @NotNull Predicate<S> predicate) {
 
@@ -322,18 +316,13 @@ public interface Oql extends DslExtension, FluentApiExtension {
     }
 
     @Dsl
-    default Executable<T> limit(long limit) {
-      return getFrom().limit(limit);
-    }
-
-    @Dsl
     default GroupBy<S, T> groupBy(Grouping<S> grouping) {
       throw newUnsupportedOperationException(Constants.UNSUPPORTED_OPERATION);
     }
   }
 
   @FunctionalInterface
-  interface OrderBy<S, T> extends ExecutableQuery<S, T> {
+  interface OrderBy<S, T> extends ExecutableQuery<S, T>, Limited<S, T> {
 
     static <S, T> OrderBy<S, T> of(@NotNull From<S, T> from, @NotNull Comparator<S> comparator) {
 
@@ -367,18 +356,27 @@ public interface Oql extends DslExtension, FluentApiExtension {
     }
 
     @Dsl
-    default Executable<T> limit(long limit) {
-      return getFrom().limit(limit);
-    }
-
-    @Dsl
     default OrderBy<S, T> thenOrderBy(Comparator<S> comparator) {
       return of(getFrom(), this.getOrder().thenComparing(comparator));
     }
   }
 
+  interface Limited<S, T> extends FromReference<S, T> {
+
+    long DEFAULT_LIMIT = Long.MAX_VALUE;
+
+    default long getLimit() {
+      return DEFAULT_LIMIT;
+    }
+
+    @Dsl
+    default ExecutableQuery<S, T> limit(long limit) {
+      return getFrom().limit(limit);
+    }
+  }
+
   @FunctionalInterface
-  interface GroupBy<S, T> extends ExecutableQuery<S, T> {
+  interface GroupBy<S, T> extends ExecutableQuery<S, T>, Limited<S, T> {
 
     static <S, T> GroupBy<S, T> of(@NotNull From<S, T> from, @NotNull Grouping<S> grouping) {
 
@@ -433,11 +431,6 @@ public interface Oql extends DslExtension, FluentApiExtension {
     }
 
     @Dsl
-    default Executable<T> limit(long limit) {
-      return getFrom().limit(limit);
-    }
-
-    @Dsl
     default OrderBy<S, T> orderBy(Comparator<S> comparator) {
       throw newUnsupportedOperationException(Constants.UNSUPPORTED_OPERATION);
     }
@@ -468,6 +461,7 @@ public interface Oql extends DslExtension, FluentApiExtension {
    * @param <T> target {@link Class type}.
    * @see org.cp.elements.data.oql.Oql.FromReference
    * @see org.cp.elements.data.oql.Oql.Executable
+   * @see org.cp.elements.data.oql.Query
    */
   interface ExecutableQuery<S, T> extends Executable<T>, FromReference<S, T> {
 
@@ -566,6 +560,7 @@ public interface Oql extends DslExtension, FluentApiExtension {
    * @param <S> {@link Class type} defining the {@link Object elements} in the {@link Iterable collection} to query.
    * @param <T> {@link Class type} of {@link Object project elements} in the {@link Iterable result}.
    * @see org.cp.elements.data.oql.Query
+   * @see java.lang.Iterable
    */
   interface QueryExecutor<S, T> {
 
