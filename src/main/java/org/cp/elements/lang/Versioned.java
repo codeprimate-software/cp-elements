@@ -24,8 +24,10 @@ package org.cp.elements.lang;
  * @author John Blum
  * @param <T> {@link Class type} of {@link Object} modeling the {@literal version}.
  * @see <a href="https://en.wikipedia.org/wiki/Optimistic_concurrency_control">Optimistic Concurrency Control (aka Optimistic Locking)</a>
+ * @see java.lang.FunctionalInterface
  * @since 1.0.0
  */
+@FunctionalInterface
 @SuppressWarnings("unused")
 public interface Versioned<T> {
 
