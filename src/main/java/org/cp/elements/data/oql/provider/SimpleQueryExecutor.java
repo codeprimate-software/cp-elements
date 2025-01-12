@@ -28,6 +28,8 @@ import org.cp.elements.data.oql.Oql.Select;
 import org.cp.elements.data.oql.Oql.Where;
 import org.cp.elements.data.oql.Query;
 import org.cp.elements.function.CannedPredicates;
+import org.cp.elements.lang.Assert;
+import org.cp.elements.lang.annotation.NotNull;
 import org.cp.elements.util.CollectionUtils;
 import org.cp.elements.util.stream.StreamUtils;
 
@@ -44,7 +46,9 @@ public class SimpleQueryExecutor<S, T> implements Oql.QueryExecutor<S, T> {
 
   @Override
   @SuppressWarnings("all")
-  public Iterable<T> execute(Query<S, T> query) {
+  public Iterable<T> execute(@NotNull Query<S, T> query) {
+
+    Assert.notNull(query, "Query to execute is required");
 
     Iterable<S> collection = query.collection();
 
