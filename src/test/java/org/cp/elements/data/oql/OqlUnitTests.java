@@ -95,7 +95,7 @@ public class OqlUnitTests {
 
     assertThatIllegalArgumentException()
       .isThrownBy(() -> Oql.Projection.as(String.class).mappedWith(null))
-      .withMessage("Mapping Function is required")
+      .withMessage("Object Mapping Function is required")
       .withNoCause();
   }
 

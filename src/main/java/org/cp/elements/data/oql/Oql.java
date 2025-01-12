@@ -19,6 +19,7 @@ import static org.cp.elements.lang.RuntimeExceptionsFactory.newIllegalStateExcep
 import static org.cp.elements.lang.RuntimeExceptionsFactory.newUnsupportedOperationException;
 
 import java.util.Comparator;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
@@ -63,9 +64,9 @@ public interface Oql extends DslExtension, FluentApiExtension {
   String NO_FROM = "From not initialized";
 
   /**
-   * Returns the default configured {@link Oql} service provider implementation.
+   * Returns the default, configured {@link Oql} service provider implementation.
    *
-   * @return the default configured {@link Oql} service provider implementation.
+   * @return the default, configured {@link Oql} service provider implementation.
    * @see org.cp.elements.data.oql.provider.SimpleOqlProvider
    */
   static Oql defaultProvider() {
@@ -73,7 +74,7 @@ public interface Oql extends DslExtension, FluentApiExtension {
   }
 
   /**
-   * Returns the {@link Oql} service provider implementation of the {@literal OQL} {@link QueryExecutor}.
+   * Returns the {@literal OQL} service provider implementation of the {@link Oql} {@link QueryExecutor}.
    *
    * @param <S> {@link Class type} of {@link Object elements} in the {@link Iterable collection} being queried.
    * @param <T> {@link Class type} of the {@link Projection}.
@@ -84,13 +85,13 @@ public interface Oql extends DslExtension, FluentApiExtension {
   <S, T> QueryExecutor<S, T> executor();
 
   /**
-   * Declares the {@link Select selected data} from the {@link Iterable collection} of {@link Object elements}.
+   * Declares the data {@link Select selected } from the {@link Iterable collection} of {@link Object elements}.
    *
    * @param <S> {@link Class type} of {@link Object elements} in the {@link Iterable collection} being queried.
    * @param <T> {@link Class type} of the {@link Projection}.
-   * @param projection {@link Projection} used to {@literal project} the {@link Object elements}
-   * in the {@link Iterable collection}.
-   * @return a {@link Select object} modeling the selection with the {@link Projection}.
+   * @param projection {@link Projection} used to {@literal project} the result of {@link Object elements}
+   * queried in the {@link Iterable collection}.
+   * @return a {@link Select object} modeling the data selected with the given {@link Projection}.
    * @see org.cp.elements.data.oql.Oql.Select
    */
   @Dsl
@@ -98,17 +99,19 @@ public interface Oql extends DslExtension, FluentApiExtension {
 
   /**
    * Interface defining a contract to {@literal project} an {@link Object element} from the {@link Iterable collection}
-   * into an {@link Object} of the declared {@link Class type} as defined by the {@link ObjectMapper object mapping}.
+   * as an {@link Object} of the declared {@link Class type} mapping by the configured {@link Function object mapping}
+   * using {@link #mappedWith(Function)}.
    *
    * @param <S> {@link Class type} of {@link Object elements} in the {@link Iterable collection} being queried.
    * @param <T> {@link Class type} of the {@link Projection}.
    * @see org.cp.elements.data.oql.Oql.ObjectMapper
+   * @see java.lang.FunctionalInterface
    */
   @FunctionalInterface
   interface Projection<S, T> extends ObjectMapper<S, T> {
 
     @Dsl
-    static <S, T> Projection<S, T> as(Class<T> type) {
+    static <S, T> Projection<S, T> as(@NotNull Class<T> type) {
       Assert.notNull(type, "Type is required");
       return () -> type;
     }
@@ -118,8 +121,6 @@ public interface Oql extends DslExtension, FluentApiExtension {
 
       return new Projection<>() {
 
-        private final Function<S, S> mapper = Function.identity();
-
         @Override
         public Class<S> getType() {
           return getFromType();
@@ -127,12 +128,12 @@ public interface Oql extends DslExtension, FluentApiExtension {
 
         @Override
         public S map(S target) {
-          return this.mapper.apply(target);
+          return target;
         }
 
         @Override
         public Projection<S, S> mappedWith(Function<S, S> mapper) {
-          throw newUnsupportedOperationException(Constants.UNSUPPORTED_OPERATION);
+          throw newUnsupportedOperationException(Constants.OPERATION_NOT_ALLOWED);
         }
       };
     }
@@ -150,9 +151,9 @@ public interface Oql extends DslExtension, FluentApiExtension {
     }
 
     /**
-     * Gets the {@link Class type} of the projected query result.
+     * Gets the {@link Class type} of the {@link T projected query result}.
      *
-     * @return the {@link Class type} of the projected query result.
+     * @return the {@link Class type} of the {@link T projected query result}.
      */
     Class<T> getType();
 
@@ -183,7 +184,7 @@ public interface Oql extends DslExtension, FluentApiExtension {
     @Dsl
     default Projection<S, T> mappedWith(@NotNull Function<S, T> mapper) {
 
-      Assert.notNull(mapper, "Mapping Function is required");
+      Assert.notNull(mapper, "Object Mapping Function is required");
 
       return new Projection<>() {
 
@@ -205,6 +206,13 @@ public interface Oql extends DslExtension, FluentApiExtension {
     }
   }
 
+  /**
+   * Abstract Data Type (ADT) modeling the data {@literal selected} from the {@link Object elements}
+   * in the {@link Iterable collection} to form the result set.
+   *
+   * @param <S> {@link Class type} of {@link Object elements} in the {@link Iterable collection} being queried.
+   * @param <T> {@link Class type} of the {@link Objects} in the {@link Projection projected result set}.
+   */
   interface Select<S, T> {
 
     default boolean isDistinct() {
