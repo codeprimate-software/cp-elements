@@ -1,24 +1,11 @@
-/*
- * Copyright 2017-Present Author or Authors.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package org.cp.elements.data.oql.support;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Predicate;
 
 import org.cp.elements.data.oql.Oql;
@@ -42,6 +29,17 @@ import org.cp.elements.lang.annotation.NotNull;
  */
 public class GroupByClause<S, T> implements Oql.GroupBy<S, T> {
 
+  /**
+   * Factory method used to copy= the given, existing {@link GroupByClause} into a new instance.
+   * <p>
+   * Additionally, associates the new {@link GroupByClause} to the query's {@link From} clause.
+   *
+   * @param <S> {@link Class type} of {@link Object elements} in the {@link Iterable collection} being queried.
+   * @param <T> {@link Class type} of the projected result.
+   * @param groupBy {@link GroupByClause} to copy; required.
+   * @return a new {@link GroupByClause} copied from the given {@link GroupByClause}.
+   * @throws IllegalArgumentException if the {@link GroupByClause} to copy is {@literal null}.
+   */
   public static <S, T> GroupByClause<S, T> copy(@NotNull GroupByClause<S, T> groupBy) {
 
     Assert.notNull(groupBy, "GroupBy clause is required");
@@ -59,6 +57,20 @@ public class GroupByClause<S, T> implements Oql.GroupBy<S, T> {
     return copy;
   }
 
+  /**
+   * Factory method used to construct a new {@link GroupByClause} initialized with the given {@link From}
+   * and {@link Grouping}.
+   *
+   * @param <S> {@link Class type} of {@link Object elements} in the {@link Iterable collection} being queried.
+   * @param <T> {@link Class type} of the projected result.
+   * @param from {@link From} clause to which the {@link GroupByClause} is assigned.
+   * @param grouping {@link Grouping} defining how {@link Object elements} in the {@link Iterable collection}
+   * will be grouped, or combined.
+   * @return a new {@link GroupByClause}.
+   * @throws IllegalArgumentException if {@link From} or {@link Grouping} are {@literal null}.
+   * @see org.cp.elements.data.oql.Oql.Grouping
+   * @see org.cp.elements.data.oql.Oql.From
+   */
   public static <S, T> GroupByClause<S, T> of(@NotNull From<S, T> from, @NotNull Grouping<S> grouping) {
     return new GroupByClause<>(from, grouping);
   }
@@ -121,17 +133,25 @@ public class GroupByClause<S, T> implements Oql.GroupBy<S, T> {
 
     private final int number;
 
-    private final AtomicLong count = new AtomicLong(0L);
-
     private final Oql.GroupBy<S, T> groupBy;
+
+    private final List<S> members = new ArrayList<>();
 
     Group(Oql.GroupBy<S, T> groupBy, int number) {
       this.groupBy = ObjectUtils.requireObject(groupBy, "GroupBy is required");
       this.number = number;
     }
 
+    public long getCount() {
+      return getMembers().size();
+    }
+
     protected Oql.GroupBy<S, T> getGroupBy() {
       return this.groupBy;
+    }
+
+    protected List<S> getMembers() {
+      return Collections.unmodifiableList(this.members);
     }
 
     public long getNumber() {
@@ -139,7 +159,7 @@ public class GroupByClause<S, T> implements Oql.GroupBy<S, T> {
     }
 
     public S apply(S target) {
-      this.count.incrementAndGet();
+      this.members.add(target);
       return target;
     }
   }
