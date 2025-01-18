@@ -77,7 +77,7 @@ public interface Oql extends DslExtension, FluentApiExtension {
    * Returns the {@literal OQL} service provider implementation of the {@link Oql} {@link QueryExecutor}.
    *
    * @param <S> {@link Class type} of {@link Object elements} in the {@link Iterable collection} being queried.
-   * @param <T> {@link Class type} of the {@link Projection}.
+   * @param <T> {@link Class type} of the projected {@link Object elements}.
    * @return the {@link Oql} service provider implementation of the {@literal OQL} {@link QueryExecutor}.
    * @see org.cp.elements.data.oql.provider.SimpleQueryExecutor
    * @see org.cp.elements.data.oql.Oql.QueryExecutor
@@ -88,7 +88,7 @@ public interface Oql extends DslExtension, FluentApiExtension {
    * Declares the data {@link Select selected } from the {@link Iterable collection} of {@link Object elements}.
    *
    * @param <S> {@link Class type} of {@link Object elements} in the {@link Iterable collection} being queried.
-   * @param <T> {@link Class type} of the {@link Projection}.
+   * @param <T> {@link Class type} of the projected {@link Object elements}.
    * @param projection {@link Projection} used to {@literal project} the result of {@link Object elements}
    * queried in the {@link Iterable collection}.
    * @return a {@link Select object} modeling the data selected with the given {@link Projection}.
@@ -99,11 +99,11 @@ public interface Oql extends DslExtension, FluentApiExtension {
 
   /**
    * Interface defining a contract to {@literal project} an {@link Object element} from the {@link Iterable collection}
-   * as an {@link Object} of the declared {@link Class type} mapping by the configured {@link Function object mapping}
+   * as an {@link Object} of the declared {@link T type} mapped by the configured {@link Function object mapping}
    * using {@link #mappedWith(Function)}.
    *
    * @param <S> {@link Class type} of {@link Object elements} in the {@link Iterable collection} being queried.
-   * @param <T> {@link Class type} of the {@link Projection}.
+   * @param <T> {@link Class type} of the projected {@link Object elements}.
    * @see org.cp.elements.data.oql.Oql.ObjectMapper
    * @see java.lang.FunctionalInterface
    */
@@ -139,11 +139,11 @@ public interface Oql extends DslExtension, FluentApiExtension {
     }
 
     /**
-     * Gets the {@link Class type} of the {@link Object elements} in the collection being queried.
+     * Gets the {@link Class type} of the {@link Object elements} in the {@link Iterable collection} being queried.
      * <p>
      * Defaults to {@link Object} class.
      *
-     * @return the {@link Class type} of the {@link Object elements} in the collection being queried.
+     * @return the {@link Class type} of the {@link Object elements} in the {@link Iterable collection} being queried.
      */
     @SuppressWarnings("unchecked")
     default Class<S> getFromType() {
@@ -151,9 +151,9 @@ public interface Oql extends DslExtension, FluentApiExtension {
     }
 
     /**
-     * Gets the {@link Class type} of the {@link T projected query result}.
+     * Gets the {@link Class type} of the {@link T projected elements} in the query result.
      *
-     * @return the {@link Class type} of the {@link T projected query result}.
+     * @return the {@link Class type} of the {@link T projected elements } in the query result.
      */
     Class<T> getType();
 
@@ -207,11 +207,13 @@ public interface Oql extends DslExtension, FluentApiExtension {
   }
 
   /**
-   * Abstract Data Type (ADT) modeling the data {@literal selected} from the {@link Object elements}
+   * Abstract Data Type (ADT) modeling the {@literal select clause} in the query.
+   * <p>
+   * Specifically, {@link Select} identifies the {@literal data selected} from the {@link Object elements}
    * in the {@link Iterable collection} to form the result set.
    *
    * @param <S> {@link Class type} of {@link Object elements} in the {@link Iterable collection} being queried.
-   * @param <T> {@link Class type} of the {@link Objects} in the {@link Projection projected result set}.
+   * @param <T> {@link Class type} of {@link Objects} in the {@link Projection projected result set}.
    */
   interface Select<S, T> {
 
@@ -219,6 +221,14 @@ public interface Oql extends DslExtension, FluentApiExtension {
       return false;
     }
 
+    /**
+     * Returns the {@link Projection} of the {@literal selection} of {@link T elements}
+     * in the {@link Iterable collection}.
+     *
+     * @return the {@link Projection} of the {@literal selection} of {@link T elements}
+     * in the {@link Iterable collection}.
+     * @see org.cp.elements.data.oql.Oql.Projection
+     */
     Projection<S, T> getProjection();
 
     @Dsl
@@ -236,15 +246,42 @@ public interface Oql extends DslExtension, FluentApiExtension {
     @Dsl From<S, T> from(Iterable<S> collection);
   }
 
+  /**
+   * Abstract Data Type (ADT) modeling the {@literal from clause} in the query.
+   *
+   * @param <S> {@link Class type} of {@link Object elements} in the {@link Iterable collection} being queried.
+   * @param <T> {@link Class type} of {@link Objects} in the {@link Projection projected result set}.
+   * @see org.cp.elements.data.oql.Oql.ExecutableQuery
+   * @see org.cp.elements.data.oql.Oql.Limited
+   */
   interface From<S, T> extends ExecutableQuery<S, T>, Limited<S, T> {
 
+    /**
+     * Returns the {@link Iterable collection} from which the {@link Object elements} are {@link Select selected}.
+     *
+     * @return the {@link Iterable collection} from which the {@link Object elements} are {@link Select selected}.
+     * @see java.lang.Iterable
+     */
     Iterable<S> getCollection();
 
+    /**
+     * Returns {@literal this}.
+     *
+     * @return {@literal this}.
+     */
     @Override
     default From<S, T> getFrom() {
       return this;
     }
 
+    /**
+     * Returns an {@link Select} object identify the {@literal data selected} from the {@link Iterable collection}
+     * and returned in the query result set.
+     *
+     * @return an {@link Select} object identify the {@literal data selected} from the {@link Iterable collection}
+     * and returned in the query result set.
+     * @see org.cp.elements.data.oql.Oql.Select
+     */
     Select<S, T> getSelection();
 
     default Class<S> getType() {
@@ -306,15 +343,21 @@ public interface Oql extends DslExtension, FluentApiExtension {
       };
     }
 
+    /**
+     * Returns the {@link Predicate filtering criteria} of the {@link Where where clause}.
+     *
+     * @return the {@link Predicate filtering criteria} of the {@link Where where clause}.
+     * @see java.util.function.Predicate
+     */
     Predicate<S> getPredicate();
 
     @Dsl
-    default Where<S, T> and(Predicate<S> predicate) {
+    default Where<S, T> and(@NotNull Predicate<S> predicate) {
       return compose(this, getPredicate().and(predicate));
     }
 
     @Dsl
-    default Where<S, T> or(Predicate<S> predicate) {
+    default Where<S, T> or(@NotNull Predicate<S> predicate) {
       return compose(this, getPredicate().or(predicate));
     }
 
@@ -351,6 +394,14 @@ public interface Oql extends DslExtension, FluentApiExtension {
       };
     }
 
+    /**
+     * Return the {@link Comparator} used to {@literal sort} ({@literal order}) the {@link S elements}
+     * in the query result set.
+     *
+     * @return the {@link Comparator} used to {@literal sort} ({@literal order}) the {@link S elements}
+     * in the query result set.
+     * @see java.util.Comparator
+     */
     Comparator<S> getOrder();
 
     @Dsl
