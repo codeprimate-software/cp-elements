@@ -33,14 +33,14 @@ import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
 /**
- * Unit Tests for {@link Oql}.
+ * Integration Tests for {@link Oql}.
  *
  * @author John Blum
  * @see org.cp.elements.data.oql.Oql
  * @see org.junit.jupiter.api.Test
  * @since 2.0.0
  */
-public class OqlUnitTests {
+public class OqlIntegrationTests {
 
   private static final Set<Person> PEOPLE = Set.of(
     Person.named("Jon", "Doe").withAge(42).asMale(),
