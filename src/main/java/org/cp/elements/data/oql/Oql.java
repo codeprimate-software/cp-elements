@@ -133,7 +133,7 @@ public interface Oql extends DslExtension, FluentApiExtension {
 
         @Override
         public Projection<S, S> mappedWith(Function<S, S> mapper) {
-          throw newUnsupportedOperationException(Constants.OPERATION_NOT_ALLOWED);
+          throw newUnsupportedOperationException(Constants.OPERATION_NOT_SUPPORTED);
         }
       };
     }
@@ -184,7 +184,7 @@ public interface Oql extends DslExtension, FluentApiExtension {
     @Dsl
     default Projection<S, T> mappedWith(@NotNull Function<S, T> mapper) {
 
-      Assert.notNull(mapper, "Object Mapping Function is required");
+      Assert.notNull(mapper, "Object mapping function is required");
 
       return new Projection<>() {
 
