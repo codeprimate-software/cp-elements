@@ -214,7 +214,7 @@ public interface Oql extends DslExtension, FluentApiExtension {
   }
 
   /**
-   * Abstract Data Type (ADT) modeling the {@literal select clause} in the query.
+   * Abstract Data Type (ADT) modeling the {@literal select clause} in the {@link Query}.
    * <p>
    * Specifically, {@link Select} identifies the {@literal data selected} from the {@link Object elements}
    * in the {@link Iterable collection} to form the result set.
@@ -224,6 +224,14 @@ public interface Oql extends DslExtension, FluentApiExtension {
    */
   interface Select<S, T> {
 
+    /**
+     * Determines whether the {@link Select selection} of results from the {@link Query} should be unique.
+     * <p>
+     * Defaults to {@link false}.
+     *
+     * @return a boolean value indicating whether the {@link Select selection} of results from the {@link Query}
+     * should be unique.
+     */
     default boolean isDistinct() {
       return false;
     }
@@ -254,7 +262,7 @@ public interface Oql extends DslExtension, FluentApiExtension {
   }
 
   /**
-   * Abstract Data Type (ADT) modeling the {@literal from clause} in the query.
+   * Abstract Data Type (ADT) modeling the {@literal from clause} in the {@link Query}.
    *
    * @param <S> {@link Class type} of {@link Object elements} in the {@link Iterable collection} being queried.
    * @param <T> {@link Class type} of {@link Objects} in the {@link Projection projected result set}.
@@ -291,18 +299,45 @@ public interface Oql extends DslExtension, FluentApiExtension {
      */
     Select<S, T> getSelection();
 
+    /**
+     * Gets the {@link Class type} of the {@link T projected elements} in the query result.
+     *
+     * @return the {@link Class type} of the {@link T projected elements } in the query result.
+     * @see org.cp.elements.data.oql.Oql.Projection#getFromType()
+     */
     default Class<S> getType() {
       return getSelection().getProjection().getFromType();
     }
 
+    /**
+     * Gets an {@link Optional} {@link Where} clause of the {@link Query}.
+     *
+     * @return an {@link Optional} {@link Where} clause of the {@link Query}.
+     * @see org.cp.elements.data.oql.Oql.Where
+     * @see java.util.Optional
+     */
     default Optional<Where<S, T>> getWhere() {
       return Optional.empty();
     }
 
+    /**
+     * Gets an {@link Optional} {@link OrderBy} clause of the {@link Query}.
+     *
+     * @return an {@link Optional} {@link OrderBy} clause of the {@link Query}.
+     * @see org.cp.elements.data.oql.Oql.OrderBy
+     * @see java.util.Optional
+     */
     default Optional<OrderBy<S, T>> getOrderBy() {
       return Optional.empty();
     }
 
+    /**
+     * Gets an {@link Optional} {@link GroupBy} clause of the {@link Query}.
+     *
+     * @return an {@link Optional} {@link GroupBy} clause of the {@link Query}.
+     * @see org.cp.elements.data.oql.Oql.GroupBy
+     * @see java.util.Optional
+     */
     default Optional<GroupBy<S, T>> getGroupBy() {
       return Optional.empty();
     }
@@ -328,6 +363,14 @@ public interface Oql extends DslExtension, FluentApiExtension {
     }
   }
 
+  /**
+   * Abstract Data Type (ADT) modeling the {@literal where clause} in the {@link Query}.
+   *
+   * @param <S> {@link Class type} of {@link Object elements} in the {@link Iterable collection} being queried.
+   * @param <T> {@link Class type} of {@link Objects} in the {@link Projection projected result set}.
+   * @see org.cp.elements.data.oql.Oql.ExecutableQuery
+   * @see org.cp.elements.data.oql.Oql.Limited
+   */
   @FunctionalInterface
   interface Where<S, T> extends ExecutableQuery<S, T>, Limited<S, T> {
 
@@ -379,6 +422,14 @@ public interface Oql extends DslExtension, FluentApiExtension {
     }
   }
 
+  /**
+   * Abstract Data Type (ADT) modeling the {@literal order by clause} in the {@link Query}.
+   *
+   * @param <S> {@link Class type} of {@link Object elements} in the {@link Iterable collection} being queried.
+   * @param <T> {@link Class type} of {@link Objects} in the {@link Projection projected result set}.
+   * @see org.cp.elements.data.oql.Oql.ExecutableQuery
+   * @see org.cp.elements.data.oql.Oql.Limited
+   */
   @FunctionalInterface
   interface OrderBy<S, T> extends ExecutableQuery<S, T>, Limited<S, T> {
 
@@ -427,10 +478,22 @@ public interface Oql extends DslExtension, FluentApiExtension {
     }
   }
 
+  /**
+   * Abstract Data Type (ADT) modeling the {@literal limit clause} in the {@link Query}.
+   *
+   * @param <S> {@link Class type} of {@link Object elements} in the {@link Iterable collection} being queried.
+   * @param <T> {@link Class type} of {@link Objects} in the {@link Projection projected result set}.
+   * @see org.cp.elements.data.oql.Oql.FromReference
+   */
   interface Limited<S, T> extends FromReference<S, T> {
 
     long DEFAULT_LIMIT = Long.MAX_VALUE;
 
+    /**
+     * Returns the {@link Long limit} to the result set size.
+     *
+     * @return the {@link Long limit} to the result set size.
+     */
     default long getLimit() {
       return DEFAULT_LIMIT;
     }
@@ -441,6 +504,14 @@ public interface Oql extends DslExtension, FluentApiExtension {
     }
   }
 
+  /**
+   * Abstract Data Type (ADT) modeling the {@literal group by clause} in the {@link Query}.
+   *
+   * @param <S> {@link Class type} of {@link Object elements} in the {@link Iterable collection} being queried.
+   * @param <T> {@link Class type} of {@link Objects} in the {@link Projection projected result set}.
+   * @see org.cp.elements.data.oql.Oql.ExecutableQuery
+   * @see org.cp.elements.data.oql.Oql.Limited
+   */
   @FunctionalInterface
   interface GroupBy<S, T> extends ExecutableQuery<S, T>, Limited<S, T> {
 
