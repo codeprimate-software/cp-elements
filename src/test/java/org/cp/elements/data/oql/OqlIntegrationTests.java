@@ -17,9 +17,12 @@ package org.cp.elements.data.oql;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verifyNoInteractions;
 
 import java.util.Comparator;
 import java.util.Set;
+import java.util.function.BiFunction;
 
 import org.junit.jupiter.api.Test;
 
@@ -38,6 +41,7 @@ import lombok.ToString;
  * @author John Blum
  * @see org.cp.elements.data.oql.Oql
  * @see org.junit.jupiter.api.Test
+ * @see org.mockito.Mockito
  * @since 2.0.0
  */
 public class OqlIntegrationTests {
@@ -59,6 +63,11 @@ public class OqlIntegrationTests {
 
   private static final Person[] PEOPLE_ARRAY = PEOPLE.toArray(new Person[0]);
 
+  @SuppressWarnings("unchecked")
+  private <S, T> QueryContext<S, T> mockQueryContext() {
+    return mock(QueryContext.class);
+  }
+
   @Test
   void projection() {
 
@@ -66,10 +75,14 @@ public class OqlIntegrationTests {
       .fromType(Person.class)
       .mappedWith(Person::getName);
 
+    QueryContext<Person, String> mockQueryContext = mockQueryContext();
+
     assertThat(projection).isNotNull();
     assertThat(projection.getFromType()).isEqualTo(Person.class);
     assertThat(projection.getType()).isEqualTo(String.class);
-    assertThat(projection.map(Person.named("Jon", "Doe"))).isEqualTo("Jon Doe");
+    assertThat(projection.map(mockQueryContext, Person.named("Jon", "Doe"))).isEqualTo("Jon Doe");
+
+    verifyNoInteractions(mockQueryContext);
   }
 
   @Test
@@ -91,11 +104,12 @@ public class OqlIntegrationTests {
   }
 
   @Test
+  @SuppressWarnings({ "rawtypes", "unchecked" })
   void projectionWithNullFunction() {
 
     assertThatIllegalArgumentException()
-      .isThrownBy(() -> Oql.Projection.as(String.class).mappedWith(null))
-      .withMessage("Object Mapping Function is required")
+      .isThrownBy(() -> Oql.Projection.as(String.class).mappedWith((BiFunction) null))
+      .withMessage("Object mapping function is required")
       .withNoCause();
   }
 

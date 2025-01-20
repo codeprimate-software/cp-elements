@@ -20,6 +20,7 @@ import org.cp.elements.data.oql.Oql.Distinct;
 import org.cp.elements.data.oql.Oql.From;
 import org.cp.elements.data.oql.Oql.Projection;
 import org.cp.elements.data.oql.Oql.Select;
+import org.cp.elements.data.oql.QueryContext;
 import org.cp.elements.lang.ObjectUtils;
 import org.cp.elements.lang.annotation.NotNull;
 import org.cp.elements.lang.annotation.ThreadSafe;
@@ -127,8 +128,8 @@ public class SelectClause<S, T> implements Oql.Select<S, T> {
     }
 
     @Override
-    public T map(S target) {
-      return getProjection().map(target);
+    public T map(QueryContext<S, T> queryContext, S target) {
+      return getProjection().map(queryContext, target);
     }
   }
 }

@@ -19,13 +19,17 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.Mockito.doCallRealMethod;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 
+import java.util.function.BiFunction;
 import java.util.function.Function;
 
 import org.junit.jupiter.api.Test;
@@ -74,7 +78,8 @@ public class OqlUnitTests {
   }
 
   @Test
-  void projectionMappedWithFunction() {
+  @SuppressWarnings("unchecked")
+  void projectionMappedWithBiFunction() {
 
     Function<String, String> function = StringUtils::reverse;
 
@@ -82,28 +87,54 @@ public class OqlUnitTests {
       .fromType(String.class)
       .mappedWith(function);
 
+    QueryContext<String, String> mockQueryContext = mock(QueryContext.class);
+
     assertThat(projection).isNotNull();
     assertThat(projection.getFromType()).isEqualTo(String.class);
     assertThat(projection.getType()).isEqualTo(String.class);
-    assertThat(projection.map("DOG")).isEqualTo("GOD");
+    assertThat(projection.map(mockQueryContext, "DOG")).isEqualTo("GOD");
+
+    verifyNoInteractions(mockQueryContext);
   }
 
   @Test
-  void projectionMappedWithNullFunction() {
+  @SuppressWarnings({ "rawtypes", "unchecked" })
+  void projectionMappedWithNullBiFunction() {
 
     assertThatIllegalArgumentException()
-      .isThrownBy(() -> Oql.Projection.as(Object.class).mappedWith(null))
+      .isThrownBy(() -> Oql.Projection.as(Object.class).mappedWith((BiFunction) null))
       .withMessage("Object mapping function is required")
       .withNoCause();
   }
 
   @Test
+  @SuppressWarnings("unchecked")
+  void projectionMappedWitFunction() {
+
+    Oql.Projection<Object, Object> projection = mock(Oql.Projection.class);
+
+    doCallRealMethod().when(projection).mappedWith(isA(Function.class));
+    doReturn(projection).when(projection).mappedWith(isA(BiFunction.class));
+
+    assertThat(projection.mappedWith(Function.identity())).isSameAs(projection);
+
+    verify(projection, times(1)).mappedWith(isA(Function.class));
+    verify(projection, times(1)).mappedWith(isA(BiFunction.class));
+    verifyNoMoreInteractions(projection);
+  }
+
+  @Test
+  @SuppressWarnings("unchecked")
   void projectStarReturnsProjectionMappingTargetToItself() {
 
     Oql.Projection<Object, Object> projection = Oql.Projection.star();
 
+    QueryContext<Object, Object> mockQueryContext = mock(QueryContext.class);
+
     assertThat(projection).isNotNull();
-    assertThat(projection.map("TEST")).isEqualTo("TEST");
+    assertThat(projection.map(mockQueryContext, "TEST")).isEqualTo("TEST");
+
+    verifyNoInteractions(mockQueryContext);
   }
 
   @Test

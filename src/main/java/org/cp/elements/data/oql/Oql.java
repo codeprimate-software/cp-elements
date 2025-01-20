@@ -22,6 +22,7 @@ import java.util.Comparator;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
@@ -100,7 +101,7 @@ public interface Oql extends DslExtension, FluentApiExtension {
   /**
    * Interface defining a contract to {@literal project} an {@link Object element} from the {@link Iterable collection}
    * as an {@link Object} of the declared {@link T type} mapped by the configured {@link Function object mapping}
-   * using {@link #mappedWith(Function)}.
+   * using {@link #mappedWith(BiFunction)}.
    *
    * @param <S> {@link Class type} of {@link Object elements} in the {@link Iterable collection} being queried.
    * @param <T> {@link Class type} of the projected {@link Object elements}.
@@ -127,12 +128,12 @@ public interface Oql extends DslExtension, FluentApiExtension {
         }
 
         @Override
-        public S map(S target) {
+        public S map(QueryContext<S, S> queryContext, S target) {
           return target;
         }
 
         @Override
-        public Projection<S, S> mappedWith(Function<S, S> mapper) {
+        public Projection<S, S> mappedWith(BiFunction<QueryContext<S, S>, S, S> mapper) {
           throw newUnsupportedOperationException(Constants.OPERATION_NOT_SUPPORTED);
         }
       };
@@ -175,14 +176,14 @@ public interface Oql extends DslExtension, FluentApiExtension {
         }
 
         @Override
-        public T map(S target) {
-          return Projection.this.map(target);
+        public T map(QueryContext<S, T> queryContext, S target) {
+          return Projection.this.map(queryContext, target);
         }
       };
     }
 
     @Dsl
-    default Projection<S, T> mappedWith(@NotNull Function<S, T> mapper) {
+    default Projection<S, T> mappedWith(@NotNull BiFunction<QueryContext<S, T>, S, T> mapper) {
 
       Assert.notNull(mapper, "Object mapping function is required");
 
@@ -199,10 +200,16 @@ public interface Oql extends DslExtension, FluentApiExtension {
         }
 
         @Override
-        public T map(S target) {
-          return mapper.apply(target);
+        public T map(QueryContext<S, T> queryContext, S target) {
+          return mapper.apply(queryContext, target);
         }
       };
+    }
+
+    @Dsl
+    default Projection<S, T> mappedWith(@NotNull Function<S, T> mapper) {
+      Assert.notNull(mapper, "Object mapping function is required");
+      return mappedWith((queryContext, target) -> mapper.apply(target));
     }
   }
 
@@ -585,10 +592,11 @@ public interface Oql extends DslExtension, FluentApiExtension {
    *
    * @param <S> source {@link Class type}.
    * @param <T> target {@link Class type}.
+   * @see org.cp.elements.data.oql.QueryContext
    */
   interface ObjectMapper<S, T> {
 
-    default T map(S target) {
+    default T map(QueryContext<S, T> queryContext, S target) {
       throw UndefinedMappingException.INSTANCE;
     }
   }

@@ -27,6 +27,7 @@ import org.cp.elements.data.oql.Oql.Projection;
 import org.cp.elements.data.oql.Oql.Select;
 import org.cp.elements.data.oql.Oql.Where;
 import org.cp.elements.data.oql.Query;
+import org.cp.elements.data.oql.QueryContext;
 import org.cp.elements.function.CannedPredicates;
 import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.annotation.NotNull;
@@ -52,12 +53,14 @@ public class SimpleQueryExecutor<S, T> implements Oql.QueryExecutor<S, T> {
 
     Iterable<S> collection = query.collection();
 
+    QueryContext<S, T> queryContext = QueryContext.from(query);
+
     Select<S, T> selection = query.selection();
 
     Stream<T> stream = stream(collection)
       .filter(resolvePredicate(query))
       .sorted(resolveSort(query))
-      .map(resolveProjectionMapping(selection));
+      .map(resolveProjectionMapping(queryContext));
 
     if (selection.isDistinct()) {
       stream = stream.distinct();
@@ -78,12 +81,12 @@ public class SimpleQueryExecutor<S, T> implements Oql.QueryExecutor<S, T> {
       .orElseGet(() -> (Predicate<S>) CannedPredicates.ACCEPT_ALL);
   }
 
-  private Projection<S, T> resolveProjection(Select<S, T> selection) {
-    return selection.getProjection();
+  private Projection<S, T> resolveProjection(QueryContext<S, T> queryContext) {
+    return queryContext.getProjection();
   }
 
-  private Function<S, T> resolveProjectionMapping(Select<S, T> selection) {
-    return resolveProjection(selection)::map;
+  private Function<S, T> resolveProjectionMapping(QueryContext<S, T> queryContext) {
+    return target -> resolveProjection(queryContext).map(queryContext, target);
   }
 
   private Comparator<S> resolveSort(Query<S, T> query) {
