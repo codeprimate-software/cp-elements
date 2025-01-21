@@ -271,10 +271,10 @@ public interface Oql extends DslExtension, FluentApiExtension {
    * @param <T> {@link Class type} of {@link Objects} in the {@link Projection projected result set}.
    * @see org.cp.elements.data.oql.Oql.ExecutableQuery
    * @see org.cp.elements.data.oql.Oql.GroupBySpec
-   * @see org.cp.elements.data.oql.Oql.Limited
+   * @see org.cp.elements.data.oql.Oql.LimitSpec
    * @see org.cp.elements.data.oql.Oql.OrderBySpec
    */
-  interface From<S, T> extends ExecutableQuery<S, T>, GroupBySpec<S, T>, Limited<S, T>, OrderBySpec<S, T> {
+  interface From<S, T> extends ExecutableQuery<S, T>, GroupBySpec<S, T>, LimitSpec<S, T>, OrderBySpec<S, T> {
 
     /**
      * Returns the {@link Iterable collection} from which the {@link Object elements} are {@link Select selected}.
@@ -344,11 +344,11 @@ public interface Oql extends DslExtension, FluentApiExtension {
    * @param <T> {@link Class type} of {@link Objects} in the {@link Projection projected result set}.
    * @see org.cp.elements.data.oql.Oql.ExecutableQuery
    * @see org.cp.elements.data.oql.Oql.GroupBySpec
-   * @see org.cp.elements.data.oql.Oql.Limited
+   * @see org.cp.elements.data.oql.Oql.LimitSpec
    * @see org.cp.elements.data.oql.Oql.OrderBySpec
    */
   @FunctionalInterface
-  interface Where<S, T> extends ExecutableQuery<S, T>, GroupBySpec<S, T>, Limited<S, T>, OrderBySpec<S, T> {
+  interface Where<S, T> extends ExecutableQuery<S, T>, GroupBySpec<S, T>, LimitSpec<S, T>, OrderBySpec<S, T> {
 
     static <S, T> Where<S, T> compose(@NotNull Where<S, T> where, @NotNull Predicate<S> predicate) {
 
@@ -394,11 +394,11 @@ public interface Oql extends DslExtension, FluentApiExtension {
    * @param <S> {@link Class type} of {@link Object elements} in the {@link Iterable collection} being queried.
    * @param <T> {@link Class type} of {@link Objects} in the {@link Projection projected result set}.
    * @see org.cp.elements.data.oql.Oql.ExecutableQuery
-   * @see org.cp.elements.data.oql.Oql.Limited
+   * @see org.cp.elements.data.oql.Oql.LimitSpec
    * @see org.cp.elements.util.stream.Streamable
    * @see java.lang.Iterable
    */
-  interface OrderBy<S, T> extends ExecutableQuery<S, T>, Iterable<Comparator<S>>, Limited<S, T>,
+  interface OrderBy<S, T> extends ExecutableQuery<S, T>, Iterable<Comparator<S>>, LimitSpec<S, T>,
       Streamable<Comparator<S>> {
 
     @SafeVarargs
@@ -513,7 +513,7 @@ public interface Oql extends DslExtension, FluentApiExtension {
    * @param <T> {@link Class type} of {@link Objects} in the {@link Projection projected result set}.
    * @see org.cp.elements.data.oql.Oql.FromReference
    */
-  interface Limited<S, T> extends FromReference<S, T> {
+  interface LimitSpec<S, T> extends FromReference<S, T> {
 
     long DEFAULT_LIMIT = Long.MAX_VALUE;
 
@@ -538,11 +538,11 @@ public interface Oql extends DslExtension, FluentApiExtension {
    * @param <S> {@link Class type} of {@link Object elements} in the {@link Iterable collection} being queried.
    * @param <T> {@link Class type} of {@link Objects} in the {@link Projection projected result set}.
    * @see org.cp.elements.data.oql.Oql.ExecutableQuery
-   * @see org.cp.elements.data.oql.Oql.Limited
+   * @see org.cp.elements.data.oql.Oql.LimitSpec
    * @see org.cp.elements.data.oql.Oql.OrderBySpec
    */
   @FunctionalInterface
-  interface GroupBy<S, T> extends ExecutableQuery<S, T>, Limited<S, T>, OrderBySpec<S, T> {
+  interface GroupBy<S, T> extends ExecutableQuery<S, T>, LimitSpec<S, T>, OrderBySpec<S, T> {
 
     static <S, T> GroupBy<S, T> of(@NotNull From<S, T> from, @NotNull Grouping<S> grouping) {
 
