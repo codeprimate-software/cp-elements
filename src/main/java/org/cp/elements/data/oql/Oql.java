@@ -19,6 +19,7 @@ import static org.cp.elements.lang.RuntimeExceptionsFactory.newIllegalStateExcep
 import static org.cp.elements.lang.RuntimeExceptionsFactory.newUnsupportedOperationException;
 
 import java.util.Comparator;
+import java.util.Iterator;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
@@ -28,6 +29,8 @@ import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 import org.cp.elements.data.mapping.UndefinedMappingException;
+import org.cp.elements.data.oql.support.OqlUtils;
+import org.cp.elements.data.oql.support.OqlUtils.ArrayBuilder;
 import org.cp.elements.function.CannedPredicates;
 import org.cp.elements.function.FunctionUtils;
 import org.cp.elements.lang.Assert;
@@ -430,14 +433,17 @@ public interface Oql extends DslExtension, FluentApiExtension {
    * @param <T> {@link Class type} of {@link Objects} in the {@link Projection projected result set}.
    * @see org.cp.elements.data.oql.Oql.ExecutableQuery
    * @see org.cp.elements.data.oql.Oql.Limited
+   * @see org.cp.elements.util.stream.Streamable
+   * @see java.lang.Iterable
    */
-  @FunctionalInterface
-  interface OrderBy<S, T> extends ExecutableQuery<S, T>, Limited<S, T> {
+  interface OrderBy<S, T> extends ExecutableQuery<S, T>, Iterable<Comparator<S>>, Limited<S, T>,
+      Streamable<Comparator<S>> {
 
-    static <S, T> OrderBy<S, T> of(@NotNull From<S, T> from, @NotNull Comparator<S> comparator) {
+    @SafeVarargs
+    static <S, T> OrderBy<S, T> of(@NotNull From<S, T> from, Comparator<S>... comparators) {
 
       Assert.notNull(from, "From is required");
-      Assert.notNull(comparator, "Comparator is required");
+      Assert.notEmpty(comparators, "Comparators are required");
 
       return new OrderBy<>() {
 
@@ -447,8 +453,9 @@ public interface Oql extends DslExtension, FluentApiExtension {
         }
 
         @Override
-        public Comparator<S> getOrder() {
-          return comparator;
+        @SuppressWarnings("all")
+        public Iterator<Comparator<S>> iterator() {
+          return ArrayUtils.asIterator(comparators);
         }
       };
     }
@@ -461,7 +468,12 @@ public interface Oql extends DslExtension, FluentApiExtension {
      * in the query result set.
      * @see java.util.Comparator
      */
-    Comparator<S> getOrder();
+    default Comparator<S> getOrder() {
+
+      return stream()
+        .reduce(Comparator::thenComparing)
+        .orElseThrow(() -> newIllegalStateException("No Order Defined"));
+    }
 
     @Dsl
     default OrderBy<S, T> ascending() {
@@ -470,12 +482,26 @@ public interface Oql extends DslExtension, FluentApiExtension {
 
     @Dsl
     default OrderBy<S, T> descending() {
-      return of(getFrom(), getOrder().reversed());
+
+      ArrayBuilder<Comparator<S>> comparatorArrayBuilder = OqlUtils.asArray(this);
+
+      Comparator<S> comparator = comparatorArrayBuilder.remove();
+      comparator = comparator.reversed();
+      comparatorArrayBuilder.add(comparator);
+
+       Comparator<S>[] comparators = comparatorArrayBuilder.build();
+
+      return of(getFrom(), comparators);
+    }
+
+    @Override
+    default Stream<Comparator<S>> stream() {
+      return StreamUtils.stream(this);
     }
 
     @Dsl
-    default OrderBy<S, T> thenOrderBy(Comparator<S> comparator) {
-      return of(getFrom(), this.getOrder().thenComparing(comparator));
+    default OrderBy<S, T> thenOrderBy(@NotNull Comparator<S> comparator) {
+      return of(getFrom(), getOrder(), comparator);
     }
   }
 

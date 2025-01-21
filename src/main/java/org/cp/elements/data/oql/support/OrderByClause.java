@@ -16,11 +16,14 @@
 package org.cp.elements.data.oql.support;
 
 import java.util.Comparator;
+import java.util.Iterator;
 
 import org.cp.elements.data.oql.Oql;
 import org.cp.elements.data.oql.Oql.From;
 import org.cp.elements.data.oql.Oql.OrderBy;
 import org.cp.elements.lang.Assert;
+import org.cp.elements.lang.annotation.NotNull;
+import org.cp.elements.util.ArrayUtils;
 
 /**
  * Default implementation of {@link Oql.OrderBy}
@@ -33,14 +36,16 @@ import org.cp.elements.lang.Assert;
  * @since 2.0.0
  */
 @SuppressWarnings("unused")
-public record OrderByClause<S, T>(From<S, T> from, Comparator<S> comparator) implements Oql.OrderBy<S, T> {
+public record OrderByClause<S, T>(@NotNull From<S, T> from, Comparator<S>... comparators)
+    implements Oql.OrderBy<S, T> {
 
   public static <S, T> OrderByClause<S, T> copy(OrderBy<S, T> orderBy) {
 
     Assert.notNull(orderBy, "OrderBy clause to copy is required");
 
     From<S, T> from = orderBy.getFrom();
-    OrderByClause<S, T> orderByClause = of(from, orderBy.getOrder());
+    Comparator<S>[] comparators = OqlUtils.asArray(orderBy).build();
+    OrderByClause<S, T> orderByClause = of(from, comparators);
 
     if (from instanceof FromClause<S,T> fromClause) {
       fromClause.withOrderBy(orderByClause);
@@ -49,21 +54,19 @@ public record OrderByClause<S, T>(From<S, T> from, Comparator<S> comparator) imp
     return orderByClause;
   }
 
-  public static <S, T> OrderByClause<S, T> noOrder(From<S, T> from) {
-    return new OrderByClause<>(from, defaultSort());
+  @SuppressWarnings("unchecked")
+  public static <S, T> OrderByClause<S, T> noOrder(@NotNull From<S, T> from) {
+    return new OrderByClause<>(from);
   }
 
-  public static <S, T> OrderByClause<S, T> of(From<S, T> from, Comparator<S> comparator) {
-    return new OrderByClause<>(from, comparator);
-  }
-
-  private static <S> Comparator<S> defaultSort() {
-    return new NoOrder<>();
+  @SafeVarargs
+  public static <S, T> OrderByClause<S, T> of(@NotNull From<S, T> from, Comparator<S>... comparators) {
+    return new OrderByClause<>(from, comparators);
   }
 
   public OrderByClause {
     Assert.notNull(from, "From is required");
-    Assert.notNull(comparator, "Comparator used to sort is required");
+    Assert.notEmpty(comparators, "Comparators used to sort are required");
   }
 
   @Override
@@ -72,13 +75,14 @@ public record OrderByClause<S, T>(From<S, T> from, Comparator<S> comparator) imp
   }
 
   @Override
-  public Comparator<S> getOrder() {
-    return comparator();
+  public OrderBy<S, T> descending() {
+    return copy(OrderBy.super.descending());
   }
 
   @Override
-  public OrderBy<S, T> descending() {
-    return copy(OrderBy.super.descending());
+  @SuppressWarnings("all")
+  public Iterator<Comparator<S>> iterator() {
+    return ArrayUtils.asIterator(comparators());
   }
 
   @Override

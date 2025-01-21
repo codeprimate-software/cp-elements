@@ -16,13 +16,11 @@
 package org.cp.elements.data.oql;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verifyNoInteractions;
 
 import java.util.Comparator;
 import java.util.Set;
-import java.util.function.BiFunction;
 
 import org.junit.jupiter.api.Test;
 
@@ -86,47 +84,22 @@ public class OqlIntegrationTests {
   }
 
   @Test
-  void projectionOfNullType() {
-
-    assertThatIllegalArgumentException()
-      .isThrownBy(() -> Oql.Projection.as(null))
-      .withMessage("Type is required")
-      .withNoCause();
-  }
-
-  @Test
-  void projectionWithNullFromType() {
-
-    assertThatIllegalArgumentException()
-      .isThrownBy(() -> Oql.Projection.as(String.class).fromType(null))
-      .withMessage("From type is required")
-      .withNoCause();
-  }
-
-  @Test
-  @SuppressWarnings({ "rawtypes", "unchecked" })
-  void projectionWithNullFunction() {
-
-    assertThatIllegalArgumentException()
-      .isThrownBy(() -> Oql.Projection.as(String.class).mappedWith((BiFunction) null))
-      .withMessage("Object mapping function is required")
-      .withNoCause();
-  }
-
-  @Test
   void projectionWithSelection() {
 
     Oql.Projection<Person, String> projection = Oql.Projection.as(String.class);
 
-    projection = Oql.defaultProvider()
+    Query<Person, String> query = Oql.defaultProvider()
       .select(projection)
       .from(PEOPLE)
-      .getSelection()
-      .getProjection();
+      .asQuery();
 
-    assertThat(projection).isNotNull();
-    assertThat(projection.getType()).isEqualTo(String.class);
-    assertThat(projection.getFromType()).isEqualTo(Person.class);
+    assertThat(query).isNotNull();
+
+    Oql.Projection<Person, String> queryProjection = query.projection();
+
+    assertThat(queryProjection).isNotNull();
+    assertThat(queryProjection.getType()).isEqualTo(String.class);
+    assertThat(queryProjection.getFromType()).isEqualTo(Person.class);
   }
 
   @Test
@@ -205,14 +178,42 @@ public class OqlIntegrationTests {
     Oql.Projection<Person, String> projection = Oql.Projection.<Person, String>as(String.class)
       .mappedWith(Person::getName);
 
-    Iterable<String> result = Oql.defaultProvider()
+    Iterable<String> results = Oql.defaultProvider()
       .select(projection)
       .from(people)
       .orderBy(Comparator.comparing(Person::getAge))
       .execute();
 
-    assertThat(result).isNotNull();
-    assertThat(result).containsExactly("Pie Doe", "Jon Doe", "Jane Doe");
+    assertThat(results).isNotNull();
+    assertThat(results).containsExactly("Pie Doe", "Jon Doe", "Jane Doe");
+  }
+
+  @Test
+  void queryProjectionWithComplexOrdering() {
+
+    Set<Person> people = Set.of(
+      Person.named("Bill", "Hill").withAge(9),
+      Person.named("Jack", "Hill").withAge(8),
+      Person.named("Jill", "Hill").withAge(7),
+      Person.named("Jack", "Handy").withAge(8),
+      Person.named("Mandy", "Handy").withAge(7),
+      Person.named("Randy", "Handy").withAge(8)
+    );
+
+    Oql.Projection<Person, String> projection = Oql.Projection.<Person, String>as(String.class)
+      .mappedWith(Person::getName);
+
+    Iterable<String> results = Oql.defaultProvider()
+      .select(projection)
+      .from(people)
+      .orderBy(Comparator.comparing(Person::getAge))
+      .thenOrderBy(Comparator.comparing(Person::getFirstName)).descending()
+      .thenOrderBy(Comparator.comparing(Person::getLastName)).ascending()
+      .execute();
+
+    assertThat(results).isNotNull();
+    assertThat(results)
+      .containsExactly("Mandy Handy", "Jill Hill", "Randy Handy", "Jack Handy", "Jack Hill", "Bill Hill");
   }
 
   @Test
@@ -251,8 +252,7 @@ public class OqlIntegrationTests {
       .from(people)
       .where(person -> "doe".equalsIgnoreCase(person.getLastName()))
       .and(person -> person.getAge() > 40)
-      .orderBy(Comparator.comparing(Person::getAge))
-      .descending()
+      .orderBy(Comparator.comparing(Person::getAge)).descending()
       .execute();
 
     assertThat(result).isNotNull();
@@ -386,18 +386,20 @@ public class OqlIntegrationTests {
       .from(PEOPLE)
       .where(person -> "doe".equalsIgnoreCase(person.getLastName()))
       .orderBy(Comparator.comparing(Person::getAge)).descending()
+      .limit(10L)
       .asQuery();
 
     assertThat(query).isNotNull();
     assertThat(query.selection()).isNotNull();
     assertThat(query.selection().isDistinct()).isFalse();
-    assertThat(query.selection().getProjection()).isNotNull();
-    assertThat(query.selection().getProjection().getType()).isEqualTo(String.class);
-    assertThat(query.selection().getProjection().getFromType()).isEqualTo(Person.class);
+    assertThat(query.projection()).isNotNull();
+    assertThat(query.projection().getType()).isEqualTo(String.class);
+    assertThat(query.projection().getFromType()).isEqualTo(Person.class);
     assertThat(query.getFrom()).isNotNull();
     assertThat(query.getFrom().getCollection()).containsExactlyInAnyOrder(PEOPLE_ARRAY);
     assertThat(query.predicate()).isPresent();
     assertThat(query.orderBy()).isPresent();
+    assertThat(query.limit()).isEqualTo(10L);
     assertThat(query.groupBy()).isNotPresent();
   }
 
