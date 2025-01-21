@@ -32,7 +32,6 @@ import org.cp.elements.data.mapping.UndefinedMappingException;
 import org.cp.elements.data.oql.support.OqlUtils;
 import org.cp.elements.data.oql.support.OqlUtils.ArrayBuilder;
 import org.cp.elements.function.CannedPredicates;
-import org.cp.elements.function.FunctionUtils;
 import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.Constants;
 import org.cp.elements.lang.DslExtension;
@@ -576,7 +575,9 @@ public interface Oql extends DslExtension, FluentApiExtension {
     }
 
     @Dsl
-    default GroupBy<S, T> having(Predicate<T> predicate) {
+    default GroupBy<S, T> having(@NotNull Predicate<T> predicate) {
+
+      Assert.notNull(predicate, "GroupBy Predicate is required");
 
       return new GroupBy<>() {
 
@@ -592,7 +593,7 @@ public interface Oql extends DslExtension, FluentApiExtension {
 
         @Override
         public Predicate<T> getPredicate() {
-          return FunctionUtils.nullSafePredicateMatchingAll(predicate);
+          return predicate;
         }
       };
     }
