@@ -20,6 +20,7 @@ import java.util.Optional;
 import org.cp.elements.data.oql.Oql.From;
 import org.cp.elements.data.oql.Oql.GroupBy;
 import org.cp.elements.data.oql.Oql.OrderBy;
+import org.cp.elements.data.oql.Oql.Projection;
 import org.cp.elements.data.oql.Oql.Select;
 import org.cp.elements.data.oql.Oql.Where;
 import org.cp.elements.lang.Assert;
@@ -52,6 +53,10 @@ public interface Query<S, T> extends Oql.Executable<T> {
 
   default Select<S, T> selection() {
     return getFrom().getSelection();
+  }
+
+  default Projection<S, T> projection() {
+    return selection().getProjection();
   }
 
   default Optional<Where<S, T>> predicate() {
