@@ -272,9 +272,9 @@ public interface Oql extends DslExtension, FluentApiExtension {
    * @param <T> {@link Class type} of {@link Objects} in the {@link Projection projected result set}.
    * @see org.cp.elements.data.oql.Oql.ExecutableQuery
    * @see org.cp.elements.data.oql.Oql.Limited
-   * @see org.cp.elements.data.oql.Oql.Ordering
+   * @see org.cp.elements.data.oql.Oql.OrderBySpec
    */
-  interface From<S, T> extends ExecutableQuery<S, T>, Limited<S, T>, Ordering<S, T> {
+  interface From<S, T> extends ExecutableQuery<S, T>, Limited<S, T>, OrderBySpec<S, T> {
 
     /**
      * Returns the {@link Iterable collection} from which the {@link Object elements} are {@link Select selected}.
@@ -360,10 +360,10 @@ public interface Oql extends DslExtension, FluentApiExtension {
    * @param <T> {@link Class type} of {@link Objects} in the {@link Projection projected result set}.
    * @see org.cp.elements.data.oql.Oql.ExecutableQuery
    * @see org.cp.elements.data.oql.Oql.Limited
-   * @see org.cp.elements.data.oql.Oql.Ordering
+   * @see org.cp.elements.data.oql.Oql.OrderBySpec
    */
   @FunctionalInterface
-  interface Where<S, T> extends ExecutableQuery<S, T>, Limited<S, T>, Ordering<S, T> {
+  interface Where<S, T> extends ExecutableQuery<S, T>, Limited<S, T>, OrderBySpec<S, T> {
 
     static <S, T> Where<S, T> compose(@NotNull Where<S, T> where, @NotNull Predicate<S> predicate) {
 
@@ -493,6 +493,40 @@ public interface Oql extends DslExtension, FluentApiExtension {
   }
 
   /**
+   * Interface defining a contract for an {@literal OQL} component capable of defining an {@link OrderBy order}.
+   *
+   * @param <S> source {@link Class type}.
+   * @param <T> target {@link Class type}.
+   * @see org.cp.elements.data.oql.Oql.OrderBy
+   * @see java.util.Comparator
+   */
+  interface OrderBySpec<S, T> {
+
+    /**
+     * Gets an {@link Optional} {@link OrderBy} clause of the {@link Query}.
+     *
+     * @return an {@link Optional} {@link OrderBy} clause of the {@link Query}.
+     * @see org.cp.elements.data.oql.Oql.OrderBy
+     * @see java.util.Optional
+     */
+    default Optional<OrderBy<S, T>> getOrderBy() {
+      return Optional.empty();
+    }
+
+    @Dsl
+    default <U extends Comparable<U>> OrderBy<S, T> orderBy(@NotNull Function<S, U> orderingFunction) {
+      Assert.notNull(orderingFunction, "Function defining the ordering is required");
+      Comparator<S> comparator = Comparator.comparing(orderingFunction);
+      return orderBy(comparator);
+    }
+
+    @Dsl
+    default OrderBy<S, T> orderBy(Comparator<S> comparator) {
+      throw newUnsupportedOperationException(Constants.UNSUPPORTED_OPERATION);
+    }
+  }
+
+  /**
    * Abstract Data Type (ADT) modeling the {@literal limit clause} in the {@link Query}.
    *
    * @param <S> {@link Class type} of {@link Object elements} in the {@link Iterable collection} being queried.
@@ -525,10 +559,10 @@ public interface Oql extends DslExtension, FluentApiExtension {
    * @param <T> {@link Class type} of {@link Objects} in the {@link Projection projected result set}.
    * @see org.cp.elements.data.oql.Oql.ExecutableQuery
    * @see org.cp.elements.data.oql.Oql.Limited
-   * @see org.cp.elements.data.oql.Oql.Ordering
+   * @see org.cp.elements.data.oql.Oql.OrderBySpec
    */
   @FunctionalInterface
-  interface GroupBy<S, T> extends ExecutableQuery<S, T>, Limited<S, T>, Ordering<S, T> {
+  interface GroupBy<S, T> extends ExecutableQuery<S, T>, Limited<S, T>, OrderBySpec<S, T> {
 
     static <S, T> GroupBy<S, T> of(@NotNull From<S, T> from, @NotNull Grouping<S> grouping) {
 
@@ -680,40 +714,6 @@ public interface Oql extends DslExtension, FluentApiExtension {
 
     default T map(QueryContext<S, T> queryContext, S target) {
       throw UndefinedMappingException.INSTANCE;
-    }
-  }
-
-  /**
-   * Interface defining a contract for an {@literal OQL} component capable of defining an {@link OrderBy ordering}.
-   *
-   * @param <S> source {@link Class type}.
-   * @param <T> target {@link Class type}.
-   * @see org.cp.elements.data.oql.Oql.OrderBy
-   * @see java.util.Comparator
-   */
-  interface Ordering<S, T> {
-
-    /**
-     * Gets an {@link Optional} {@link OrderBy} clause of the {@link Query}.
-     *
-     * @return an {@link Optional} {@link OrderBy} clause of the {@link Query}.
-     * @see org.cp.elements.data.oql.Oql.OrderBy
-     * @see java.util.Optional
-     */
-    default Optional<OrderBy<S, T>> getOrderBy() {
-      return Optional.empty();
-    }
-
-    @Dsl
-    default <U extends Comparable<U>> OrderBy<S, T> orderBy(@NotNull Function<S, U> orderingFunction) {
-      Assert.notNull(orderingFunction, "Function defining the ordering is required");
-      Comparator<S> comparator = Comparator.comparing(orderingFunction);
-      return orderBy(comparator);
-    }
-
-    @Dsl
-    default OrderBy<S, T> orderBy(Comparator<S> comparator) {
-      throw newUnsupportedOperationException(Constants.UNSUPPORTED_OPERATION);
     }
   }
 
