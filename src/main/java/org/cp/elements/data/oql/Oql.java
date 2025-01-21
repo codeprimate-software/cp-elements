@@ -209,7 +209,8 @@ public interface Oql extends DslExtension, FluentApiExtension {
     @Dsl
     default Projection<S, T> mappedWith(@NotNull Function<S, T> mapper) {
       Assert.notNull(mapper, "Object mapping function is required");
-      return mappedWith((queryContext, target) -> mapper.apply(target));
+      BiFunction<QueryContext<S, T>, S, T> function = (queryContext, target) -> mapper.apply(target);
+      return mappedWith(function);
     }
   }
 
