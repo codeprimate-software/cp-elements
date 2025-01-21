@@ -181,7 +181,7 @@ public class OqlIntegrationTests {
     Iterable<String> results = Oql.defaultProvider()
       .select(projection)
       .from(people)
-      .orderBy(Comparator.comparing(Person::getAge))
+      .orderBy(Person::getAge)
       .execute();
 
     assertThat(results).isNotNull();
@@ -206,9 +206,9 @@ public class OqlIntegrationTests {
     Iterable<String> results = Oql.defaultProvider()
       .select(projection)
       .from(people)
-      .orderBy(Comparator.comparing(Person::getAge))
-      .thenOrderBy(Comparator.comparing(Person::getFirstName)).descending()
-      .thenOrderBy(Comparator.comparing(Person::getLastName)).ascending()
+      .orderBy(Person::getAge)
+      .thenOrderBy(Person::getFirstName).descending()
+      .thenOrderBy(Person::getLastName).ascending()
       .execute();
 
     assertThat(results).isNotNull();
@@ -225,7 +225,7 @@ public class OqlIntegrationTests {
     Iterable<String> result = Oql.defaultProvider()
       .select(projection)
       .from(PEOPLE)
-      .orderBy(Comparator.comparing(Person::getAge).reversed())
+      .orderBy(Person::getAge).descending()
       .limit(4)
       .execute();
 
@@ -252,7 +252,7 @@ public class OqlIntegrationTests {
       .from(people)
       .where(person -> "doe".equalsIgnoreCase(person.getLastName()))
       .and(person -> person.getAge() > 40)
-      .orderBy(Comparator.comparing(Person::getAge)).descending()
+      .orderBy(Person::getAge).descending()
       .execute();
 
     assertThat(result).isNotNull();
@@ -282,7 +282,7 @@ public class OqlIntegrationTests {
   }
 
   @Test
-  void queryProjectionWithOrCondition() {
+  void queryProjectionWithFilterOrConditionAndOrdering() {
 
     Oql.Projection<Person, String> projection = Oql.Projection.<Person, String>as(String.class)
       .mappedWith(Person::getName);
@@ -292,7 +292,7 @@ public class OqlIntegrationTests {
       .from(PEOPLE)
       .where(person -> person.getAge() < 13)
       .or(person -> person.getAge() > 50)
-      .orderBy(Comparator.comparing(Person::getAge))
+      .orderBy(Person::getAge)
       .execute();
 
     assertThat(result).isNotNull();

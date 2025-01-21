@@ -272,8 +272,9 @@ public interface Oql extends DslExtension, FluentApiExtension {
    * @param <T> {@link Class type} of {@link Objects} in the {@link Projection projected result set}.
    * @see org.cp.elements.data.oql.Oql.ExecutableQuery
    * @see org.cp.elements.data.oql.Oql.Limited
+   * @see org.cp.elements.data.oql.Oql.Ordering
    */
-  interface From<S, T> extends ExecutableQuery<S, T>, Limited<S, T> {
+  interface From<S, T> extends ExecutableQuery<S, T>, Limited<S, T>, Ordering<S, T> {
 
     /**
      * Returns the {@link Iterable collection} from which the {@link Object elements} are {@link Select selected}.
@@ -325,17 +326,6 @@ public interface Oql extends DslExtension, FluentApiExtension {
     }
 
     /**
-     * Gets an {@link Optional} {@link OrderBy} clause of the {@link Query}.
-     *
-     * @return an {@link Optional} {@link OrderBy} clause of the {@link Query}.
-     * @see org.cp.elements.data.oql.Oql.OrderBy
-     * @see java.util.Optional
-     */
-    default Optional<OrderBy<S, T>> getOrderBy() {
-      return Optional.empty();
-    }
-
-    /**
      * Gets an {@link Optional} {@link GroupBy} clause of the {@link Query}.
      *
      * @return an {@link Optional} {@link GroupBy} clause of the {@link Query}.
@@ -352,11 +342,7 @@ public interface Oql extends DslExtension, FluentApiExtension {
     }
 
     @Dsl
-    default OrderBy<S, T> orderBy(Comparator<S> comparator) {
-      throw newUnsupportedOperationException(Constants.UNSUPPORTED_OPERATION);
-    }
-
-    @Dsl
+    @Override
     default ExecutableQuery<S, T> limit(long limit) {
       throw newUnsupportedOperationException(Constants.UNSUPPORTED_OPERATION);
     }
@@ -374,9 +360,10 @@ public interface Oql extends DslExtension, FluentApiExtension {
    * @param <T> {@link Class type} of {@link Objects} in the {@link Projection projected result set}.
    * @see org.cp.elements.data.oql.Oql.ExecutableQuery
    * @see org.cp.elements.data.oql.Oql.Limited
+   * @see org.cp.elements.data.oql.Oql.Ordering
    */
   @FunctionalInterface
-  interface Where<S, T> extends ExecutableQuery<S, T>, Limited<S, T> {
+  interface Where<S, T> extends ExecutableQuery<S, T>, Limited<S, T>, Ordering<S, T> {
 
     static <S, T> Where<S, T> compose(@NotNull Where<S, T> where, @NotNull Predicate<S> predicate) {
 
@@ -413,11 +400,6 @@ public interface Oql extends DslExtension, FluentApiExtension {
     @Dsl
     default Where<S, T> or(@NotNull Predicate<S> predicate) {
       return compose(this, getPredicate().or(predicate));
-    }
-
-    @Dsl
-    default OrderBy<S, T> orderBy(Comparator<S> comparator) {
-      throw newUnsupportedOperationException(Constants.UNSUPPORTED_OPERATION);
     }
 
     @Dsl
@@ -503,6 +485,11 @@ public interface Oql extends DslExtension, FluentApiExtension {
     default OrderBy<S, T> thenOrderBy(@NotNull Comparator<S> comparator) {
       return of(getFrom(), getOrder(), comparator);
     }
+
+    @Dsl
+    default <U extends Comparable<U>> OrderBy<S, T> thenOrderBy(@NotNull Function<S, U> function) {
+      return thenOrderBy(Comparator.comparing(function));
+    }
   }
 
   /**
@@ -538,9 +525,10 @@ public interface Oql extends DslExtension, FluentApiExtension {
    * @param <T> {@link Class type} of {@link Objects} in the {@link Projection projected result set}.
    * @see org.cp.elements.data.oql.Oql.ExecutableQuery
    * @see org.cp.elements.data.oql.Oql.Limited
+   * @see org.cp.elements.data.oql.Oql.Ordering
    */
   @FunctionalInterface
-  interface GroupBy<S, T> extends ExecutableQuery<S, T>, Limited<S, T> {
+  interface GroupBy<S, T> extends ExecutableQuery<S, T>, Limited<S, T>, Ordering<S, T> {
 
     static <S, T> GroupBy<S, T> of(@NotNull From<S, T> from, @NotNull Grouping<S> grouping) {
 
@@ -593,11 +581,6 @@ public interface Oql extends DslExtension, FluentApiExtension {
         }
       };
     }
-
-    @Dsl
-    default OrderBy<S, T> orderBy(Comparator<S> comparator) {
-      throw newUnsupportedOperationException(Constants.UNSUPPORTED_OPERATION);
-    }
   }
 
   /**
@@ -609,7 +592,8 @@ public interface Oql extends DslExtension, FluentApiExtension {
 
     default Long count() {
       Iterable<T> results = execute();
-      return StreamUtils.stream(CollectionUtils.nullSafeIterable(results)).count();
+      Stream<T> stream = StreamUtils.stream(CollectionUtils.nullSafeIterable(results));
+      return stream.count();
     }
 
     default Iterable<T> execute() {
@@ -696,6 +680,40 @@ public interface Oql extends DslExtension, FluentApiExtension {
 
     default T map(QueryContext<S, T> queryContext, S target) {
       throw UndefinedMappingException.INSTANCE;
+    }
+  }
+
+  /**
+   * Interface defining a contract for an {@literal OQL} component capable of defining an {@link OrderBy ordering}.
+   *
+   * @param <S> source {@link Class type}.
+   * @param <T> target {@link Class type}.
+   * @see org.cp.elements.data.oql.Oql.OrderBy
+   * @see java.util.Comparator
+   */
+  interface Ordering<S, T> {
+
+    /**
+     * Gets an {@link Optional} {@link OrderBy} clause of the {@link Query}.
+     *
+     * @return an {@link Optional} {@link OrderBy} clause of the {@link Query}.
+     * @see org.cp.elements.data.oql.Oql.OrderBy
+     * @see java.util.Optional
+     */
+    default Optional<OrderBy<S, T>> getOrderBy() {
+      return Optional.empty();
+    }
+
+    @Dsl
+    default <U extends Comparable<U>> OrderBy<S, T> orderBy(@NotNull Function<S, U> orderingFunction) {
+      Assert.notNull(orderingFunction, "Function defining the ordering is required");
+      Comparator<S> comparator = Comparator.comparing(orderingFunction);
+      return orderBy(comparator);
+    }
+
+    @Dsl
+    default OrderBy<S, T> orderBy(Comparator<S> comparator) {
+      throw newUnsupportedOperationException(Constants.UNSUPPORTED_OPERATION);
     }
   }
 
