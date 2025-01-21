@@ -271,10 +271,11 @@ public interface Oql extends DslExtension, FluentApiExtension {
    * @param <S> {@link Class type} of {@link Object elements} in the {@link Iterable collection} being queried.
    * @param <T> {@link Class type} of {@link Objects} in the {@link Projection projected result set}.
    * @see org.cp.elements.data.oql.Oql.ExecutableQuery
+   * @see org.cp.elements.data.oql.Oql.GroupBySpec
    * @see org.cp.elements.data.oql.Oql.Limited
    * @see org.cp.elements.data.oql.Oql.OrderBySpec
    */
-  interface From<S, T> extends ExecutableQuery<S, T>, Limited<S, T>, OrderBySpec<S, T> {
+  interface From<S, T> extends ExecutableQuery<S, T>, GroupBySpec<S, T>, Limited<S, T>, OrderBySpec<S, T> {
 
     /**
      * Returns the {@link Iterable collection} from which the {@link Object elements} are {@link Select selected}.
@@ -325,17 +326,6 @@ public interface Oql extends DslExtension, FluentApiExtension {
       return Optional.empty();
     }
 
-    /**
-     * Gets an {@link Optional} {@link GroupBy} clause of the {@link Query}.
-     *
-     * @return an {@link Optional} {@link GroupBy} clause of the {@link Query}.
-     * @see org.cp.elements.data.oql.Oql.GroupBy
-     * @see java.util.Optional
-     */
-    default Optional<GroupBy<S, T>> getGroupBy() {
-      return Optional.empty();
-    }
-
     @Dsl
     default Where<S, T> where(Predicate<S> predicate) {
       throw newUnsupportedOperationException(Constants.UNSUPPORTED_OPERATION);
@@ -346,11 +336,6 @@ public interface Oql extends DslExtension, FluentApiExtension {
     default ExecutableQuery<S, T> limit(long limit) {
       throw newUnsupportedOperationException(Constants.UNSUPPORTED_OPERATION);
     }
-
-    @Dsl
-    default GroupBy<S, T> groupBy(Grouping<S> grouping) {
-      throw newUnsupportedOperationException(Constants.UNSUPPORTED_OPERATION);
-    }
   }
 
   /**
@@ -359,11 +344,12 @@ public interface Oql extends DslExtension, FluentApiExtension {
    * @param <S> {@link Class type} of {@link Object elements} in the {@link Iterable collection} being queried.
    * @param <T> {@link Class type} of {@link Objects} in the {@link Projection projected result set}.
    * @see org.cp.elements.data.oql.Oql.ExecutableQuery
+   * @see org.cp.elements.data.oql.Oql.GroupBySpec
    * @see org.cp.elements.data.oql.Oql.Limited
    * @see org.cp.elements.data.oql.Oql.OrderBySpec
    */
   @FunctionalInterface
-  interface Where<S, T> extends ExecutableQuery<S, T>, Limited<S, T>, OrderBySpec<S, T> {
+  interface Where<S, T> extends ExecutableQuery<S, T>, GroupBySpec<S, T>, Limited<S, T>, OrderBySpec<S, T> {
 
     static <S, T> Where<S, T> compose(@NotNull Where<S, T> where, @NotNull Predicate<S> predicate) {
 
@@ -400,11 +386,6 @@ public interface Oql extends DslExtension, FluentApiExtension {
     @Dsl
     default Where<S, T> or(@NotNull Predicate<S> predicate) {
       return compose(this, getPredicate().or(predicate));
-    }
-
-    @Dsl
-    default GroupBy<S, T> groupBy(Grouping<S> grouping) {
-      throw newUnsupportedOperationException(Constants.UNSUPPORTED_OPERATION);
     }
   }
 
@@ -614,6 +595,33 @@ public interface Oql extends DslExtension, FluentApiExtension {
           return FunctionUtils.nullSafePredicateMatchingAll(predicate);
         }
       };
+    }
+  }
+
+  /**
+   * Interface defining a contract for an {@literal OQL} component capable of defining a {@link GroupBy}.
+   *
+   * @param <S> {@link Class type} of {@link Object elements} in the {@link Iterable collection} being queried.
+   * @param <T> {@link Class type} of {@link Objects} in the {@link Projection projected result set}.
+   * @see org.cp.elements.data.oql.Oql.Grouping
+   * @see org.cp.elements.data.oql.Oql.GroupBy
+   */
+  interface GroupBySpec<S, T> {
+
+    /**
+     * Gets an {@link Optional} {@link GroupBy} clause of the {@link Query}.
+     *
+     * @return an {@link Optional} {@link GroupBy} clause of the {@link Query}.
+     * @see org.cp.elements.data.oql.Oql.GroupBy
+     * @see java.util.Optional
+     */
+    default Optional<GroupBy<S, T>> getGroupBy() {
+      return Optional.empty();
+    }
+
+    @Dsl
+    default GroupBy<S, T> groupBy(Grouping<S> grouping) {
+      throw newUnsupportedOperationException(Constants.UNSUPPORTED_OPERATION);
     }
   }
 
