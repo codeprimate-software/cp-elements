@@ -20,8 +20,6 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.cp.elements.data.oql.Oql.Projection;
 import org.cp.elements.lang.Assert;
-import org.cp.elements.lang.ObjectUtils;
-import org.cp.elements.lang.StringUtils;
 import org.cp.elements.lang.annotation.NotNull;
 
 /**
@@ -54,7 +52,8 @@ public record QueryContext<S, T>(@NotNull Query<S, T> query, Map<String, Object>
   }
 
   public void put(@NotNull String key, @NotNull Object value) {
-    metadata().put(StringUtils.requireText(key, "Key [%s] is required"),
-      ObjectUtils.requireObject(value, "Value is required"));
+    Assert.hasText(key, "Key [%s] is required", key);
+    Assert.notNull(value, "Value is required");
+    metadata().put(key, value);
   }
 }
