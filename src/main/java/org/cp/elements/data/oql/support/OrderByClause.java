@@ -35,7 +35,7 @@ import org.cp.elements.util.ArrayUtils;
  * @see org.cp.elements.data.oql.Oql.OrderBy
  * @since 2.0.0
  */
-@SuppressWarnings("unused")
+@SuppressWarnings({ "unchecked", "unused" })
 public record OrderByClause<S, T>(@NotNull From<S, T> from, Comparator<S>... comparators)
     implements Oql.OrderBy<S, T> {
 

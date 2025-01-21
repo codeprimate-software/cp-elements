@@ -100,7 +100,7 @@ public abstract class OqlUtils {
         : elementType;
     }
 
-    @SuppressWarnings("all")
+    @SuppressWarnings("unchecked")
     private T[] newArray(int length) {
       Class<T> componentType = resolveElementType();
       return (T[]) Array.newInstance(componentType, length);
