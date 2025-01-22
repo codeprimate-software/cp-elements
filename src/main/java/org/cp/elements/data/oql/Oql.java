@@ -28,14 +28,11 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
-import org.cp.elements.data.mapping.UndefinedMappingException;
 import org.cp.elements.data.oql.support.OqlUtils;
 import org.cp.elements.data.oql.support.OqlUtils.ArrayBuilder;
 import org.cp.elements.function.CannedPredicates;
 import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.Constants;
-import org.cp.elements.lang.DslExtension;
-import org.cp.elements.lang.FluentApiExtension;
 import org.cp.elements.lang.annotation.Dsl;
 import org.cp.elements.lang.annotation.FluentApi;
 import org.cp.elements.lang.annotation.NotNull;
@@ -54,15 +51,14 @@ import org.cp.elements.util.stream.Streamable;
  * @see java.util.Comparator
  * @see java.util.function.Function
  * @see java.util.function.Predicate
- * @see org.cp.elements.lang.DslExtension
- * @see org.cp.elements.lang.FluentApiExtension
+ * @see org.cp.elements.data.oql.BaseOql
  * @see org.cp.elements.lang.annotation.Dsl
  * @see org.cp.elements.lang.annotation.FluentApi
  * @since 2.0.0
  */
 @FluentApi
 @SuppressWarnings("unused")
-public interface Oql extends DslExtension, FluentApiExtension {
+public interface Oql extends BaseOql {
 
   String NO_FROM = "From not initialized";
 
@@ -83,7 +79,7 @@ public interface Oql extends DslExtension, FluentApiExtension {
    * @param <T> {@link Class type} of the projected {@link Object elements}.
    * @return the {@link Oql} service provider implementation of the {@literal OQL} {@link QueryExecutor}.
    * @see org.cp.elements.data.oql.provider.SimpleQueryExecutor
-   * @see org.cp.elements.data.oql.Oql.QueryExecutor
+   * @see QueryExecutor
    */
   <S, T> QueryExecutor<S, T> executor();
 
@@ -401,8 +397,10 @@ public interface Oql extends DslExtension, FluentApiExtension {
    * @see org.cp.elements.data.oql.Oql.ExecutableQuery
    * @see org.cp.elements.data.oql.Oql.LimitSpec
    * @see org.cp.elements.util.stream.Streamable
+   * @see java.lang.FunctionalInterface
    * @see java.lang.Iterable
    */
+  @FunctionalInterface
   interface OrderBy<S, T> extends ExecutableQuery<S, T>, Iterable<Comparator<S>>, LimitSpec<S, T>,
       Streamable<Comparator<S>> {
 
@@ -731,21 +729,6 @@ public interface Oql extends DslExtension, FluentApiExtension {
   }
 
   /**
-   * Interface defining a contract for an {@literal OQL} component capable of mapping an {@link Object}
-   * from one {@link Class type} to another {@link Class type}.
-   *
-   * @param <S> source {@link Class type}.
-   * @param <T> target {@link Class type}.
-   * @see org.cp.elements.data.oql.QueryContext
-   */
-  interface ObjectMapper<S, T> {
-
-    default T map(QueryContext<S, T> queryContext, S target) {
-      throw UndefinedMappingException.INSTANCE;
-    }
-  }
-
-  /**
    * {@link ServiceLoaderSupport} used to load an {@link Oql} service provider implementation.
    *
    * @see org.cp.elements.service.loader.ServiceLoaderSupport
@@ -762,21 +745,6 @@ public interface Oql extends DslExtension, FluentApiExtension {
     @Override
     default Class<Oql> getType() {
       return Oql.class;
-    }
-  }
-
-  /**
-   * {@literal OQL} component capable of executing an {@literal OQL} {@link Query}.
-   *
-   * @param <S> {@link Class type} defining the {@link Object elements} in the {@link Iterable collection} to query.
-   * @param <T> {@link Class type} of {@link Object project elements} in the {@link Iterable result}.
-   * @see org.cp.elements.data.oql.Query
-   * @see java.lang.Iterable
-   */
-  interface QueryExecutor<S, T> {
-
-    default Iterable<T> execute(Query<S, T> query) {
-      throw newUnsupportedOperationException(Constants.NOT_IMPLEMENTED);
     }
   }
 }
