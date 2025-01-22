@@ -568,8 +568,22 @@ public interface Oql extends DslExtension, FluentApiExtension {
       };
     }
 
+    /**
+     * Gets the {@link Grouping} defining the {@literal groups} in the result set of the {@link Query}.
+     *
+     * @return the {@link Grouping} defining the {@literal groups} in the result set of the {@link Query}.
+     * @see org.cp.elements.data.oql.Oql.Grouping
+     */
     Grouping<S> getGrouping();
 
+    /**
+     * Gets the configured {@link Predicate} defining the condition declared in the {@literal having clause}
+     * of the {@link GroupBy}.
+     *
+     * @return the configured {@link Predicate} defining the condition declared in the {@literal having clause}
+     * of the {@link GroupBy}.
+     * @see java.util.function.Predicate
+     */
     @SuppressWarnings("unchecked")
     default Predicate<T> getPredicate() {
       return (Predicate<T>) CannedPredicates.ACCEPT_ALL;
