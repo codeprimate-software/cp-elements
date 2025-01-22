@@ -16,6 +16,7 @@
 package org.cp.elements.data.oql.provider;
 
 import org.cp.elements.data.oql.Oql;
+import org.cp.elements.data.oql.QueryExecutor;
 import org.cp.elements.data.oql.support.SelectClause;
 import org.cp.elements.lang.annotation.NotNull;
 

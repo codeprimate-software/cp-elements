@@ -21,13 +21,13 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
-import org.cp.elements.data.oql.Oql;
 import org.cp.elements.data.oql.Oql.OrderBy;
 import org.cp.elements.data.oql.Oql.Projection;
 import org.cp.elements.data.oql.Oql.Select;
 import org.cp.elements.data.oql.Oql.Where;
 import org.cp.elements.data.oql.Query;
 import org.cp.elements.data.oql.QueryContext;
+import org.cp.elements.data.oql.QueryExecutor;
 import org.cp.elements.function.CannedPredicates;
 import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.annotation.NotNull;
@@ -35,15 +35,15 @@ import org.cp.elements.util.CollectionUtils;
 import org.cp.elements.util.stream.StreamUtils;
 
 /**
- * Provider implementation of {@link Oql.QueryExecutor}.
+ * Provider implementation of {@link QueryExecutor}.
  *
  * @author John Blum
  * @see org.cp.elements.data.oql.Oql
- * @see org.cp.elements.data.oql.Oql.QueryExecutor
+ * @see QueryExecutor
  * @see org.cp.elements.data.oql.Query
  * @since 2.0.0
  */
-public class SimpleQueryExecutor<S, T> implements Oql.QueryExecutor<S, T> {
+public class SimpleQueryExecutor<S, T> implements QueryExecutor<S, T> {
 
   @Override
   @SuppressWarnings("all")
