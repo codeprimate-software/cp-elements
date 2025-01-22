@@ -138,6 +138,11 @@ public interface Oql extends DslExtension, FluentApiExtension {
         public Projection<S, S> mappedWith(BiFunction<QueryContext<S, S>, S, S> mapper) {
           throw newUnsupportedOperationException(Constants.OPERATION_NOT_SUPPORTED);
         }
+
+        @Override
+        public Projection<S, S> mappedWith(Function<S, S> mapper) {
+          throw newUnsupportedOperationException(Constants.OPERATION_NOT_SUPPORTED);
+        }
       };
     }
 
