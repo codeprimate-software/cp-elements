@@ -47,10 +47,6 @@ import org.cp.elements.util.stream.Streamable;
  * over a {@link Iterable collection} of {@link Object objects}.
  *
  * @author John Blum
- * @see java.lang.Iterable
- * @see java.util.Comparator
- * @see java.util.function.Function
- * @see java.util.function.Predicate
  * @see org.cp.elements.data.oql.BaseOql
  * @see org.cp.elements.lang.annotation.Dsl
  * @see org.cp.elements.lang.annotation.FluentApi
@@ -132,12 +128,12 @@ public interface Oql extends BaseOql {
 
         @Override
         public Projection<S, S> mappedWith(BiFunction<QueryContext<S, S>, S, S> mapper) {
-          throw newUnsupportedOperationException(Constants.OPERATION_NOT_SUPPORTED);
+          throw newUnsupportedOperationException(Constants.UNSUPPORTED_OPERATION);
         }
 
         @Override
         public Projection<S, S> mappedWith(Function<S, S> mapper) {
-          throw newUnsupportedOperationException(Constants.OPERATION_NOT_SUPPORTED);
+          throw newUnsupportedOperationException(Constants.UNSUPPORTED_OPERATION);
         }
       };
     }
@@ -347,6 +343,7 @@ public interface Oql extends BaseOql {
    * @see org.cp.elements.data.oql.Oql.GroupBySpec
    * @see org.cp.elements.data.oql.Oql.LimitSpec
    * @see org.cp.elements.data.oql.Oql.OrderBySpec
+   * @see java.lang.FunctionalInterface
    */
   @FunctionalInterface
   interface Where<S, T> extends ExecutableQuery<S, T>, GroupBySpec<S, T>, LimitSpec<S, T>, OrderBySpec<S, T> {
@@ -454,7 +451,7 @@ public interface Oql extends BaseOql {
       comparator = comparator.reversed();
       comparatorArrayBuilder.add(comparator);
 
-       Comparator<S>[] comparators = comparatorArrayBuilder.build();
+      Comparator<S>[] comparators = comparatorArrayBuilder.build();
 
       return of(getFrom(), comparators);
     }
@@ -543,6 +540,7 @@ public interface Oql extends BaseOql {
    * @see org.cp.elements.data.oql.Oql.ExecutableQuery
    * @see org.cp.elements.data.oql.Oql.LimitSpec
    * @see org.cp.elements.data.oql.Oql.OrderBySpec
+   * @see java.lang.FunctionalInterface
    */
   @FunctionalInterface
   interface GroupBy<S, T> extends ExecutableQuery<S, T>, LimitSpec<S, T>, OrderBySpec<S, T> {
@@ -646,7 +644,7 @@ public interface Oql extends BaseOql {
   /**
    * Interface defining a contract for an {@literal OQL} {@link Query} that can be executed or counted.
    *
-   * @param <T> {@link Class type} of the result.
+   * @param <T> {@link Class type} of {@link Objects} in the {@link Projection projected result set}.
    */
   interface Executable<T> {
 
@@ -665,8 +663,8 @@ public interface Oql extends BaseOql {
    * Interface defining an {@literal OQL} statement as an {@link Executable} {@link Query}
    * with a {@link FromReference referecne} to the {@link From} clause.
    *
-   * @param <S> source {@link Class type}.
-   * @param <T> target {@link Class type}.
+   * @param <S> {@link Class type} of {@link Object elements} in the {@link Iterable collection} being queried.
+   * @param <T> {@link Class type} of {@link Objects} in the {@link Projection projected result set}.
    * @see org.cp.elements.data.oql.Oql.FromReference
    * @see org.cp.elements.data.oql.Oql.Executable
    * @see org.cp.elements.data.oql.Query
@@ -686,8 +684,8 @@ public interface Oql extends BaseOql {
   /**
    * Interface defining a {@literal reference} to an instance of {@link From}.
    *
-   * @param <S> source {@link Class type}.
-   * @param <T> target {@link Class type}.
+   * @param <S> {@link Class type} of {@link Object elements} in the {@link Iterable collection} being queried.
+   * @param <T> {@link Class type} of {@link Objects} in the {@link Projection projected result set}.
    * @see org.cp.elements.data.oql.Oql.From
    */
   interface FromReference<S, T> {
@@ -701,7 +699,7 @@ public interface Oql extends BaseOql {
    * Interface defining a {@literal group} of similar {@link Object elements} from a {@link Iterable collection}.
    *
    * @param <S> {@link Class type} of {@link Object} from which the {@link Object value}
-   * used in the grouping is calculated.
+   * used in the {@literal grouping} is calculated.
    * @see org.cp.elements.util.stream.Streamable
    * @see java.lang.FunctionalInterface
    * @see java.lang.Iterable

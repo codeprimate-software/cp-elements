@@ -19,6 +19,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.Mockito.doCallRealMethod;
 import static org.mockito.Mockito.doReturn;
@@ -29,13 +30,14 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 
+import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.function.Function;
+import java.util.function.Predicate;
 
 import org.junit.jupiter.api.Test;
 
-import org.cp.elements.data.oql.Oql.Projection;
-import org.cp.elements.data.oql.Oql.Select;
+import org.cp.elements.data.oql.Oql.Where;
 import org.cp.elements.data.oql.provider.SimpleOqlProvider;
 import org.cp.elements.lang.Constants;
 import org.cp.elements.security.model.User;
@@ -51,6 +53,7 @@ import org.testcontainers.shaded.org.apache.commons.lang3.StringUtils;
  * @see org.mockito.Mockito
  * @since 2.0.0
  */
+@SuppressWarnings({ "rawtypes", "unchecked" })
 public class OqlUnitTests {
 
   @Test
@@ -78,12 +81,11 @@ public class OqlUnitTests {
   }
 
   @Test
-  @SuppressWarnings("unchecked")
   void projectionMappedWithBiFunction() {
 
     Function<String, String> function = StringUtils::reverse;
 
-    Projection<String, String> projection = Oql.Projection.<String, String>as(String.class)
+    Oql.Projection<String, String> projection = Oql.Projection.<String, String>as(String.class)
       .fromType(String.class)
       .mappedWith(function);
 
@@ -98,7 +100,6 @@ public class OqlUnitTests {
   }
 
   @Test
-  @SuppressWarnings({ "rawtypes", "unchecked" })
   void projectionMappedWithNullBiFunction() {
 
     assertThatIllegalArgumentException()
@@ -108,7 +109,6 @@ public class OqlUnitTests {
   }
 
   @Test
-  @SuppressWarnings("unchecked")
   void projectionMappedWitFunction() {
 
     Oql.Projection<Object, Object> projection = mock(Oql.Projection.class);
@@ -124,25 +124,11 @@ public class OqlUnitTests {
   }
 
   @Test
-  @SuppressWarnings("unchecked")
-  void projectStarReturnsProjectionMappingTargetToItself() {
+  void projectionMappedWithNullFunction() {
 
-    Oql.Projection<Object, Object> projection = Oql.Projection.star();
-
-    QueryContext<Object, Object> mockQueryContext = mock(QueryContext.class);
-
-    assertThat(projection).isNotNull();
-    assertThat(projection.map(mockQueryContext, "TEST")).isEqualTo("TEST");
-
-    verifyNoInteractions(mockQueryContext);
-  }
-
-  @Test
-  void projectStarMappedWithThrowsUnsupportedOperationException() {
-
-    assertThatExceptionOfType(UnsupportedOperationException.class)
-      .isThrownBy(() -> Oql.Projection.star().mappedWith(Function.identity()))
-      .withMessage(Constants.OPERATION_NOT_SUPPORTED)
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> Oql.Projection.as(Object.class).mappedWith((Function) null))
+      .withMessage("Object mapping function is required")
       .withNoCause();
   }
 
@@ -156,9 +142,40 @@ public class OqlUnitTests {
   }
 
   @Test
+  void projectStarReturnsProjectionMappingTargetToItself() {
+
+    Oql.Projection<Object, Object> projection = Oql.Projection.star();
+
+    QueryContext<Object, Object> mockQueryContext = mock(QueryContext.class);
+
+    assertThat(projection).isNotNull();
+    assertThat(projection.map(mockQueryContext, "TEST")).isEqualTo("TEST");
+
+    verifyNoInteractions(mockQueryContext);
+  }
+
+  @Test
+  void projectStarMappedWithBiFunctionThrowsUnsupportedOperationException() {
+
+    assertThatExceptionOfType(UnsupportedOperationException.class)
+      .isThrownBy(() -> Oql.Projection.star().mappedWith((BiFunction) null))
+      .withMessage(Constants.UNSUPPORTED_OPERATION)
+      .withNoCause();
+  }
+
+  @Test
+  void projectStarMappedWithFunctionThrowsUnsupportedOperationException() {
+
+    assertThatExceptionOfType(UnsupportedOperationException.class)
+      .isThrownBy(() -> Oql.Projection.star().mappedWith(Function.identity()))
+      .withMessage(Constants.UNSUPPORTED_OPERATION)
+      .withNoCause();
+  }
+
+  @Test
   void selectDistinctIsUnsupportedByDefault() {
 
-    Select<?, ?> select = mock(Select.class);
+    Oql.Select<?, ?> select = mock(Oql.Select.class);
 
     doCallRealMethod().when(select).distinct();
 
@@ -170,5 +187,113 @@ public class OqlUnitTests {
     verify(select, times(1)).distinct();
     verify(select, never()).from(any());
     verifyNoMoreInteractions(select);
+  }
+
+  @Test
+  void fromTypeReturnsSelectionProjectionFromType() {
+
+    Oql.Projection<?, ?> projection = mock(Oql.Projection.class);
+    Oql.Select<?, ?> select = mock(Oql.Select.class);
+    Oql.From<? ,?> from = mock(Oql.From.class);
+
+    doReturn(User.class).when(projection).getFromType();
+    doReturn(projection).when(select).getProjection();
+    doReturn(select).when(from).getSelection();
+    doCallRealMethod().when(from).getType();
+
+    assertThat(from.getType()).isEqualTo(User.class);
+
+    verify(from, times(1)).getType();
+    verify(from, times(1)).getSelection();
+    verify(select, times(1)).getProjection();
+    verify(projection, times(1)).getFromType();
+    verifyNoMoreInteractions(projection, select, from);
+  }
+
+  @Test
+  void fromClauseHasNoWhere() {
+
+    Oql.From<Object, Object> from = mock(Oql.From.class);
+
+    doCallRealMethod().when(from).getWhere();
+
+    Optional<Oql.Where<Object, Object>> where = from.getWhere();
+
+    assertThat(where).isNotNull();
+    assertThat(where).isNotPresent();
+  }
+
+  @Test
+  void whereConditionAnd() {
+
+    Predicate<Object> mockPredicateOne = mock(Predicate.class);
+    Predicate<Object> mockPredicateTwo = mock(Predicate.class);
+    Predicate<Object> mockPredicateThree = mock(Predicate.class);
+
+    Oql.Where<Object, Object> where = mock(Oql.Where.class);
+
+    doReturn(mockPredicateOne).when(where).getPredicate();
+    doReturn(mockPredicateThree).when(mockPredicateOne).and(any(Predicate.class));
+    doCallRealMethod().when(where).and(any(Predicate.class));
+
+    Oql.Where<?, ?> newWhere = where.and(mockPredicateTwo);
+
+    assertThat(newWhere).isNotNull();
+    assertThat(newWhere).isNotSameAs(where);
+    assertThat(newWhere.getPredicate()).isEqualTo(mockPredicateThree);
+
+    verify(mockPredicateOne, times(1)).and(eq(mockPredicateTwo));
+    verifyNoInteractions(mockPredicateTwo, mockPredicateThree);
+    verifyNoMoreInteractions(mockPredicateOne);
+  }
+
+  @Test
+  void whereConditionOr() {
+
+    Predicate<Object> mockPredicateOne = mock(Predicate.class);
+    Predicate<Object> mockPredicateTwo = mock(Predicate.class);
+    Predicate<Object> mockPredicateThree = mock(Predicate.class);
+
+    Oql.Where<Object, Object> where = mock(Oql.Where.class);
+
+    doReturn(mockPredicateOne).when(where).getPredicate();
+    doReturn(mockPredicateThree).when(mockPredicateOne).or(any(Predicate.class));
+    doCallRealMethod().when(where).or(any(Predicate.class));
+
+    Oql.Where<?, ?> newWhere = where.or(mockPredicateTwo);
+
+    assertThat(newWhere).isNotNull();
+    assertThat(newWhere).isNotSameAs(where);
+    assertThat(newWhere.getPredicate()).isEqualTo(mockPredicateThree);
+
+    verify(mockPredicateOne, times(1)).or(eq(mockPredicateTwo));
+    verifyNoInteractions(mockPredicateTwo, mockPredicateThree);
+    verifyNoMoreInteractions(mockPredicateOne);
+  }
+
+  @Test
+  void whereComposeWithNullWhere() {
+
+    Predicate<?> mockPredicate = mock(Predicate.class);
+
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> Where.compose(null, mockPredicate))
+      .withMessage("Where is required")
+      .withNoCause();
+
+    verifyNoInteractions(mockPredicate);
+  }
+
+  @Test
+  void whereComposeWithNullPredicate() {
+
+    Where<?, ?> mockWhere = mock(Where.class);
+
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> Where.compose(mockWhere, null))
+      .withMessage("Predicate is required")
+      .withNoCause();
+
+    verifyNoInteractions(mockWhere);
   }
 }
