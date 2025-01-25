@@ -16,10 +16,12 @@
 package org.cp.elements.data.oql.functions;
 
 import org.cp.elements.data.oql.QueryFunction;
+import org.cp.elements.lang.Constants;
+import org.cp.elements.lang.StringUtils;
 import org.cp.elements.util.ArrayUtils;
 
 /**
- * {@link QueryFunction} used to {@literal count} the elements in a query result set.
+ * {@link QueryFunction} used to {@literal count} the elements in the result set derived from a query.
  *
  * @author John Blum
  * @see org.cp.elements.data.oql.QueryFunction
@@ -28,12 +30,26 @@ import org.cp.elements.util.ArrayUtils;
 @SuppressWarnings("unused")
 public class Count implements QueryFunction<Object, Long> {
 
+  private static final Count INSTANCE = new Count();
+
   public static Count all() {
-    return new Count();
+    return INSTANCE;
+  }
+
+  private String name;
+
+  @Override
+  public String getName() {
+    return StringUtils.defaultIfBlank(this.name, Constants.UNKNOWN);
   }
 
   @Override
-  public Long apply(Object... targets) {
-    return Integer.valueOf(ArrayUtils.nullSafeArray(targets).length).longValue();
+  public Long apply(Object... resultSet) {
+    return Integer.valueOf(ArrayUtils.nullSafeArray(resultSet).length).longValue();
+  }
+
+  public Count named(String name) {
+    this.name = name;
+    return this;
   }
 }
