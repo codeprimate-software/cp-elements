@@ -19,6 +19,8 @@ import java.util.Objects;
 import java.util.function.Function;
 
 import org.cp.elements.data.oql.QueryFunction;
+import org.cp.elements.lang.Constants;
+import org.cp.elements.lang.StringUtils;
 import org.cp.elements.lang.annotation.NotNull;
 
 /**
@@ -36,6 +38,8 @@ public class Max<S, T extends Comparable<T>> implements QueryFunction<S, T> {
     return new Max<>(function);
   }
 
+  private String name;
+
   private final Function<S, T> function;
 
   protected Max(@NotNull Function<S, T> function) {
@@ -43,23 +47,28 @@ public class Max<S, T extends Comparable<T>> implements QueryFunction<S, T> {
   }
 
   @Override
+  public String getName() {
+    return StringUtils.defaultIfBlank(this.name, Constants.UNKNOWN);
+  }
+
+  @Override
   @SuppressWarnings("unchecked")
-  public T apply(S... targets) {
+  public T apply(S... resultSet) {
 
     T max = null;
 
-    for (S target : targets) {
-      T targetValue = this.function.apply(target);
-      if (targetValue != null) {
-        if (max == null) {
-          max = targetValue;
-        }
-        else if (targetValue.compareTo(max) > 0) {
-          max = targetValue;
-        }
+    for (S result : resultSet) {
+      T value = this.function.apply(result);
+      if (value != null) {
+        max = max == null || value.compareTo(max) > 0 ? value : max;
       }
     }
 
     return max;
+  }
+
+  public Max<S, T> named(String name) {
+    this.name = name;
+    return this;
   }
 }
