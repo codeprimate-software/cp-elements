@@ -19,7 +19,9 @@ import java.math.BigDecimal;
 import java.util.function.Function;
 
 import org.cp.elements.data.oql.QueryFunction;
+import org.cp.elements.lang.Constants;
 import org.cp.elements.lang.ObjectUtils;
+import org.cp.elements.lang.StringUtils;
 import org.cp.elements.lang.annotation.NotNull;
 
 /**
@@ -36,6 +38,8 @@ public class Sum<S> implements QueryFunction<S, BigDecimal> {
     return new Sum<>(function);
   }
 
+  private String name;
+
   private final Function<S, ? extends Number> function;
 
   protected Sum(@NotNull Function<S, ? extends Number> function) {
@@ -43,20 +47,31 @@ public class Sum<S> implements QueryFunction<S, BigDecimal> {
   }
 
   @Override
+  public String getName() {
+    return StringUtils.defaultIfBlank(this.name, Constants.UNKNOWN);
+  }
+
+  @Override
   @SuppressWarnings("unchecked")
-  public BigDecimal apply(S... targets) {
+  public BigDecimal apply(S... resultSet) {
 
     BigDecimal sum = BigDecimal.ZERO;
 
-    for (S target : targets) {
-
-      Number targetValue = this.function.apply(target);
-
-      if (targetValue != null) {
-        sum = sum.add(BigDecimal.valueOf(targetValue.doubleValue()));
-      }
+    for (S result : resultSet) {
+      Number value = this.function.apply(result);
+      sum = sum.add(asBigDecimal(value));
     }
 
     return sum;
+  }
+
+  private BigDecimal asBigDecimal(Number value) {
+    return value != null ? BigDecimal.valueOf(value.doubleValue()) : BigDecimal.ZERO;
+  }
+
+  @SuppressWarnings("unchecked")
+  public <U extends Sum<S>> U named(String name) {
+    this.name = name;
+    return (U) this;
   }
 }
