@@ -23,11 +23,10 @@ import org.cp.elements.data.oql.QueryFunction;
 import org.cp.elements.lang.annotation.NotNull;
 
 /**
- * {@link QueryFunction} used to calculate the {@literal average value} in a set.
+ * {@link QueryFunction} used to calculate an {@literal average} from a set of values.
  *
  * @author John Blum
- * @see java.lang.Number
- * @see org.cp.elements.data.oql.QueryFunction
+ * @see org.cp.elements.data.oql.functions.Sum
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
@@ -42,11 +41,12 @@ public class Avg<S> extends Sum<S> {
   }
 
   @Override
-  @SuppressWarnings("all")
-  public BigDecimal apply(S... targets) {
+  @SuppressWarnings({ "all", "unchecked" })
+  public BigDecimal apply(S... resultSet) {
 
-    BigDecimal sum = super.apply(targets);
-    BigDecimal average = sum.divide(BigDecimal.valueOf(targets.length), RoundingMode.HALF_UP);
+    BigDecimal sum = super.apply(resultSet);
+    BigDecimal divisor = BigDecimal.valueOf(resultSet.length);
+    BigDecimal average = sum.divide(divisor, RoundingMode.HALF_UP);
 
     return average;
   }
