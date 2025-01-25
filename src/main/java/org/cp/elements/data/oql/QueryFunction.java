@@ -15,6 +15,8 @@
  */
 package org.cp.elements.data.oql;
 
+import org.cp.elements.lang.Nameable;
+
 /**
  * Abstract Data Type (ADT) modeling an {@literal OQL} function.
  *
@@ -22,9 +24,10 @@ package org.cp.elements.data.oql;
  * @param <S> {@link Class type} of {@link Object} on which this function is applied.
  * @param <T> {@link Class type} of {@link Object value resulting} from the computation of this function
  * applied to the given {@link S target}.
+ * @see org.cp.elements.lang.Nameable
  * @since 2.0.0
  */
-public interface QueryFunction<S, T> {
+public interface QueryFunction<S, T> extends Nameable<String> {
 
   /**
    * Apply the computation of this {@link QueryFunction} to the given {@link S objects}.
