@@ -15,11 +15,11 @@
  */
 package org.cp.elements.data.oql.functions;
 
-import java.util.Objects;
 import java.util.function.Function;
 
 import org.cp.elements.data.oql.QueryFunction;
 import org.cp.elements.lang.Constants;
+import org.cp.elements.lang.ObjectUtils;
 import org.cp.elements.lang.StringUtils;
 import org.cp.elements.lang.annotation.NotNull;
 
@@ -43,7 +43,7 @@ public class Min<S, T extends Comparable<T>> implements QueryFunction<S, T> {
   private final Function<S, T> function;
 
   protected Min(@NotNull Function<S, T> function) {
-    this.function = Objects.requireNonNull(function, "Function is required");
+    this.function = ObjectUtils.requireObject(function, "Function is required");
   }
 
   @Override
