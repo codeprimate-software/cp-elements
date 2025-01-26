@@ -29,6 +29,7 @@ import org.cp.elements.lang.annotation.NotNull;
  * {@link QueryFunction} used to concatenate multiple values.
  *
  * @author John Blum
+ * @param <S> {@link Class type} of {@link Object} on which this function is applied.
  * @see org.cp.elements.data.oql.QueryFunction
  * @since 2.0.0
  */

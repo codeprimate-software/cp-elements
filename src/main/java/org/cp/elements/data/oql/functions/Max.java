@@ -28,6 +28,8 @@ import org.cp.elements.lang.annotation.NotNull;
  * {@link QueryFunction} used to calculate the {@literal maximum value} in a set.
  *
  * @author John Blum
+ * @param <S> {@link Class type} of {@link Object} on which this function is applied.
+ * @param <T> {@link Comparable} type.
  * @see java.lang.Comparable
  * @see org.cp.elements.data.oql.QueryFunction
  * @since 2.0.0

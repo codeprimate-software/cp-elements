@@ -26,6 +26,7 @@ import org.cp.elements.lang.annotation.NotNull;
  * {@link QueryFunction} used to calculate an {@literal average} from a set of values.
  *
  * @author John Blum
+ * @param <S> {@link Class type} of {@link Object} on which this function is applied.
  * @see org.cp.elements.data.oql.functions.Sum
  * @since 2.0.0
  */
