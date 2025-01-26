@@ -59,8 +59,8 @@ public class SimpleQueryExecutor<S, T> implements QueryExecutor<S, T> {
 
     Stream<T> stream = stream(collection)
       .filter(resolvePredicate(query))
-      .sorted(resolveSort(query))
-      .map(resolveProjectionMapping(queryContext));
+      .map(resolveProjectionMapping(queryContext))
+      .sorted(resolveSort(query));
 
     if (selection.isDistinct()) {
       stream = stream.distinct();
@@ -89,14 +89,14 @@ public class SimpleQueryExecutor<S, T> implements QueryExecutor<S, T> {
     return target -> resolveProjection(queryContext).map(queryContext, target);
   }
 
-  private Comparator<S> resolveSort(Query<S, T> query) {
+  private Comparator<T> resolveSort(Query<S, T> query) {
 
     return query.orderBy()
       .map(OrderBy::getOrder)
       .orElseGet(this::defaultSort);
   }
 
-  private Comparator<S> defaultSort() {
+  private Comparator<T> defaultSort() {
     return (comparableOne, comparableTwo) -> 0;
   }
 

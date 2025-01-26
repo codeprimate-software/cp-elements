@@ -398,11 +398,11 @@ public interface Oql extends BaseOql {
    * @see java.lang.Iterable
    */
   @FunctionalInterface
-  interface OrderBy<S, T> extends ExecutableQuery<S, T>, Iterable<Comparator<S>>, LimitSpec<S, T>,
-      Streamable<Comparator<S>> {
+  interface OrderBy<S, T> extends ExecutableQuery<S, T>, Iterable<Comparator<T>>, LimitSpec<S, T>,
+      Streamable<Comparator<T>> {
 
     @SafeVarargs
-    static <S, T> OrderBy<S, T> of(@NotNull From<S, T> from, Comparator<S>... comparators) {
+    static <S, T> OrderBy<S, T> of(@NotNull From<S, T> from, Comparator<T>... comparators) {
 
       Assert.notNull(from, "From is required");
       Assert.notEmpty(comparators, "Comparators are required");
@@ -416,7 +416,7 @@ public interface Oql extends BaseOql {
 
         @Override
         @SuppressWarnings("all")
-        public Iterator<Comparator<S>> iterator() {
+        public Iterator<Comparator<T>> iterator() {
           return ArrayUtils.asIterator(comparators);
         }
       };
@@ -430,7 +430,7 @@ public interface Oql extends BaseOql {
      * in the query result set.
      * @see java.util.Comparator
      */
-    default Comparator<S> getOrder() {
+    default Comparator<T> getOrder() {
 
       return stream()
         .reduce(Comparator::thenComparing)
@@ -445,29 +445,29 @@ public interface Oql extends BaseOql {
     @Dsl
     default OrderBy<S, T> descending() {
 
-      ArrayBuilder<Comparator<S>> comparatorArrayBuilder = OqlUtils.asArray(this);
+      ArrayBuilder<Comparator<T>> comparatorArrayBuilder = OqlUtils.asArray(this);
 
-      Comparator<S> comparator = comparatorArrayBuilder.remove();
+      Comparator<T> comparator = comparatorArrayBuilder.remove();
       comparator = comparator.reversed();
       comparatorArrayBuilder.add(comparator);
 
-      Comparator<S>[] comparators = comparatorArrayBuilder.build();
+      Comparator<T>[] comparators = comparatorArrayBuilder.build();
 
       return of(getFrom(), comparators);
     }
 
     @Override
-    default Stream<Comparator<S>> stream() {
+    default Stream<Comparator<T>> stream() {
       return StreamUtils.stream(this);
     }
 
     @Dsl
-    default OrderBy<S, T> thenOrderBy(@NotNull Comparator<S> comparator) {
+    default OrderBy<S, T> thenOrderBy(@NotNull Comparator<T> comparator) {
       return of(getFrom(), getOrder(), comparator);
     }
 
     @Dsl
-    default <U extends Comparable<U>> OrderBy<S, T> thenOrderBy(@NotNull Function<S, U> function) {
+    default <U extends Comparable<U>> OrderBy<S, T> thenOrderBy(@NotNull Function<T, U> function) {
       return thenOrderBy(Comparator.comparing(function));
     }
   }
@@ -494,14 +494,14 @@ public interface Oql extends BaseOql {
     }
 
     @Dsl
-    default <U extends Comparable<U>> OrderBy<S, T> orderBy(@NotNull Function<S, U> orderingFunction) {
+    default <U extends Comparable<U>> OrderBy<S, T> orderBy(@NotNull Function<T, U> orderingFunction) {
       Assert.notNull(orderingFunction, "Function defining the ordering is required");
-      Comparator<S> comparator = Comparator.comparing(orderingFunction);
+      Comparator<T> comparator = Comparator.comparing(orderingFunction);
       return orderBy(comparator);
     }
 
     @Dsl
-    default OrderBy<S, T> orderBy(Comparator<S> comparator) {
+    default OrderBy<S, T> orderBy(Comparator<T> comparator) {
       throw newUnsupportedOperationException(Constants.UNSUPPORTED_OPERATION);
     }
   }

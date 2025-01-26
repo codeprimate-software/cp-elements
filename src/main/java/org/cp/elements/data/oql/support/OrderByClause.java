@@ -36,7 +36,7 @@ import org.cp.elements.util.ArrayUtils;
  * @since 2.0.0
  */
 @SuppressWarnings({ "unchecked", "unused" })
-public record OrderByClause<S, T>(@NotNull From<S, T> from, Comparator<S>... comparators)
+public record OrderByClause<S, T>(@NotNull From<S, T> from, Comparator<T>... comparators)
     implements Oql.OrderBy<S, T> {
 
   public static <S, T> OrderByClause<S, T> copy(OrderBy<S, T> orderBy) {
@@ -44,7 +44,7 @@ public record OrderByClause<S, T>(@NotNull From<S, T> from, Comparator<S>... com
     Assert.notNull(orderBy, "OrderBy clause to copy is required");
 
     From<S, T> from = orderBy.getFrom();
-    Comparator<S>[] comparators = OqlUtils.asArray(orderBy).build();
+    Comparator<T>[] comparators = OqlUtils.asArray(orderBy).build();
     OrderByClause<S, T> orderByClause = of(from, comparators);
 
     if (from instanceof FromClause<S,T> fromClause) {
@@ -60,7 +60,7 @@ public record OrderByClause<S, T>(@NotNull From<S, T> from, Comparator<S>... com
   }
 
   @SafeVarargs
-  public static <S, T> OrderByClause<S, T> of(@NotNull From<S, T> from, Comparator<S>... comparators) {
+  public static <S, T> OrderByClause<S, T> of(@NotNull From<S, T> from, Comparator<T>... comparators) {
     return new OrderByClause<>(from, comparators);
   }
 
@@ -81,12 +81,12 @@ public record OrderByClause<S, T>(@NotNull From<S, T> from, Comparator<S>... com
 
   @Override
   @SuppressWarnings("all")
-  public Iterator<Comparator<S>> iterator() {
+  public Iterator<Comparator<T>> iterator() {
     return ArrayUtils.asIterator(comparators());
   }
 
   @Override
-  public OrderBy<S, T> thenOrderBy(Comparator<S> comparator) {
+  public OrderBy<S, T> thenOrderBy(Comparator<T> comparator) {
     return copy(OrderBy.super.thenOrderBy(comparator));
   }
 

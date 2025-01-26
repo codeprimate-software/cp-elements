@@ -26,6 +26,7 @@ import org.junit.jupiter.api.Test;
 
 import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.Nameable;
+import org.cp.elements.util.stream.StreamUtils;
 
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
@@ -64,6 +65,13 @@ public class OqlIntegrationTests {
   @SuppressWarnings("unchecked")
   private <S, T> QueryContext<S, T> mockQueryContext() {
     return mock(QueryContext.class);
+  }
+
+  private String[] toStrings(Iterable<?> iterable) {
+
+    return StreamUtils.stream(iterable)
+      .map(Object::toString)
+      .toArray(String[]::new);
   }
 
   @Test
@@ -175,17 +183,17 @@ public class OqlIntegrationTests {
       Person.named("Jon", "Doe").withAge(42)
     );
 
-    Oql.Projection<Person, String> projection = Oql.Projection.<Person, String>as(String.class)
-      .mappedWith(Person::getName);
+    Oql.Projection<Person, NameAgeView> projection = Oql.Projection.<Person, NameAgeView>as(NameAgeView.class)
+      .mappedWith(NameAgeView::from);
 
-    Iterable<String> results = Oql.defaultProvider()
+    Iterable<NameAgeView> results = Oql.defaultProvider()
       .select(projection)
       .from(people)
-      .orderBy(Person::getAge)
+      .orderBy(NameAgeView::getAge)
       .execute();
 
     assertThat(results).isNotNull();
-    assertThat(results).containsExactly("Pie Doe", "Jon Doe", "Jane Doe");
+    assertThat(toStrings(results)).containsExactly("Pie Doe", "Jon Doe", "Jane Doe");
   }
 
   @Test
@@ -200,37 +208,38 @@ public class OqlIntegrationTests {
       Person.named("Randy", "Handy").withAge(8)
     );
 
-    Oql.Projection<Person, String> projection = Oql.Projection.<Person, String>as(String.class)
-      .mappedWith(Person::getName);
+    Oql.Projection<Person, FirstNameLastNameAgeView> projection =
+      Oql.Projection.<Person, FirstNameLastNameAgeView>as(FirstNameLastNameAgeView.class)
+        .mappedWith(FirstNameLastNameAgeView::from);
 
-    Iterable<String> results = Oql.defaultProvider()
+    Iterable<FirstNameLastNameAgeView> results = Oql.defaultProvider()
       .select(projection)
       .from(people)
-      .orderBy(Person::getAge)
-      .thenOrderBy(Person::getFirstName).descending()
-      .thenOrderBy(Person::getLastName).ascending()
+      .orderBy(FirstNameLastNameAgeView::getAge)
+      .thenOrderBy(FirstNameLastNameAgeView::getFirstName).descending()
+      .thenOrderBy(FirstNameLastNameAgeView::getLastName).ascending()
       .execute();
 
     assertThat(results).isNotNull();
-    assertThat(results)
+    assertThat(toStrings(results))
       .containsExactly("Mandy Handy", "Jill Hill", "Randy Handy", "Jack Handy", "Jack Hill", "Bill Hill");
   }
 
   @Test
   void queryProjectionWithOrderingAndLimit() {
 
-    Oql.Projection<Person, String> projection = Oql.Projection.<Person, String>as(String.class)
-      .mappedWith(Person::getName);
+    Oql.Projection<Person, NameAgeView> projection = Oql.Projection.<Person, NameAgeView>as(NameAgeView.class)
+      .mappedWith(NameAgeView::from);
 
-    Iterable<String> result = Oql.defaultProvider()
+    Iterable<NameAgeView> result = Oql.defaultProvider()
       .select(projection)
       .from(PEOPLE)
-      .orderBy(Person::getAge).descending()
+      .orderBy(NameAgeView::getAge).descending()
       .limit(4)
       .execute();
 
     assertThat(result).isNotNull();
-    assertThat(result).containsExactly("Dill Doe", "Jane Doe", "Lan Doe", "Jon Doe");
+    assertThat(toStrings(result)).containsExactly("Dill Doe", "Jane Doe", "Lan Doe", "Jon Doe");
   }
 
   @Test
@@ -244,19 +253,19 @@ public class OqlIntegrationTests {
       Person.named("Sandy", "Handy").withAge(47)
     );
 
-    Oql.Projection<Person, String> projection = Oql.Projection.<Person, String>as(String.class)
-      .mappedWith(Person::getName);
+    Oql.Projection<Person, NameAgeView> projection = Oql.Projection.<Person, NameAgeView>as(NameAgeView.class)
+      .mappedWith(NameAgeView::from);
 
-    Iterable<String> result = Oql.defaultProvider()
+    Iterable<NameAgeView> result = Oql.defaultProvider()
       .select(projection)
       .from(people)
       .where(person -> "doe".equalsIgnoreCase(person.getLastName()))
       .and(person -> person.getAge() > 40)
-      .orderBy(Person::getAge).descending()
+      .orderBy(NameAgeView::getAge).descending()
       .execute();
 
     assertThat(result).isNotNull();
-    assertThat(result).containsExactly("Jane Doe", "Jon Doe");
+    assertThat(toStrings(result)).containsExactly("Jane Doe", "Jon Doe");
   }
 
   @Test
@@ -284,19 +293,19 @@ public class OqlIntegrationTests {
   @Test
   void queryProjectionWithFilterOrConditionAndOrdering() {
 
-    Oql.Projection<Person, String> projection = Oql.Projection.<Person, String>as(String.class)
-      .mappedWith(Person::getName);
+    Oql.Projection<Person, NameAgeView> projection = Oql.Projection.<Person, NameAgeView>as(NameAgeView.class)
+      .mappedWith(NameAgeView::from);
 
-    Iterable<String> result = Oql.defaultProvider()
+    Iterable<NameAgeView> result = Oql.defaultProvider()
       .select(projection)
       .from(PEOPLE)
       .where(person -> person.getAge() < 13)
       .or(person -> person.getAge() > 50)
-      .orderBy(Person::getAge)
+      .orderBy(NameAgeView::getAge)
       .execute();
 
     assertThat(result).isNotNull();
-    assertThat(result).containsExactly("Cookie Doe", "Joe Doe", "Dill Doe");
+    assertThat(toStrings(result)).containsExactly("Cookie Doe", "Joe Doe", "Dill Doe");
   }
 
   @Test
@@ -381,11 +390,11 @@ public class OqlIntegrationTests {
   @Test
   void oqlAsQuery() {
 
-    Query<Person, String> query = Oql.defaultProvider()
-      .select(Oql.Projection.<Person, String>as(String.class).mappedWith(Person::getName))
+    Query<Person, NameAgeView> query = Oql.defaultProvider()
+      .select(Oql.Projection.<Person, NameAgeView>as(NameAgeView.class).mappedWith(NameAgeView::from))
       .from(PEOPLE)
       .where(person -> "doe".equalsIgnoreCase(person.getLastName()))
-      .orderBy(Comparator.comparing(Person::getAge)).descending()
+      .orderBy(NameAgeView::getAge).descending()
       .limit(10L)
       .asQuery();
 
@@ -393,7 +402,7 @@ public class OqlIntegrationTests {
     assertThat(query.selection()).isNotNull();
     assertThat(query.selection().isDistinct()).isFalse();
     assertThat(query.projection()).isNotNull();
-    assertThat(query.projection().getType()).isEqualTo(String.class);
+    assertThat(query.projection().getType()).isEqualTo(NameAgeView.class);
     assertThat(query.projection().getFromType()).isEqualTo(Person.class);
     assertThat(query.getFrom()).isNotNull();
     assertThat(query.getFrom().getCollection()).containsExactlyInAnyOrder(PEOPLE_ARRAY);
@@ -465,6 +474,74 @@ public class OqlIntegrationTests {
       this.age = age;
       return this;
     }
+  }
+
+  interface NameAgeView {
+
+    static NameAgeView from(Person person) {
+
+      return new NameAgeView() {
+
+        @Override
+        public String getName() {
+          return person.getName();
+        }
+
+        @Override
+        public int getAge() {
+          return person.getAge();
+        }
+
+        @Override
+        public String toString() {
+          return getName();
+        }
+      };
+    }
+
+    String getName();
+
+    int getAge();
+
+  }
+
+  interface FirstNameLastNameAgeView extends NameAgeView {
+
+    static FirstNameLastNameAgeView from(Person person) {
+
+      return new FirstNameLastNameAgeView() {
+
+        @Override
+        public String getFirstName() {
+          return person.getFirstName();
+        }
+
+        @Override
+        public String getLastName() {
+          return person.getLastName();
+        }
+
+        @Override
+        public String getName() {
+          return person.getName();
+        }
+
+        @Override
+        public int getAge() {
+          return person.getAge();
+        }
+
+        @Override
+        public String toString() {
+          return getName();
+        }
+      };
+    }
+
+    String getFirstName();
+
+    String getLastName();
+
   }
 
   enum Gender {

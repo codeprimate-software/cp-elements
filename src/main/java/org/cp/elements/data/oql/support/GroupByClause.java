@@ -141,7 +141,7 @@ public class GroupByClause<S, T> implements Oql.GroupBy<S, T> {
   }
 
   @Override
-  public OrderBy<S, T> orderBy(@NotNull Comparator<S> comparator) {
+  public OrderBy<S, T> orderBy(@NotNull Comparator<T> comparator) {
     return OrderByClause.copy(OrderBy.of(getFrom(), comparator));
   }
 

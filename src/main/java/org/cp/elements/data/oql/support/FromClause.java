@@ -122,7 +122,7 @@ public class FromClause<S, T> implements Oql.From<S, T> {
   }
 
   @Override
-  public OrderBy<S, T> orderBy(@NotNull Comparator<S> comparator) {
+  public OrderBy<S, T> orderBy(@NotNull Comparator<T> comparator) {
     OrderBy<S, T> orderBy = OrderByClause.of(this, comparator);
     withOrderBy(orderBy);
     return orderBy;
