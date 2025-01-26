@@ -27,7 +27,7 @@ import org.cp.elements.lang.annotation.NotNull;
  *
  * @author John Blum
  * @see org.cp.elements.data.oql.functions.Sum
- * @since 1.0.0
+ * @since 2.0.0
  */
 @SuppressWarnings("unused")
 public class Avg<S> extends Sum<S> {
