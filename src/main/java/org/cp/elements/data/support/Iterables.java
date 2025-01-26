@@ -23,6 +23,7 @@ import org.cp.elements.data.caching.Cache;
 import org.cp.elements.data.struct.tabular.Row;
 import org.cp.elements.data.struct.tabular.Table;
 import org.cp.elements.lang.Assert;
+import org.cp.elements.lang.annotation.Alias;
 import org.cp.elements.lang.annotation.NotNull;
 import org.cp.elements.util.ArrayUtils;
 import org.cp.elements.util.CollectionUtils;
@@ -43,6 +44,7 @@ public abstract class Iterables {
    * @return an empty {@link Iterable}.
    * @see java.lang.Iterable
    */
+  @Alias(forMember = "CollectionUtils.emptyIterable")
   public static <T> Iterable<T> empty() {
     return CollectionUtils.emptyIterable();
   }
@@ -56,6 +58,7 @@ public abstract class Iterables {
    * @see java.lang.Iterable
    */
   @SafeVarargs
+  @Alias(forMember = "ArrayUtils.asIterable")
   public static <T> Iterable<T> from(T... array) {
     Assert.notNull(array, "Array is required");
     return CollectionUtils.unmodifiableIterable(ArrayUtils.asIterable(array));
@@ -109,5 +112,19 @@ public abstract class Iterables {
   public static Iterable<Row> from(@NotNull Table table) {
     Assert.notNull(table, "Table is required");
     return CollectionUtils.unmodifiableIterable(table);
+  }
+
+  /**
+   * Returns the given {@link Iterable} if not {@literal null} or returns an empty {@link Iterable}.
+   *
+   * @param <T> {@link Class type} of {@link Object elements} emitted by the given {@link Iterable}.
+   * @param iterable {@link Iterable} to evaluate.
+   * @return the given {@link Iterable} if not {@literal null}, otherwise return an empty {@link Iterable}.
+   * @see java.lang.Iterable
+   * @see #empty()
+   */
+  @Alias(forMember = "CollectionUtils.nullSafeIterable")
+  public static <T> Iterable<T> nullSafeIterable(Iterable<T> iterable) {
+    return CollectionUtils.nullSafeIterable(iterable);
   }
 }

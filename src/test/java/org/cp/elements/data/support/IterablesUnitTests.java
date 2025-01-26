@@ -22,6 +22,7 @@ import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 
 import java.util.Arrays;
@@ -280,5 +281,24 @@ public class IterablesUnitTests {
       .isThrownBy(() -> Iterables.from((Table) null))
       .withMessage("Table is required")
       .withNoCause();
+  }
+
+  @Test
+  void nullSafeIterableWithNonNullIterable() {
+
+    Iterable<?> mockIterable = mock(Iterable.class);
+
+    assertThat(Iterables.nullSafeIterable(mockIterable)).isSameAs(mockIterable);
+
+    verifyNoInteractions(mockIterable);
+  }
+
+  @Test
+  void nullSafeIterableWithNullIterable() {
+
+    Iterable<?> iterable = Iterables.nullSafeIterable(null);
+
+    assertThat(iterable).isNotNull();
+    assertThat(iterable).isEmpty();
   }
 }
