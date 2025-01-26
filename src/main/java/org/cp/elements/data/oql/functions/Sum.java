@@ -19,6 +19,7 @@ import java.math.BigDecimal;
 import java.util.function.Function;
 
 import org.cp.elements.data.oql.QueryFunction;
+import org.cp.elements.data.support.Iterables;
 import org.cp.elements.lang.Constants;
 import org.cp.elements.lang.ObjectUtils;
 import org.cp.elements.lang.StringUtils;
@@ -53,11 +54,11 @@ public class Sum<S> implements QueryFunction<S, BigDecimal> {
 
   @Override
   @SuppressWarnings("unchecked")
-  public BigDecimal apply(S... resultSet) {
+  public BigDecimal apply(Iterable<S> resultSet) {
 
     BigDecimal sum = BigDecimal.ZERO;
 
-    for (S result : resultSet) {
+    for (S result : Iterables.nullSafeIterable(resultSet)) {
       Number value = this.function.apply(result);
       sum = sum.add(asBigDecimal(value));
     }

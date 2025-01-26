@@ -16,6 +16,7 @@
 package org.cp.elements.data.oql;
 
 import org.cp.elements.lang.Nameable;
+import org.cp.elements.util.ArrayUtils;
 
 /**
  * Abstract Data Type (ADT) modeling an {@literal OQL} function.
@@ -33,8 +34,19 @@ public interface QueryFunction<S, T> extends Nameable<String> {
    * Apply the computation of this {@link QueryFunction} to the given {@link S objects}.
    *
    * @param array array of {@link S Objects} on which this {@link QueryFunction} is applied.
+   * @see #apply(Iterable)
    */
   @SuppressWarnings("unchecked")
-  T apply(S... array);
+  default T apply(S... array) {
+    return apply(ArrayUtils.asIterable(ArrayUtils.nullSafeArray(array)));
+  }
+
+  /**
+   * Apply the computation of this {@link QueryFunction} to the given {@link S objects}.
+   *
+   * @param iterable {@link Iterable} of {@link S Objects} on which this {@link QueryFunction} is applied.
+   * @see #apply(Object[])
+   */
+  T apply(Iterable<S> iterable);
 
 }

@@ -18,6 +18,7 @@ package org.cp.elements.data.oql.functions;
 import java.util.function.Function;
 
 import org.cp.elements.data.oql.QueryFunction;
+import org.cp.elements.data.support.Iterables;
 import org.cp.elements.lang.Constants;
 import org.cp.elements.lang.ObjectUtils;
 import org.cp.elements.lang.StringUtils;
@@ -53,11 +54,11 @@ public class Max<S, T extends Comparable<T>> implements QueryFunction<S, T> {
 
   @Override
   @SuppressWarnings("unchecked")
-  public T apply(S... resultSet) {
+  public T apply(Iterable<S> resultSet) {
 
     T max = null;
 
-    for (S result : resultSet) {
+    for (S result : Iterables.nullSafeIterable(resultSet)) {
       T value = this.function.apply(result);
       if (value != null) {
         max = max == null || value.compareTo(max) > 0 ? value : max;

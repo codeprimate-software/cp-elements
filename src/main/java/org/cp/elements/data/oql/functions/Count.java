@@ -16,9 +16,10 @@
 package org.cp.elements.data.oql.functions;
 
 import org.cp.elements.data.oql.QueryFunction;
+import org.cp.elements.data.support.Iterables;
 import org.cp.elements.lang.Constants;
 import org.cp.elements.lang.StringUtils;
-import org.cp.elements.util.ArrayUtils;
+import org.cp.elements.util.stream.StreamUtils;
 
 /**
  * {@link QueryFunction} used to {@literal count} the elements in the result set derived from a query.
@@ -42,8 +43,8 @@ public class Count implements QueryFunction<Object, Long> {
   }
 
   @Override
-  public Long apply(Object... resultSet) {
-    return Integer.valueOf(ArrayUtils.nullSafeArray(resultSet).length).longValue();
+  public Long apply(Iterable<Object> resultSet) {
+    return StreamUtils.stream(Iterables.nullSafeIterable(resultSet)).count();
   }
 
   public Count named(String name) {
