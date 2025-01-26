@@ -25,15 +25,13 @@ import org.cp.elements.util.ArrayUtils;
  *
  * @author John Blum
  * @see org.cp.elements.data.oql.QueryFunction
- * @since 1.0.0
+ * @since 2.0.0
  */
 @SuppressWarnings("unused")
 public class Count implements QueryFunction<Object, Long> {
 
-  private static final Count INSTANCE = new Count();
-
   public static Count all() {
-    return INSTANCE;
+    return new Count();
   }
 
   private String name;
