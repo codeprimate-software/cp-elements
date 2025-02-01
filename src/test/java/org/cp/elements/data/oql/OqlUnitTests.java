@@ -278,7 +278,7 @@ public class OqlUnitTests {
 
     assertThatIllegalArgumentException()
       .isThrownBy(() -> Where.compose(null, mockPredicate))
-      .withMessage("Where is required")
+      .withMessage("Where clause is required")
       .withNoCause();
 
     verifyNoInteractions(mockPredicate);
