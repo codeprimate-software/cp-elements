@@ -23,6 +23,7 @@ import org.cp.elements.data.oql.Oql.From;
 import org.cp.elements.data.oql.Oql.OrderBy;
 import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.annotation.NotNull;
+import org.cp.elements.util.ArrayBuilder;
 import org.cp.elements.util.ArrayUtils;
 
 /**
@@ -44,7 +45,7 @@ public record OrderByClause<S, T>(@NotNull From<S, T> from, Comparator<T>... com
     Assert.notNull(orderBy, "OrderBy clause to copy is required");
 
     From<S, T> from = orderBy.getFrom();
-    Comparator<T>[] comparators = OqlUtils.asArray(orderBy).build();
+    Comparator<T>[] comparators = ArrayBuilder.from(orderBy).build();
     OrderByClause<S, T> orderByClause = of(from, comparators);
 
     if (from instanceof FromClause<S,T> fromClause) {

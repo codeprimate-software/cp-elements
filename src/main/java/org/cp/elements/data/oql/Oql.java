@@ -27,8 +27,6 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
-import org.cp.elements.data.oql.support.OqlUtils;
-import org.cp.elements.data.oql.support.OqlUtils.ArrayBuilder;
 import org.cp.elements.function.CannedPredicates;
 import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.Constants;
@@ -36,6 +34,7 @@ import org.cp.elements.lang.annotation.Dsl;
 import org.cp.elements.lang.annotation.FluentApi;
 import org.cp.elements.lang.annotation.NotNull;
 import org.cp.elements.service.loader.ServiceLoaderSupport;
+import org.cp.elements.util.ArrayBuilder;
 import org.cp.elements.util.ArrayUtils;
 import org.cp.elements.util.CollectionUtils;
 import org.cp.elements.util.stream.StreamUtils;
@@ -450,7 +449,7 @@ public interface Oql extends BaseOql {
     @Dsl
     default OrderBy<S, T> descending() {
 
-      ArrayBuilder<Comparator<T>> comparatorArrayBuilder = OqlUtils.asArray(this);
+      ArrayBuilder<Comparator<T>> comparatorArrayBuilder = ArrayBuilder.from(this);
 
       Comparator<T> comparator = comparatorArrayBuilder.remove();
 
