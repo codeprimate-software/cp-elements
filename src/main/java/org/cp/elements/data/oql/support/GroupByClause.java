@@ -16,8 +16,6 @@
 package org.cp.elements.data.oql.support;
 
 import java.util.Comparator;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Predicate;
 
 import org.cp.elements.data.oql.Oql;
@@ -35,6 +33,7 @@ import org.cp.elements.lang.annotation.Nullable;
  * @see org.cp.elements.data.oql.Oql.GroupBy
  * @see org.cp.elements.data.oql.support.Group
  * @see org.cp.elements.data.oql.support.Grouping
+ * @see org.cp.elements.data.oql.support.Groups
  * @since 2.0.0
  */
 public class GroupByClause<S, T> implements Oql.GroupBy<S, T> {
@@ -89,7 +88,7 @@ public class GroupByClause<S, T> implements Oql.GroupBy<S, T> {
 
   private final Grouping<S> grouping;
 
-  private final Map<Integer, Group<S, T>> groups = new ConcurrentHashMap<>();
+  private final Groups<S> groups;
 
   private volatile Predicate<T> predicate;
 
@@ -104,8 +103,10 @@ public class GroupByClause<S, T> implements Oql.GroupBy<S, T> {
    * @see org.cp.elements.data.oql.Oql.From
    */
   public GroupByClause(@NotNull Oql.From<S, T> from, @NotNull Grouping<S> grouping) {
+
     this.from = ObjectUtils.requireObject(from, "From clause is required");
     this.grouping = ObjectUtils.requireObject(grouping, "Grouping is required");
+    this.groups = Groups.from(this);
   }
 
   @Override
@@ -125,12 +126,8 @@ public class GroupByClause<S, T> implements Oql.GroupBy<S, T> {
 
   @Override
   public S group(@NotNull S target) {
-
     Assert.notNull(target, "Target object to group is required");
-
-    this.groups.computeIfAbsent(getGrouping().group(target), groupNumber -> Group.with(this, groupNumber))
-      .include(target);
-
+    this.groups.compute(target).include(target);
     return target;
   }
 
