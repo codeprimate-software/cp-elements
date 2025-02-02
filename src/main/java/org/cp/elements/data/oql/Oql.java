@@ -591,7 +591,7 @@ public interface Oql extends BaseOql {
       return (Predicate<T>) CannedPredicates.ACCEPT_ALL;
     }
 
-    default S compute(S target) {
+    default S group(S target) {
       throw newUnsupportedOperationException(Constants.UNSUPPORTED_OPERATION);
     }
 
