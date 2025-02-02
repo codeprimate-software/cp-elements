@@ -18,24 +18,30 @@ package org.cp.elements.lang;
 import org.cp.elements.lang.annotation.NotNull;
 
 /**
- * Interface defining a contract for {@link Object Objects} that can be destroyed, releasing any resources held
- * prior to destruction followed by garbage collection initiated by the JVM.
+ * Interface defining a contract for {@link Object Objects} that can be destroyed, releasing any and all resources
+ * held prior to destruction followed by garbage collection initiated by the JVM.
  *
  * @author John J. Blum
+ * @see java.lang.FunctionalInterface
  * @see org.cp.elements.lang.Initable
  * @since 1.0.0
  */
+@FunctionalInterface
 @SuppressWarnings("unused")
 public interface Destroyable {
 
   /**
    * Determines whether {@literal this} {@link Object} has been destroyed.
    * <p>
-   * The {@link Object} is considered destroyed when its {@link #destroy} method has been invoked and returns.
+   * The {@link Object} is considered destroyed when its {@link #destroy} method has been invoked
+   * and returns successfully. Defaults to {@literal false}.
    *
-   * @return a boolean value indicating whether {@literal this} {@link Object} has been destroyed or not.
+   * @return a boolean value indicating whether {@literal this} {@link Object} has been destroyed.
+   * @see #destroy()
    */
-  boolean isDestroyed();
+  default boolean isDestroyed() {
+    return false;
+  }
 
   /**
    * Destroys {@literal this} {@link Object} by releasing any and all resources held by this {@link Destroyable Object}

@@ -13,26 +13,40 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.lang;
 
+import static org.cp.elements.lang.LangExtensions.assertThat;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doCallRealMethod;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 
 import org.junit.jupiter.api.Test;
 
 /**
- * Unit tests for {@link Destroyable}.
+ * Unit Tests for {@link Destroyable}.
  *
  * @author John Blum
  * @see org.junit.jupiter.api.Test
  * @see org.cp.elements.lang.Destroyable
  * @since 1.0.0
  */
-public class DestroyableTests {
+public class DestroyableUnitTests {
+
+  @Test
+  void isDestroyedReturnsFalseByDefault() {
+
+    Destroyable mockDestroyable = mock(Destroyable.class);
+
+    doCallRealMethod().when(mockDestroyable).isDestroyed();
+
+    assertThat(mockDestroyable.isDestroyed()).isFalse();
+
+    verify(mockDestroyable, times(1)).isDestroyed();
+    verifyNoMoreInteractions(mockDestroyable);
+  }
 
   @Test
   public void noArgumentDestroyCallsDestroyWithNoopRunnable() {
@@ -43,6 +57,8 @@ public class DestroyableTests {
 
     mockDestroyable.destroy();
 
+    verify(mockDestroyable, times(1)).destroy();
     verify(mockDestroyable, times(1)).destroy(eq(RunnableUtils.NOOP_RUNNABLE));
+    verifyNoMoreInteractions(mockDestroyable);
   }
 }
