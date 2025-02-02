@@ -27,6 +27,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
+import org.cp.elements.data.oql.support.Grouping;
 import org.cp.elements.function.CannedPredicates;
 import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.Constants;
@@ -573,7 +574,7 @@ public interface Oql extends BaseOql {
      * Gets the {@link Grouping} defining the {@literal groups} in the result set of the {@link Query}.
      *
      * @return the {@link Grouping} defining the {@literal groups} in the result set of the {@link Query}.
-     * @see org.cp.elements.data.oql.Oql.Grouping
+     * @see Grouping
      */
     Grouping<S> getGrouping();
 
@@ -625,7 +626,7 @@ public interface Oql extends BaseOql {
    * @param <S> source {@link Class type}.
    * @param <T> target {@link Class type}.
    * @see org.cp.elements.data.oql.Oql.GroupBy
-   * @see org.cp.elements.data.oql.Oql.Grouping
+   * @see Grouping
    */
   interface GroupBySpec<S, T> {
 
@@ -698,37 +699,6 @@ public interface Oql extends BaseOql {
 
     default From<S, T> getFrom() {
       throw newIllegalStateException(NO_FROM);
-    }
-  }
-
-  /**
-   * Interface defining a {@literal group} of similar {@link Object objects} from a {@link Iterable collection}.
-   *
-   * @param <S> {@link Class type} of {@link Object} from which the {@link Object value}
-   * used in the {@literal grouping} is calculated.
-   * @see org.cp.elements.util.stream.Streamable
-   * @see java.lang.FunctionalInterface
-   * @see java.lang.Iterable
-   */
-  @FunctionalInterface
-  interface Grouping<S> extends Iterable<Function<S, ?>>, Streamable<Function<S, ?>> {
-
-    @SafeVarargs
-    static <S> Grouping<S> of(Function<S, ?>... functions) {
-      return ArrayUtils.asIterable(functions)::iterator;
-    }
-
-    default int group(S target) {
-
-      return stream()
-        .map(function -> function.apply(target))
-        .map(Object::hashCode)
-        .reduce(Integer::sum)
-        .orElse(0);
-    }
-
-    default Stream<Function<S, ?>> stream() {
-      return StreamUtils.stream(this);
     }
   }
 

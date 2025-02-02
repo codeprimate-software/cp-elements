@@ -24,7 +24,6 @@ import org.cp.elements.data.oql.Oql;
 import org.cp.elements.data.oql.Oql.ExecutableQuery;
 import org.cp.elements.data.oql.Oql.From;
 import org.cp.elements.data.oql.Oql.GroupBy;
-import org.cp.elements.data.oql.Oql.Grouping;
 import org.cp.elements.data.oql.Oql.OrderBy;
 import org.cp.elements.data.oql.Oql.Projection;
 import org.cp.elements.data.oql.Oql.Select;
@@ -36,7 +35,7 @@ import org.cp.elements.lang.annotation.NotNull;
 import org.cp.elements.util.CollectionUtils;
 
 /**
- * Defaul implementation of {@link Oql.From}.
+ * Default implementation of {@link Oql.From}.
  *
  * @author John Blum
  * @see org.cp.elements.data.oql.Oql
