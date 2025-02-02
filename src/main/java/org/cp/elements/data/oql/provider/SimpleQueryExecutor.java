@@ -17,10 +17,12 @@ package org.cp.elements.data.oql.provider;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
+import org.cp.elements.data.oql.Oql.GroupBy;
 import org.cp.elements.data.oql.Oql.OrderBy;
 import org.cp.elements.data.oql.Oql.Projection;
 import org.cp.elements.data.oql.Oql.Select;
@@ -51,14 +53,17 @@ public class SimpleQueryExecutor<S, T> implements QueryExecutor<S, T> {
 
     Assert.notNull(query, "Query to execute is required");
 
-    Iterable<S> collection = query.collection();
-
     QueryContext<S, T> queryContext = QueryContext.from(query);
+
+    Function<S, S> groupFunction = groupFunction(query);
+
+    Iterable<S> collection = query.collection();
 
     Select<S, T> selection = query.selection();
 
     Stream<T> stream = stream(collection)
       .filter(resolvePredicate(query))
+      .map(groupFunction)
       .map(resolveProjectionMapping(queryContext))
       .sorted(resolveSort(query));
 
@@ -71,6 +76,16 @@ public class SimpleQueryExecutor<S, T> implements QueryExecutor<S, T> {
     List<T> results = stream.toList();
 
     return results;
+  }
+
+  private Function<S, S> groupFunction(Query<S, T> query) {
+
+    Optional<GroupBy<S, T>> groupBy = query.groupBy();
+
+    return target -> {
+      groupBy.ifPresent(it -> it.group(target));
+      return target;
+    };
   }
 
   @SuppressWarnings("unchecked")
