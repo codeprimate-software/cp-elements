@@ -31,38 +31,38 @@ import org.cp.elements.util.stream.Streamable;
  * Abstract Data Type (ADT) modeling a collection of {@link Group Groups}.
  *
  * @author John Blum
- * @param <S> {@link Class type} of {@link Object} being grouped.
+ * @param <T> {@link Class type} of {@link Object} being grouped.
  * @see java.lang.Iterable
  * @see org.cp.elements.data.oql.support.Group
  * @see org.cp.elements.util.stream.Streamable
  * @since 2.0.0
  */
 @SuppressWarnings("unused")
-public interface Groups<S> extends Iterable<Group<S, ?>>, Streamable<Group<S, ?>> {
+public interface Groups<T> extends Iterable<Group<T>>, Streamable<Group<T>> {
 
-  static <S> Groups<S> from(@NotNull Oql.GroupBy<S, ?> groupBy) {
+  static <S, T> Groups<T> from(@NotNull Oql.GroupBy<S, T> groupBy) {
 
     Assert.notNull(groupBy, "GroupBy is required");
 
-    Grouping<S> grouping = groupBy.getGrouping();
+    Grouping<T> grouping = groupBy.getGrouping();
 
-    Map<Integer, Group<S, ?>> groups = new ConcurrentHashMap<>();
+    Map<Integer, Group<T>> groups = new ConcurrentHashMap<>();
 
     return new Groups<>() {
 
       @Override
-      public Grouping<S> getGrouping() {
+      public Grouping<T> getGrouping() {
         return grouping;
       }
 
       @Override
-      public Group<S, ?> compute(S target) {
+      public Group<T> compute(T target) {
         return groups.computeIfAbsent(getGrouping().group(target), groupNumber -> Group.with(groupBy, groupNumber));
       }
 
       @Override
       @SuppressWarnings("all")
-      public Iterator<Group<S, ?>> iterator() {
+      public Iterator<Group<T>> iterator() {
         return Collections.unmodifiableCollection(groups.values()).iterator();
       }
     };
@@ -74,7 +74,7 @@ public interface Groups<S> extends Iterable<Group<S, ?>>, Streamable<Group<S, ?>
    * @return the {@link Grouping} function used to determine the {@link Group} of an {@link Object}.
    * @see org.cp.elements.data.oql.support.Grouping
    */
-  Grouping<S> getGrouping();
+  Grouping<T> getGrouping();
 
   /**
    * Computes the {@link Group} for the given {@link Object}.
@@ -83,10 +83,10 @@ public interface Groups<S> extends Iterable<Group<S, ?>>, Streamable<Group<S, ?>
    * @return the {@link Group} for the given {@link Object}.
    * @see org.cp.elements.data.oql.support.Group
    */
-  Group<S, ?> compute(S target);
+  Group<T> compute(T target);
 
   @Override
-  default Stream<Group<S, ?>> stream() {
+  default Stream<Group<T>> stream() {
     return StreamUtils.stream(this);
   }
 }

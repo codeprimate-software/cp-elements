@@ -55,7 +55,7 @@ public class SimpleQueryExecutor<S, T> implements QueryExecutor<S, T> {
 
     QueryContext<S, T> queryContext = QueryContext.from(query);
 
-    Function<S, S> groupFunction = groupFunction(query);
+    Function<T, T> groupFunction = groupFunction(query);
 
     Iterable<S> collection = query.collection();
 
@@ -63,8 +63,8 @@ public class SimpleQueryExecutor<S, T> implements QueryExecutor<S, T> {
 
     Stream<T> stream = stream(collection)
       .filter(resolvePredicate(query))
-      .map(groupFunction)
       .map(resolveProjectionMapping(queryContext))
+      .map(groupFunction)
       .sorted(resolveSort(query));
 
     if (selection.isDistinct()) {
@@ -78,7 +78,7 @@ public class SimpleQueryExecutor<S, T> implements QueryExecutor<S, T> {
     return results;
   }
 
-  private Function<S, S> groupFunction(Query<S, T> query) {
+  private Function<T, T> groupFunction(Query<S, T> query) {
 
     Optional<GroupBy<S, T>> groupBy = query.groupBy();
 

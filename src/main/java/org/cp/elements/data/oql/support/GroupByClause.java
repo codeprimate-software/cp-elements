@@ -54,7 +54,7 @@ public class GroupByClause<S, T> implements Oql.GroupBy<S, T> {
     Assert.notNull(groupBy, "GroupBy clause is required");
 
     Oql.From<S, T> from = groupBy.getFrom();
-    Grouping<S> grouping = groupBy.getGrouping();
+    Grouping<T> grouping = groupBy.getGrouping();
     GroupByClause<S, T> copy = of(from, grouping);
 
     copy.having(groupBy.getPredicate());
@@ -80,15 +80,15 @@ public class GroupByClause<S, T> implements Oql.GroupBy<S, T> {
    * @see Grouping
    * @see org.cp.elements.data.oql.Oql.From
    */
-  public static <S, T> GroupByClause<S, T> of(@NotNull Oql.From<S, T> from, @NotNull Grouping<S> grouping) {
+  public static <S, T> GroupByClause<S, T> of(@NotNull Oql.From<S, T> from, @NotNull Grouping<T> grouping) {
     return new GroupByClause<>(from, grouping);
   }
 
   private final Oql.From<S, T> from;
 
-  private final Grouping<S> grouping;
+  private final Grouping<T> grouping;
 
-  private final Groups<S> groups;
+  private final Groups<T> groups;
 
   private volatile Predicate<T> predicate;
 
@@ -102,7 +102,7 @@ public class GroupByClause<S, T> implements Oql.GroupBy<S, T> {
    * @see Grouping
    * @see org.cp.elements.data.oql.Oql.From
    */
-  public GroupByClause(@NotNull Oql.From<S, T> from, @NotNull Grouping<S> grouping) {
+  public GroupByClause(@NotNull Oql.From<S, T> from, @NotNull Grouping<T> grouping) {
 
     this.from = ObjectUtils.requireObject(from, "From clause is required");
     this.grouping = ObjectUtils.requireObject(grouping, "Grouping is required");
@@ -115,7 +115,7 @@ public class GroupByClause<S, T> implements Oql.GroupBy<S, T> {
   }
 
   @Override
-  public Grouping<S> getGrouping() {
+  public Grouping<T> getGrouping() {
     return this.grouping;
   }
 
@@ -125,7 +125,7 @@ public class GroupByClause<S, T> implements Oql.GroupBy<S, T> {
   }
 
   @Override
-  public S group(@NotNull S target) {
+  public T group(@NotNull T target) {
     Assert.notNull(target, "Target object to group is required");
     this.groups.compute(target).include(target);
     return target;

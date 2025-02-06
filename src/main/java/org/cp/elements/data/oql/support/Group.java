@@ -32,34 +32,32 @@ import org.cp.elements.util.stream.Streamable;
 /**
  * Abstract Data Type (ADT) modeling a {@literal group of members}.
  *
- * @param <S> {@link Class type} of {@link Object objects} in the {@link Iterable collection} being queried.
- * @param <T> {@link Class type} of the {@link Object projected elements}.
+ * @param <T> {@link Class type} of {@link Object members} in this {@link Group}.
  * @see org.cp.elements.util.stream.Streamable
- * @see Iterable
+ * @see java.lang.Iterable
  */
-public class Group<S, T> implements Iterable<S>, Numbered, Streamable<S> {
+public class Group<T> implements Iterable<T>, Numbered, Streamable<T> {
 
   /**
    * Factory method used to construct a new {@link Group} initialized with the given {@link Oql.GroupBy} clause
    * and {@link Integer group number} uniquely identifying this {@link Group}.
    *
-   * @param <S> {@link Class type} of {@link Object objects} in the {@link Iterable collection} being queried.
-   * @param <T> {@link Class type} of the {@link Object projected elements}.
+   * @param <T> {@link Class type} of {@link Object members} in this {@link Group}.
    * @param groupBy reference to the {@link Oql.GroupBy} clause; required.
    * @param number {@link Integer number} uniquely identifying this {@link Group}.
    * @return a new {@link Group}.
    * @throws IllegalArgumentException if {@link Oql.GroupBy} is {@literal null}.
-   * @see Oql.GroupBy
+   * @see org.cp.elements.data.oql.Oql.GroupBy
    */
-  static <S, T> Group<S, T> with(Oql.GroupBy<S, T> groupBy, int number) {
+  static <T> Group<T> with(Oql.GroupBy<?, T> groupBy, int number) {
     return new Group<>(groupBy, number);
   }
 
   private final int number;
 
-  private final Oql.GroupBy<S, T> groupBy;
+  private final Oql.GroupBy<?, T> groupBy;
 
-  private final List<S> members = new ArrayList<>();
+  private final List<T> members = new ArrayList<>();
 
   /**
    * Constructs a new {@link Group} initialized with the given {@link Oql.GroupBy} clause
@@ -68,17 +66,17 @@ public class Group<S, T> implements Iterable<S>, Numbered, Streamable<S> {
    * @param groupBy reference to the {@link Oql.GroupBy} clause; required.
    * @param number {@link Integer number} uniquely identifying this {@link Group}.
    * @throws IllegalArgumentException if {@link Oql.GroupBy} is {@literal null}.
-   * @see Oql.GroupBy
+   * @see org.cp.elements.data.oql.Oql.GroupBy
    */
-  Group(Oql.GroupBy<S, T> groupBy, int number) {
+  Group(Oql.GroupBy<?, T> groupBy, int number) {
     this.groupBy = ObjectUtils.requireObject(groupBy, "GroupBy clause is required");
     this.number = number;
   }
 
   /**
-   * Returns a {@link Integer count} for the number of {@link S members} in this {@link Group}.
+   * Returns a {@link Integer count} with the number of {@link T members} in this {@link Group}.
    *
-   * @return a {@link Integer count} for the number of {@link S members} in this {@link Group}.
+   * @return a {@link Integer count} with the number of {@link T members} in this {@link Group}.
    * @see #getMembers()
    */
   public long getCount() {
@@ -92,20 +90,20 @@ public class Group<S, T> implements Iterable<S>, Numbered, Streamable<S> {
    * @see Oql.GroupBy
    */
   @SuppressWarnings("unused")
-  protected Oql.GroupBy<S, T> getGroupBy() {
+  protected Oql.GroupBy<?, T> getGroupBy() {
     return this.groupBy;
   }
 
   /**
-   * Gets a {@link List} of {@link S members} in this {@link Group}.
+   * Gets a {@link List} of {@link T members} in this {@link Group}.
    * <p>
-   * {@link S Members} in the {@link List} are listed in the ordered they are added. The {@link List} is immutable.
-   * If no {@link S members} exist in this {@link Group} than an empty {@link List} is returned.
+   * {@link T Members} in the {@link List} are listed in the order they are added. The {@link List} is immutable.
+   * If no {@link T members} exist in this {@link Group}, then an empty {@link List} is returned.
    *
-   * @return a {@link List} of {@link S members} in this {@link Group}.
-   * @see List
+   * @return a {@link List} of {@link T members} in this {@link Group}.
+   * @see java.util.List
    */
-  public List<S> getMembers() {
+  public List<T> getMembers() {
     return Collections.unmodifiableList(this.members);
   }
 
@@ -119,13 +117,13 @@ public class Group<S, T> implements Iterable<S>, Numbered, Streamable<S> {
   }
 
   /**
-   * Adds the given {@link S member} to this {@link Group}.
+   * Adds the given {@link T member} to this {@link Group}.
    *
-   * @param member {@link S member} to add to this {@link Group}; required.
-   * @return the given {@link S member}
-   * @throws IllegalArgumentException if {@link S member} is {@literal null}.
+   * @param member {@link T member} to add to this {@link Group}; required.
+   * @return the given {@link T member}
+   * @throws IllegalArgumentException if {@link T member} is {@literal null}.
    */
-  protected S include(@NotNull S member) {
+  protected T include(@NotNull T member) {
     Assert.notNull(member, "Member to include in this Group [%d] is required", number);
     this.members.add(member);
     return member;
@@ -133,12 +131,12 @@ public class Group<S, T> implements Iterable<S>, Numbered, Streamable<S> {
 
   @Override
   @SuppressWarnings("all")
-  public Iterator<S> iterator() {
+  public Iterator<T> iterator() {
     return getMembers().iterator();
   }
 
   @Override
-  public Stream<S> stream() {
+  public Stream<T> stream() {
     return StreamUtils.stream(this);
   }
 }

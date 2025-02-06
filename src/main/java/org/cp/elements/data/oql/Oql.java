@@ -551,7 +551,7 @@ public interface Oql extends BaseOql {
   @FunctionalInterface
   interface GroupBy<S, T> extends ExecutableQuery<S, T>, LimitSpec<S, T>, OrderBySpec<S, T> {
 
-    static <S, T> GroupBy<S, T> of(@NotNull From<S, T> from, @NotNull Grouping<S> grouping) {
+    static <S, T> GroupBy<S, T> of(@NotNull From<S, T> from, @NotNull Grouping<T> grouping) {
 
       Assert.notNull(from, "From clause is required");
       Assert.notNull(grouping, "Grouping is required");
@@ -564,7 +564,7 @@ public interface Oql extends BaseOql {
         }
 
         @Override
-        public Grouping<S> getGrouping() {
+        public Grouping<T> getGrouping() {
           return grouping;
         }
       };
@@ -576,7 +576,7 @@ public interface Oql extends BaseOql {
      * @return the {@link Grouping} defining the {@literal groups} in the result set of the {@link Query}.
      * @see Grouping
      */
-    Grouping<S> getGrouping();
+    Grouping<T> getGrouping();
 
     /**
      * Gets the configured {@link Predicate} defining the condition declared in the {@literal having clause}
@@ -591,7 +591,7 @@ public interface Oql extends BaseOql {
       return (Predicate<T>) CannedPredicates.ACCEPT_ALL;
     }
 
-    default S group(S target) {
+    default T group(T target) {
       throw newUnsupportedOperationException(Constants.UNSUPPORTED_OPERATION);
     }
 
@@ -608,7 +608,7 @@ public interface Oql extends BaseOql {
         }
 
         @Override
-        public Grouping<S> getGrouping() {
+        public Grouping<T> getGrouping() {
           return GroupBy.this.getGrouping();
         }
 
@@ -642,7 +642,7 @@ public interface Oql extends BaseOql {
     }
 
     @Dsl
-    default GroupBy<S, T> groupBy(Grouping<S> grouping) {
+    default GroupBy<S, T> groupBy(Grouping<T> grouping) {
       throw newUnsupportedOperationException(Constants.UNSUPPORTED_OPERATION);
     }
   }
