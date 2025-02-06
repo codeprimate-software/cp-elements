@@ -124,7 +124,7 @@ public class Group<T> implements Iterable<T>, Numbered, Streamable<T> {
    * @throws IllegalArgumentException if {@link T member} is {@literal null}.
    */
   protected T include(@NotNull T member) {
-    Assert.notNull(member, "Member to include in this Group [%d] is required", number);
+    Assert.notNull(member, "Member to include in this Group [%d] is required", getNumber());
     this.members.add(member);
     return member;
   }
