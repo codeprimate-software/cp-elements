@@ -105,6 +105,18 @@ public class Group<T> implements Iterable<T>, Numbered, Streamable<T> {
   }
 
   /**
+   * Gets the {@link Grouping} function used to determine the {@link Group} of an {@link Object}.
+   *
+   * @return the {@link Grouping} function used to determine the {@link Group} of an {@link Object}.
+   * @see org.cp.elements.data.oql.support.Grouping
+   * @see #getGroupBy()
+   */
+  @SuppressWarnings("unused")
+  protected Grouping<T> getGrouping() {
+    return getGroupBy().getGrouping();
+  }
+
+  /**
    * Gets a {@link List} of {@link T members} in this {@link Group}.
    * <p>
    * {@link T Members} in the {@link List} are listed in the order they are added. The {@link List} is immutable.
