@@ -34,6 +34,7 @@ import org.cp.elements.util.stream.Streamable;
  *
  * @param <T> {@link Class type} of {@link Object members} in this {@link Group}.
  * @see org.cp.elements.util.stream.Streamable
+ * @see org.cp.elements.lang.Numbered
  * @see java.lang.Iterable
  */
 public class Group<T> implements Iterable<T>, Numbered, Streamable<T> {
