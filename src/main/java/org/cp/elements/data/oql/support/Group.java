@@ -84,6 +84,16 @@ public class Group<T> implements Iterable<T>, Numbered, Streamable<T> {
   }
 
   /**
+   * Determines if this {@link Group} contains any {@link T members}.
+   *
+   * @return a boolean value indicating whether this {@link Group} contains any {@link T members}.
+   * @see #getCount()
+   */
+  public boolean isEmpty() {
+    return getCount() == 0L;
+  }
+
+  /**
    * Gets the {@link Oql.GroupBy} clause containing the {@link Grouping} used to form this {@link Group}.
    *
    * @return the {@link Oql.GroupBy} clause containing the {@link Grouping} used to form this {@link Group}.
