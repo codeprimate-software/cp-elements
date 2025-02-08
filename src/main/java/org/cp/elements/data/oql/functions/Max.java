@@ -55,7 +55,6 @@ public class Max<S, T extends Comparable<T>> implements QueryFunction<S, T> {
   }
 
   @Override
-  @SuppressWarnings("unchecked")
   public T apply(Iterable<S> resultSet) {
 
     T max = null;

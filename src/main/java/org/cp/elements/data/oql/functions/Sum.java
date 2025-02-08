@@ -54,7 +54,6 @@ public class Sum<S> implements QueryFunction<S, BigDecimal> {
   }
 
   @Override
-  @SuppressWarnings("unchecked")
   public BigDecimal apply(Iterable<S> resultSet) {
 
     BigDecimal sum = BigDecimal.ZERO;
