@@ -22,6 +22,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Stream;
 
 import org.cp.elements.data.oql.Oql;
+import org.cp.elements.data.oql.Oql.GroupBy;
 import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.annotation.NotNull;
 import org.cp.elements.util.stream.StreamUtils;
@@ -44,20 +45,18 @@ public interface Groups<T> extends Iterable<Group<T>>, Streamable<Group<T>> {
 
     Assert.notNull(groupBy, "GroupBy is required");
 
-    Grouping<T> grouping = groupBy.getGrouping();
-
     Map<Integer, Group<T>> groups = new ConcurrentHashMap<>();
 
     return new Groups<>() {
 
       @Override
-      public Grouping<T> getGrouping() {
-        return grouping;
+      public GroupBy<S, T> getGroupBy() {
+        return groupBy;
       }
 
       @Override
       public Group<T> compute(T target) {
-        return groups.computeIfAbsent(getGrouping().group(target), groupNumber -> Group.with(groupBy, groupNumber));
+        return groups.computeIfAbsent(getGrouping().group(target), groupNumber -> Group.with(getGroupBy(), groupNumber));
       }
 
       @Override
@@ -69,12 +68,23 @@ public interface Groups<T> extends Iterable<Group<T>>, Streamable<Group<T>> {
   }
 
   /**
+   * Gets the {@link Oql.GroupBy} clause used to form the {@link Group Groups} in this collection.
+   *
+   * @return the {@link Oql.GroupBy} clause used to form the {@link Group Groups} in this collection.
+   * @see org.cp.elements.data.oql.Oql.GroupBy
+   */
+  Oql.GroupBy<?, T> getGroupBy();
+
+  /**
    * Gets the {@link Grouping} function used to determine the {@link Group} of an {@link Object}.
    *
    * @return the {@link Grouping} function used to determine the {@link Group} of an {@link Object}.
    * @see org.cp.elements.data.oql.support.Grouping
+   * @see #getGroupBy()
    */
-  Grouping<T> getGrouping();
+  default Grouping<T> getGrouping() {
+    return getGroupBy().getGrouping();
+  }
 
   /**
    * Computes the {@link Group} for the given {@link Object}.
