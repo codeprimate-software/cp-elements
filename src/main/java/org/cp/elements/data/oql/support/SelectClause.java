@@ -15,11 +15,18 @@
  */
 package org.cp.elements.data.oql.support;
 
+import java.util.Iterator;
+
 import org.cp.elements.data.oql.Oql;
 import org.cp.elements.data.oql.Oql.Distinct;
 import org.cp.elements.data.oql.Oql.From;
 import org.cp.elements.data.oql.Oql.Projection;
 import org.cp.elements.data.oql.Oql.Select;
+import org.cp.elements.data.oql.Oql.TransformingProjection;
+import org.cp.elements.data.oql.QueryContext;
+import org.cp.elements.data.oql.QueryFunction;
+import org.cp.elements.data.struct.tabular.Row;
+import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.ObjectUtils;
 import org.cp.elements.lang.annotation.NotNull;
 import org.cp.elements.lang.annotation.ThreadSafe;
@@ -48,7 +55,7 @@ public class SelectClause<S, T> implements Oql.Select<S, T> {
   private final Projection<S, T> projection;
 
   public SelectClause(@NotNull Projection<S, T> projection) {
-    this.projection = ObjectUtils.requireObject(projection, "Projection is required");
+    this.projection = ProjectionWrapper.wrap(projection);
   }
 
   @Override
@@ -85,6 +92,72 @@ public class SelectClause<S, T> implements Oql.Select<S, T> {
     @Override
     public From<S, T> from(Iterable<S> collection) {
       return buildFrom(select(), collection);
+    }
+  }
+
+  static class ProjectionWrapper<S, T> implements Oql.Projection<S, T> {
+
+    static <S, T> ProjectionWrapper<S, T> wrap(Oql.Projection<S, T> projection) {
+
+      Assert.notNull(projection, "Projection is required");
+
+      return projection instanceof Oql.TransformingProjection
+        ? new TransformingProjectionWrapper<>(projection)
+        : new ProjectionWrapper<>(projection);
+    }
+
+    private final Projection<S, T> projection;
+
+    private Class<S> fromType;
+
+    ProjectionWrapper(@NotNull Projection<S, T> projection) {
+      this.projection = ObjectUtils.requireObject(projection, "Projection is required");
+    }
+
+    @SuppressWarnings("unchecked")
+    protected <P extends Projection<S, T>> P getProjection() {
+      return (P) this.projection;
+    }
+
+    @Override
+    public Class<T> getType() {
+      return getProjection().getType();
+    }
+
+    @Override
+    public Class<S> getFromType() {
+      Class<S> fromType = this.fromType;
+      return fromType != null ? fromType : getProjection().getFromType();
+    }
+
+    @Override
+    public T map(QueryContext<S, T> queryContext, S target) {
+      return getProjection().map(queryContext, target);
+    }
+
+    @SuppressWarnings("unchecked")
+    public <P extends Projection<S, T>> P usingFromType(Class<S> fromType) {
+      this.fromType = fromType;
+      return (P) this;
+    }
+  }
+
+  static class TransformingProjectionWrapper<S, T, U> extends ProjectionWrapper<S, T>
+    implements Oql.TransformingProjection<S, T, U> {
+
+    TransformingProjectionWrapper(@NotNull Projection<S, T> projection) {
+      super(projection);
+    }
+
+    @Override
+    public T remap(QueryContext<S, T> queryContext, Row row) {
+      return this.<TransformingProjection<S, T, U>>getProjection().remap(queryContext, row);
+    }
+
+    @Override
+    @SuppressWarnings("all")
+    public Iterator<QueryFunction<T, U>> iterator() {
+      return this.<TransformingProjection<S, T, U>>getProjection().iterator();
     }
   }
 }

@@ -25,6 +25,7 @@ import org.cp.elements.data.oql.Oql.ExecutableQuery;
 import org.cp.elements.data.oql.Oql.From;
 import org.cp.elements.data.oql.Oql.GroupBy;
 import org.cp.elements.data.oql.Oql.OrderBy;
+import org.cp.elements.data.oql.Oql.Projection;
 import org.cp.elements.data.oql.Oql.Select;
 import org.cp.elements.data.oql.Oql.Where;
 import org.cp.elements.lang.Assert;
@@ -108,6 +109,13 @@ public class FromClause<S, T> implements Oql.From<S, T> {
     return CollectionUtils.unmodifiableIterable(this.collection);
   }
 
+  /**
+   * Gets the {@link Select selection} on this {@link Iterable collection}.
+   *
+   * @return the {@link Select selection} on this {@link Iterable collection}.
+   * @throws IllegalStateException if {@link Select selection} is {@literal null}.
+   * @see org.cp.elements.data.oql.Oql.Select
+   */
   @Override
   public Select<S, T> getSelection() {
     Select<S, T> selection = this.selection;
@@ -115,6 +123,14 @@ public class FromClause<S, T> implements Oql.From<S, T> {
     return selection;
   }
 
+  /**
+   * Gets the {@link Class type} of {@link Object objects} being queried in this {@link Iterable collections}.
+   * <p>
+   * If the {@link Class element type} was not specified (configured), then the {@link Class element type}
+   * will be resolved. The result of the {@link Class element type} resolution is cached.
+   *
+   * @return the {@link Class type} of {@link Object objects} being queried in this {@link Iterable collections}.
+   */
   @Override
   @SuppressWarnings("unchecked")
   public Class<S> getType() {
@@ -122,6 +138,13 @@ public class FromClause<S, T> implements Oql.From<S, T> {
       : (Class<S>) TypeResolver.getInstance().resolveType(getCollection()));
   }
 
+  /**
+   * Returns an {@link Optional} {@link Oql.Where} clause of the OQL query.
+   *
+   * @return an {@link Optional} {@link Oql.Where} clause of the OQL query.
+   * @see org.cp.elements.data.oql.Oql.Where
+   * @see java.util.Optional
+   */
   @Override
   public Optional<Where<S, T>> getWhere() {
 
@@ -131,16 +154,35 @@ public class FromClause<S, T> implements Oql.From<S, T> {
     return Optional.of(resolvedWhere);
   }
 
+  /**
+   * Returns an {@link Optional} {@link Oql.OrderBy} clause of the OQL query.
+   *
+   * @return an {@link Optional} {@link Oql.OrderBy} clause of the OQL query.
+   * @see org.cp.elements.data.oql.Oql.OrderBy
+   * @see java.util.Optional
+   */
   @Override
   public Optional<OrderBy<S, T>> getOrderBy() {
     return Optional.ofNullable(this.orderBy);
   }
 
+  /**
+   * Returns a {@link Long limit} on the number of results returned by the OQL query.
+   *
+   * @return a {@link Long limit} on the number of results returned by the OQL query.
+   */
   @Override
   public long getLimit() {
     return this.limit;
   }
 
+  /**
+   * Returns an {@link Optional} {@link Oql.GroupBy} clause of the OQL query.
+   *
+   * @return an {@link Optional} {@link Oql.GroupBy} clause of the OQL query.
+   * @see org.cp.elements.data.oql.Oql.GroupBy
+   * @see java.util.Optional
+   */
   @Override
   public Optional<GroupBy<S, T>> getGroupBy() {
     return Optional.ofNullable(this.groupBy);
@@ -174,6 +216,7 @@ public class FromClause<S, T> implements Oql.From<S, T> {
 
   protected FromClause<S, T> withSelection(@NotNull Select<S, T> selection) {
     this.selection = ObjectUtils.requireObject(selection, "Selection is required");
+    initProjectionFromType(selection);
     return this;
   }
 
@@ -190,6 +233,21 @@ public class FromClause<S, T> implements Oql.From<S, T> {
   protected FromClause<S, T> withGroupBy(@Nullable GroupBy<S, T> groupBy) {
     this.groupBy = groupBy;
     return this;
+  }
+
+  private void initProjectionFromType(Select<S, T> selection) {
+    initProjectionFromType(selection.getProjection());
+  }
+
+  private void initProjectionFromType(Projection<S, T> projection) {
+
+    Class<S> fromType = projection.getFromType();
+
+    if (ObjectUtils.isUnclassified(fromType)) {
+      if (projection instanceof SelectClause.ProjectionWrapper<S,T> projectionWrapper) {
+        projectionWrapper.usingFromType(getType());
+      }
+    }
   }
 
   public record Builder<S, T>(@NotNull Iterable<S> collection)
