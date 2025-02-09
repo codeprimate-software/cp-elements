@@ -25,13 +25,13 @@ import org.cp.elements.data.oql.Oql.ExecutableQuery;
 import org.cp.elements.data.oql.Oql.From;
 import org.cp.elements.data.oql.Oql.GroupBy;
 import org.cp.elements.data.oql.Oql.OrderBy;
-import org.cp.elements.data.oql.Oql.Projection;
 import org.cp.elements.data.oql.Oql.Select;
 import org.cp.elements.data.oql.Oql.Where;
 import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.ObjectUtils;
 import org.cp.elements.lang.TypeResolver;
 import org.cp.elements.lang.annotation.NotNull;
+import org.cp.elements.lang.annotation.Nullable;
 import org.cp.elements.util.CollectionUtils;
 
 /**
@@ -45,7 +45,17 @@ import org.cp.elements.util.CollectionUtils;
 @SuppressWarnings("unused")
 public class FromClause<S, T> implements Oql.From<S, T> {
 
-  public static <S, T> FromClause.Builder<S, T> collection(Iterable<S> collection) {
+  /**
+   * Factory method used to build a new {@link FromClause} initialized with the given {@link Iterable collection}.
+   *
+   * @param <S> {@link Class type} of {@link Object objects} in the {@link Iterable collection} to query.
+   * @param <T> {@link Class type} of the {@link Object projected objects}.
+   * @param collection {@link Iterable} from which {@link Object Objects} are selected.
+   * @return a new {@link FromClause} initialized with the given {@link Iterable collection}.
+   * @throws IllegalArgumentException if {@link Iterable collection} is {@literal null}.
+   * @see java.lang.Iterable
+   */
+  public static <S, T> FromClause.Builder<S, T> collection(@NotNull Iterable<S> collection) {
     return new Builder<>(collection);
   }
 
@@ -63,15 +73,37 @@ public class FromClause<S, T> implements Oql.From<S, T> {
 
   private volatile GroupBy<S, T> groupBy;
 
+  /**
+   * Constructs a new {@link FromClause} initialized with the given {@link Iterable collection}.
+   *
+   * @param collection {@link Iterable} from which {@link Object Objects} are selected.
+   * @throws IllegalArgumentException if {@link Iterable collection} is {@literal null}.
+   * @see java.lang.Iterable
+   */
   protected FromClause(@NotNull Iterable<S> collection) {
     this(collection, null);
   }
 
+  /**
+   * Constructs a new {@link FromClause} initialized with the given {@link Iterable collection}
+   * and {@link Class element type}.
+   *
+   * @param collection {@link Iterable} from which {@link Object Objects} are selected; required.
+   * @param elementType {@link Class type} of {@link Object elements} in the {@link Iterable collection}.
+   * @throws IllegalArgumentException if {@link Iterable collection} is {@literal null}.
+   * @see java.lang.Iterable
+   */
   protected FromClause(@NotNull Iterable<S> collection, Class<S> elementType) {
     this.collection = ObjectUtils.requireObject(collection, "Collection is required");
     this.elementType.set(elementType);
   }
 
+  /**
+   * Gets the {@link Iterable collection} to query.
+   *
+   * @return the {@link Iterable collection} to query.
+   * @see java.lang.Iterable
+   */
   public Iterable<S> getCollection() {
     return CollectionUtils.unmodifiableIterable(this.collection);
   }
@@ -90,6 +122,7 @@ public class FromClause<S, T> implements Oql.From<S, T> {
       : (Class<S>) TypeResolver.getInstance().resolveType(getCollection()));
   }
 
+  @Override
   public Optional<Where<S, T>> getWhere() {
 
     Where<S, T> where = this.where;
@@ -139,38 +172,27 @@ public class FromClause<S, T> implements Oql.From<S, T> {
     return From.super.groupBy(grouping);
   }
 
-  protected FromClause<S, T> withSelection(Select<S, T> selection) {
+  protected FromClause<S, T> withSelection(@NotNull Select<S, T> selection) {
     this.selection = ObjectUtils.requireObject(selection, "Selection is required");
-    initProjectionFromType(selection);
     return this;
   }
 
-  private void initProjectionFromType(Select<S, T> selection) {
-
-    Projection<S, T> projection = selection.getProjection();
-    Class<S> fromType = selection.getProjection().getFromType();
-
-    if (Object.class.equals(fromType)) {
-      projection.fromType(getType());
-    }
-  }
-
-  protected FromClause<S, T> withWhere(Where<S, T> where) {
+  protected FromClause<S, T> withWhere(@Nullable Where<S, T> where) {
     this.where = where;
     return this;
   }
 
-  protected FromClause<S, T> withOrderBy(OrderBy<S, T> orderBy) {
+  protected FromClause<S, T> withOrderBy(@Nullable OrderBy<S, T> orderBy) {
     this.orderBy = orderBy;
     return this;
   }
 
-  protected FromClause<S, T> withGroupBy(GroupBy<S, T> groupBy) {
+  protected FromClause<S, T> withGroupBy(@Nullable GroupBy<S, T> groupBy) {
     this.groupBy = groupBy;
     return this;
   }
 
-  public record Builder<S, T>(Iterable<S> collection)
+  public record Builder<S, T>(@NotNull Iterable<S> collection)
       implements org.cp.elements.lang.Builder<FromClause<S, T>> {
 
     public Builder {
