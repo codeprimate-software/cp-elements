@@ -20,7 +20,6 @@ import org.cp.elements.data.oql.Oql.Distinct;
 import org.cp.elements.data.oql.Oql.From;
 import org.cp.elements.data.oql.Oql.Projection;
 import org.cp.elements.data.oql.Oql.Select;
-import org.cp.elements.data.oql.QueryContext;
 import org.cp.elements.lang.ObjectUtils;
 import org.cp.elements.lang.annotation.NotNull;
 import org.cp.elements.lang.annotation.ThreadSafe;
@@ -44,14 +43,12 @@ public class SelectClause<S, T> implements Oql.Select<S, T> {
     return new SelectClause<>(projection);
   }
 
-  protected static final boolean DEFAULT_DISTINCT = false;
-
-  private volatile boolean distinct = DEFAULT_DISTINCT;
+  private volatile boolean distinct = Select.DEFAULT_DISTINCT;
 
   private final Projection<S, T> projection;
 
   public SelectClause(@NotNull Projection<S, T> projection) {
-    this.projection = ProjectionWrapper.wrap(projection);
+    this.projection = ObjectUtils.requireObject(projection, "Projection is required");
   }
 
   @Override
@@ -79,7 +76,7 @@ public class SelectClause<S, T> implements Oql.Select<S, T> {
     return FromClause.<S, T>collection(collection).build().withSelection(select);
   }
 
-  record DistinctBuilder<S, T>(Select<S, T> select) implements Oql.Distinct<S, T> {
+  record DistinctBuilder<S, T>(@NotNull Select<S, T> select) implements Oql.Distinct<S, T> {
 
     DistinctBuilder {
       ObjectUtils.requireObject(select, "Select is required");
@@ -88,48 +85,6 @@ public class SelectClause<S, T> implements Oql.Select<S, T> {
     @Override
     public From<S, T> from(Iterable<S> collection) {
       return buildFrom(select(), collection);
-    }
-  }
-
-  static class ProjectionWrapper<S, T> implements Oql.Projection<S, T> {
-
-    static <S, T> ProjectionWrapper<S, T> wrap(@NotNull Projection<S, T> projection) {
-      return new ProjectionWrapper<>(projection);
-    }
-
-    private volatile Class<S> fromType;
-
-    private final Projection<S, T> projection;
-
-    ProjectionWrapper(@NotNull Projection<S, T> projection) {
-      this.projection = ObjectUtils.requireObject(projection, "Projection is required");
-    }
-
-    @Override
-    public Class<S> getFromType() {
-      Class<S> fromType = this.fromType;
-      return fromType != null ? fromType
-        : getProjection().getFromType();
-    }
-
-    protected Projection<S, T> getProjection() {
-      return this.projection;
-    }
-
-    @Override
-    public Class<T> getType() {
-      return getProjection().getType();
-    }
-
-    @Override
-    public Projection<S, T> fromType(Class<S> type) {
-      this.fromType = type;
-      return this;
-    }
-
-    @Override
-    public T map(QueryContext<S, T> queryContext, S target) {
-      return getProjection().map(queryContext, target);
     }
   }
 }
