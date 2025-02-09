@@ -31,12 +31,11 @@ import org.cp.elements.lang.annotation.Nullable;
 import org.cp.elements.util.ArrayUtils;
 
 /**
- * Abstract utility class used to perform operations on {@link String Strings}.
+ * Abstract utility class used to process {@link String Strings}.
  *
  * @author John J. Blum
  * @see java.lang.String
  * @see java.util.regex.Pattern
- * @see org.cp.elements.lang.ObjectUtils
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
@@ -54,7 +53,7 @@ public abstract class StringUtils {
   public static final String COMMA_SPACE_DELIMITER = ", ";
   public static final String DOT_SEPARATOR = ".";
   public static final String EMPTY_STRING = "";
-  public static final String LINE_SEPARATOR = System.getProperty("line.separator");
+  public static final String LINE_SEPARATOR = System.lineSeparator();
   public static final String SEMICOLON_SEPARATOR = ";";
   public static final String SEMICOLON_SPACE_SEPARATOR = "; ";
   public static final String SINGLE_SPACE = " ";
