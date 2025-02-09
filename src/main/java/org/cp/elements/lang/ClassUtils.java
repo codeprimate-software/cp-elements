@@ -931,6 +931,18 @@ public abstract class ClassUtils {
   }
 
   /**
+   * Determines whether the given {@link Class type} is unclassified.
+   * <p>
+   * A {@link Class type} is unclassified if {@literal null} or equal to the {@link Class Object class}.
+   *
+   * @param type {@link Class} type of evaluate.
+   * @return a boolean value indicating whether the given {@link Class type} is unclassified.
+   */
+  public static boolean isUnclassified(@Nullable Class<?> type) {
+    return type == null || Object.class.equals(type);
+  }
+
+  /**
    * Loads the {@link Class} for the given, {@link String fully-qualified class name} using
    * the {@link Thread#currentThread() current Thread's} {@link Thread#getContextClassLoader() context ClassLoader},
    * followed by initializing the {@link Class}.
