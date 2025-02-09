@@ -21,6 +21,7 @@ import static org.mockito.Mockito.verifyNoInteractions;
 
 import java.util.Comparator;
 import java.util.Set;
+import java.util.function.Function;
 
 import org.junit.jupiter.api.Test;
 
@@ -63,6 +64,11 @@ public class OqlIntegrationTests {
   private static final Person[] PEOPLE_ARRAY = PEOPLE.toArray(new Person[0]);
 
   @SuppressWarnings("unchecked")
+  private <S, T> Function<S, T> mockFunction() {
+    return mock(Function.class);
+  }
+
+  @SuppressWarnings("unchecked")
   private <S, T> QueryContext<S, T> mockQueryContext() {
     return mock(QueryContext.class);
   }
@@ -79,7 +85,8 @@ public class OqlIntegrationTests {
 
     Oql.Projection<Person, String> projection = Oql.Projection.<Person, String>as(String.class)
       .fromType(Person.class)
-      .mappedWith(Person::getName);
+      .mappedWith(Person::getName)
+      .build();
 
     QueryContext<Person, String> mockQueryContext = mockQueryContext();
 
@@ -94,7 +101,9 @@ public class OqlIntegrationTests {
   @Test
   void projectionWithSelection() {
 
-    Oql.Projection<Person, String> projection = Oql.Projection.as(String.class);
+    Oql.Projection<Person, String> projection = Oql.Projection.<Person, String>as(String.class)
+      .mappedWith(mockFunction())
+      .build();
 
     Query<Person, String> query = Oql.defaultProvider()
       .select(projection)
@@ -163,7 +172,8 @@ public class OqlIntegrationTests {
     );
 
     Oql.Projection<Person, String> projection = Oql.Projection.<Person, String>as(String.class)
-      .mappedWith(Person::getName);
+      .mappedWith(Person::getName)
+      .build();
 
     Iterable<String> result = Oql.defaultProvider()
       .select(projection)
@@ -184,7 +194,8 @@ public class OqlIntegrationTests {
     );
 
     Oql.Projection<Person, NameAgeView> projection = Oql.Projection.<Person, NameAgeView>as(NameAgeView.class)
-      .mappedWith(NameAgeView::from);
+      .mappedWith(NameAgeView::from)
+      .build();
 
     Iterable<NameAgeView> results = Oql.defaultProvider()
       .select(projection)
@@ -210,7 +221,8 @@ public class OqlIntegrationTests {
 
     Oql.Projection<Person, FirstNameLastNameAgeView> projection =
       Oql.Projection.<Person, FirstNameLastNameAgeView>as(FirstNameLastNameAgeView.class)
-        .mappedWith(FirstNameLastNameAgeView::from);
+        .mappedWith(FirstNameLastNameAgeView::from)
+        .build();
 
     Iterable<FirstNameLastNameAgeView> results = Oql.defaultProvider()
       .select(projection)
@@ -229,7 +241,8 @@ public class OqlIntegrationTests {
   void queryProjectionWithOrderingAndLimit() {
 
     Oql.Projection<Person, NameAgeView> projection = Oql.Projection.<Person, NameAgeView>as(NameAgeView.class)
-      .mappedWith(NameAgeView::from);
+      .mappedWith(NameAgeView::from)
+      .build();
 
     Iterable<NameAgeView> result = Oql.defaultProvider()
       .select(projection)
@@ -254,7 +267,8 @@ public class OqlIntegrationTests {
     );
 
     Oql.Projection<Person, NameAgeView> projection = Oql.Projection.<Person, NameAgeView>as(NameAgeView.class)
-      .mappedWith(NameAgeView::from);
+      .mappedWith(NameAgeView::from)
+      .build();
 
     Iterable<NameAgeView> result = Oql.defaultProvider()
       .select(projection)
@@ -276,7 +290,8 @@ public class OqlIntegrationTests {
       .toList();
 
     Oql.Projection<Person, String> projection = Oql.Projection.<Person, String>as(String.class)
-      .mappedWith(Person::getName);
+      .mappedWith(Person::getName)
+      .build();
 
     Iterable<String> result = Oql.defaultProvider()
       .select(projection)
@@ -294,7 +309,8 @@ public class OqlIntegrationTests {
   void queryProjectionWithFilterOrConditionAndOrdering() {
 
     Oql.Projection<Person, NameAgeView> projection = Oql.Projection.<Person, NameAgeView>as(NameAgeView.class)
-      .mappedWith(NameAgeView::from);
+      .mappedWith(NameAgeView::from)
+      .build();
 
     Iterable<NameAgeView> result = Oql.defaultProvider()
       .select(projection)
@@ -391,7 +407,7 @@ public class OqlIntegrationTests {
   void oqlAsQuery() {
 
     Query<Person, NameAgeView> query = Oql.defaultProvider()
-      .select(Oql.Projection.<Person, NameAgeView>as(NameAgeView.class).mappedWith(NameAgeView::from))
+      .select(Oql.Projection.<Person, NameAgeView>as(NameAgeView.class).mappedWith(NameAgeView::from).build())
       .from(PEOPLE)
       .where(person -> "doe".equalsIgnoreCase(person.getLastName()))
       .orderBy(NameAgeView::getAge).descending()

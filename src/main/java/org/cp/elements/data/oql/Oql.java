@@ -18,6 +18,7 @@ package org.cp.elements.data.oql;
 import static org.cp.elements.lang.RuntimeExceptionsFactory.newIllegalStateException;
 import static org.cp.elements.lang.RuntimeExceptionsFactory.newUnsupportedOperationException;
 
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.Optional;
@@ -28,9 +29,12 @@ import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 import org.cp.elements.data.oql.support.Grouping;
+import org.cp.elements.data.struct.tabular.Row;
 import org.cp.elements.function.CannedPredicates;
 import org.cp.elements.lang.Assert;
+import org.cp.elements.lang.Builder;
 import org.cp.elements.lang.Constants;
+import org.cp.elements.lang.ObjectUtils;
 import org.cp.elements.lang.annotation.Dsl;
 import org.cp.elements.lang.annotation.FluentApi;
 import org.cp.elements.lang.annotation.NotNull;
@@ -72,8 +76,8 @@ public interface Oql extends BaseOql {
    * Returns the {@literal OQL} service provider implementation for {@link Oql} {@link QueryExecutor},
    * used to execute {@link Query OQL queries}.
    *
-   * @param <S> {@link Class type} of {@link Object objects} in the {@link Iterable collection} being queried.
-   * @param <T> {@link Class type} of the {@link Object projected elements}.
+   * @param <S> {@link Class type} of {@link Object objects} in the {@link Iterable collection} to query.
+   * @param <T> {@link Class type} of the {@link Object projected objects}.
    * @return the {@link Oql} service provider implementation for {@literal OQL} {@link QueryExecutor}.
    * @see org.cp.elements.data.oql.provider.SimpleQueryExecutor
    * @see QueryExecutor
@@ -83,8 +87,8 @@ public interface Oql extends BaseOql {
   /**
    * Declares the data {@link Select selected} from the {@link Iterable collection} of {@link Object objects}.
    *
-   * @param <S> {@link Class type} of {@link Object objects} in the {@link Iterable collection} being queried.
-   * @param <T> {@link Class type} of the {@link Object projected elements}.
+   * @param <S> {@link Class type} of {@link Object objects} in the {@link Iterable collection} to query.
+   * @param <T> {@link Class type} of the {@link Object projected objects}.
    * @param projection {@link Projection} used to {@literal project} the result of {@link Object objects}
    * queried in the {@link Iterable collection}.
    * @return a {@link Select} object modeling the {@link Projection selected data}.
@@ -97,10 +101,10 @@ public interface Oql extends BaseOql {
   /**
    * Abstract Data Type (ADT) modeling the {@literal projection} of an {@link Object}
    * from the {@link Iterable collection} as an instance of {@link T type} mapped by
-   * the configured {@link BiFunction object mapping} using {@link #mappedWith(BiFunction)}.
+   * a user-provided, configured mapping function.
    *
-   * @param <S> {@link Class type} of {@link Object objects} in the {@link Iterable collection} being queried.
-   * @param <T> {@link Class type} of the {@link Object projected elements}.
+   * @param <S> {@link Class type} of {@link Object objects} in the {@link Iterable collection} to query.
+   * @param <T> {@link Class type} of the {@link Object projected objects}.
    * @see org.cp.elements.data.oql.Oql.ObjectMapper
    * @see org.cp.elements.data.oql.Oql.Select
    * @see java.lang.FunctionalInterface
@@ -109,9 +113,9 @@ public interface Oql extends BaseOql {
   interface Projection<S, T> extends ObjectMapper<S, T> {
 
     @Dsl
-    static <S, T> Projection<S, T> as(@NotNull Class<T> type) {
+    static <S, T> ProjectionBuilder<S, T> as(@NotNull Class<T> type) {
       Assert.notNull(type, "Type is required");
-      return () -> type;
+      return new ProjectionBuilder<>(type);
     }
 
     @Dsl
@@ -128,23 +132,13 @@ public interface Oql extends BaseOql {
         public S map(QueryContext<S, S> queryContext, S target) {
           return target;
         }
-
-        @Override
-        public Projection<S, S> mappedWith(BiFunction<QueryContext<S, S>, S, S> mapper) {
-          throw newUnsupportedOperationException(Constants.UNSUPPORTED_OPERATION);
-        }
-
-        @Override
-        public Projection<S, S> mappedWith(Function<S, S> mapper) {
-          throw newUnsupportedOperationException(Constants.UNSUPPORTED_OPERATION);
-        }
       };
     }
 
     /**
-     * Gets the {@link Class type} of the {@link T projected elements} in the query result.
+     * Gets the {@link Class type} of the {@link T projected objects} in the query result.
      *
-     * @return the {@link Class type} of the {@link T projected elements} in the query result.
+     * @return the {@link Class type} of the {@link T projected objects} in the query result.
      * @see #getFromType()
      */
     Class<T> getType();
@@ -161,60 +155,35 @@ public interface Oql extends BaseOql {
     default Class<S> getFromType() {
       return (Class<S>) Object.class;
     }
+  }
 
-    @Dsl
-    default Projection<S, T> fromType(@NotNull Class<S> type) {
+  /**
+   * Abstract Data Type (ADT) modeling a {@link Projection} that contains a series of
+   * {@link QueryFunction transformations} on the {@link Select selected} {@link Object elements}
+   * of the {@link T projected type}.
+   *
+   * @param <S> {@link Class type} of {@link Object objects} in the {@link Iterable collection} to query.
+   * @param <T> {@link Class type} of the {@link Object projected objects}.
+   * @param <U> {@link Class type} of the {@link Object transformed element} of the {@link T projected type}.
+   * @see org.cp.elements.data.oql.Oql.Projection
+   * @see org.cp.elements.data.oql.QueryFunction
+   * @see org.cp.elements.util.stream.Streamable
+   * @see java.lang.Iterable
+   */
+  interface TransformingProjection<S, T, U>
+      extends Iterable<QueryFunction<T, U>>, Projection<S, T>, Streamable<QueryFunction<T, U>> {
 
-      Assert.notNull(type, "From type is required");
+    T remap(QueryContext<S, T> queryContext, Row row);
 
-      return new Projection<>() {
-
-        @Override
-        public Class<T> getType() {
-          return Projection.this.getType();
-        }
-
-        @Override
-        public Class<S> getFromType() {
-          return type;
-        }
-
-        @Override
-        public T map(QueryContext<S, T> queryContext, S target) {
-          return Projection.this.map(queryContext, target);
-        }
-      };
+    @Override
+    @SuppressWarnings("all")
+    default Iterator<QueryFunction<T, U>> iterator() {
+      return Collections.emptyIterator();
     }
 
-    @Dsl
-    default Projection<S, T> mappedWith(@NotNull BiFunction<QueryContext<S, T>, S, T> mapper) {
-
-      Assert.notNull(mapper, "Object mapping function is required");
-
-      return new Projection<>() {
-
-        @Override
-        public Class<T> getType() {
-          return Projection.this.getType();
-        }
-
-        @Override
-        public Class<S> getFromType() {
-          return Projection.this.getFromType();
-        }
-
-        @Override
-        public T map(QueryContext<S, T> queryContext, S target) {
-          return mapper.apply(queryContext, target);
-        }
-      };
-    }
-
-    @Dsl
-    default Projection<S, T> mappedWith(@NotNull Function<S, T> mapper) {
-      Assert.notNull(mapper, "Object mapping function is required");
-      BiFunction<QueryContext<S, T>, S, T> function = (queryContext, target) -> mapper.apply(target);
-      return mappedWith(function);
+    @Override
+    default Stream<QueryFunction<T, U>> stream() {
+      return StreamUtils.stream(this);
     }
   }
 
@@ -224,11 +193,13 @@ public interface Oql extends BaseOql {
    * Specifically, {@link Select} identifies the {@literal selected data} from the {@link Object objects}
    * in the {@link Iterable collection} forming the result set.
    *
-   * @param <S> {@link Class type} of {@link Object objects} in the {@link Iterable collection} being queried.
-   * @param <T> {@link Class type} of the {@link Object projected elements}.
+   * @param <S> {@link Class type} of {@link Object objects} in the {@link Iterable collection} to query.
+   * @param <T> {@link Class type} of the {@link Object projected objects}.
    * @see org.cp.elements.data.oql.Oql.Projection
    */
   interface Select<S, T> {
+
+    boolean DEFAULT_DISTINCT = false;
 
     /**
      * Determines whether the result set of the {@link Query} should be unique.
@@ -238,7 +209,7 @@ public interface Oql extends BaseOql {
      * @return a boolean value indicating whether the result set of the {@link Query} should be unique.
      */
     default boolean isDistinct() {
-      return false;
+      return DEFAULT_DISTINCT;
     }
 
     /**
@@ -269,8 +240,8 @@ public interface Oql extends BaseOql {
   /**
    * Abstract Data Type (ADT) modeling the {@literal from clause} in a {@link Query}.
    *
-   * @param <S> {@link Class type} of {@link Object objects} in the {@link Iterable collection} being queried.
-   * @param <T> {@link Class type} of the {@link Object projected elements}.
+   * @param <S> {@link Class type} of {@link Object objects} in the {@link Iterable collection} to query.
+   * @param <T> {@link Class type} of the {@link Object projected objects}.
    * @see org.cp.elements.data.oql.Oql.ExecutableQuery
    * @see org.cp.elements.data.oql.Oql.GroupBySpec
    * @see org.cp.elements.data.oql.Oql.LimitSpec
@@ -297,10 +268,10 @@ public interface Oql extends BaseOql {
     }
 
     /**
-     * Returns a {@link Select} object identify the {@literal selected data} from the {@link Iterable collection}
+     * Returns a {@link Select} object identifying the {@literal selected data} from the {@link Iterable collection}
      * returned in the query result set.
      *
-     * @return an {@link Select} object identify the {@literal selected data} from the {@link Iterable collection}
+     * @return an {@link Select} object identifying the {@literal selected data} from the {@link Iterable collection}
      * returned in the query result set.
      * @see org.cp.elements.data.oql.Oql.Select
      */
@@ -342,8 +313,8 @@ public interface Oql extends BaseOql {
   /**
    * Abstract Data Type (ADT) modeling the {@literal where clause} in a {@link Query}.
    *
-   * @param <S> {@link Class type} of {@link Object objects} in the {@link Iterable collection} being queried.
-   * @param <T> {@link Class type} of the {@link Object projected elements}.
+   * @param <S> {@link Class type} of {@link Object objects} in the {@link Iterable collection} to query.
+   * @param <T> {@link Class type} of the {@link Object projected objects}.
    * @see org.cp.elements.data.oql.Oql.ExecutableQuery
    * @see org.cp.elements.data.oql.Oql.GroupBySpec
    * @see org.cp.elements.data.oql.Oql.LimitSpec
@@ -394,8 +365,8 @@ public interface Oql extends BaseOql {
   /**
    * Abstract Data Type (ADT) modeling the {@literal order by clause} in a {@link Query}.
    *
-   * @param <S> {@link Class type} of {@link Object objects} in the {@link Iterable collection} being queried.
-   * @param <T> {@link Class type} of the {@link Object projected elements}.
+   * @param <S> {@link Class type} of {@link Object objects} in the {@link Iterable collection} to query.
+   * @param <T> {@link Class type} of the {@link Object projected objects}.
    * @see org.cp.elements.data.oql.Oql.ExecutableQuery
    * @see org.cp.elements.data.oql.Oql.LimitSpec
    * @see org.cp.elements.util.stream.Streamable
@@ -541,8 +512,8 @@ public interface Oql extends BaseOql {
   /**
    * Abstract Data Type (ADT) modeling the {@literal group by clause} in a {@link Query}.
    *
-   * @param <S> {@link Class type} of {@link Object objects} in the {@link Iterable collection} being queried.
-   * @param <T> {@link Class type} of the {@link Object projected elements}.
+   * @param <S> {@link Class type} of {@link Object objects} in the {@link Iterable collection} to query.
+   * @param <T> {@link Class type} of the {@link Object projected objects}.
    * @see org.cp.elements.data.oql.Oql.ExecutableQuery
    * @see org.cp.elements.data.oql.Oql.LimitSpec
    * @see org.cp.elements.data.oql.Oql.OrderBySpec
@@ -670,8 +641,8 @@ public interface Oql extends BaseOql {
    * Interface defining an {@literal OQL statement} as an {@link Executable} {@link Query}
    * with a {@link FromReference referecne} to the {@link From} clause.
    *
-   * @param <S> {@link Class type} of {@link Object objects} in the {@link Iterable collection} being queried.
-   * @param <T> {@link Class type} of the {@link Object projected elements}.
+   * @param <S> {@link Class type} of {@link Object objects} in the {@link Iterable collection} to query.
+   * @param <T> {@link Class type} of the {@link Object projected objects}.
    * @see org.cp.elements.data.oql.Oql.FromReference
    * @see org.cp.elements.data.oql.Oql.Executable
    * @see org.cp.elements.data.oql.Query
@@ -691,8 +662,8 @@ public interface Oql extends BaseOql {
   /**
    * Interface defining a {@literal reference} to an instance of {@link From}.
    *
-   * @param <S> {@link Class type} of {@link Object objects} in the {@link Iterable collection} being queried.
-   * @param <T> {@link Class type} of the {@link Object projected elements}.
+   * @param <S> {@link Class type} of {@link Object objects} in the {@link Iterable collection} to query.
+   * @param <T> {@link Class type} of the {@link Object projected objects}.
    * @see org.cp.elements.data.oql.Oql.From
    */
   interface FromReference<S, T> {
@@ -719,6 +690,128 @@ public interface Oql extends BaseOql {
     @Override
     default Class<Oql> getType() {
       return Oql.class;
+    }
+  }
+
+  class ProjectionBuilder<S, T> {
+
+    private final Class<T> projectionType;
+
+    @SuppressWarnings("unchecked")
+    private Class<S> fromType = (Class<S>) Object.class;
+
+    ProjectionBuilder(@NotNull Class<T> projectionType) {
+      this.projectionType = ObjectUtils.requireObject(projectionType, "Projection type is required");
+    }
+
+    @Dsl
+    public ProjectionBuilder<S, T> fromType(@NotNull Class<S> fromType) {
+      Assert.notNull(fromType, "From type is required");
+      this.fromType = fromType;
+      return this;
+    }
+
+    @Dsl
+    public <U> ProjectionTransformationBuilder<S, T, U> mappedWith(@NotNull BiFunction<QueryContext<S, T>, S, T> mapper) {
+      Assert.notNull(mapper, "Object mapping function is required");
+      return new ProjectionTransformationBuilder<>(this.projectionType, this.fromType, mapper);
+    }
+
+    @Dsl
+    public <U> ProjectionTransformationBuilder<S, T, U> mappedWith(@NotNull Function<S, T> mapper) {
+      Assert.notNull(mapper, "Object mapping function is required");
+      BiFunction<QueryContext<S, T>, S, T> function = (queryContext, target) -> mapper.apply(target);
+      return mappedWith(function);
+    }
+  }
+
+  class ProjectionTransformationBuilder<S, T, U> implements Builder<Projection<S, T>> {
+
+    private final BiFunction<QueryContext<S, T>, S, T> mapper;
+
+    private final Class<S> fromType;
+    private final Class<T> projectionType;
+
+    private Iterable<QueryFunction<T, U>> transformations;
+
+    protected ProjectionTransformationBuilder(@NotNull Class<T> projectionType, @NotNull Class<S> fromType,
+        @NotNull BiFunction<QueryContext<S, T>, S, T> mapper) {
+
+      this.projectionType = ObjectUtils.requireObject(projectionType, "Projection type is required");
+      this.mapper = ObjectUtils.requireObject(mapper, "Object mapping function is required");
+      this.fromType = ObjectUtils.requireObject(fromType, "From type is required");
+    }
+
+    @Dsl
+    @SuppressWarnings("unchecked")
+    public ProjectionTransformationBuilder<S, T, U> apply(QueryFunction<T, U>... transformations) {
+      return apply(ArrayUtils.asIterable(ArrayUtils.nullSafeArray(transformations)));
+    }
+
+    @Dsl
+    public ProjectionTransformationBuilder<S, T, U> apply(Iterable<QueryFunction<T, U>> transformations) {
+      this.transformations = CollectionUtils.nullSafeIterable(transformations);
+      return this;
+    }
+
+    @Dsl
+    public TransformingProjection<S, T, U> remappedWith(BiFunction<QueryContext<S, T>, Row, T> mapper) {
+
+      Assert.notNull(mapper, "Object remapping function is required");
+
+      return new TransformingProjection<>() {
+
+        @Override
+        public Class<T> getType() {
+          return ProjectionTransformationBuilder.this.projectionType;
+        }
+
+        @Override
+        public Class<S> getFromType() {
+          return ProjectionTransformationBuilder.this.fromType;
+        }
+
+        @Override
+        @SuppressWarnings("all")
+        public Iterator<QueryFunction<T, U>> iterator() {
+          return ProjectionTransformationBuilder.this.transformations.iterator();
+        }
+
+        @Override
+        public T map(QueryContext<S, T> queryContext, S target) {
+          return TransformingProjection.super.map(queryContext, target);
+        }
+
+        @Override
+        public T remap(QueryContext<S, T> queryContext, Row row) {
+          return mapper.apply(queryContext, row);
+        }
+      };
+    }
+
+    @Override
+    public Projection<S, T> build() {
+
+      Assert.state(CollectionUtils.isEmpty(this.transformations), "Using transformations requires remapping;"
+        + " you must call remappedWith(..)");
+
+      return new Projection<>() {
+
+        @Override
+        public Class<T> getType() {
+          return ProjectionTransformationBuilder.this.projectionType;
+        }
+
+        @Override
+        public Class<S> getFromType() {
+          return ProjectionTransformationBuilder.this.fromType;
+        }
+
+        @Override
+        public T map(@NotNull QueryContext<S, T> queryContext, S target) {
+          return ProjectionTransformationBuilder.this.mapper.apply(queryContext, target);
+        }
+      };
     }
   }
 }

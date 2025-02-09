@@ -37,12 +37,13 @@ import java.util.function.Predicate;
 
 import org.junit.jupiter.api.Test;
 
+import org.cp.elements.data.oql.Oql.Projection;
 import org.cp.elements.data.oql.Oql.Where;
 import org.cp.elements.data.oql.provider.SimpleOqlProvider;
 import org.cp.elements.lang.Constants;
+import org.cp.elements.lang.StringUtils;
 import org.cp.elements.security.model.User;
 import org.cp.elements.util.CollectionUtils;
-import org.testcontainers.shaded.org.apache.commons.lang3.StringUtils;
 
 /**
  * Unit Tests for {@link Oql}.
@@ -56,6 +57,10 @@ import org.testcontainers.shaded.org.apache.commons.lang3.StringUtils;
 @SuppressWarnings({ "rawtypes", "unchecked" })
 public class OqlUnitTests {
 
+  private <S, T> Function<S, T> mockFunction() {
+    return mock(Function.class);
+  }
+
   @Test
   void defaultProviderIsSimpleOqlProvider() {
     assertThat(Oql.defaultProvider()).isInstanceOf(SimpleOqlProvider.class);
@@ -64,7 +69,9 @@ public class OqlUnitTests {
   @Test
   void projectAsTypeReturnsType() {
 
-    Oql.Projection<Object, ?> projection = Oql.Projection.as(User.class);
+    Oql.Projection<Object, ?> projection = Oql.Projection.as(User.class)
+      .mappedWith(mockFunction())
+      .build();
 
     assertThat(projection).isNotNull();
     assertThat(projection.getType()).isEqualTo(User.class);
@@ -81,13 +88,36 @@ public class OqlUnitTests {
   }
 
   @Test
+  void projectionFromType() {
+
+    Oql.Projection<String, User> projection = Oql.Projection.<String, User>as(User.class)
+      .fromType(String.class)
+      .mappedWith(mockFunction())
+      .build();
+
+    assertThat(projection).isNotNull();
+    assertThat(projection.getType()).isEqualTo(User.class);
+    assertThat(projection.getFromType()).isEqualTo(String.class);
+  }
+
+  @Test
+  void projectionFromNullType() {
+
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> Projection.as(User.class).fromType(null))
+      .withMessage("From type is required")
+      .withNoCause();
+  }
+
+  @Test
   void projectionMappedWithBiFunction() {
 
     Function<String, String> function = StringUtils::reverse;
 
     Oql.Projection<String, String> projection = Oql.Projection.<String, String>as(String.class)
       .fromType(String.class)
-      .mappedWith(function);
+      .mappedWith(function)
+      .build();
 
     QueryContext<String, String> mockQueryContext = mock(QueryContext.class);
 
@@ -109,18 +139,20 @@ public class OqlUnitTests {
   }
 
   @Test
-  void projectionMappedWitFunction() {
+  void projectionMappedWithFunction() {
 
-    Oql.Projection<Object, Object> projection = mock(Oql.Projection.class);
+    Oql.ProjectionBuilder<Object, User> projectionBuilder = new Oql.ProjectionBuilder<>(User.class);
 
-    doCallRealMethod().when(projection).mappedWith(isA(Function.class));
-    doReturn(projection).when(projection).mappedWith(isA(BiFunction.class));
+    doCallRealMethod().when(projectionBuilder).mappedWith(isA(Function.class));
+    doReturn(projectionBuilder).when(projectionBuilder).mappedWith(isA(BiFunction.class));
 
-    assertThat(projection.mappedWith(Function.identity())).isSameAs(projection);
+    Function<Object, User> mockFunction = mockFunction();
 
-    verify(projection, times(1)).mappedWith(isA(Function.class));
-    verify(projection, times(1)).mappedWith(isA(BiFunction.class));
-    verifyNoMoreInteractions(projection);
+    assertThat(projectionBuilder.mappedWith(mockFunction)).isInstanceOf(Oql.ProjectionTransformationBuilder.class);
+
+    verify(projectionBuilder, times(1)).mappedWith(isA(Function.class));
+    verify(projectionBuilder, times(1)).mappedWith(isA(BiFunction.class));
+    verifyNoInteractions(mockFunction);
   }
 
   @Test
@@ -129,15 +161,6 @@ public class OqlUnitTests {
     assertThatIllegalArgumentException()
       .isThrownBy(() -> Oql.Projection.as(Object.class).mappedWith((Function) null))
       .withMessage("Object mapping function is required")
-      .withNoCause();
-  }
-
-  @Test
-  void projectStarFromNullType() {
-
-    assertThatIllegalArgumentException()
-      .isThrownBy(() -> Oql.Projection.star().fromType(null))
-      .withMessage("From type is required")
       .withNoCause();
   }
 
@@ -152,24 +175,6 @@ public class OqlUnitTests {
     assertThat(projection.map(mockQueryContext, "TEST")).isEqualTo("TEST");
 
     verifyNoInteractions(mockQueryContext);
-  }
-
-  @Test
-  void projectStarMappedWithBiFunctionThrowsUnsupportedOperationException() {
-
-    assertThatExceptionOfType(UnsupportedOperationException.class)
-      .isThrownBy(() -> Oql.Projection.star().mappedWith((BiFunction) null))
-      .withMessage(Constants.UNSUPPORTED_OPERATION)
-      .withNoCause();
-  }
-
-  @Test
-  void projectStarMappedWithFunctionThrowsUnsupportedOperationException() {
-
-    assertThatExceptionOfType(UnsupportedOperationException.class)
-      .isThrownBy(() -> Oql.Projection.star().mappedWith(Function.identity()))
-      .withMessage(Constants.UNSUPPORTED_OPERATION)
-      .withNoCause();
   }
 
   @Test
