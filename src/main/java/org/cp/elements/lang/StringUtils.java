@@ -593,6 +593,26 @@ public abstract class StringUtils {
   }
 
   /**
+   * Reverses the characters in the given {@link String}.
+   *
+   * @param value {@link String} to reverse; required.
+   * @return a {@link String} from the given {@link String} with the characters reversed.
+   * @throws IllegalArgumentException if {@link String} is {@literal null} or {@literal empty}.
+   */
+  public static String reverse(@NotNull String value) {
+
+    Assert.hasText(value, "String to reverse is required");
+
+    StringBuilder reverse = new StringBuilder();
+
+    for (int index = value.length(); --index > -1; ) {
+      reverse.append(value.charAt(index));
+    }
+
+    return reverse.toString();
+  }
+
+  /**
    * Single spaces the elements in the {@link Object array} and converts all values into a {@link String} representation
    * using {@link Object#toString()} to be placed in a single {@link String}.
    *
