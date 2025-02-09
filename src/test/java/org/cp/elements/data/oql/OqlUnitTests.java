@@ -25,6 +25,7 @@ import static org.mockito.Mockito.doCallRealMethod;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
@@ -141,10 +142,7 @@ public class OqlUnitTests {
   @Test
   void projectionMappedWithFunction() {
 
-    Oql.ProjectionBuilder<Object, User> projectionBuilder = new Oql.ProjectionBuilder<>(User.class);
-
-    doCallRealMethod().when(projectionBuilder).mappedWith(isA(Function.class));
-    doReturn(projectionBuilder).when(projectionBuilder).mappedWith(isA(BiFunction.class));
+    Oql.ProjectionBuilder<Object, User> projectionBuilder = spy(new Oql.ProjectionBuilder<>(User.class));
 
     Function<Object, User> mockFunction = mockFunction();
 
@@ -152,6 +150,7 @@ public class OqlUnitTests {
 
     verify(projectionBuilder, times(1)).mappedWith(isA(Function.class));
     verify(projectionBuilder, times(1)).mappedWith(isA(BiFunction.class));
+    verifyNoMoreInteractions(projectionBuilder);
     verifyNoInteractions(mockFunction);
   }
 
