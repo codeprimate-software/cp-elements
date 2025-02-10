@@ -18,6 +18,7 @@ package org.cp.elements.data.oql;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.isA;
@@ -31,6 +32,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 
+import java.util.Map;
 import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.function.Function;
@@ -39,6 +41,7 @@ import java.util.function.Predicate;
 import org.junit.jupiter.api.Test;
 
 import org.cp.elements.data.oql.Oql.Projection;
+import org.cp.elements.data.oql.Oql.TransformingProjection;
 import org.cp.elements.data.oql.Oql.Where;
 import org.cp.elements.data.oql.provider.SimpleOqlProvider;
 import org.cp.elements.lang.Constants;
@@ -55,11 +58,19 @@ import org.cp.elements.util.CollectionUtils;
  * @see org.mockito.Mockito
  * @since 2.0.0
  */
-@SuppressWarnings({ "rawtypes", "unchecked" })
+@SuppressWarnings({ "rawtypes", "unchecked", "unused" })
 public class OqlUnitTests {
+
+  private <S, T> BiFunction<QueryContext<S, T>, QueryResult<T>, T> mockBiFunction() {
+    return mock(BiFunction.class);
+  }
 
   private <S, T> Function<S, T> mockFunction() {
     return mock(Function.class);
+  }
+
+  private <S, T> QueryFunction<S, T> mockQueryFunction() {
+    return mock(QueryFunction.class);
   }
 
   @Test
@@ -164,7 +175,111 @@ public class OqlUnitTests {
   }
 
   @Test
-  void projectStarReturnsProjectionMappingTargetToItself() {
+  void projectionRemappedWithBiFunction() {
+
+    Oql.Projection<String, User> projection = Oql.Projection.<String, User>as(User.class)
+      .fromType(String.class)
+      .mappedWith(User::named)
+      .apply(encodedUsername(User::getName))
+      .remappedWith(queryResult -> User.named(queryResult.get("username")));
+
+    assertThat(projection).isInstanceOf(TransformingProjection.class);
+
+    Oql.TransformingProjection<String, User, String> transformingProjection =
+      (TransformingProjection<String, User, String>) projection;
+
+    QueryContext<String, User> mockQueryContext = mock(QueryContext.class);
+
+    User jonDoe = transformingProjection.map(mockQueryContext, "jonDoe");
+
+    assertThat(jonDoe).isNotNull();
+    assertThat(jonDoe.getName()).isEqualTo("jonDoe");
+
+    String encodedUsername = transformingProjection.stream().findFirst()
+      .map(transformer -> transformer.apply(jonDoe))
+      .orElse(StringUtils.EMPTY_STRING);
+
+    assertThat(encodedUsername).isNotBlank();
+    assertThat(encodedUsername).isEqualTo("<JONDOE/>");
+
+    QueryResult<User> queryResult = QueryResult.typed(User.class)
+      .withMap(Map.of("username", encodedUsername))
+      .build();
+
+    User user = transformingProjection.remap(mockQueryContext, queryResult);
+
+    assertThat(user).isNotNull();
+    assertThat(user).isNotSameAs(jonDoe);
+    assertThat(user.getName()).isEqualTo(encodedUsername);
+
+    verifyNoInteractions(mockQueryContext);
+  }
+
+  private QueryFunction<User, Object> encodedUsername(Function<User, Object> userFunction) {
+
+    return new QueryFunction<>() {
+
+      @Override
+      public Object apply(Iterable<User> users) {
+        return "<%s/>".formatted(userFunction.apply(users.iterator().next())).toUpperCase();
+      }
+
+      @Override
+      public String getName() {
+        return "username";
+      }
+    };
+  }
+
+  @Test
+  void projectionRemappedWithNoTransformations() {
+
+    assertThatIllegalStateException()
+      .isThrownBy(() -> Oql.Projection.as(User.class).mappedWith(mockFunction()).remappedWith(mockFunction()))
+      .withMessage("No transformations defined")
+      .withNoCause();
+  }
+
+  @Test
+  void projectionRemappedWithNullBiFunction() {
+
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> Oql.Projection.<String, User>as(User.class)
+        .fromType(String.class)
+        .mappedWith(mockFunction())
+        .apply(encodedUsername(User::getName))
+        .remappedWith((BiFunction<QueryContext<String, User>, QueryResult<User>, User>) null))
+      .withMessage("Object remapping function is required")
+      .withNoCause();
+  }
+
+  @Test
+  void projectionRemappedWithNullFunction() {
+
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> Oql.Projection.<String, User>as(User.class)
+        .fromType(String.class)
+        .mappedWith(mockFunction())
+        .apply(encodedUsername(User::getName))
+        .remappedWith((Function<QueryResult<User>, User>) null))
+      .withMessage("Object remapping function is required")
+      .withNoCause();
+  }
+
+  @Test
+  void projectionRemappedWithTransformationsThenBuilt() {
+
+    assertThatIllegalStateException()
+      .isThrownBy(() -> Oql.Projection.as(User.class)
+        .mappedWith(mockFunction())
+        .apply(encodedUsername(User::getName))
+        .build())
+      .withMessage("Using transformations requires remapping; you must call remappedWith(..)")
+      .withNoCause();
+  }
+
+  @Test
+  void projectionStarReturnsProjectionMappingTargetingSelf() {
 
     Oql.Projection<Object, Object> projection = Oql.Projection.star();
 

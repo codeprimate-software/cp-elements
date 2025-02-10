@@ -787,7 +787,7 @@ public interface Oql extends BaseOql {
 
         @Override
         public T map(QueryContext<S, T> queryContext, S target) {
-          return TransformingProjection.super.map(queryContext, target);
+          return ProjectionTransformationBuilder.this.mapper.apply(queryContext, target);
         }
 
         @Override
