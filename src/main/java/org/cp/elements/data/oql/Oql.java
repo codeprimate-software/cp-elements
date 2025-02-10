@@ -29,7 +29,6 @@ import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 import org.cp.elements.data.oql.support.Grouping;
-import org.cp.elements.data.struct.tabular.Row;
 import org.cp.elements.function.CannedPredicates;
 import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.Builder;
@@ -167,13 +166,14 @@ public interface Oql extends BaseOql {
    * @param <U> {@link Class type} of the {@link Object transformed element} of the {@link T projected type}.
    * @see org.cp.elements.data.oql.Oql.Projection
    * @see org.cp.elements.data.oql.QueryFunction
+   * @see org.cp.elements.data.oql.QueryResult
    * @see org.cp.elements.util.stream.Streamable
    * @see java.lang.Iterable
    */
   interface TransformingProjection<S, T, U>
       extends Iterable<QueryFunction<T, U>>, Projection<S, T>, Streamable<QueryFunction<T, U>> {
 
-    T remap(QueryContext<S, T> queryContext, Row row);
+    T remap(QueryContext<S, T> queryContext, QueryResult<T> result);
 
     @Override
     @SuppressWarnings("all")
@@ -755,8 +755,9 @@ public interface Oql extends BaseOql {
     }
 
     @Dsl
-    public TransformingProjection<S, T, U> remappedWith(BiFunction<QueryContext<S, T>, Row, T> mapper) {
+    public TransformingProjection<S, T, U> remappedWith(BiFunction<QueryContext<S, T>, QueryResult<T>, T> mapper) {
 
+      Assert.state(CollectionUtils.isNotEmpty(this.transformations), "No transformations defined");
       Assert.notNull(mapper, "Object remapping function is required");
 
       return new TransformingProjection<>() {
@@ -783,8 +784,8 @@ public interface Oql extends BaseOql {
         }
 
         @Override
-        public T remap(QueryContext<S, T> queryContext, Row row) {
-          return mapper.apply(queryContext, row);
+        public T remap(QueryContext<S, T> queryContext, QueryResult<T> result) {
+          return mapper.apply(queryContext, result);
         }
       };
     }
