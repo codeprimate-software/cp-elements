@@ -755,6 +755,13 @@ public interface Oql extends BaseOql {
     }
 
     @Dsl
+    public TransformingProjection<S, T, U> remappedWith(Function<QueryResult<T>, T> mapper) {
+      Assert.notNull(mapper, "Object remapping function is required");
+      BiFunction<QueryContext<S, T>, QueryResult<T>, T> function = ((queryContext, result) -> mapper.apply(result));
+      return remappedWith(function);
+    }
+
+    @Dsl
     public TransformingProjection<S, T, U> remappedWith(BiFunction<QueryContext<S, T>, QueryResult<T>, T> mapper) {
 
       Assert.state(CollectionUtils.isNotEmpty(this.transformations), "No transformations defined");
