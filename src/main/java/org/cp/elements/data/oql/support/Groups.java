@@ -15,6 +15,8 @@
  */
 package org.cp.elements.data.oql.support;
 
+import static org.cp.elements.lang.RuntimeExceptionsFactory.newIllegalStateException;
+
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.Map;
@@ -63,6 +65,33 @@ public interface Groups<T> extends Iterable<Group<T>>, Streamable<Group<T>> {
       @SuppressWarnings("all")
       public Iterator<Group<T>> iterator() {
         return Collections.unmodifiableCollection(groups.values()).iterator();
+      }
+    };
+  }
+
+  static <T> Groups<T> noop() {
+
+    return new Groups<>() {
+
+      @Override
+      public GroupBy<?, T> getGroupBy() {
+        throw newIllegalStateException("GroupBy not present");
+      }
+
+      @Override
+      public Group<T> compute(T target) {
+        throw newIllegalStateException("Cannot compute Group");
+      }
+
+      @Override
+      public T group(T target) {
+        return target;
+      }
+
+      @Override
+      @SuppressWarnings("all")
+      public Iterator<Group<T>> iterator() {
+        return Collections.emptyIterator();
       }
     };
   }
