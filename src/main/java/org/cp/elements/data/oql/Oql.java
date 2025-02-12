@@ -34,6 +34,7 @@ import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.Builder;
 import org.cp.elements.lang.Constants;
 import org.cp.elements.lang.ObjectUtils;
+import org.cp.elements.lang.annotation.Alias;
 import org.cp.elements.lang.annotation.Dsl;
 import org.cp.elements.lang.annotation.FluentApi;
 import org.cp.elements.lang.annotation.NotNull;
@@ -283,6 +284,7 @@ public interface Oql extends BaseOql {
      * @return the {@link Class type} of {@link T objects} in the {@link Iterable collection}.
      * @see org.cp.elements.data.oql.Oql.Projection#getFromType()
      */
+    @Alias(forMember = "Oql.Projection#getFromType")
     default Class<S> getType() {
       return getSelection().getProjection().getFromType();
     }
@@ -626,10 +628,12 @@ public interface Oql extends BaseOql {
   @FunctionalInterface
   interface Executable<T> {
 
+    @SuppressWarnings("all")
     default Long count() {
       Iterable<T> results = execute();
       Stream<T> stream = StreamUtils.stream(CollectionUtils.nullSafeIterable(results));
-      return stream.count();
+      Long count = stream.count();
+      return count;
     }
 
     Iterable<T> execute();
