@@ -50,9 +50,10 @@ import org.cp.elements.util.stream.Streamable;
  * over a {@link Iterable collection} of {@link Object objects}.
  *
  * @author John Blum
- * @see org.cp.elements.data.oql.BaseOql
  * @see org.cp.elements.lang.annotation.Dsl
  * @see org.cp.elements.lang.annotation.FluentApi
+ * @see org.cp.elements.data.oql.BaseOql
+ * @see org.cp.elements.data.oql.provider.SimpleOqlProvider
  * @since 2.0.0
  */
 @FluentApi
@@ -627,6 +628,25 @@ public interface Oql extends BaseOql {
   }
 
   /**
+   * Interface defining a contract for an OQL statement that can be compiled into a {@link Query}.
+   *
+   * @param <S> {@link Class type} of {@link Object objects} in the {@link Iterable collection} to query.
+   * @param <T> {@link Class type} of the {@link Object projected objects}.
+   * @see org.cp.elements.data.oql.Query
+   */
+  interface Compiler<S, T> {
+
+    /**
+     * Compiles a OQL statement into a {@link Query}.
+     *
+     * @return the compiled OQL statement as a {@link Query}.
+     * @see org.cp.elements.data.oql.Query
+     */
+    Query<S, T> compile();
+
+  }
+
+  /**
    * Interface defining a contract for an {@literal OQL} {@link Object} that can be executed or counted.
    *
    * @param <T> {@link Class type} of {@link Object objects} in the {@link Projection projected result set}.
@@ -655,17 +675,19 @@ public interface Oql extends BaseOql {
    * @param <T> {@link Class type} of the {@link Object projected objects}.
    * @see org.cp.elements.data.oql.Oql.FromReference
    * @see org.cp.elements.data.oql.Oql.Executable
+   * @see org.cp.elements.data.oql.Oql.Compiler
    * @see org.cp.elements.data.oql.Query
    */
-  interface ExecutableQuery<S, T> extends Executable<T>, FromReference<S, T> {
+  interface ExecutableQuery<S, T> extends Compiler<S, T>, Executable<T>, FromReference<S, T> {
 
-    default Query<S, T> asQuery() {
+    @Override
+    default Query<S, T> compile() {
       return Query.from(getFrom());
     }
 
     @Override
     default Iterable<T> execute() {
-      return asQuery().execute();
+      return compile().execute();
     }
   }
 

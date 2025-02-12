@@ -109,7 +109,7 @@ public class OqlIntegrationTests {
     Query<Person, String> query = Oql.defaultProvider()
       .select(projection)
       .from(PEOPLE)
-      .asQuery();
+      .compile();
 
     assertThat(query).isNotNull();
 
@@ -438,7 +438,7 @@ public class OqlIntegrationTests {
       .where(person -> "doe".equalsIgnoreCase(person.getLastName()))
       .orderBy(NameAgeView::getAge).descending()
       .limit(10L)
-      .asQuery();
+      .compile();
 
     assertThat(query).isNotNull();
     assertThat(query.selection()).isNotNull();
