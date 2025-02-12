@@ -28,7 +28,6 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
-import org.cp.elements.data.oql.support.Group;
 import org.cp.elements.data.oql.support.Grouping;
 import org.cp.elements.function.CannedPredicates;
 import org.cp.elements.lang.Assert;
@@ -518,14 +517,13 @@ public interface Oql extends BaseOql {
    * @see org.cp.elements.data.oql.Oql.ExecutableQuery
    * @see org.cp.elements.data.oql.Oql.LimitSpec
    * @see org.cp.elements.data.oql.Oql.OrderBySpec
+   * @see org.cp.elements.data.oql.support.Grouping
+   * @see org.cp.elements.data.oql.support.Groups
    * @see org.cp.elements.data.oql.support.Group
-   * @see org.cp.elements.util.stream.Streamable
    * @see java.lang.FunctionalInterface
-   * @see java.lang.Iterable
    */
   @FunctionalInterface
-  interface GroupBy<S, T>
-      extends ExecutableQuery<S, T>, Iterable<Group<T>>, LimitSpec<S, T>, OrderBySpec<S, T>, Streamable<Group<T>> {
+  interface GroupBy<S, T> extends ExecutableQuery<S, T>, LimitSpec<S, T>, OrderBySpec<S, T> {
 
     static <S, T> GroupBy<S, T> of(@NotNull From<S, T> from, @NotNull Grouping<T> grouping) {
 
@@ -593,17 +591,6 @@ public interface Oql extends BaseOql {
           return predicate;
         }
       };
-    }
-
-    @Override
-    @SuppressWarnings("all")
-    default Iterator<Group<T>> iterator() {
-      return Collections.emptyIterator();
-    }
-
-    @Override
-    default Stream<Group<T>> stream() {
-      return StreamUtils.stream(this);
     }
   }
 

@@ -16,7 +16,6 @@
 package org.cp.elements.data.oql.support;
 
 import java.util.Comparator;
-import java.util.Iterator;
 import java.util.function.Predicate;
 
 import org.cp.elements.data.oql.Oql;
@@ -136,12 +135,6 @@ public class GroupByClause<S, T> implements Oql.GroupBy<S, T> {
   public Oql.GroupBy<S, T> having(@Nullable Predicate<T> predicate) {
     this.predicate = predicate;
     return this;
-  }
-
-  @Override
-  @SuppressWarnings("all")
-  public Iterator<Group<T>> iterator() {
-    return this.groups.iterator();
   }
 
   @Override
