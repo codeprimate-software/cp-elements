@@ -95,6 +95,19 @@ public interface Groups<T> extends Iterable<Group<T>>, Streamable<Group<T>> {
    */
   Group<T> compute(T target);
 
+  /**
+   * Computes the {@link Group} for the given {@link Object} then adds the {@link Object} to the {@link Group}.
+   *
+   * @param target {@link Object} to group.
+   * @return the given {@link Object}.
+   * @see #compute(Object)
+   */
+  default T group(T target) {
+    Assert.notNull(target, "Object to group is required");
+    compute(target).include(target);
+    return target;
+  }
+
   @Override
   default Stream<Group<T>> stream() {
     return StreamUtils.stream(this);
