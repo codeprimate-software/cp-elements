@@ -28,6 +28,7 @@ import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 import org.cp.elements.data.oql.Oql;
+import org.cp.elements.data.oql.Oql.GroupBy;
 import org.cp.elements.data.oql.Oql.OrderBy;
 import org.cp.elements.data.oql.Oql.Projection;
 import org.cp.elements.data.oql.Oql.TransformingProjection;
@@ -104,6 +105,9 @@ public class SimpleQueryExecutor<S, T> implements QueryExecutor<S, T> {
         TransformingProjection.class.getSimpleName(), ObjectUtils.getClassSimpleName(projection));
     }
 
+    GroupBy<S, T> groupBy = queryContext.query().groupBy()
+      .orElseThrow(() -> newIllegalStateException("GroupBy not present"));
+
     List<QueryFunction<T, Object>> queryFunctions = transformingProjection.stream().toList();
 
     Set<QueryResult<T>> queryResults = new HashSet<>();
@@ -126,7 +130,8 @@ public class SimpleQueryExecutor<S, T> implements QueryExecutor<S, T> {
     QueryResultSet<T> queryResultSet = QueryResultSet.from(queryResults);
 
     Stream<T> stream = queryResultSet.stream()
-      .map(queryResult -> (T) transformingProjection.remap(queryContext, queryResult));
+      .map(queryResult -> (T) transformingProjection.remap(queryContext, queryResult))
+      .filter(groupBy.getPredicate());
 
     return stream;
   }
