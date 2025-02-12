@@ -53,7 +53,7 @@ public class SimpleQueryExecutor<S, T> implements QueryExecutor<S, T> {
 
     Assert.notNull(query, "Query to execute is required");
 
-    QueryContext<S, T> queryContext = QueryContext.from(query);
+    QueryContext<S, T> queryContext = queryContext(query);
 
     Function<T, T> groupFunction = groupFunction(query);
 
@@ -61,11 +61,11 @@ public class SimpleQueryExecutor<S, T> implements QueryExecutor<S, T> {
 
     Select<S, T> selection = query.selection();
 
-    Stream<T> stream = stream(collection)
-      .filter(resolvePredicate(query))
-      .map(resolveProjectionMapping(queryContext))
-      .map(groupFunction)
-      .sorted(resolveSort(query));
+    Stream<T> stream = stream(collection) // From
+      .filter(resolvePredicate(query)) // Where
+      .map(resolveProjectionMapping(queryContext)) // Selection + Projection
+      .map(groupFunction) // Group By
+      .sorted(resolveSort(query)); // Order By
 
     if (selection.isDistinct()) {
       stream = stream.distinct();
@@ -78,14 +78,16 @@ public class SimpleQueryExecutor<S, T> implements QueryExecutor<S, T> {
     return results;
   }
 
+  private QueryContext<S, T> queryContext(Query<S, T> query) {
+    return QueryContext.from(query);
+  }
+
   private Function<T, T> groupFunction(Query<S, T> query) {
 
     Optional<GroupBy<S, T>> groupBy = query.groupBy();
 
-    return target -> {
-      groupBy.ifPresent(it -> it.group(target));
-      return target;
-    };
+    return groupBy.<Function<T, T>>map(it -> it::group)
+      .orElseGet(Function::identity);
   }
 
   @SuppressWarnings("unchecked")
