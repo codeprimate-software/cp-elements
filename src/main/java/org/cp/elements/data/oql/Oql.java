@@ -617,6 +617,13 @@ public interface Oql extends BaseOql {
     default GroupBy<S, T> groupBy(Grouping<T> grouping) {
       throw newUnsupportedOperationException(Constants.UNSUPPORTED_OPERATION);
     }
+
+    @Dsl
+    @SuppressWarnings("unchecked")
+    default GroupBy<S, T> groupBy(Function<T, ?>... groupFunctions) {
+      Grouping<T> grouping = Grouping.of(groupFunctions);
+      return groupBy(grouping);
+    }
   }
 
   /**
