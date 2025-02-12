@@ -54,7 +54,7 @@ public interface QueryResult<T> {
       this.type = ObjectUtils.requireObject(type, "Type of result is required");
     }
 
-    Builder<T> withMap(Map<String, Object> map) {
+    public Builder<T> withMap(Map<String, Object> map) {
       this.namedValues = MapUtils.nullSafeMap(map);
       return this;
     }

@@ -15,23 +15,34 @@
  */
 package org.cp.elements.data.oql.provider;
 
+import static org.cp.elements.lang.RuntimeExceptionsFactory.newIllegalStateException;
+
 import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
-import java.util.Optional;
+import java.util.Map;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
-import org.cp.elements.data.oql.Oql.GroupBy;
+import org.cp.elements.data.oql.Oql;
 import org.cp.elements.data.oql.Oql.OrderBy;
 import org.cp.elements.data.oql.Oql.Projection;
-import org.cp.elements.data.oql.Oql.Select;
+import org.cp.elements.data.oql.Oql.TransformingProjection;
 import org.cp.elements.data.oql.Oql.Where;
 import org.cp.elements.data.oql.Query;
 import org.cp.elements.data.oql.QueryContext;
 import org.cp.elements.data.oql.QueryExecutor;
+import org.cp.elements.data.oql.QueryFunction;
+import org.cp.elements.data.oql.QueryResult;
+import org.cp.elements.data.oql.QueryResultSet;
+import org.cp.elements.data.oql.support.Group;
+import org.cp.elements.data.oql.support.Groups;
 import org.cp.elements.function.CannedPredicates;
 import org.cp.elements.lang.Assert;
+import org.cp.elements.lang.ObjectUtils;
 import org.cp.elements.lang.annotation.NotNull;
 import org.cp.elements.util.CollectionUtils;
 import org.cp.elements.util.stream.StreamUtils;
@@ -55,25 +66,26 @@ public class SimpleQueryExecutor<S, T> implements QueryExecutor<S, T> {
 
     QueryContext<S, T> queryContext = queryContext(query);
 
-    Function<T, T> groupFunction = groupFunction(query);
-
     Iterable<S> collection = query.collection();
 
-    Select<S, T> selection = query.selection();
+    Groups<T> groups = query.groupBy()
+      .map(Groups::from)
+      .orElseGet(Groups::noop);
+
+    Function<T, T> groupFunction = groups::group;
 
     Stream<T> stream = stream(collection) // From
       .filter(resolvePredicate(query)) // Where
-      .map(resolveProjectionMapping(queryContext)) // Selection + Projection
-      .map(groupFunction) // Group By
-      .sorted(resolveSort(query)); // Order By
+      .map(resolveProjectionMapping(queryContext)) // Selection Projection
+      .map(groupFunction); // Group By
 
-    if (selection.isDistinct()) {
-      stream = stream.distinct();
-    }
+    Stream<T> processedStream = query.groupBy()
+      .map(it -> groupsToStream(queryContext, groups))
+      .orElseGet(() -> ifSelectDistinctElse(query, stream))
+      .sorted(resolveSort(query)) // Order By (Sort before Limit)
+      .limit(resolveLimit(query)); // Limit
 
-    stream = stream.limit(query.limit());
-
-    List<T> results = stream.toList();
+    List<T> results = processedStream.toList();
 
     return results;
   }
@@ -82,12 +94,49 @@ public class SimpleQueryExecutor<S, T> implements QueryExecutor<S, T> {
     return QueryContext.from(query);
   }
 
-  private Function<T, T> groupFunction(Query<S, T> query) {
+  @SuppressWarnings("all")
+  private Stream<T> groupsToStream(QueryContext<S, T> queryContext, Groups<T> groups) {
 
-    Optional<GroupBy<S, T>> groupBy = query.groupBy();
+    Oql.Projection<S, T> projection = resolveProjection(queryContext);
 
-    return groupBy.<Function<T, T>>map(it -> it::group)
-      .orElseGet(Function::identity);
+    if (!(projection instanceof TransformingProjection transformingProjection)) {
+      throw newIllegalStateException("Expected OQL Projection to be a [%s]; but was [%s]",
+        TransformingProjection.class.getSimpleName(), ObjectUtils.getClassSimpleName(projection));
+    }
+
+    List<QueryFunction<T, Object>> queryFunctions = transformingProjection.stream().toList();
+
+    Set<QueryResult<T>> queryResults = new HashSet<>();
+
+    for (Group<T> group : groups) {
+
+      Map<String, Object> namedValues = new HashMap<>(queryFunctions.size());
+
+      for (QueryFunction<T, Object> queryFunction : queryFunctions) {
+        namedValues.put(queryFunction.getName(), queryFunction.apply(group));
+      }
+
+      QueryResult<T> queryResult = QueryResult.typed(projection.getType())
+        .withMap(namedValues)
+        .build();
+
+      queryResults.add(queryResult);
+    }
+
+    QueryResultSet<T> queryResultSet = QueryResultSet.from(queryResults);
+
+    Stream<T> stream = queryResultSet.stream()
+      .map(queryResult -> (T) transformingProjection.remap(queryContext, queryResult));
+
+    return stream;
+  }
+
+  private Stream<T> ifSelectDistinctElse(Query<S, T> query, Stream<T> stream) {
+    return query.selection().isDistinct() ? stream.distinct() : stream;
+  }
+
+  private long resolveLimit(Query<S, T> query) {
+    return query.limit();
   }
 
   @SuppressWarnings("unchecked")
@@ -117,7 +166,7 @@ public class SimpleQueryExecutor<S, T> implements QueryExecutor<S, T> {
     return (comparableOne, comparableTwo) -> 0;
   }
 
-  private <S> Stream<S> stream(Iterable<S> collection) {
+  private Stream<S> stream(Iterable<S> collection) {
     return StreamUtils.stream(CollectionUtils.nullSafeIterable(collection));
   }
 }
