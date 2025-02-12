@@ -42,6 +42,10 @@ public record QueryContext<S, T>(@NotNull Query<S, T> query, Map<String, Object>
     return new QueryContext<>(query, new ConcurrentHashMap<>());
   }
 
+  public Iterable<S> getCollection() {
+    return query().collection();
+  }
+
   public Projection<S, T> getProjection() {
     return query().selection().getProjection();
   }
