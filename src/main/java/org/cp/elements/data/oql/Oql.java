@@ -565,10 +565,6 @@ public interface Oql extends BaseOql {
       return (Predicate<T>) CannedPredicates.ACCEPT_ALL;
     }
 
-    default T group(T target) {
-      throw newUnsupportedOperationException(Constants.UNSUPPORTED_OPERATION);
-    }
-
     @Dsl
     default GroupBy<S, T> having(@NotNull Predicate<T> predicate) {
 

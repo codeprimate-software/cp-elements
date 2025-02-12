@@ -88,8 +88,6 @@ public class GroupByClause<S, T> implements Oql.GroupBy<S, T> {
 
   private final Grouping<T> grouping;
 
-  private final Groups<T> groups;
-
   private volatile Predicate<T> predicate;
 
   /**
@@ -106,7 +104,6 @@ public class GroupByClause<S, T> implements Oql.GroupBy<S, T> {
 
     this.from = ObjectUtils.requireObject(from, "From clause is required");
     this.grouping = ObjectUtils.requireObject(grouping, "Grouping is required");
-    this.groups = Groups.from(this);
   }
 
   @Override
@@ -122,13 +119,6 @@ public class GroupByClause<S, T> implements Oql.GroupBy<S, T> {
   @Override
   public Predicate<T> getPredicate() {
     return this.predicate;
-  }
-
-  @Override
-  public T group(@NotNull T target) {
-    Assert.notNull(target, "Target object to group is required");
-    this.groups.compute(target).include(target);
-    return target;
   }
 
   @Override
