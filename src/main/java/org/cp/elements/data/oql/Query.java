@@ -80,10 +80,6 @@ public interface Query<S, T> extends Oql.Executable<T> {
   }
 
   default Iterable<T> execute() {
-
-    return Oql.Provider.getLoader()
-      .getServiceInstance()
-      .<S, T>executor()
-      .execute(this);
+    return Oql.defaultProvider().<S, T>executor().execute(this);
   }
 }
