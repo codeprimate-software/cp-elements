@@ -20,6 +20,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verifyNoInteractions;
 
 import java.util.Comparator;
+import java.util.Objects;
 import java.util.Set;
 import java.util.function.Function;
 
@@ -146,6 +147,31 @@ public class OqlIntegrationTests {
     assertThat(result).isNotNull();
     assertThat(result).isNotSameAs(people);
     assertThat(result).containsAll(people);
+  }
+
+  @Test
+  void queryDistinct() {
+
+    Set<Person> people = Set.of(
+      Person.named("Jack", "Black").withAge(42),
+      Person.named("Jon", "Doe").withAge(21),
+      Person.named("Jack", "Handy").withAge(35)
+    );
+
+    Oql.Projection<Person, FirstNameView> projection = Oql.Projection.<Person, FirstNameView>as(FirstNameView.class)
+      .mappedWith(FirstNameView::from)
+      .build();
+
+    Iterable<FirstNameView> result = Oql.defaultProvider()
+      .select(projection)
+      .distinct()
+      .from(people)
+      .where(person -> person.getAge() >= 35)
+      .execute();
+
+    assertThat(result).isNotNull();
+    assertThat(result).hasSize(1);
+    assertThat(toStrings(result)).containsExactly("Jack");
   }
 
   @Test
@@ -557,6 +583,49 @@ public class OqlIntegrationTests {
     String getFirstName();
 
     String getLastName();
+
+  }
+
+  @FunctionalInterface
+  @SuppressWarnings("unused")
+  interface FirstNameView {
+
+    static FirstNameView from(Person person) {
+
+      return new FirstNameView() {
+
+        @Override
+        public String getFirstName() {
+          return person.getFirstName();
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+
+          if (obj == this) {
+            return true;
+          }
+
+          if (!(obj instanceof FirstNameView firstNameView)) {
+            return false;
+          }
+
+          return this.getFirstName().equals(firstNameView.getFirstName());
+        }
+
+        @Override
+        public int hashCode() {
+          return Objects.hash(getFirstName());
+        }
+
+        @Override
+        public String toString() {
+          return getFirstName();
+        }
+      };
+    }
+
+    String getFirstName();
 
   }
 
