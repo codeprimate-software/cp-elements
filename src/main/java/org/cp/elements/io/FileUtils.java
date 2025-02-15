@@ -52,8 +52,6 @@ import org.cp.elements.util.ArrayUtils;
  * @see java.io.File
  * @see java.io.FileOutputStream
  * @see java.io.FileReader
- * @see java.io.InputStream
- * @see java.io.OutputStream
  * @see org.cp.elements.io.IOUtils
  * @since 1.0.0
  */
@@ -61,6 +59,7 @@ import org.cp.elements.util.ArrayUtils;
 public abstract class FileUtils extends IOUtils {
 
   public static final String CLASS_FILE_EXTENSION = ".class";
+  public static final String FILE_SCHEME = "file:";
   public static final String GROOVY_FILE_EXTENSION = ".groovy";
   public static final String JAVA_FILE_EXTENSION = ".java";
   public static final String KOTLIN_FILE_EXTENSION = ".kt";
