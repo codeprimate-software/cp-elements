@@ -20,6 +20,7 @@ import java.util.function.Predicate;
 
 import org.cp.elements.data.oql.Oql;
 import org.cp.elements.data.oql.Oql.From;
+import org.cp.elements.data.oql.Oql.GroupBy;
 import org.cp.elements.data.oql.Oql.OrderBy;
 import org.cp.elements.data.oql.Oql.Where;
 import org.cp.elements.function.CannedPredicates;
@@ -90,5 +91,10 @@ public record WhereClause<S, T>(From<S, T> from, Predicate<S> predicate) impleme
   @Override
   public OrderBy<S, T> orderBy(Comparator<T> comparator) {
     return OrderByClause.copy(OrderByClause.of(getFrom(), comparator));
+  }
+
+  @Override
+  public GroupBy<S, T> groupBy(Grouping<T> grouping) {
+    return GroupByClause.copy(GroupByClause.of(getFrom(), grouping));
   }
 }
