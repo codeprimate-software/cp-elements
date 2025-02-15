@@ -42,6 +42,7 @@ import org.cp.elements.data.oql.QueryResultSet;
 import org.cp.elements.data.oql.support.Group;
 import org.cp.elements.data.oql.support.Groups;
 import org.cp.elements.function.CannedPredicates;
+import org.cp.elements.function.FunctionUtils;
 import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.ObjectUtils;
 import org.cp.elements.lang.annotation.NotNull;
@@ -81,7 +82,7 @@ public class SimpleQueryExecutor<S, T> implements QueryExecutor<S, T> {
       .map(groupFunction); // Group By
 
     Stream<T> processedStream = query.groupBy()
-      .map(it -> groupsToStream(queryContext, groups))
+      .map(it -> groupsToStream(queryContext, stream, groups))
       .orElseGet(() -> ifSelectDistinctElse(query, stream))
       .sorted(resolveSort(query)) // Order By (Sort before Limit)
       .limit(resolveLimit(query)); // Limit
@@ -96,7 +97,7 @@ public class SimpleQueryExecutor<S, T> implements QueryExecutor<S, T> {
   }
 
   @SuppressWarnings("all")
-  private Stream<T> groupsToStream(QueryContext<S, T> queryContext, Groups<T> groups) {
+  private Stream<T> groupsToStream(QueryContext<S, T> queryContext, Stream<T> originalStream, Groups<T> groups) {
 
     Oql.Projection<S, T> projection = resolveProjection(queryContext);
 
@@ -104,6 +105,8 @@ public class SimpleQueryExecutor<S, T> implements QueryExecutor<S, T> {
       throw newIllegalStateException("Expected OQL Projection to be a [%s]; but was [%s]",
         TransformingProjection.class.getSimpleName(), ObjectUtils.getClassSimpleName(projection));
     }
+
+    originalStream.count();
 
     GroupBy<S, T> groupBy = queryContext.query().groupBy()
       .orElseThrow(() -> newIllegalStateException("GroupBy not present"));
@@ -127,11 +130,13 @@ public class SimpleQueryExecutor<S, T> implements QueryExecutor<S, T> {
       queryResults.add(queryResult);
     }
 
+    Predicate<T> groupByPredicate = FunctionUtils.nullSafePredicateMatchingAll(groupBy.getPredicate());
+
     QueryResultSet<T> queryResultSet = QueryResultSet.from(queryResults);
 
     Stream<T> stream = queryResultSet.stream()
       .map(queryResult -> (T) transformingProjection.remap(queryContext, queryResult))
-      .filter(groupBy.getPredicate());
+      .filter(groupByPredicate);
 
     return stream;
   }
