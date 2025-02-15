@@ -20,14 +20,20 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verifyNoInteractions;
 
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 import java.util.function.Function;
 
 import org.junit.jupiter.api.Test;
 
+import org.cp.elements.data.oql.Oql.Projection;
+import org.cp.elements.data.oql.functions.Count;
+import org.cp.elements.data.oql.functions.Identity;
+import org.cp.elements.data.oql.functions.Max;
 import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.Nameable;
+import org.cp.elements.lang.ObjectUtils;
 import org.cp.elements.util.stream.StreamUtils;
 
 import lombok.AccessLevel;
@@ -60,6 +66,12 @@ public class OqlIntegrationTests {
     Person.named("Moe", "Doe").withAge(19).asMale(),
     Person.named("Pie", "Doe").withAge(16).asFemale(),
     Person.named("Sour", "Doe").withAge(13).asFemale()
+  );
+
+  private static final Set<Person> HANDY_FAMILY = Set.of(
+    Person.named("Jack", "Handy").withAge(44).asMale(),
+    Person.named("Mandy", "Handy").withAge(36).asFemale(),
+    Person.named("Sandy", "Handy").withAge(19).asFemale()
   );
 
   private static final Person[] PEOPLE_ARRAY = PEOPLE.toArray(new Person[0]);
@@ -351,6 +363,91 @@ public class OqlIntegrationTests {
   }
 
   @Test
+  @SuppressWarnings("unchecked")
+  void queryGroupByFamilyCountMembers() {
+
+    Oql.Projection<Person, GroupByFamilyView> projection =
+      Oql.Projection.<Person, GroupByFamilyView>as(GroupByFamilyView.class)
+        .mappedWith(GroupByFamilyView::map)
+        .apply(Identity.of(GroupByFamilyView::getLastName).named("LastName"), Count.all())
+        .remappedWith(GroupByFamilyView::remap);
+
+    Iterable<GroupByFamilyView> results = Oql.defaultProvider()
+      .select(projection)
+      .from(PEOPLE)
+      .groupBy(GroupByFamilyView::getLastName)
+      .execute();
+
+    assertThat(results).isNotNull();
+    assertThat(results).hasSize(1);
+    assertThat(results).containsExactly(GroupByFamilyView.from("Doe", 12));
+  }
+
+  @Test
+  @SuppressWarnings("unchecked")
+  void queryGroupByFamilyCountByGender() {
+
+    Set<Person> people = new HashSet<>(PEOPLE);
+
+    people.addAll(HANDY_FAMILY);
+
+    Iterable<GroupByLastNameGenderView> results = Oql.defaultProvider()
+      .select(groupByLastNameGenderProjection())
+      .from(people)
+      .groupBy(GroupByLastNameGenderView::getLastName, GroupByLastNameGenderView::getGender)
+      .orderBy(GroupByLastNameGenderView::getLastName)
+      .thenOrderBy(GroupByLastNameGenderView::getGender)
+      .execute();
+
+    assertThat(results).isNotNull();
+    assertThat(results).hasSize(4);
+    assertThat(results).containsExactly(
+      GroupByLastNameGenderView.from("Doe", Gender.FEMALE, 48, 5),
+      GroupByLastNameGenderView.from("Doe", Gender.MALE, 51, 7),
+      GroupByLastNameGenderView.from("Handy", Gender.FEMALE, 36, 2),
+      GroupByLastNameGenderView.from("Handy", Gender.MALE, 44, 1)
+    );
+  }
+
+  @Test
+  @SuppressWarnings("unchecked")
+  void queryGroupByFamilyCountByGenderHavingCondition() {
+
+    Set<Person> people = new HashSet<>(PEOPLE);
+
+    people.addAll(HANDY_FAMILY);
+
+    Iterable<GroupByLastNameGenderView> results = Oql.defaultProvider()
+      .select(groupByLastNameGenderProjection())
+      .from(people)
+      .groupBy(GroupByLastNameGenderView::getLastName, GroupByLastNameGenderView::getGender)
+      .having(view -> view.getMaxAge() > 40)
+      .orderBy(GroupByLastNameGenderView::getLastName)
+      .thenOrderBy(GroupByLastNameGenderView::getGender)
+      .execute();
+
+    assertThat(results).isNotNull();
+    assertThat(results).hasSize(3);
+    assertThat(results).containsExactly(
+      GroupByLastNameGenderView.from("Doe", Gender.FEMALE, 48, 5),
+      GroupByLastNameGenderView.from("Doe", Gender.MALE, 51, 7),
+      GroupByLastNameGenderView.from("Handy", Gender.MALE, 44, 1)
+    );
+  }
+
+  @SuppressWarnings("unchecked")
+  private Projection<Person, GroupByLastNameGenderView> groupByLastNameGenderProjection() {
+
+    return Oql.Projection.<Person, GroupByLastNameGenderView>as(GroupByLastNameGenderView.class)
+        .mappedWith(GroupByLastNameGenderView::map)
+        .apply(Identity.of(GroupByLastNameGenderView::getLastName).named("LastName"),
+          Identity.of(GroupByLastNameGenderView::getGender).named("Gender"),
+          Max.of(GroupByLastNameGenderView::getMaxAge).named("MaxAge"),
+          Count.all())
+        .remappedWith(GroupByLastNameGenderView::remap);
+  }
+
+  @Test
   void countAll() {
 
     Long count = Oql.defaultProvider()
@@ -627,6 +724,200 @@ public class OqlIntegrationTests {
 
     String getFirstName();
 
+  }
+
+  interface GroupByFamilyView {
+
+    static GroupByFamilyView map(Person person) {
+      Assert.notNull(person, "Person is required");
+      return person::getLastName;
+    }
+
+    static GroupByFamilyView remap(QueryResult<GroupByFamilyView> result) {
+
+      Assert.notNull(result, "QueryResult is required");
+
+      return new AbstractGroupByFamilyView() {
+
+        @Override
+        public String getLastName() {
+          return result.get("LastName");
+        }
+
+        @Override
+        public long count() {
+          return result.get("Count");
+        }
+      };
+    }
+
+    static GroupByFamilyView from(String lastName, int count) {
+
+      return new AbstractGroupByFamilyView() {
+
+        @Override
+        public String getLastName() {
+          return lastName;
+        }
+
+        @Override
+        public long count() {
+          return count;
+        }
+      };
+    }
+
+    String getLastName();
+
+    default long count() {
+      return 1L;
+    }
+  }
+
+  static abstract class AbstractGroupByFamilyView implements GroupByFamilyView {
+
+    @Override
+    public boolean equals(Object obj) {
+
+      if (obj == this) {
+        return true;
+      }
+
+      if (!(obj instanceof GroupByFamilyView view)) {
+        return false;
+      }
+
+      return ObjectUtils.equals(this.getLastName(), view.getLastName());
+    }
+
+    @Override
+    public int hashCode() {
+      return Objects.hash(getLastName());
+    }
+
+    @Override
+    public String toString() {
+      return "{ lastName = %s, count = %d} }".formatted(getLastName(), count());
+    }
+  }
+
+  interface GroupByLastNameGenderView {
+
+    static GroupByLastNameGenderView map(Person person) {
+
+      Assert.notNull(person, "Person is required");
+
+      return new AbstractGroupByLastNameView() {
+
+        @Override
+        public String getLastName() {
+          return person.getLastName();
+        }
+
+        @Override
+        public Gender getGender() {
+          return person.getGender();
+        }
+
+        @Override
+        public int getMaxAge() {
+          return person.getAge();
+        }
+      };
+    }
+
+    static GroupByLastNameGenderView remap(QueryResult<GroupByLastNameGenderView> result) {
+
+      Assert.notNull(result, "QueryResult is required");
+
+      return new AbstractGroupByLastNameView() {
+
+        @Override
+        public String getLastName() {
+          return result.get("LastName");
+        }
+
+        @Override
+        public Gender getGender() {
+          return result.get("Gender");
+        }
+
+        @Override
+        public int getMaxAge() {
+          return result.get("MaxAge");
+        }
+
+        @Override
+        public int count() {
+          return result.get("Count");
+        }
+      };
+    }
+
+    static GroupByLastNameGenderView from(String lastName, Gender gender, int maxAge, int count) {
+
+      return new AbstractGroupByLastNameView() {
+
+        @Override
+        public String getLastName() {
+          return lastName;
+        }
+
+        @Override
+        public Gender getGender() {
+          return gender;
+        }
+
+        @Override
+        public int getMaxAge() {
+          return maxAge;
+        }
+
+        @Override
+        public int count() {
+          return count;
+        }
+      };
+    }
+
+    String getLastName();
+
+    Gender getGender();
+
+    int getMaxAge();
+
+    default int count() {
+      return 1;
+    }
+  }
+
+  static abstract class AbstractGroupByLastNameView implements GroupByLastNameGenderView{
+
+    @Override
+    public boolean equals(Object obj) {
+
+      if (obj == this) {
+        return true;
+      }
+
+      if (!(obj instanceof GroupByLastNameGenderView view)) {
+        return false;
+      }
+
+      return ObjectUtils.equalsIgnoreNull(this.getLastName(), view.getLastName())
+        && ObjectUtils.equalsIgnoreNull(this.getGender(), view.getGender());
+    }
+
+    @Override
+    public int hashCode() {
+      return Objects.hash(getLastName(), getGender());
+    }
+
+    @Override
+    public String toString() {
+      return "{ lastName = %s, gender = %s, maxAge = %d, count = %d"
+        .formatted(getLastName(), getGender(), getMaxAge(), count());
+    }
   }
 
   enum Gender {
