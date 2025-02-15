@@ -165,26 +165,25 @@ public interface Oql extends BaseOql {
    *
    * @param <S> {@link Class type} of {@link Object objects} in the {@link Iterable collection} to query.
    * @param <T> {@link Class type} of the {@link Object projected objects}.
-   * @param <U> {@link Class type} of the {@link Object transformed element} of the {@link T projected type}.
    * @see org.cp.elements.data.oql.Oql.Projection
    * @see org.cp.elements.data.oql.QueryFunction
    * @see org.cp.elements.data.oql.QueryResult
    * @see org.cp.elements.util.stream.Streamable
    * @see java.lang.Iterable
    */
-  interface TransformingProjection<S, T, U>
-      extends Iterable<QueryFunction<T, U>>, Projection<S, T>, Streamable<QueryFunction<T, U>> {
+  interface TransformingProjection<S, T>
+      extends Iterable<QueryFunction<T, ?>>, Projection<S, T>, Streamable<QueryFunction<T, ?>> {
 
     T remap(QueryContext<S, T> queryContext, QueryResult<T> result);
 
     @Override
     @SuppressWarnings("all")
-    default Iterator<QueryFunction<T, U>> iterator() {
+    default Iterator<QueryFunction<T, ?>> iterator() {
       return Collections.emptyIterator();
     }
 
     @Override
-    default Stream<QueryFunction<T, U>> stream() {
+    default Stream<QueryFunction<T, ?>> stream() {
       return StreamUtils.stream(this);
     }
   }
@@ -234,6 +233,13 @@ public interface Oql extends BaseOql {
 
   }
 
+  /**
+   * Abstract Data Type (ADT) modeling a {@literal distinct} OQL query.
+   *
+   * @param <S> {@link Class type} of {@link Object objects} in the {@link Iterable collection} to query.
+   * @param <T> {@link Class type} of the {@link Object projected objects}.
+   * @see java.lang.FunctionalInterface
+   */
   @FunctionalInterface
   interface Distinct<S, T> {
     @Dsl From<S, T> from(Iterable<S> collection);
@@ -598,8 +604,8 @@ public interface Oql extends BaseOql {
    *
    * @param <S> source {@link Class type}.
    * @param <T> target {@link Class type}.
+   * @see org.cp.elements.data.oql.support.Grouping
    * @see org.cp.elements.data.oql.Oql.GroupBy
-   * @see Grouping
    */
   interface GroupBySpec<S, T> {
 
@@ -744,27 +750,27 @@ public interface Oql extends BaseOql {
     }
 
     @Dsl
-    public <U> ProjectionTransformationBuilder<S, T, U> mappedWith(@NotNull BiFunction<QueryContext<S, T>, S, T> mapper) {
+    public ProjectionTransformationBuilder<S, T> mappedWith(@NotNull BiFunction<QueryContext<S, T>, S, T> mapper) {
       Assert.notNull(mapper, "Object mapping function is required");
       return new ProjectionTransformationBuilder<>(this.projectionType, this.fromType, mapper);
     }
 
     @Dsl
-    public <U> ProjectionTransformationBuilder<S, T, U> mappedWith(@NotNull Function<S, T> mapper) {
+    public ProjectionTransformationBuilder<S, T> mappedWith(@NotNull Function<S, T> mapper) {
       Assert.notNull(mapper, "Object mapping function is required");
       BiFunction<QueryContext<S, T>, S, T> function = (queryContext, target) -> mapper.apply(target);
       return mappedWith(function);
     }
   }
 
-  class ProjectionTransformationBuilder<S, T, U> implements Builder<Projection<S, T>> {
+  class ProjectionTransformationBuilder<S, T> implements Builder<Projection<S, T>> {
 
     private final BiFunction<QueryContext<S, T>, S, T> mapper;
 
     private final Class<S> fromType;
     private final Class<T> projectionType;
 
-    private Iterable<QueryFunction<T, U>> transformations;
+    private Iterable<QueryFunction<T, ?>> transformations;
 
     protected ProjectionTransformationBuilder(@NotNull Class<T> projectionType, @NotNull Class<S> fromType,
         @NotNull BiFunction<QueryContext<S, T>, S, T> mapper) {
@@ -776,25 +782,25 @@ public interface Oql extends BaseOql {
 
     @Dsl
     @SuppressWarnings("unchecked")
-    public ProjectionTransformationBuilder<S, T, U> apply(QueryFunction<T, U>... transformations) {
+    public <V> ProjectionTransformationBuilder<S, T> apply(QueryFunction<T, ?>... transformations) {
       return apply(ArrayUtils.asIterable(ArrayUtils.nullSafeArray(transformations)));
     }
 
     @Dsl
-    public ProjectionTransformationBuilder<S, T, U> apply(Iterable<QueryFunction<T, U>> transformations) {
+    public ProjectionTransformationBuilder<S, T> apply(Iterable<QueryFunction<T, ?>> transformations) {
       this.transformations = CollectionUtils.nullSafeIterable(transformations);
       return this;
     }
 
     @Dsl
-    public TransformingProjection<S, T, U> remappedWith(Function<QueryResult<T>, T> mapper) {
+    public TransformingProjection<S, T> remappedWith(Function<QueryResult<T>, T> mapper) {
       Assert.notNull(mapper, "Object remapping function is required");
       BiFunction<QueryContext<S, T>, QueryResult<T>, T> function = ((queryContext, result) -> mapper.apply(result));
       return remappedWith(function);
     }
 
     @Dsl
-    public TransformingProjection<S, T, U> remappedWith(BiFunction<QueryContext<S, T>, QueryResult<T>, T> mapper) {
+    public TransformingProjection<S, T> remappedWith(BiFunction<QueryContext<S, T>, QueryResult<T>, T> mapper) {
 
       Assert.state(CollectionUtils.isNotEmpty(this.transformations), "No transformations defined");
       Assert.notNull(mapper, "Object remapping function is required");
@@ -813,7 +819,7 @@ public interface Oql extends BaseOql {
 
         @Override
         @SuppressWarnings("all")
-        public Iterator<QueryFunction<T, U>> iterator() {
+        public Iterator<QueryFunction<T, ?>> iterator() {
           return ProjectionTransformationBuilder.this.transformations.iterator();
         }
 

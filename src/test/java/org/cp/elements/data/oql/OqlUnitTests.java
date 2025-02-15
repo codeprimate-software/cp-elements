@@ -185,8 +185,8 @@ public class OqlUnitTests {
 
     assertThat(projection).isInstanceOf(TransformingProjection.class);
 
-    Oql.TransformingProjection<String, User, String> transformingProjection =
-      (TransformingProjection<String, User, String>) projection;
+    Oql.TransformingProjection<String, User> transformingProjection =
+      (TransformingProjection<String, User>) projection;
 
     QueryContext<String, User> mockQueryContext = mock(QueryContext.class);
 
@@ -197,6 +197,7 @@ public class OqlUnitTests {
 
     String encodedUsername = transformingProjection.stream().findFirst()
       .map(transformer -> transformer.apply(jonDoe))
+      .map(String::valueOf)
       .orElse(StringUtils.EMPTY_STRING);
 
     assertThat(encodedUsername).isNotBlank();
