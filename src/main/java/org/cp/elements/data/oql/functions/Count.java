@@ -17,7 +17,6 @@ package org.cp.elements.data.oql.functions;
 
 import org.cp.elements.data.oql.QueryFunction;
 import org.cp.elements.data.support.Iterables;
-import org.cp.elements.lang.Constants;
 import org.cp.elements.lang.StringUtils;
 import org.cp.elements.util.stream.StreamUtils;
 
@@ -32,6 +31,8 @@ import org.cp.elements.util.stream.StreamUtils;
 @SuppressWarnings("unused")
 public class Count<T> implements QueryFunction<T, Long> {
 
+  protected static final String DEFAULT_NAME = "Count";
+
   public static <T> Count<T> all() {
     return new Count<>();
   }
@@ -40,7 +41,7 @@ public class Count<T> implements QueryFunction<T, Long> {
 
   @Override
   public String getName() {
-    return StringUtils.defaultIfBlank(this.name, Constants.UNKNOWN);
+    return StringUtils.defaultIfBlank(this.name, DEFAULT_NAME);
   }
 
   @Override
@@ -48,7 +49,7 @@ public class Count<T> implements QueryFunction<T, Long> {
     return StreamUtils.stream(Iterables.nullSafeIterable(resultSet)).count();
   }
 
-  public Count named(String name) {
+  public Count<T> named(String name) {
     this.name = name;
     return this;
   }
