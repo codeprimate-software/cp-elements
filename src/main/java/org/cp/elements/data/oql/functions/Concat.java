@@ -29,11 +29,11 @@ import org.cp.elements.lang.annotation.NotNull;
  * {@link QueryFunction} used to concatenate multiple values.
  *
  * @author John Blum
- * @param <S> {@link Class type} of {@link Object} on which this function is applied.
+ * @param <T> {@link Class type} of {@link Object} on which this function is applied.
  * @see org.cp.elements.data.oql.QueryFunction
  * @since 2.0.0
  */
-public class Concat<S> implements QueryFunction<S, String> {
+public class Concat<T> implements QueryFunction<T, String> {
 
   protected static final String DEFAULT_DELIMITER = StringUtils.COMMA_SPACE_DELIMITER;
 
@@ -44,9 +44,9 @@ public class Concat<S> implements QueryFunction<S, String> {
   private String delimiter = DEFAULT_DELIMITER;
   private String name;
 
-  private final Function<S, String> function;
+  private final Function<T, String> function;
 
-  protected Concat(@NotNull Function<S, ?> function) {
+  protected Concat(@NotNull Function<T, ?> function) {
     Assert.notNull(function, "Function is required");
     this.function = function.andThen(String::valueOf);
   }
@@ -57,11 +57,11 @@ public class Concat<S> implements QueryFunction<S, String> {
   }
 
   @Override
-  public String apply(Iterable<S> iterable) {
+  public String apply(Iterable<T> iterable) {
 
     String concatenation = StringUtils.EMPTY_STRING;
 
-    for (S result : Iterables.nullSafeIterable(iterable)) {
+    for (T result : Iterables.nullSafeIterable(iterable)) {
       concatenation = StringUtils.hasText(concatenation) ? concatenation.concat(this.delimiter) : concatenation;
       concatenation = concatenation.concat(this.function.apply(result));
     }
@@ -69,12 +69,12 @@ public class Concat<S> implements QueryFunction<S, String> {
     return concatenation;
   }
 
-  public Concat<S> delimitedWith(String delimiter) {
+  public Concat<T> delimitedWith(String delimiter) {
     this.delimiter = ObjectUtils.returnValueOrDefaultIfNull(delimiter, DEFAULT_DELIMITER);
     return this;
   }
 
-  public Concat<S> named(String name) {
+  public Concat<T> named(String name) {
     this.name = name;
     return this;
   }

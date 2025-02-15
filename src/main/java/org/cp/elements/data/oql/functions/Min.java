@@ -28,24 +28,24 @@ import org.cp.elements.lang.annotation.NotNull;
  * {@link QueryFunction} used to calculate the {@literal minimum value} in a set.
  *
  * @author John Blum
- * @param <S> {@link Class type} of {@link Object} on which this function is applied.
- * @param <T> {@link Comparable} type.
+ * @param <T> {@link Class type} of {@link Object} on which this function is applied.
+ * @param <V> {@link Comparable} type.
  * @see java.lang.Comparable
  * @see org.cp.elements.data.oql.QueryFunction
  * @since 2.0.0
  */
 @SuppressWarnings("unused")
-public class Min<S, T extends Comparable<T>> implements QueryFunction<S, T> {
+public class Min<T, V extends Comparable<V>> implements QueryFunction<T, V> {
 
-  public static <S, T extends Comparable<T>> Min<S, T> of(@NotNull Function<S, T> function) {
+  public static <T, V extends Comparable<V>> Min<T, V> of(@NotNull Function<T, V> function) {
     return new Min<>(function);
   }
 
   private String name;
 
-  private final Function<S, T> function;
+  private final Function<T, V> function;
 
-  protected Min(@NotNull Function<S, T> function) {
+  protected Min(@NotNull Function<T, V> function) {
     this.function = ObjectUtils.requireObject(function, "Function is required");
   }
 
@@ -55,12 +55,12 @@ public class Min<S, T extends Comparable<T>> implements QueryFunction<S, T> {
   }
 
   @Override
-  public T apply(Iterable<S> resultSet) {
+  public V apply(Iterable<T> resultSet) {
 
-    T min = null;
+    V min = null;
 
-    for (S result : Iterables.nullSafeIterable(resultSet)) {
-      T value = this.function.apply(result);
+    for (T result : Iterables.nullSafeIterable(resultSet)) {
+      V value = this.function.apply(result);
       if (value != null) {
         min = min == null || value.compareTo(min) < 0 ? value : min;
       }
@@ -69,7 +69,7 @@ public class Min<S, T extends Comparable<T>> implements QueryFunction<S, T> {
     return min;
   }
 
-  public Min<S, T> named(String name) {
+  public Min<T, V> named(String name) {
     this.name = name;
     return this;
   }

@@ -27,24 +27,24 @@ import org.cp.elements.util.CollectionUtils;
  * {@link QueryFunction} used to calculate an {@literal average} from a set of values.
  *
  * @author John Blum
- * @param <S> {@link Class type} of {@link Object} on which this function is applied.
+ * @param <T> {@link Class type} of {@link Object} on which this function is applied.
  * @see org.cp.elements.data.oql.functions.Sum
  * @since 2.0.0
  */
 @SuppressWarnings("unused")
-public class Avg<S> extends Sum<S> {
+public class Avg<T> extends Sum<T> {
 
-  public static <S> Avg<S> of(@NotNull Function<S, ? extends Number> function) {
+  public static <T> Avg<T> of(@NotNull Function<T, ? extends Number> function) {
     return new Avg<>(function);
   }
 
-  protected Avg(@NotNull Function<S, ? extends Number> function) {
+  protected Avg(@NotNull Function<T, ? extends Number> function) {
     super(function);
   }
 
   @Override
   @SuppressWarnings({ "all", "unchecked" })
-  public BigDecimal apply(Iterable<S> resultSet) {
+  public BigDecimal apply(Iterable<T> resultSet) {
 
     BigDecimal sum = super.apply(resultSet);
     BigDecimal divisor = BigDecimal.valueOf(CollectionUtils.count(resultSet));

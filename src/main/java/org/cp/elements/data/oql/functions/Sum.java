@@ -29,12 +29,12 @@ import org.cp.elements.lang.annotation.NotNull;
  * {@link QueryFunction} used to calculate a {@literal sum}.
  *
  * @author John Blum
- * @param <S> {@link Class type} of {@link Object} on which this function is applied.
+ * @param <T> {@link Class type} of {@link Object} on which this function is applied.
  * @see java.lang.Comparable
  * @see org.cp.elements.data.oql.QueryFunction
  * @since 2.0.0
  */
-public class Sum<S> implements QueryFunction<S, BigDecimal> {
+public class Sum<T> implements QueryFunction<T, BigDecimal> {
 
   public static <S> Sum<S> of(@NotNull Function<S, ? extends Number> function) {
     return new Sum<>(function);
@@ -42,9 +42,9 @@ public class Sum<S> implements QueryFunction<S, BigDecimal> {
 
   private String name;
 
-  private final Function<S, ? extends Number> function;
+  private final Function<T, ? extends Number> function;
 
-  protected Sum(@NotNull Function<S, ? extends Number> function) {
+  protected Sum(@NotNull Function<T, ? extends Number> function) {
     this.function = ObjectUtils.requireObject(function, "Function is required");
   }
 
@@ -54,11 +54,11 @@ public class Sum<S> implements QueryFunction<S, BigDecimal> {
   }
 
   @Override
-  public BigDecimal apply(Iterable<S> resultSet) {
+  public BigDecimal apply(Iterable<T> resultSet) {
 
     BigDecimal sum = BigDecimal.ZERO;
 
-    for (S result : Iterables.nullSafeIterable(resultSet)) {
+    for (T result : Iterables.nullSafeIterable(resultSet)) {
       Number value = this.function.apply(result);
       sum = sum.add(asBigDecimal(value));
     }
@@ -71,7 +71,7 @@ public class Sum<S> implements QueryFunction<S, BigDecimal> {
   }
 
   @SuppressWarnings("unchecked")
-  public <U extends Sum<S>> U named(String name) {
+  public <U extends Sum<T>> U named(String name) {
     this.name = name;
     return (U) this;
   }

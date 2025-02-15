@@ -22,31 +22,31 @@ import org.cp.elements.util.ArrayUtils;
  * Abstract Data Type (ADT) modeling an {@literal OQL} function.
  *
  * @author John Blum
- * @param <S> {@link Class type} of {@link Object} on which this function is applied.
- * @param <T> {@link Class type} of {@link Object value resulting} from the computation of this function
- * applied to the given {@link S target}.
+ * @param <T> {@link Class type} of {@link Object} on which this function is applied.
+ * @param <V> {@link Class type} of {@link Object value resulting} from the computation of this function
+ * applied to the given {@link T target}.
  * @see org.cp.elements.lang.Nameable
  * @since 2.0.0
  */
-public interface QueryFunction<S, T> extends Nameable<String> {
+public interface QueryFunction<T, V> extends Nameable<String> {
 
   /**
-   * Apply the computation of this {@link QueryFunction} to the given {@link S objects}.
+   * Apply the computation of this {@link QueryFunction} to the given {@link T objects}.
    *
-   * @param array array of {@link S Objects} on which this {@link QueryFunction} is applied.
+   * @param array array of {@link T Objects} on which this {@link QueryFunction} is applied.
    * @see #apply(Iterable)
    */
   @SuppressWarnings("unchecked")
-  default T apply(S... array) {
+  default V apply(T... array) {
     return apply(ArrayUtils.asIterable(ArrayUtils.nullSafeArray(array)));
   }
 
   /**
-   * Apply the computation of this {@link QueryFunction} to the given {@link S objects}.
+   * Apply the computation of this {@link QueryFunction} to the given {@link T objects}.
    *
-   * @param iterable {@link Iterable} of {@link S Objects} on which this {@link QueryFunction} is applied.
+   * @param iterable {@link Iterable} of {@link T Objects} on which this {@link QueryFunction} is applied.
    * @see #apply(Object[])
    */
-  T apply(Iterable<S> iterable);
+  V apply(Iterable<T> iterable);
 
 }
