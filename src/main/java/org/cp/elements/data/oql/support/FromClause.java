@@ -22,7 +22,6 @@ import java.util.function.Predicate;
 
 import org.cp.elements.data.oql.Oql;
 import org.cp.elements.data.oql.Oql.ExecutableQuery;
-import org.cp.elements.data.oql.Oql.From;
 import org.cp.elements.data.oql.Oql.GroupBy;
 import org.cp.elements.data.oql.Oql.OrderBy;
 import org.cp.elements.data.oql.Oql.Projection;
@@ -211,7 +210,9 @@ public class FromClause<S, T> implements Oql.From<S, T> {
 
   @Override
   public GroupBy<S, T> groupBy(@NotNull Grouping<T> grouping) {
-    return From.super.groupBy(grouping);
+    GroupBy<S, T> groupBy = GroupByClause.of(this, grouping);
+    withGroupBy(groupBy);
+    return groupBy;
   }
 
   protected FromClause<S, T> withSelection(@NotNull Select<S, T> selection) {
