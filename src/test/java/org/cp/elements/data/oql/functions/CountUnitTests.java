@@ -21,8 +21,6 @@ import java.util.Arrays;
 
 import org.junit.jupiter.api.Test;
 
-import org.cp.elements.lang.Constants;
-
 /**
  * Unit Tests for {@link Count}.
  *
@@ -36,16 +34,16 @@ public class CountUnitTests {
   @Test
   void newCount() {
 
-    Count count = Count.all();
+    Count<?> count = Count.all();
 
     assertThat(count).isNotNull();
-    assertThat(count.getName()).isEqualTo(Constants.UNKNOWN);
+    assertThat(count.getName()).isEqualTo(Count.DEFAULT_NAME);
   }
 
   @Test
   void newNamedCount() {
 
-    Count count = Count.all().named("TestCount");
+    Count<?> count = Count.all().named("TestCount");
 
     assertThat(count).isNotNull();
     assertThat(count.getName()).isEqualTo("TestCount");
