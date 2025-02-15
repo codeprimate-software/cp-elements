@@ -142,8 +142,8 @@ public class SelectClause<S, T> implements Oql.Select<S, T> {
     }
   }
 
-  static class TransformingProjectionWrapper<S, T, U> extends ProjectionWrapper<S, T>
-    implements Oql.TransformingProjection<S, T, U> {
+  static class TransformingProjectionWrapper<S, T> extends ProjectionWrapper<S, T>
+      implements Oql.TransformingProjection<S, T> {
 
     TransformingProjectionWrapper(@NotNull Projection<S, T> projection) {
       super(projection);
@@ -151,13 +151,13 @@ public class SelectClause<S, T> implements Oql.Select<S, T> {
 
     @Override
     public T remap(QueryContext<S, T> queryContext, QueryResult<T> result) {
-      return this.<TransformingProjection<S, T, U>>getProjection().remap(queryContext, result);
+      return this.<TransformingProjection<S, T>>getProjection().remap(queryContext, result);
     }
 
     @Override
     @SuppressWarnings("all")
-    public Iterator<QueryFunction<T, U>> iterator() {
-      return this.<TransformingProjection<S, T, U>>getProjection().iterator();
+    public Iterator<QueryFunction<T, ?>> iterator() {
+      return this.<TransformingProjection<S, T>>getProjection().iterator();
     }
   }
 }
