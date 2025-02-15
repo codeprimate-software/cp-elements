@@ -25,14 +25,15 @@ import org.cp.elements.util.stream.StreamUtils;
  * {@link QueryFunction} used to {@literal count} the elements in the result set derived from a query.
  *
  * @author John Blum
+ * @param <T> {@link Class type} of {@link Object} on which this {@link Count function} is applied.
  * @see org.cp.elements.data.oql.QueryFunction
  * @since 2.0.0
  */
 @SuppressWarnings("unused")
-public class Count implements QueryFunction<Object, Long> {
+public class Count<T> implements QueryFunction<T, Long> {
 
-  public static Count all() {
-    return new Count();
+  public static <T> Count<T> all() {
+    return new Count<>();
   }
 
   private String name;
@@ -43,7 +44,7 @@ public class Count implements QueryFunction<Object, Long> {
   }
 
   @Override
-  public Long apply(Iterable<Object> resultSet) {
+  public Long apply(Iterable<T> resultSet) {
     return StreamUtils.stream(Iterables.nullSafeIterable(resultSet)).count();
   }
 
