@@ -38,32 +38,32 @@ import org.junit.jupiter.api.Test;
  * @see org.cp.elements.function.ThrowableFunction
  * @since 2.0.0
  */
-public class ThrowableFunctionUnitTests {
+class ThrowableFunctionUnitTests {
 
   @Test
   @SuppressWarnings("unchecked")
-  public void throwableFunctionReturnsValue() throws Throwable {
+  void throwableFunctionReturnsValue() throws Throwable {
 
     ThrowableFunction<Object, Object> mockFunction = mock(ThrowableFunction.class);
 
     doCallRealMethod().when(mockFunction).apply(any());
-    doAnswer(invocation -> invocation.getArgument(0)).when(mockFunction).applyWithThrows(any());
+    doAnswer(invocation -> invocation.getArgument(0)).when(mockFunction).applyThrowingException(any());
 
     assertThat(mockFunction.apply("test")).isEqualTo("test");
 
     verify(mockFunction, times(1)).apply(eq("test"));
-    verify(mockFunction, times(1)).applyWithThrows(eq("test"));
+    verify(mockFunction, times(1)).applyThrowingException(eq("test"));
     verifyNoMoreInteractions(mockFunction);
   }
 
   @Test
   @SuppressWarnings("unchecked")
-  public void throwableFunctionThrowsFunction() throws Throwable {
+  void throwableFunctionThrowsException() throws Throwable {
 
     ThrowableFunction<Object, Object> mockFunction = mock(ThrowableFunction.class);
 
     doCallRealMethod().when(mockFunction).apply(any());
-    doThrow(new Exception("ERROR")).when(mockFunction).applyWithThrows(any());
+    doThrow(new Exception("ERROR")).when(mockFunction).applyThrowingException(any());
 
     assertThatThrowableOfType(FunctionExecutionException.class)
       .isThrownBy(args -> mockFunction.apply("test"))
@@ -73,7 +73,7 @@ public class ThrowableFunctionUnitTests {
       .withNoCause();
 
     verify(mockFunction, times(1)).apply(eq("test"));
-    verify(mockFunction, times(1)).applyWithThrows(eq("test"));
+    verify(mockFunction, times(1)).applyThrowingException(eq("test"));
     verifyNoMoreInteractions(mockFunction);
   }
 }

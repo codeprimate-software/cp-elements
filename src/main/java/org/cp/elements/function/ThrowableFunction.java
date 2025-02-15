@@ -36,7 +36,7 @@ public interface ThrowableFunction<T, R> extends Function<T, R> {
   default R apply(T input) {
 
     try {
-      return applyWithThrows(input);
+      return applyThrowingException(input);
     }
     catch (Throwable cause) {
       throw newFunctionExecutionException(cause, "Failed to execute Function [%s]", getClass().getSimpleName());
@@ -51,6 +51,6 @@ public interface ThrowableFunction<T, R> extends Function<T, R> {
    * @throws Exception if the {@link Function} execution fails.
    * @see #apply(Object)
    */
-  R applyWithThrows(T input) throws Exception;
+  R applyThrowingException(T input) throws Exception;
 
 }
