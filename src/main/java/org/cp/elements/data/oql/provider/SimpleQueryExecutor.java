@@ -96,7 +96,7 @@ public class SimpleQueryExecutor<S, T> implements QueryExecutor<S, T> {
     return QueryContext.from(query);
   }
 
-  @SuppressWarnings("all")
+  @SuppressWarnings({ "all", "rawtypes", "unchecked" })
   private Stream<T> groupsToStream(QueryContext<S, T> queryContext, Stream<T> originalStream, Groups<T> groups) {
 
     Oql.Projection<S, T> projection = resolveProjection(queryContext);
