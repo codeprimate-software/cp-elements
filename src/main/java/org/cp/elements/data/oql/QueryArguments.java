@@ -48,13 +48,21 @@ public interface QueryArguments extends Iterable<QueryArgument<?>>, Streamable<Q
     return arguments::iterator;
   }
 
-  default Optional<QueryArgument<?>> findBy(String name) {
-    return stream().filter(argument -> argument.getName().equals(name)).findFirst();
+  @SuppressWarnings("unchecked")
+  default <T> Optional<QueryArgument<T>> findBy(String name) {
+
+    return stream()
+      .filter(argument -> argument.getName().equals(name))
+      .map(queryArgument -> (QueryArgument<T>) queryArgument)
+      .findFirst();
   }
 
-  default QueryArgument<?> requireBy(String name) {
-    return findBy(name).orElseThrow(() ->
-      new QueryException("Query argument with name [%s] not found".formatted(name)));
+  @SuppressWarnings("unchecked")
+  default <T> QueryArgument<T> requireBy(String name) {
+
+    return findBy(name)
+      .map(queryArgument -> (QueryArgument<T>) queryArgument)
+      .orElseThrow(() -> new QueryException("Query argument with name [%s] not found".formatted(name)));
   }
 
   @Override
