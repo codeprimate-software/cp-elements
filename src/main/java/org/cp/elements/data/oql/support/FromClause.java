@@ -18,7 +18,7 @@ package org.cp.elements.data.oql.support;
 import java.util.Comparator;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.function.Predicate;
+import java.util.function.BiPredicate;
 
 import org.cp.elements.data.oql.Oql;
 import org.cp.elements.data.oql.Oql.ExecutableQuery;
@@ -27,6 +27,7 @@ import org.cp.elements.data.oql.Oql.OrderBy;
 import org.cp.elements.data.oql.Oql.Projection;
 import org.cp.elements.data.oql.Oql.Select;
 import org.cp.elements.data.oql.Oql.Where;
+import org.cp.elements.data.oql.QueryArguments;
 import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.ObjectUtils;
 import org.cp.elements.lang.TypeResolver;
@@ -38,6 +39,7 @@ import org.cp.elements.util.CollectionUtils;
  * Default implementation of {@link Oql.From}.
  *
  * @author John Blum
+ * @see java.lang.Iterable
  * @see org.cp.elements.data.oql.Oql
  * @see org.cp.elements.data.oql.Oql.From
  * @since 2.0.0
@@ -188,7 +190,7 @@ public class FromClause<S, T> implements Oql.From<S, T> {
   }
 
   @Override
-  public Where<S, T> where(@NotNull Predicate<S> predicate) {
+  public Where<S, T> where(@NotNull BiPredicate<QueryArguments, S> predicate) {
     Where<S, T> where = WhereClause.where(this, predicate);
     withWhere(where);
     return where;
