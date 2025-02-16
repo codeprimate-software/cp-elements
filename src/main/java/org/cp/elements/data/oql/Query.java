@@ -25,6 +25,7 @@ import org.cp.elements.data.oql.Oql.Select;
 import org.cp.elements.data.oql.Oql.Where;
 import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.annotation.NotNull;
+import org.cp.elements.lang.annotation.NullSafe;
 
 /**
  * Abstract Data Type (ADT) modeling the query of an {@literal OQL} statement.
@@ -79,7 +80,9 @@ public interface Query<S, T> extends Oql.Executable<T> {
     return getFrom().getCollection();
   }
 
-  default Iterable<T> execute() {
-    return Oql.defaultProvider().<S, T>executor().execute(this);
+  @NullSafe
+  @Override
+  default Iterable<T> execute(Iterable<QueryArgument<?>> arguments) {
+    return Oql.defaultProvider().<S, T>executor().execute(this, QueryArguments.of(arguments));
   }
 }
