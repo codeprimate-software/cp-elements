@@ -20,7 +20,9 @@ import java.util.Collections;
 import java.util.Optional;
 import java.util.stream.Stream;
 
+import org.cp.elements.lang.annotation.NullSafe;
 import org.cp.elements.util.ArrayUtils;
+import org.cp.elements.util.CollectionUtils;
 import org.cp.elements.util.stream.StreamUtils;
 import org.cp.elements.util.stream.Streamable;
 
@@ -40,12 +42,14 @@ public interface QueryArguments extends Iterable<QueryArgument<?>>, Streamable<Q
     return Collections::emptyIterator;
   }
 
+  @NullSafe
   static QueryArguments of(QueryArgument<?>... arguments) {
     return of(Arrays.asList(ArrayUtils.nullSafeArray(arguments)));
   }
 
+  @NullSafe
   static QueryArguments of(Iterable<QueryArgument<?>> arguments) {
-    return arguments::iterator;
+    return CollectionUtils.nullSafeIterable(arguments)::iterator;
   }
 
   @SuppressWarnings("unchecked")
