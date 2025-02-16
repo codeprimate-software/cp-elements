@@ -47,6 +47,10 @@ import java.util.regex.PatternSyntaxException;
 import org.junit.jupiter.api.Test;
 
 import org.assertj.core.api.Assertions;
+import org.cp.elements.function.FunctionExecutionException;
+import org.cp.elements.function.ThrowableConsumer;
+import org.cp.elements.function.ThrowableFunction;
+import org.cp.elements.function.ThrowableSupplier;
 import org.cp.elements.lang.ThrowableAssertions.AssertThatThrowableExpression;
 import org.cp.elements.lang.ThrowableAssertions.ThrowableSource;
 import org.cp.elements.lang.ThrowableAssertions.ThrowableSourceExpression;
@@ -71,7 +75,7 @@ import lombok.ToString;
  * @see org.cp.elements.lang.ThrowableAssertions
  * @since 1.0.0
  */
-public class ThrowableAssertionsUnitTests {
+class ThrowableAssertionsUnitTests {
 
   private static ThrowableSource assertThatApplicationException() {
     return assertThatThrowableOfType(ApplicationException.class);
@@ -125,8 +129,20 @@ public class ThrowableAssertionsUnitTests {
     throw new UnsupportedOperationException(message);
   }
 
+  private static void consumerThrowingException(Object target) throws Exception {
+    throw new Exception("TEST");
+  }
+
+  private static ThrowableFunction<?, ?> functionThrowingException(Object target) throws Exception {
+    throw new Exception("TEST");
+  }
+
+  private static Object supplierThrowingException() throws Exception {
+    throw new Exception("TEST");
+  }
+
   @Test
-  public void constructAssertThatThrowable() {
+  void constructAssertThatThrowable() {
 
     AuthenticationException exception = new AuthenticationException("test");
 
@@ -138,7 +154,7 @@ public class ThrowableAssertionsUnitTests {
   }
 
   @Test
-  public void constructAssertThatThrowableWithIncompatibleThrowable() {
+  void constructAssertThatThrowableWithIncompatibleThrowable() {
 
     assertThatExceptionOfType(IllegalTypeException.class)
       .isThrownBy(() -> AssertThatThrowableExpression.from(IllegalAccessException.class, new AuthorizationException("test")))
@@ -148,7 +164,7 @@ public class ThrowableAssertionsUnitTests {
   }
 
   @Test
-  public void constructAssertThatThrowableWithNullThrowable() {
+  void constructAssertThatThrowableWithNullThrowable() {
 
     assertThatExceptionOfType(IllegalTypeException.class)
       .isThrownBy(() -> AssertThatThrowableExpression.from(RuntimeException.class, null))
@@ -157,7 +173,7 @@ public class ThrowableAssertionsUnitTests {
   }
 
   @Test
-  public void constructAssertThatThrowableWithNullType() {
+  void constructAssertThatThrowableWithNullType() {
 
     Assertions.assertThatIllegalArgumentException()
       .isThrownBy(() -> AssertThatThrowableExpression.from(null, new AuthenticationException("test")))
@@ -166,7 +182,7 @@ public class ThrowableAssertionsUnitTests {
   }
 
   @Test
-  public void constructThrowableSource() {
+  void constructThrowableSource() {
 
     ThrowableSourceExpression expression = new ThrowableSourceExpression(IllegalArgumentException.class);
 
@@ -178,7 +194,7 @@ public class ThrowableAssertionsUnitTests {
   }
 
   @Test
-  public void constructThrowableSourceDescribedAs() {
+  void constructThrowableSourceDescribedAs() {
 
     ThrowableSourceExpression expression =
       (ThrowableSourceExpression) ThrowableSourceExpression.from(IllegalStateException.class)
@@ -197,7 +213,7 @@ public class ThrowableAssertionsUnitTests {
   }
 
   @Test
-  public void constructThrowableSourceWithNullType() {
+  void constructThrowableSourceWithNullType() {
 
     Assertions.assertThatIllegalArgumentException()
       .isThrownBy(() -> ThrowableSource.from(null))
@@ -206,7 +222,7 @@ public class ThrowableAssertionsUnitTests {
   }
 
   @Test
-  public void assertApplicationExceptionThrownByIsCorrect() {
+  void assertApplicationExceptionThrownByIsCorrect() {
 
     assertThatApplicationException()
       .isThrownBy(args -> codeThrowingApplicationException("mock", new SecurityException("test security error")))
@@ -217,7 +233,7 @@ public class ThrowableAssertionsUnitTests {
   }
 
   @Test
-  public void assertRuntimeExceptionThrownByIsCorrect() {
+  void assertRuntimeExceptionThrownByIsCorrect() {
 
     assertThatRuntimeException()
       .isThrownBy(args -> codeThrowingRuntimeException("test message"))
@@ -226,7 +242,7 @@ public class ThrowableAssertionsUnitTests {
   }
 
   @Test
-  public void assertRuntimeExceptionCausedByIsCorrect() {
+  void assertRuntimeExceptionCausedByIsCorrect() {
 
     assertThatRuntimeException()
       .isThrownBy(args -> codeThrowingRuntimeException("test message",
@@ -238,7 +254,7 @@ public class ThrowableAssertionsUnitTests {
   }
 
   @Test
-  public void assertRuntimeExceptionWithNoCauseThrowsAssertionException() {
+  void assertRuntimeExceptionWithNoCauseThrowsAssertionException() {
 
     Assertions.assertThatExceptionOfType(AssertionException.class)
       .isThrownBy(() -> assertThatRuntimeException()
@@ -252,7 +268,7 @@ public class ThrowableAssertionsUnitTests {
   }
 
   @Test
-  public void assertRuntimeExceptionWithUnexpectedCauseThrowsAssertionException() {
+  void assertRuntimeExceptionWithUnexpectedCauseThrowsAssertionException() {
 
     Assertions.assertThatExceptionOfType(AssertionException.class)
       .isThrownBy(() -> assertThatRuntimeException()
@@ -265,7 +281,7 @@ public class ThrowableAssertionsUnitTests {
   }
 
   @Test
-  public void assertRuntimeExceptionWithNoMessageThrowsAssertionException() {
+  void assertRuntimeExceptionWithNoMessageThrowsAssertionException() {
 
     Assertions.assertThatExceptionOfType(AssertionException.class)
       .isThrownBy(() -> assertThatRuntimeException()
@@ -277,7 +293,7 @@ public class ThrowableAssertionsUnitTests {
   }
 
   @Test
-  public void assertRuntimeExceptionHavingUnexpectedMessageThrowsAssertionException() {
+  void assertRuntimeExceptionHavingUnexpectedMessageThrowsAssertionException() {
 
     Assertions.assertThatExceptionOfType(AssertionException.class)
       .isThrownBy(() -> assertThatRuntimeException()
@@ -289,7 +305,7 @@ public class ThrowableAssertionsUnitTests {
   }
 
   @Test
-  public void assertRuntimeExceptionHavingMessageContainingIsCorrect() {
+  void assertRuntimeExceptionHavingMessageContainingIsCorrect() {
 
     assertThatIllegalArgumentException()
       .isThrownBy(args -> codeThrowingIllegalArgumentException("An error occurred on line 123 in file os.bin"))
@@ -298,7 +314,7 @@ public class ThrowableAssertionsUnitTests {
   }
 
   @Test
-  public void assertRuntimeExceptionHavingMessageContainingUnexpectedTextThrowsAssertionException() {
+  void assertRuntimeExceptionHavingMessageContainingUnexpectedTextThrowsAssertionException() {
 
     String message = "An error occurred on line 987 in file junk.txt";
 
@@ -312,7 +328,7 @@ public class ThrowableAssertionsUnitTests {
   }
 
   @Test
-  public void assertRuntimeExceptionHavingMessageEndingWithIsCorrect() {
+  void assertRuntimeExceptionHavingMessageEndingWithIsCorrect() {
 
     assertThatIndexOutOfBoundsException()
       .isThrownBy(args -> codeThrowingIndexOutOfBoundsException("Mock message ending with test"))
@@ -323,7 +339,7 @@ public class ThrowableAssertionsUnitTests {
   // java.lang.InterruptedException
 
   @Test
-  public void assertCheckedExceptionHavingMessageEndingWithUnexpectedTextThrowsAssertionException() {
+  void assertCheckedExceptionHavingMessageEndingWithUnexpectedTextThrowsAssertionException() {
 
     String message = "Beginning of the message and then the end of the message";
 
@@ -337,7 +353,7 @@ public class ThrowableAssertionsUnitTests {
   }
 
   @Test
-  public void assertRuntimeExceptionHavingMessageStartingWithIsCorrect() {
+  void assertRuntimeExceptionHavingMessageStartingWithIsCorrect() {
 
     assertThatNullPointerException()
       .isThrownBy(args -> codeThrowingNullPointerException("Beginning of a mock message"))
@@ -346,7 +362,7 @@ public class ThrowableAssertionsUnitTests {
   }
 
   @Test
-  public void assertNonCheckedExceptionHavingMessageStartingWithUnexpectedTextThrowsAssertionException() {
+  void assertNonCheckedExceptionHavingMessageStartingWithUnexpectedTextThrowsAssertionException() {
 
     String message = "Beginning of the message and then the end of the message";
 
@@ -360,7 +376,7 @@ public class ThrowableAssertionsUnitTests {
   }
 
   @Test
-  public void assertRuntimeExceptionWithNonThrowingCodeThrowsAssertionException() {
+  void assertRuntimeExceptionWithNonThrowingCodeThrowsAssertionException() {
 
     Assertions.assertThatExceptionOfType(AssertionException.class)
       .isThrownBy(() -> assertThatRuntimeException()
@@ -371,7 +387,7 @@ public class ThrowableAssertionsUnitTests {
   }
 
   @Test
-  public void assertRuntimeExceptionWithNonThrowingCodeThrowsAssertionExceptionUsingDescription() {
+  void assertRuntimeExceptionWithNonThrowingCodeThrowsAssertionExceptionUsingDescription() {
 
     Assertions.assertThatExceptionOfType(AssertionException.class)
       .isThrownBy(() -> assertThatRuntimeException()
@@ -384,7 +400,7 @@ public class ThrowableAssertionsUnitTests {
   // DUPLICATE
   // @see assertRuntimeExceptionWithNoCauseThrowsAssertionException();
   @Test
-  public void assertSecurityExceptionWithNoCauseThrowsAssertionException() {
+  void assertSecurityExceptionWithNoCauseThrowsAssertionException() {
 
     Assertions.assertThatExceptionOfType(AssertionException.class)
       .isThrownBy(() -> assertThatSecurityException()
@@ -398,7 +414,7 @@ public class ThrowableAssertionsUnitTests {
   }
 
   @Test
-  public void assertSecurityExceptionWithExpectedButUnexpectedCauseThrowsAssertionException() {
+  void assertSecurityExceptionWithExpectedButUnexpectedCauseThrowsAssertionException() {
 
     Assertions.assertThatExceptionOfType(AssertionException.class)
       .isThrownBy(() -> assertThatSecurityException()
@@ -414,7 +430,7 @@ public class ThrowableAssertionsUnitTests {
   }
 
   @Test
-  public void assertSecurityExceptionWithExpectedButUnexpectedMessageThrowsAssertionException() {
+  void assertSecurityExceptionWithExpectedButUnexpectedMessageThrowsAssertionException() {
 
     Assertions.assertThatExceptionOfType(AssertionException.class)
       .isThrownBy(() -> assertThatSecurityException()
@@ -427,7 +443,7 @@ public class ThrowableAssertionsUnitTests {
   }
 
   @Test
-  public void assertIllegalArgumentExceptionUsingArrayOfArguments() {
+  void assertIllegalArgumentExceptionUsingArrayOfArguments() {
 
     User<Integer> jonDoe = TestUser.as("jonDoe");
 
@@ -445,20 +461,8 @@ public class ThrowableAssertionsUnitTests {
   }
 
   @Test
-  public void assertThatArrayIndexOutOfBoundsExceptionIsThrownByOperation() {
-
-    ObjectOperationThrowingRuntimeException operation =
-      spy(new ObjectOperationThrowingRuntimeException(ArrayIndexOutOfBoundsException::new));
-
-    assertThatArrayIndexOutOfBoundsException()
-      .isThrownBy(args -> operation.atIndex(-1))
-      .havingMessage("Index [-1] is not valid")
-      .withNoCause();
-  }
-
-  @Test
   @SuppressWarnings("unchecked")
-  public void assertIllegalArgumentExceptionUsingSupplierOfArguments() {
+  void assertIllegalArgumentExceptionUsingSupplierOfArguments() {
 
     ObjectOperationThrowingRuntimeException operation =
       spy(new ObjectOperationThrowingRuntimeException(IllegalArgumentException::new));
@@ -488,7 +492,7 @@ public class ThrowableAssertionsUnitTests {
 
   @Test
   @SuppressWarnings("unchecked")
-  public void assertIllegalStateExceptionHavingMessageMatchingRegularExpression() {
+  void assertIllegalStateExceptionHavingMessageMatchingRegularExpression() {
 
     User<Integer> jonDoe = TestUser.as("jonDoe");
 
@@ -503,7 +507,19 @@ public class ThrowableAssertionsUnitTests {
   }
 
   @Test
-  public void assertIndexOutOfBoundsExceptionHavingNonRegularExpressionMatchingMessage() {
+  void assertThatArrayIndexOutOfBoundsExceptionIsThrownByOperation() {
+
+    ObjectOperationThrowingRuntimeException operation =
+      spy(new ObjectOperationThrowingRuntimeException(ArrayIndexOutOfBoundsException::new));
+
+    assertThatArrayIndexOutOfBoundsException()
+      .isThrownBy(args -> operation.atIndex(-1))
+      .havingMessage("Index [-1] is not valid")
+      .withNoCause();
+  }
+
+  @Test
+  void assertIndexOutOfBoundsExceptionHavingNonRegularExpressionMatchingMessage() {
 
     ObjectOperationThrowingRuntimeException operation =
       new ObjectOperationThrowingRuntimeException(IndexOutOfBoundsException::new);
@@ -520,7 +536,7 @@ public class ThrowableAssertionsUnitTests {
   }
 
   @Test
-  public void assertThatInterruptedExceptionIsThrownByOperation() {
+  void assertThatInterruptedExceptionIsThrownByOperation() {
 
     ObjectOperationThrowingCheckedException operation =
       spy(new ObjectOperationThrowingCheckedException(InterruptedException::new));
@@ -532,7 +548,7 @@ public class ThrowableAssertionsUnitTests {
   }
 
   @Test
-  public void assertThatNullPointerExceptionWithInvalidRegularExpressionPattern() {
+  void assertThatNullPointerExceptionWithInvalidRegularExpressionPattern() {
 
     ObjectOperationThrowingRuntimeException operation =
       new ObjectOperationThrowingRuntimeException(NullPointerException::new);
@@ -547,7 +563,7 @@ public class ThrowableAssertionsUnitTests {
   }
 
   @Test
-  public void assertThatRuntimeExceptionIsThrownByOperation() {
+  void assertThatRuntimeExceptionIsThrownByOperation() {
 
     ObjectOperationThrowingRuntimeException operation =
       spy(new ObjectOperationThrowingRuntimeException(RuntimeException::new));
@@ -559,7 +575,7 @@ public class ThrowableAssertionsUnitTests {
   }
 
   @Test
-  public void assertThatSecurityExceptionIsThrownByOperation() {
+  void assertThatSecurityExceptionIsThrownByOperation() {
 
     ObjectOperationThrowingRuntimeException operation =
       spy(new ObjectOperationThrowingRuntimeException(SecurityException::new));
@@ -571,7 +587,7 @@ public class ThrowableAssertionsUnitTests {
   }
 
   @Test
-  public void assertThatUnsupportedOperationExceptionIsThrownByOperation() {
+  void assertThatUnsupportedOperationExceptionIsThrownByOperation() {
 
     ObjectOperationThrowingRuntimeException operation =
       spy(new ObjectOperationThrowingRuntimeException(UnsupportedOperationException::new));
@@ -583,7 +599,67 @@ public class ThrowableAssertionsUnitTests {
   }
 
   @Test
-  public void testAssertJExceptionAssertions() {
+  void assertConsumerThrowingException() {
+
+    assertThatThrowableOfType(IllegalStateException.class)
+      .thrownBy(ThrowableAssertionsUnitTests::consumerThrowingException)
+      .havingMessageStartingWith("Failed to consume object")
+      .causedBy(Exception.class)
+      .havingMessage("TEST")
+      .withNoCause();
+  }
+
+  @Test
+  void assertWithNullThrowingConsumer() {
+
+    Assertions.assertThatIllegalArgumentException()
+      .isThrownBy(() -> assertThatThrowableOfType(Exception.class).thrownBy((ThrowableConsumer<?>) null))
+      .withMessage("Consumer is required")
+      .withNoCause();
+  }
+
+  @Test
+  void assertFunctionThrowingException() {
+
+    assertThatThrowableOfType(FunctionExecutionException.class)
+      .thrownByFunction(ThrowableAssertionsUnitTests::functionThrowingException)
+      .havingMessageStartingWith("Failed to execute Function")
+      .causedBy(Exception.class)
+      .havingMessage("TEST")
+      .withNoCause();
+  }
+
+  @Test
+  void assertWithNullThrowingFunction() {
+
+    Assertions.assertThatIllegalArgumentException()
+      .isThrownBy(() -> assertThatThrowableOfType(Exception.class).thrownByFunction(null))
+      .withMessage("Function is required")
+      .withNoCause();
+  }
+
+  @Test
+  void assertSupplierThrowsException() {
+
+    assertThatThrowableOfType(IllegalStateException.class)
+      .thrownBy(ThrowableAssertionsUnitTests::supplierThrowingException)
+      .havingMessage("Failed to get supplied value")
+      .causedBy(Exception.class)
+      .havingMessage("TEST")
+      .withNoCause();
+  }
+
+  @Test
+  void withNullThrowingSupplier() {
+
+    Assertions.assertThatIllegalArgumentException()
+      .isThrownBy(() -> assertThatThrowableOfType(Exception.class).thrownBy((ThrowableSupplier<?>) null))
+      .withMessage("Supplier is required")
+      .withNoCause();
+  }
+
+  @Test
+  void testAssertJExceptionAssertions() {
 
     try {
       assertThatExceptionOfType(ApplicationException.class)
@@ -593,7 +669,8 @@ public class ThrowableAssertionsUnitTests {
         .withCauseInstanceOf(SecurityException.class)
         .withMessage("security message")
         .withCauseInstanceOf(RuntimeException.class)
-        .withMessage("runtime message");
+        .withMessage("runtime message")
+        .withNoCause();
 
       throw newTestException("AssertJ does not handle Exception switching unlike Elements");
     }

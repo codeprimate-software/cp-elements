@@ -22,6 +22,9 @@ import java.util.function.Supplier;
 import java.util.regex.Pattern;
 
 import org.cp.elements.function.FunctionUtils;
+import org.cp.elements.function.ThrowableConsumer;
+import org.cp.elements.function.ThrowableFunction;
+import org.cp.elements.function.ThrowableSupplier;
 import org.cp.elements.lang.annotation.Dsl;
 import org.cp.elements.lang.annotation.FluentApi;
 import org.cp.elements.lang.annotation.NotNull;
@@ -469,14 +472,59 @@ public abstract class ThrowableAssertions {
     ThrowableSource describedAs(String message, Object... args);
 
     /**
-     * {@link ThrowableOperation Callback} containing snippet of code throwing the {@link Throwable} to invoke
-     * during the assertion.
+     * {@link ThrowableOperation Callback} containing the code throwing the {@link Throwable}
+     * invoked during the assertion.
      *
      * @param operation {@link ThrowableOperation} containing the code throwing a {@link Throwable}
      * that will be invoked during the assertion.
      * @return this {@link ThrowableSource} instance.
+     * @see org.cp.elements.lang.ThrowableOperation
      */
     AssertThatThrowable isThrownBy(ThrowableOperation<?> operation);
+
+    /**
+     * {@link ThrowableConsumer} containing the code throwing the {@link Exception} invoked during the assertion.
+     *
+     * @param consumer {@link ThrowableConsumer} to invoke; required.
+     * @return a new {@link AssertThatThrowable}.
+     * @throws IllegalArgumentException if {@link ThrowableConsumer} is {@literal null}.
+     * @see org.cp.elements.function.ThrowableConsumer
+     * @see #isThrownBy(ThrowableOperation)
+     */
+    @SuppressWarnings("unchecked")
+    default AssertThatThrowable thrownBy(@NotNull ThrowableConsumer<?> consumer) {
+      Assert.notNull(consumer, "Consumer is required");
+      ThrowableConsumer<Object> resolvedConsumer = (ThrowableConsumer<Object>) consumer;
+      return isThrownBy(ThrowableOperation.fromConsumer(resolvedConsumer));
+    }
+
+    /**
+     * {@link ThrowableSupplier} containing the code throwing the {@link Exception} invoked during the assertion.
+     *
+     * @param supplier {@link ThrowableSupplier} to invoke; required.
+     * @return a new {@link AssertThatThrowable}.
+     * @throws IllegalArgumentException if {@link ThrowableSupplier} is {@literal null}.
+     * @see org.cp.elements.function.ThrowableSupplier
+     * @see #isThrownBy(ThrowableOperation)
+     */
+    default AssertThatThrowable thrownBy(@NotNull ThrowableSupplier<?> supplier) {
+      Assert.notNull(supplier, "Supplier is required");
+      return isThrownBy(ThrowableOperation.fromSupplier(supplier));
+    }
+
+    /**
+     * {@link ThrowableFunction} containing the code throwing the {@link Exception} invoked during the assertion.
+     *
+     * @param function {@link ThrowableFunction} to invoke; required.
+     * @return a new {@link AssertThatThrowable}.
+     * @throws IllegalArgumentException if {@link ThrowableFunction} is {@literal null}.
+     * @see org.cp.elements.function.ThrowableFunction
+     * @see #isThrownBy(ThrowableOperation)
+     */
+    default AssertThatThrowable thrownByFunction(ThrowableFunction<Object, ?> function) {
+      Assert.notNull(function, "Function is required");
+      return isThrownBy(ThrowableOperation.fromFunction(function));
+    }
 
     /**
      * Configures an array of {@link Object arguments} passed to the {@link ThrowableOperation} when run
