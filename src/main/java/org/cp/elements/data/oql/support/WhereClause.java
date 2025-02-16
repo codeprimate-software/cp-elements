@@ -16,14 +16,14 @@
 package org.cp.elements.data.oql.support;
 
 import java.util.Comparator;
-import java.util.function.Predicate;
+import java.util.function.BiPredicate;
 
 import org.cp.elements.data.oql.Oql;
 import org.cp.elements.data.oql.Oql.From;
 import org.cp.elements.data.oql.Oql.GroupBy;
 import org.cp.elements.data.oql.Oql.OrderBy;
 import org.cp.elements.data.oql.Oql.Where;
-import org.cp.elements.function.CannedPredicates;
+import org.cp.elements.data.oql.QueryArguments;
 import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.ObjectUtils;
 import org.cp.elements.lang.annotation.NotNull;
@@ -32,17 +32,17 @@ import org.cp.elements.lang.annotation.NotNull;
  * Default implementation of {@link Oql.Where}.
  *
  * @author John Blum
- * @see java.util.function.Predicate
+ * @see java.util.function.BiPredicate
  * @see org.cp.elements.data.oql.Oql
  * @see org.cp.elements.data.oql.Oql.From
  * @see org.cp.elements.data.oql.Oql.Where
  * @since 2.0.0
  */
-public record WhereClause<S, T>(From<S, T> from, Predicate<S> predicate) implements Oql.Where<S, T> {
+public record WhereClause<S, T>(From<S, T> from, BiPredicate<QueryArguments, S> predicate) implements Oql.Where<S, T> {
 
   @SuppressWarnings("unchecked")
   public static <S, T> WhereClause<S, T> all(@NotNull From<S, T> from) {
-    return where(from, (Predicate<S>) CannedPredicates.ACCEPT_ALL);
+    return where(from, (BiPredicate<QueryArguments, S>) ACCEPT_ALL_QUERY_PREDICATE);
   }
 
   public static <S, T> WhereClause<S, T> copy(@NotNull Where<S, T> where) {
@@ -59,7 +59,9 @@ public record WhereClause<S, T>(From<S, T> from, Predicate<S> predicate) impleme
     return copy;
   }
 
-  public static <S, T> WhereClause<S, T> where(@NotNull From<S, T> from, @NotNull Predicate<S> predicate) {
+  public static <S, T> WhereClause<S, T> where(@NotNull From<S, T> from,
+      @NotNull BiPredicate<QueryArguments, S> predicate) {
+
     return new WhereClause<>(from, predicate);
   }
 
@@ -74,17 +76,17 @@ public record WhereClause<S, T>(From<S, T> from, Predicate<S> predicate) impleme
   }
 
   @Override
-  public Predicate<S> getPredicate() {
+  public BiPredicate<QueryArguments, S> getPredicate() {
     return predicate();
   }
 
   @Override
-  public Where<S, T> and(Predicate<S> predicate) {
+  public Where<S, T> and(BiPredicate<QueryArguments, S> predicate) {
     return copy(Where.super.and(predicate));
   }
 
   @Override
-  public Where<S, T> or(Predicate<S> predicate) {
+  public Where<S, T> or(BiPredicate<QueryArguments, S> predicate) {
     return copy(Where.super.or(predicate));
   }
 
