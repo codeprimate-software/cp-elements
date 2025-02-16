@@ -34,6 +34,7 @@ import org.cp.elements.data.oql.Oql.Projection;
 import org.cp.elements.data.oql.Oql.TransformingProjection;
 import org.cp.elements.data.oql.Oql.Where;
 import org.cp.elements.data.oql.Query;
+import org.cp.elements.data.oql.QueryArgument;
 import org.cp.elements.data.oql.QueryContext;
 import org.cp.elements.data.oql.QueryExecutor;
 import org.cp.elements.data.oql.QueryFunction;
@@ -62,7 +63,7 @@ public class SimpleQueryExecutor<S, T> implements QueryExecutor<S, T> {
 
   @Override
   @SuppressWarnings("all")
-  public Iterable<T> execute(@NotNull Query<S, T> query) {
+  public Iterable<T> execute(@NotNull Query<S, T> query, Iterable<QueryArgument<?>> arguments) {
 
     Assert.notNull(query, "Query to execute is required");
 
