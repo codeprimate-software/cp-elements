@@ -704,7 +704,11 @@ public interface Oql extends BaseOql {
       return count;
     }
 
-    Iterable<T> execute();
+    default Iterable<T> execute(QueryArgument<?>... arguments) {
+      return execute(QueryArguments.of(arguments));
+    }
+
+    Iterable<T> execute(Iterable<QueryArgument<?>> arguments);
 
   }
 
@@ -727,8 +731,8 @@ public interface Oql extends BaseOql {
     }
 
     @Override
-    default Iterable<T> execute() {
-      return compile().execute();
+    default Iterable<T> execute(Iterable<QueryArgument<?>> arguments) {
+      return compile().execute(arguments);
     }
   }
 
