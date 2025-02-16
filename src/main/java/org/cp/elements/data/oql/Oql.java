@@ -24,6 +24,7 @@ import java.util.Iterator;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BiFunction;
+import java.util.function.BiPredicate;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
@@ -308,8 +309,13 @@ public interface Oql extends BaseOql {
     }
 
     @Dsl
-    default Where<S, T> where(Predicate<S> predicate) {
+    default Where<S, T> where(BiPredicate<QueryArguments, S> predicate) {
       throw newUnsupportedOperationException(Constants.UNSUPPORTED_OPERATION);
+    }
+
+    @Dsl
+    default Where<S, T> where(Predicate<S> predicate) {
+      return where(Where.asBiPredicate(predicate));
     }
 
     @Dsl
@@ -333,7 +339,22 @@ public interface Oql extends BaseOql {
   @FunctionalInterface
   interface Where<S, T> extends ExecutableQuery<S, T>, GroupBySpec<S, T>, LimitSpec<S, T>, OrderBySpec<S, T> {
 
-    static <S, T> Where<S, T> compose(@NotNull Where<S, T> where, @NotNull Predicate<S> predicate) {
+    BiPredicate<QueryArguments, ?> ACCEPT_ALL_QUERY_PREDICATE = (queryArguments, target) -> true;
+
+    static <S> BiPredicate<QueryArguments, S> asBiPredicate(@NotNull Predicate<S> predicate) {
+      return (queryArguments, target) -> predicate.test(target);
+    }
+
+    static <S> Predicate<S> asPredicate(@NotNull BiPredicate<QueryArguments, S> predicate) {
+      return asPredicate(predicate, QueryArguments.empty());
+    }
+
+    static <S> Predicate<S> asPredicate(@NotNull BiPredicate<QueryArguments, S> predicate, QueryArguments arguments) {
+      Assert.notNull(predicate, "Predicate is required");
+      return target -> predicate.test(arguments, target);
+    }
+
+    static <S, T> Where<S, T> compose(@NotNull Where<S, T> where, @NotNull BiPredicate<QueryArguments, S> predicate) {
 
       Assert.notNull(where, "Where clause is required");
       Assert.notNull(predicate, "Predicate is required");
@@ -346,7 +367,7 @@ public interface Oql extends BaseOql {
         }
 
         @Override
-        public Predicate<S> getPredicate() {
+        public BiPredicate<QueryArguments, S> getPredicate() {
           return predicate;
         }
       };
@@ -358,16 +379,30 @@ public interface Oql extends BaseOql {
      * @return the {@link Predicate filtering criteria} of the {@link Where where clause}.
      * @see java.util.function.Predicate
      */
-    Predicate<S> getPredicate();
+    BiPredicate<QueryArguments, S> getPredicate();
 
     @Dsl
-    default Where<S, T> and(@NotNull Predicate<S> predicate) {
+    default Where<S, T> and(@NotNull BiPredicate<QueryArguments, S> predicate) {
       return compose(this, getPredicate().and(predicate));
     }
 
     @Dsl
-    default Where<S, T> or(@NotNull Predicate<S> predicate) {
+    default Where<S, T> and(@NotNull Predicate<S> predicate) {
+      Assert.notNull(predicate, "Query Predicate is required");
+      BiPredicate<QueryArguments, S> biPredicate = Where.asBiPredicate(predicate);
+      return and(biPredicate);
+    }
+
+    @Dsl
+    default Where<S, T> or(@NotNull BiPredicate<QueryArguments, S> predicate) {
       return compose(this, getPredicate().or(predicate));
+    }
+
+    @Dsl
+    default Where<S, T> or(@NotNull Predicate<S> predicate) {
+      Assert.notNull(predicate, "Query Predicate is required");
+      BiPredicate<QueryArguments, S> biPredicate = Where.asBiPredicate(predicate);
+      return or(biPredicate);
     }
   }
 

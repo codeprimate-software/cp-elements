@@ -35,8 +35,8 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.BiFunction;
+import java.util.function.BiPredicate;
 import java.util.function.Function;
-import java.util.function.Predicate;
 
 import org.junit.jupiter.api.Test;
 
@@ -346,15 +346,15 @@ public class OqlUnitTests {
   @Test
   void whereConditionAnd() {
 
-    Predicate<Object> mockPredicateOne = mock(Predicate.class);
-    Predicate<Object> mockPredicateTwo = mock(Predicate.class);
-    Predicate<Object> mockPredicateThree = mock(Predicate.class);
+    BiPredicate<QueryArguments, Object> mockPredicateOne = mock(BiPredicate.class);
+    BiPredicate<QueryArguments, Object> mockPredicateTwo = mock(BiPredicate.class);
+    BiPredicate<QueryArguments, Object> mockPredicateThree = mock(BiPredicate.class);
 
     Oql.Where<Object, Object> where = mock(Oql.Where.class);
 
     doReturn(mockPredicateOne).when(where).getPredicate();
-    doReturn(mockPredicateThree).when(mockPredicateOne).and(any(Predicate.class));
-    doCallRealMethod().when(where).and(any(Predicate.class));
+    doReturn(mockPredicateThree).when(mockPredicateOne).and(any(BiPredicate.class));
+    doCallRealMethod().when(where).and(any(BiPredicate.class));
 
     Oql.Where<?, ?> newWhere = where.and(mockPredicateTwo);
 
@@ -370,15 +370,15 @@ public class OqlUnitTests {
   @Test
   void whereConditionOr() {
 
-    Predicate<Object> mockPredicateOne = mock(Predicate.class);
-    Predicate<Object> mockPredicateTwo = mock(Predicate.class);
-    Predicate<Object> mockPredicateThree = mock(Predicate.class);
+    BiPredicate<QueryArguments, Object> mockPredicateOne = mock(BiPredicate.class);
+    BiPredicate<QueryArguments, Object> mockPredicateTwo = mock(BiPredicate.class);
+    BiPredicate<QueryArguments, Object> mockPredicateThree = mock(BiPredicate.class);
 
     Oql.Where<Object, Object> where = mock(Oql.Where.class);
 
     doReturn(mockPredicateOne).when(where).getPredicate();
-    doReturn(mockPredicateThree).when(mockPredicateOne).or(any(Predicate.class));
-    doCallRealMethod().when(where).or(any(Predicate.class));
+    doReturn(mockPredicateThree).when(mockPredicateOne).or(any(BiPredicate.class));
+    doCallRealMethod().when(where).or(any(BiPredicate.class));
 
     Oql.Where<?, ?> newWhere = where.or(mockPredicateTwo);
 
@@ -394,7 +394,7 @@ public class OqlUnitTests {
   @Test
   void whereComposeWithNullWhere() {
 
-    Predicate<?> mockPredicate = mock(Predicate.class);
+    BiPredicate<QueryArguments, ?> mockPredicate = mock(BiPredicate.class);
 
     assertThatIllegalArgumentException()
       .isThrownBy(() -> Where.compose(null, mockPredicate))
