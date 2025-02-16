@@ -35,6 +35,7 @@ import org.cp.elements.data.oql.Oql.TransformingProjection;
 import org.cp.elements.data.oql.Oql.Where;
 import org.cp.elements.data.oql.Query;
 import org.cp.elements.data.oql.QueryArgument;
+import org.cp.elements.data.oql.QueryArguments;
 import org.cp.elements.data.oql.QueryContext;
 import org.cp.elements.data.oql.QueryExecutor;
 import org.cp.elements.data.oql.QueryFunction;
@@ -69,6 +70,8 @@ public class SimpleQueryExecutor<S, T> implements QueryExecutor<S, T> {
 
     QueryContext<S, T> queryContext = queryContext(query);
 
+    QueryArguments queryArguments = QueryArguments.of(arguments);
+
     Iterable<S> collection = query.collection();
 
     Groups<T> groups = query.groupBy()
@@ -78,7 +81,7 @@ public class SimpleQueryExecutor<S, T> implements QueryExecutor<S, T> {
     Function<T, T> groupFunction = groups::group;
 
     Stream<T> stream = stream(collection) // From
-      .filter(resolvePredicate(query)) // Where
+      .filter(resolvePredicate(query, queryArguments)) // Where
       .map(resolveProjectionMapping(queryContext)) // Selection Projection
       .map(groupFunction); // Group By
 
@@ -151,10 +154,11 @@ public class SimpleQueryExecutor<S, T> implements QueryExecutor<S, T> {
   }
 
   @SuppressWarnings("unchecked")
-  private Predicate<S> resolvePredicate(Query<S, T> query) {
+  private Predicate<S> resolvePredicate(Query<S, T> query, QueryArguments arguments) {
 
     return query.predicate()
       .map(Where::getPredicate)
+      .map(predicate -> Where.asPredicate(predicate, arguments))
       .orElseGet(() -> (Predicate<S>) CannedPredicates.ACCEPT_ALL);
   }
 
