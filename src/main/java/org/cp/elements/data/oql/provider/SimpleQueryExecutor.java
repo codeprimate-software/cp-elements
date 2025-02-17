@@ -134,7 +134,7 @@ public class SimpleQueryExecutor<S, T> implements QueryExecutor<S, T> {
         namedValues.put(queryFunction.getName(), queryFunction.apply(group));
       }
 
-      QueryResult<T> queryResult = QueryResult.typed(projection.getType())
+      QueryResult<T> queryResult = QueryResult.<T>builder()
         .withMap(namedValues)
         .build();
 

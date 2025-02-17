@@ -17,8 +17,9 @@ package org.cp.elements.data.oql;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Function;
 
-import org.cp.elements.lang.ObjectUtils;
+import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.annotation.NotNull;
 import org.cp.elements.util.MapUtils;
 
@@ -34,47 +35,34 @@ import org.cp.elements.util.MapUtils;
 @SuppressWarnings("unused")
 public interface QueryResult<T> {
 
-  static <T> QueryResult.Builder<T> typed(Class<T> type) {
-    return new QueryResult.Builder<>(type);
+  static <T> QueryResult.Builder<T> builder() {
+    return new QueryResult.Builder<>();
   }
 
-  default <V> V get(String fieldName) {
-    return null;
-  }
+  <V> V get(String fieldName);
 
-  Class<T> getType();
+  default T map(@NotNull Function<QueryResult<T>, T> mapper) {
+    Assert.notNull(mapper, "Function is required");
+    return mapper.apply(this);
+  }
 
   class Builder<T> implements org.cp.elements.lang.Builder<QueryResult<T>> {
 
-    private final Class<T> type;
-
-    private Map<String, Object> namedValues = new HashMap<>();
-
-    Builder(@NotNull Class<T> type) {
-      this.type = ObjectUtils.requireObject(type, "Type of result is required");
-    }
+    private final Map<String, Object> namedValues = new HashMap<>();
 
     public Builder<T> withMap(Map<String, Object> map) {
-      this.namedValues = MapUtils.nullSafeMap(map);
+      this.namedValues.putAll(MapUtils.nullSafeMap(map));
       return this;
+    }
+
+    @SuppressWarnings("unchecked")
+    <V> V getNamedValue(String name) {
+      return (V) this.namedValues.get(name);
     }
 
     @Override
     public QueryResult<T> build() {
-
-      return new QueryResult<>() {
-
-        @Override
-        public Class<T> getType() {
-          return Builder.this.type;
-        }
-
-        @Override
-        @SuppressWarnings("unchecked")
-        public <V> V get(String fieldName) {
-          return (V) Builder.this.namedValues.get(fieldName);
-        }
-      };
+      return this::getNamedValue;
     }
   }
 }

@@ -203,7 +203,7 @@ public class OqlUnitTests {
     assertThat(encodedUsername).isNotBlank();
     assertThat(encodedUsername).isEqualTo("<JONDOE/>");
 
-    QueryResult<User> queryResult = QueryResult.typed(User.class)
+    QueryResult<User> queryResult = QueryResult.<User>builder()
       .withMap(Map.of("username", encodedUsername))
       .build();
 
