@@ -30,6 +30,7 @@ import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 import org.cp.elements.data.oql.support.Grouping;
+import org.cp.elements.data.oql.support.OqlUtils;
 import org.cp.elements.function.CannedPredicates;
 import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.Builder;
@@ -340,7 +341,7 @@ public interface Oql extends BaseOql {
 
     @Dsl
     default Where<S, T> where(Predicate<S> predicate) {
-      return where(Where.asBiPredicate(predicate));
+      return where(OqlUtils.asBiPredicate(predicate));
     }
 
     @Dsl
@@ -364,21 +365,6 @@ public interface Oql extends BaseOql {
    */
   @FunctionalInterface
   interface Where<S, T> extends ExecutableQuery<S, T>, GroupBySpec<S, T>, LimitSpec<S, T>, OrderBySpec<S, T> {
-
-    BiPredicate<QueryArguments, ?> ACCEPT_ALL_QUERY_PREDICATE = (queryArguments, target) -> true;
-
-    static <S> BiPredicate<QueryArguments, S> asBiPredicate(@NotNull Predicate<S> predicate) {
-      return (queryArguments, target) -> predicate.test(target);
-    }
-
-    static <S> Predicate<S> asPredicate(@NotNull BiPredicate<QueryArguments, S> predicate) {
-      return asPredicate(predicate, QueryArguments.empty());
-    }
-
-    static <S> Predicate<S> asPredicate(@NotNull BiPredicate<QueryArguments, S> predicate, QueryArguments arguments) {
-      Assert.notNull(predicate, "Predicate is required");
-      return target -> predicate.test(arguments, target);
-    }
 
     static <S, T> Where<S, T> compose(@NotNull Where<S, T> where, @NotNull BiPredicate<QueryArguments, S> predicate) {
 
@@ -415,7 +401,7 @@ public interface Oql extends BaseOql {
     @Dsl
     default Where<S, T> and(@NotNull Predicate<S> predicate) {
       Assert.notNull(predicate, "Query Predicate is required");
-      BiPredicate<QueryArguments, S> biPredicate = Where.asBiPredicate(predicate);
+      BiPredicate<QueryArguments, S> biPredicate = OqlUtils.asBiPredicate(predicate);
       return and(biPredicate);
     }
 
@@ -427,7 +413,7 @@ public interface Oql extends BaseOql {
     @Dsl
     default Where<S, T> or(@NotNull Predicate<S> predicate) {
       Assert.notNull(predicate, "Query Predicate is required");
-      BiPredicate<QueryArguments, S> biPredicate = Where.asBiPredicate(predicate);
+      BiPredicate<QueryArguments, S> biPredicate = OqlUtils.asBiPredicate(predicate);
       return or(biPredicate);
     }
   }

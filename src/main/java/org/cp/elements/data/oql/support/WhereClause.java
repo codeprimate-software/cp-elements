@@ -38,11 +38,12 @@ import org.cp.elements.lang.annotation.NotNull;
  * @see org.cp.elements.data.oql.Oql.Where
  * @since 2.0.0
  */
+@SuppressWarnings("unused")
 public record WhereClause<S, T>(From<S, T> from, BiPredicate<QueryArguments, S> predicate) implements Oql.Where<S, T> {
 
   @SuppressWarnings("unchecked")
   public static <S, T> WhereClause<S, T> all(@NotNull From<S, T> from) {
-    return where(from, (BiPredicate<QueryArguments, S>) ACCEPT_ALL_QUERY_PREDICATE);
+    return where(from, (BiPredicate<QueryArguments, S>) OqlUtils.ACCEPT_ALL_QUERY_PREDICATE);
   }
 
   public static <S, T> WhereClause<S, T> copy(@NotNull Where<S, T> where) {

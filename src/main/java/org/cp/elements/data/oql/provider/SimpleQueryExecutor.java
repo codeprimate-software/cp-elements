@@ -42,6 +42,7 @@ import org.cp.elements.data.oql.QueryFunction;
 import org.cp.elements.data.oql.QueryResult;
 import org.cp.elements.data.oql.QueryResultSet;
 import org.cp.elements.data.oql.support.Groups;
+import org.cp.elements.data.oql.support.OqlUtils;
 import org.cp.elements.function.CannedPredicates;
 import org.cp.elements.function.FunctionUtils;
 import org.cp.elements.lang.Assert;
@@ -165,7 +166,7 @@ public class SimpleQueryExecutor<S, T> implements QueryExecutor<S, T> {
 
     return query.predicate()
       .map(Where::getPredicate)
-      .map(predicate -> Where.asPredicate(predicate, arguments))
+      .map(predicate -> OqlUtils.asPredicate(predicate, arguments))
       .orElseGet(() -> (Predicate<S>) CannedPredicates.ACCEPT_ALL);
   }
 
