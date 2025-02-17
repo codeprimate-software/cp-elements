@@ -55,6 +55,8 @@ import org.cp.elements.util.stream.StreamUtils;
  * Provider implementation of {@link QueryExecutor}.
  *
  * @author John Blum
+ * @param <S> {@link Class type} of {@link Object objects} in the {@link Iterable collection} to query.
+ * @param <T> {@link Class type} of the {@link Object projected objects}.
  * @see org.cp.elements.data.oql.Oql
  * @see QueryExecutor
  * @see org.cp.elements.data.oql.Query
