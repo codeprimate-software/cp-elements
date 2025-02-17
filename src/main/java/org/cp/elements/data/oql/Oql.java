@@ -82,9 +82,28 @@ public interface Oql extends BaseOql {
    * @param <T> {@link Class type} of the {@link Object projected objects}.
    * @return the {@link Oql} service provider implementation for {@literal OQL} {@link QueryExecutor}.
    * @see org.cp.elements.data.oql.provider.SimpleQueryExecutor
-   * @see QueryExecutor
+   * @see org.cp.elements.data.oql.QueryExecutor
    */
   <S, T> QueryExecutor<S, T> executor();
+
+  /**
+   * Queries the {@link Iterable collection} of {@link Object objects}.
+   *
+   * @param <S> {@link Class type} of {@link Object objects} in the {@link Iterable collection} to query.
+   * @param collection {@link Iterable} to query.
+   * @return the {@link From} clause of an OQL query.
+   * @throws IllegalArgumentException if {@link Iterable collection} is {@literal null}.
+   * @see org.cp.elements.data.oql.Oql.Select#from(Iterable)
+   * @see org.cp.elements.data.oql.Oql.Projection#star()
+   * @see org.cp.elements.data.oql.Oql.From
+   * @see #select(Projection)
+   * @see java.lang.Iterable
+   */
+  @Dsl
+  default <S> From<S, S> from(@NotNull Iterable<S> collection) {
+    Assert.notNull(collection, "Iterable collection to query is required");
+    return this.<S, S>select(Projection.star()).from(collection);
+  }
 
   /**
    * Declares the {@link Select selected data} from the {@link Iterable collection} of {@link Object objects}.

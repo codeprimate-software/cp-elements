@@ -102,6 +102,30 @@ public class OqlIntegrationTests {
   }
 
   @Test
+  void fromAll() {
+
+    Iterable<Person> people = Oql.defaultProvider().from(PEOPLE).execute();
+
+    assertThat(people).isNotNull();
+    assertThat(people).containsExactlyInAnyOrder(PEOPLE_ARRAY);
+  }
+
+  @Test
+  void fromSelectPeople() {
+
+    Iterable<Person> people = Oql.defaultProvider().from(PEOPLE)
+      .where(Person::isFemale)
+      .and(person -> person.getAge() < 18)
+      .and(person -> !"Sour".equals(person.getFirstName()))
+      .orderBy(Person::getFirstName).descending()
+      .execute();
+
+    assertThat(people).isNotNull();
+    assertThat(people).hasSize(2);
+    assertThat(toStrings(people)).containsExactly("Pie Doe", "Cookie Doe");
+  }
+
+  @Test
   void projection() {
 
     Oql.Projection<Person, String> projection = Oql.Projection.<Person, String>as(String.class)

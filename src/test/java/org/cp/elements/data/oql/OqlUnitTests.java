@@ -32,6 +32,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 
+import java.util.Collections;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.BiFunction;
@@ -40,7 +41,9 @@ import java.util.function.Function;
 
 import org.junit.jupiter.api.Test;
 
+import org.cp.elements.data.oql.Oql.From;
 import org.cp.elements.data.oql.Oql.Projection;
+import org.cp.elements.data.oql.Oql.Select;
 import org.cp.elements.data.oql.Oql.TransformingProjection;
 import org.cp.elements.data.oql.Oql.Where;
 import org.cp.elements.data.oql.provider.SimpleOqlProvider;
@@ -76,6 +79,44 @@ public class OqlUnitTests {
   @Test
   void defaultProviderIsSimpleOqlProvider() {
     assertThat(Oql.defaultProvider()).isInstanceOf(SimpleOqlProvider.class);
+  }
+
+  @Test
+  void fromConfiguresFromClause() {
+
+    Oql mockOql = mock(Oql.class);
+
+    Select<User<Integer>, User<Integer>> mockSelect = mock(Select.class);
+    From<User<Integer>, User<Integer>> mockFrom = mock(From.class);
+
+    doReturn(mockSelect).when(mockOql).select(any(Projection.class));
+    doReturn(mockFrom).when(mockSelect).from(any(Iterable.class));
+    doCallRealMethod().when(mockOql).from(any(Iterable.class));
+
+    Iterable<User<Integer>> users = Collections.singleton(User.<Integer>named("jonDoe").identifiedBy(1));
+
+    From<User<Integer>, User<Integer>> from = mockOql.from(users);
+
+    assertThat(from).isSameAs(mockFrom);
+
+    verify(mockOql, times(1)).from(eq(users));
+    verify(mockOql, times(1)).select(isA(Projection.class));
+    verify(mockSelect, times(1)).from(eq(users));
+    verifyNoMoreInteractions(mockOql, mockSelect);
+    verifyNoInteractions(mockFrom);
+  }
+
+  @Test
+  void fromNullIterable() {
+
+    Oql mockOql = mock(Oql.class);
+
+    doCallRealMethod().when(mockOql).from(any());
+
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> mockOql.from(null))
+      .withMessage("Iterable collection to query is required")
+      .withNoCause();
   }
 
   @Test
