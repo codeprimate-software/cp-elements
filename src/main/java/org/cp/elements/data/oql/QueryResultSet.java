@@ -21,6 +21,7 @@ import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
+import org.cp.elements.lang.annotation.NullSafe;
 import org.cp.elements.util.ArrayUtils;
 import org.cp.elements.util.CollectionUtils;
 import org.cp.elements.util.stream.StreamUtils;
@@ -44,12 +45,14 @@ public interface QueryResultSet<T> extends Iterable<QueryResult<T>>, Streamable<
     return Collections::emptyIterator;
   }
 
+  @NullSafe
   @SafeVarargs
-  static <T> QueryResultSet<T> from(QueryResult<T>... results) {
-    return from(ArrayUtils.asIterable(ArrayUtils.nullSafeArray(results)));
+  static <T> QueryResultSet<T> of(QueryResult<T>... results) {
+    return of(ArrayUtils.asIterable(ArrayUtils.nullSafeArray(results, QueryResult.class)));
   }
 
-  static <T> QueryResultSet<T> from(Iterable<QueryResult<T>> results) {
+  @NullSafe
+  static <T> QueryResultSet<T> of(Iterable<QueryResult<T>> results) {
     return CollectionUtils.nullSafeIterable(results)::iterator;
   }
 

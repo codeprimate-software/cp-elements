@@ -143,7 +143,7 @@ public class SimpleQueryExecutor<S, T> implements QueryExecutor<S, T> {
 
     Predicate<T> groupByPredicate = FunctionUtils.nullSafePredicateMatchingAll(groupBy.getPredicate());
 
-    QueryResultSet<T> queryResultSet = QueryResultSet.from(queryResults);
+    QueryResultSet<T> queryResultSet = QueryResultSet.of(queryResults);
 
     Stream<T> stream = queryResultSet.stream()
       .map(queryResult -> (T) transformingProjection.remap(queryContext, queryResult))
