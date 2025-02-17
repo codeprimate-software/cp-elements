@@ -41,13 +41,13 @@ import org.cp.elements.data.oql.QueryExecutor;
 import org.cp.elements.data.oql.QueryFunction;
 import org.cp.elements.data.oql.QueryResult;
 import org.cp.elements.data.oql.QueryResultSet;
-import org.cp.elements.data.oql.support.Group;
 import org.cp.elements.data.oql.support.Groups;
 import org.cp.elements.function.CannedPredicates;
 import org.cp.elements.function.FunctionUtils;
 import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.ObjectUtils;
 import org.cp.elements.lang.annotation.NotNull;
+import org.cp.elements.lang.annotation.NullSafe;
 import org.cp.elements.util.CollectionUtils;
 import org.cp.elements.util.stream.StreamUtils;
 
@@ -96,6 +96,11 @@ public class SimpleQueryExecutor<S, T> implements QueryExecutor<S, T> {
     return results;
   }
 
+  @NullSafe
+  protected <E> Stream<E> stream(Iterable<E> iterable) {
+    return StreamUtils.stream(CollectionUtils.nullSafeIterable(iterable));
+  }
+
   private QueryContext<S, T> queryContext(Query<S, T> query) {
     return QueryContext.from(query);
   }
@@ -119,7 +124,7 @@ public class SimpleQueryExecutor<S, T> implements QueryExecutor<S, T> {
 
     Set<QueryResult<T>> queryResults = new HashSet<>();
 
-    for (Group<T> group : groups) {
+    stream(groups).forEach(group -> {
 
       Map<String, Object> namedValues = new HashMap<>(queryFunctions.size());
 
@@ -132,7 +137,7 @@ public class SimpleQueryExecutor<S, T> implements QueryExecutor<S, T> {
         .build();
 
       queryResults.add(queryResult);
-    }
+    });
 
     Predicate<T> groupByPredicate = FunctionUtils.nullSafePredicateMatchingAll(groupBy.getPredicate());
 
@@ -179,9 +184,5 @@ public class SimpleQueryExecutor<S, T> implements QueryExecutor<S, T> {
 
   private Comparator<T> defaultSort() {
     return (comparableOne, comparableTwo) -> 0;
-  }
-
-  private Stream<S> stream(Iterable<S> collection) {
-    return StreamUtils.stream(CollectionUtils.nullSafeIterable(collection));
   }
 }
