@@ -87,7 +87,7 @@ public interface Oql extends BaseOql {
   <S, T> QueryExecutor<S, T> executor();
 
   /**
-   * Declares the data {@link Select selected} from the {@link Iterable collection} of {@link Object objects}.
+   * Declares the {@link Select selected data} from the {@link Iterable collection} of {@link Object objects}.
    *
    * @param <S> {@link Class type} of {@link Object objects} in the {@link Iterable collection} to query.
    * @param <T> {@link Class type} of the {@link Object projected objects}.
@@ -97,13 +97,12 @@ public interface Oql extends BaseOql {
    * @see org.cp.elements.data.oql.Oql.Projection
    * @see org.cp.elements.data.oql.Oql.Select
    */
-  @Dsl
-  <S, T> Select<S, T> select(Projection<S, T> projection);
+  @Dsl <S, T> Select<S, T> select(Projection<S, T> projection);
 
   /**
    * Abstract Data Type (ADT) modeling the {@literal projection} of an {@link Object}
-   * from the {@link Iterable collection} as an instance of {@link T type} mapped by
-   * a user-provided, configured mapping function.
+   * from the queried {@link Iterable collection} as an instance of {@link T type}
+   * mapped by a user-provided, configured {@link BiFunction mapping function}.
    *
    * @param <S> {@link Class type} of {@link Object objects} in the {@link Iterable collection} to query.
    * @param <T> {@link Class type} of the {@link Object projected objects}.
@@ -160,9 +159,8 @@ public interface Oql extends BaseOql {
   }
 
   /**
-   * Abstract Data Type (ADT) modeling a {@link Projection} that contains a series of
-   * {@link QueryFunction transformations} on the {@link Select selected} {@link Object elements}
-   * of the {@link T projected type}.
+   * Abstract Data Type (ADT) modeling a {@link Projection} containing a series of {@link QueryFunction transformations}
+   * on the {@link Select selected data} of the {@link T projected type}.
    *
    * @param <S> {@link Class type} of {@link Object objects} in the {@link Iterable collection} to query.
    * @param <T> {@link Class type} of the {@link Object projected objects}.
@@ -173,7 +171,8 @@ public interface Oql extends BaseOql {
    * @see java.lang.Iterable
    */
   interface TransformingProjection<S, T>
-      extends Iterable<QueryFunction<T, ?>>, Projection<S, T>, Streamable<QueryFunction<T, ?>> {
+    extends Iterable<QueryFunction<T, ?>>, Projection<S, T>, Streamable<QueryFunction<T, ?>>
+  {
 
     T remap(QueryContext<S, T> queryContext, QueryResult<T> result);
 
@@ -239,10 +238,12 @@ public interface Oql extends BaseOql {
    *
    * @param <S> {@link Class type} of {@link Object objects} in the {@link Iterable collection} to query.
    * @param <T> {@link Class type} of the {@link Object projected objects}.
+   * @see org.cp.elements.data.oql.Oql.Select#distinct()
    * @see java.lang.FunctionalInterface
    */
   @FunctionalInterface
   interface Distinct<S, T> {
+
     @Dsl From<S, T> from(Iterable<S> collection);
   }
 
@@ -251,11 +252,14 @@ public interface Oql extends BaseOql {
    *
    * @param <S> {@link Class type} of {@link Object objects} in the {@link Iterable collection} to query.
    * @param <T> {@link Class type} of the {@link Object projected objects}.
+   * @see org.cp.elements.data.oql.Oql.Select#from(Iterable)
    * @see org.cp.elements.data.oql.Oql.ExecutableQuery
    * @see org.cp.elements.data.oql.Oql.GroupBySpec
    * @see org.cp.elements.data.oql.Oql.LimitSpec
    * @see org.cp.elements.data.oql.Oql.OrderBySpec
+   * @see java.lang.FunctionalInterface
    */
+  @FunctionalInterface
   interface From<S, T> extends ExecutableQuery<S, T>, GroupBySpec<S, T>, LimitSpec<S, T>, OrderBySpec<S, T> {
 
     /**
@@ -264,7 +268,9 @@ public interface Oql extends BaseOql {
      * @return the {@link Iterable collection} from which {@link Object objects} are {@link Select selected}.
      * @see java.lang.Iterable
      */
-    Iterable<S> getCollection();
+    default Iterable<S> getCollection() {
+      return Collections::emptyIterator;
+    }
 
     /**
      * Returns {@literal this}.
@@ -330,6 +336,7 @@ public interface Oql extends BaseOql {
    *
    * @param <S> {@link Class type} of {@link Object objects} in the {@link Iterable collection} to query.
    * @param <T> {@link Class type} of the {@link Object projected objects}.
+   * @see org.cp.elements.data.oql.Oql.From#where(BiPredicate)
    * @see org.cp.elements.data.oql.Oql.ExecutableQuery
    * @see org.cp.elements.data.oql.Oql.GroupBySpec
    * @see org.cp.elements.data.oql.Oql.LimitSpec
@@ -418,8 +425,8 @@ public interface Oql extends BaseOql {
    * @see java.lang.Iterable
    */
   @FunctionalInterface
-  interface OrderBy<S, T> extends ExecutableQuery<S, T>, Iterable<Comparator<T>>, LimitSpec<S, T>,
-      Streamable<Comparator<T>> {
+  interface OrderBy<S, T> extends ExecutableQuery<S, T>,
+      Iterable<Comparator<T>>, LimitSpec<S, T>, Streamable<Comparator<T>> {
 
     @SafeVarargs
     static <S, T> OrderBy<S, T> of(@NotNull From<S, T> from, Comparator<T>... comparators) {
@@ -528,7 +535,7 @@ public interface Oql extends BaseOql {
   }
 
   /**
-   * Interface defining a contract for {@literal OQL} components capable of defining a {@literal limit}
+   * Interface defining a contract for {@literal OQL} components capable of {@literal limiting} the query result set.
    *
    * @param <S> source {@link Class type}.
    * @param <T> target {@link Class type}.
@@ -669,12 +676,14 @@ public interface Oql extends BaseOql {
   }
 
   /**
-   * Interface defining a contract for an OQL statement that can be compiled into a {@link Query}.
+   * Interface defining a contract for an OQL statement that can be compiled into an OQL {@link Query}.
    *
    * @param <S> {@link Class type} of {@link Object objects} in the {@link Iterable collection} to query.
    * @param <T> {@link Class type} of the {@link Object projected objects}.
    * @see org.cp.elements.data.oql.Query
+   * @see java.lang.FunctionalInterface
    */
+  @FunctionalInterface
   interface Compiler<S, T> {
 
     /**
@@ -745,6 +754,12 @@ public interface Oql extends BaseOql {
    */
   interface FromReference<S, T> {
 
+    /**
+     * Returns a reference to the {@link From} clause in the OQL {@link Query}.
+     *
+     * @return a reference to the {@link From} clause in the OQL {@link Query}.
+     * @see org.cp.elements.data.oql.Oql.From
+     */
     default From<S, T> getFrom() {
       throw newIllegalStateException(NO_FROM);
     }
@@ -761,7 +776,8 @@ public interface Oql extends BaseOql {
 
     static Oql.Provider getLoader() {
       return LOADER_REFERENCE.updateAndGet(loader -> loader != null ? loader
-        : new Oql.Provider() { });
+        : new Oql.Provider() {
+      });
     }
 
     @Override
@@ -812,7 +828,8 @@ public interface Oql extends BaseOql {
     private Iterable<QueryFunction<T, ?>> transformations;
 
     protected ProjectionTransformationBuilder(@NotNull Class<T> projectionType, @NotNull Class<S> fromType,
-        @NotNull BiFunction<QueryContext<S, T>, S, T> mapper) {
+      @NotNull BiFunction<QueryContext<S, T>, S, T> mapper)
+    {
 
       this.projectionType = ObjectUtils.requireObject(projectionType, "Projection type is required");
       this.mapper = ObjectUtils.requireObject(mapper, "Object mapping function is required");
