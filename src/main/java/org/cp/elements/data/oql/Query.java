@@ -45,11 +45,26 @@ import org.cp.elements.lang.annotation.NullSafe;
 @SuppressWarnings("unused")
 public interface Query<S, T> extends Oql.Executable<T> {
 
+  /**
+   * Factory method used to construct a new {@link Query} from the given {@link From} clause of an OQL query.
+   *
+   * @param <S> {@link Class type} of {@link Object objects} in the {@link Iterable collection} to query.
+   * @param <T> {@link Class type} of the {@link Object projected objects}.
+   * @param from {@link From} clause of the OQL query; required
+   * @return a new {@link Query} from the given {@link From} clause of an OQL query.
+   * @throws IllegalArgumentException if {@link From} is {@literal null}.
+   */
   static <S, T> Query<S, T> from(@NotNull From<S, T> from) {
     Assert.notNull(from, "From is required");
     return () -> from;
   }
 
+  /**
+   * Returns a reference to the {@link From} clause of the {@link Query OQL query}.
+   *
+   * @return a reference to the {@link From} clause of the {@link Query OQL query}.
+   * @see org.cp.elements.data.oql.Oql.From
+   */
   From<S, T> getFrom();
 
   default Select<S, T> selection() {
