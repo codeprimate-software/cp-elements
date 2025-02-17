@@ -30,7 +30,6 @@ import org.cp.elements.lang.annotation.Nullable;
 public record QueryArgument<T>(@NotNull String name, @Nullable T value) implements Nameable<String> {
 
   static <T> QueryArgument<T> from(@NotNull String name, @Nullable T value) {
-    Assert.hasText(name, "Name [%s] is required", name);
     return new QueryArgument<>(name, value);
   }
 
