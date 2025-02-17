@@ -40,7 +40,6 @@ import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import lombok.ToString;
 
 /**
  * Integration Tests for {@link Oql}.
@@ -71,7 +70,16 @@ public class OqlIntegrationTests {
   private static final Set<Person> HANDY_FAMILY = Set.of(
     Person.named("Jack", "Handy").withAge(44).asMale(),
     Person.named("Mandy", "Handy").withAge(36).asFemale(),
-    Person.named("Sandy", "Handy").withAge(19).asFemale()
+    Person.named("Andy", "Handy").withAge(16).asMale(),
+    Person.named("Sandy", "Handy").withAge(19).asFemale(),
+    Person.named("Tandy", "Handy").withAge(21).asMale()
+  );
+
+  private static final Set<Person> SMITH_FAMILY = Set.of(
+    Person.named("Agent", "Smith").withAge(48).asMale(),
+    Person.named("Dan", "Smith").withAge(44).asMale(),
+    Person.named("Tool", "Smith").withAge(42).asMale(),
+    Person.named("Will", "Smith").withAge(56).asMale()
   );
 
   private static final Person[] PEOPLE_ARRAY = PEOPLE.toArray(new Person[0]);
@@ -187,6 +195,28 @@ public class OqlIntegrationTests {
   }
 
   @Test
+  void queryFilterWithArguments() {
+
+    Query<Person, Person> query = Oql.defaultProvider()
+      .select(Oql.Projection.<Person>star())
+      .from(PEOPLE)
+      .where((queryArguments, person) -> person.getAge() > queryArguments.<Integer>requireBy("age").value())
+      .compile();
+
+    assertThat(query).isNotNull();
+
+    Iterable<Person> results = query.execute(QueryArgument.from("age", 40));
+
+    assertThat(results).isNotNull();
+    assertThat(toStrings(results)).containsExactlyInAnyOrder("Jon Doe", "Jane Doe", "Dill Doe", "Lan Doe");
+
+    results = query.execute(QueryArgument.from("age", 50));
+
+    assertThat(results).isNotNull();
+    assertThat(toStrings(results)).containsExactly("Dill Doe");
+  }
+
+  @Test
   void queryLimit() {
 
     Iterable<Person> result = Oql.defaultProvider()
@@ -223,7 +253,7 @@ public class OqlIntegrationTests {
   }
 
   @Test
-  void queryProjectionWithOrdering() {
+  void queryProjectionWithSimpleOrdering() {
 
     Set<Person> people = Set.of(
       Person.named("Jane", "Doe").withAge(48),
@@ -405,7 +435,7 @@ public class OqlIntegrationTests {
       GroupByLastNameGenderView.from("Doe", Gender.FEMALE, 48, 5),
       GroupByLastNameGenderView.from("Doe", Gender.MALE, 51, 7),
       GroupByLastNameGenderView.from("Handy", Gender.FEMALE, 36, 2),
-      GroupByLastNameGenderView.from("Handy", Gender.MALE, 44, 1)
+      GroupByLastNameGenderView.from("Handy", Gender.MALE, 44, 3)
     );
   }
 
@@ -416,22 +446,22 @@ public class OqlIntegrationTests {
     Set<Person> people = new HashSet<>(PEOPLE);
 
     people.addAll(HANDY_FAMILY);
+    people.addAll(SMITH_FAMILY);
 
     Iterable<GroupByLastNameGenderView> results = Oql.defaultProvider()
       .select(groupByLastNameGenderProjection())
       .from(people)
       .groupBy(GroupByLastNameGenderView::getLastName, GroupByLastNameGenderView::getGender)
-      .having(view -> view.getMaxAge() > 40)
+      .having(view -> view.getMaxAge() > 50)
       .orderBy(GroupByLastNameGenderView::getLastName)
       .thenOrderBy(GroupByLastNameGenderView::getGender)
       .execute();
 
     assertThat(results).isNotNull();
-    assertThat(results).hasSize(3);
+    assertThat(results).hasSize(2);
     assertThat(results).containsExactly(
-      GroupByLastNameGenderView.from("Doe", Gender.FEMALE, 48, 5),
       GroupByLastNameGenderView.from("Doe", Gender.MALE, 51, 7),
-      GroupByLastNameGenderView.from("Handy", Gender.MALE, 44, 1)
+      GroupByLastNameGenderView.from("Smith", Gender.MALE, 56, 4)
     );
   }
 
@@ -439,12 +469,12 @@ public class OqlIntegrationTests {
   private Projection<Person, GroupByLastNameGenderView> groupByLastNameGenderProjection() {
 
     return Oql.Projection.<Person, GroupByLastNameGenderView>as(GroupByLastNameGenderView.class)
-        .mappedWith(GroupByLastNameGenderView::map)
-        .apply(Identity.of(GroupByLastNameGenderView::getLastName).named("LastName"),
-          Identity.of(GroupByLastNameGenderView::getGender).named("Gender"),
-          Max.of(GroupByLastNameGenderView::getMaxAge).named("MaxAge"),
-          Count.all())
-        .remappedWith(GroupByLastNameGenderView::remap);
+      .mappedWith(GroupByLastNameGenderView::map)
+      .apply(Identity.of(GroupByLastNameGenderView::getLastName).named("LastName"),
+        Identity.of(GroupByLastNameGenderView::getGender).named("Gender"),
+        Max.of(GroupByLastNameGenderView::getMaxAge).named("MaxAge"),
+        Count.all())
+      .remappedWith(GroupByLastNameGenderView::remap);
   }
 
   @Test
@@ -552,7 +582,6 @@ public class OqlIntegrationTests {
   }
 
   @Getter
-  @ToString
   @EqualsAndHashCode
   @RequiredArgsConstructor(access = AccessLevel.PACKAGE)
   @SuppressWarnings("unused")
@@ -570,11 +599,6 @@ public class OqlIntegrationTests {
     private Gender gender;
 
     private int age;
-
-    @Override
-    public int compareTo(Person that) {
-      return this.getName().compareTo(that.getName());
-    }
 
     @Override
     public String getName() {
@@ -608,10 +632,33 @@ public class OqlIntegrationTests {
       return this;
     }
 
+    @Override
+    public int compareTo(Person that) {
+      return this.getName().compareTo(that.getName());
+    }
+
     Person withAge(int age) {
       Assert.isTrue(age > 0, "Person's age must be greater than 0");
       this.age = age;
       return this;
+    }
+
+    @Override
+    public String toString() {
+      return getName();
+    }
+  }
+
+  enum Gender {
+
+    FEMALE, MALE;
+
+    static boolean isFemale(Gender gender) {
+      return FEMALE.equals(gender);
+    }
+
+    static boolean isMale(Gender gender) {
+      return MALE.equals(gender);
     }
   }
 
@@ -807,7 +854,7 @@ public class OqlIntegrationTests {
 
       Assert.notNull(person, "Person is required");
 
-      return new AbstractGroupByLastNameView() {
+      return new AbstractGroupByLastNameGenderView() {
 
         @Override
         public String getLastName() {
@@ -830,7 +877,7 @@ public class OqlIntegrationTests {
 
       Assert.notNull(result, "QueryResult is required");
 
-      return new AbstractGroupByLastNameView() {
+      return new AbstractGroupByLastNameGenderView() {
 
         @Override
         public String getLastName() {
@@ -848,7 +895,7 @@ public class OqlIntegrationTests {
         }
 
         @Override
-        public int count() {
+        public long count() {
           return result.get("Count");
         }
       };
@@ -856,7 +903,7 @@ public class OqlIntegrationTests {
 
     static GroupByLastNameGenderView from(String lastName, Gender gender, int maxAge, int count) {
 
-      return new AbstractGroupByLastNameView() {
+      return new AbstractGroupByLastNameGenderView() {
 
         @Override
         public String getLastName() {
@@ -874,7 +921,7 @@ public class OqlIntegrationTests {
         }
 
         @Override
-        public int count() {
+        public long count() {
           return count;
         }
       };
@@ -886,12 +933,12 @@ public class OqlIntegrationTests {
 
     int getMaxAge();
 
-    default int count() {
-      return 1;
+    default long count() {
+      return 1L;
     }
   }
 
-  static abstract class AbstractGroupByLastNameView implements GroupByLastNameGenderView{
+  static abstract class AbstractGroupByLastNameGenderView implements GroupByLastNameGenderView {
 
     @Override
     public boolean equals(Object obj) {
@@ -905,7 +952,9 @@ public class OqlIntegrationTests {
       }
 
       return ObjectUtils.equalsIgnoreNull(this.getLastName(), view.getLastName())
-        && ObjectUtils.equalsIgnoreNull(this.getGender(), view.getGender());
+        && ObjectUtils.equalsIgnoreNull(this.getGender(), view.getGender())
+        && ObjectUtils.equalsIgnoreNull(this.getMaxAge(), view.getMaxAge())
+        && ObjectUtils.equalsIgnoreNull(this.count(), view.count());
     }
 
     @Override
@@ -917,19 +966,6 @@ public class OqlIntegrationTests {
     public String toString() {
       return "{ lastName = %s, gender = %s, maxAge = %d, count = %d"
         .formatted(getLastName(), getGender(), getMaxAge(), count());
-    }
-  }
-
-  enum Gender {
-
-    FEMALE, MALE;
-
-    static boolean isFemale(Gender gender) {
-      return FEMALE.equals(gender);
-    }
-
-    static boolean isMale(Gender gender) {
-      return MALE.equals(gender);
     }
   }
 }
