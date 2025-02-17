@@ -44,7 +44,7 @@ public interface QueryArguments extends Iterable<QueryArgument<?>>, Streamable<Q
 
   @NullSafe
   static QueryArguments of(QueryArgument<?>... arguments) {
-    return of(Arrays.asList(ArrayUtils.nullSafeArray(arguments)));
+    return of(Arrays.asList(ArrayUtils.nullSafeArray(arguments, QueryArgument.class)));
   }
 
   @NullSafe
