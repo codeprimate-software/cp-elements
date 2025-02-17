@@ -30,11 +30,35 @@ import org.cp.elements.lang.annotation.Overload;
 @FunctionalInterface
 public interface QueryExecutor<S, T> {
 
+  /**
+   * Executes the given {@link Query} with the given array of {@link QueryArgument query arguments}.
+   *
+   * @param query {@link Query} to execute.
+   * @param arguments array of {@link QueryArgument query arguments} to pass as arguments to
+   * the {@link Query} parameters.
+   * @return the {@link Iterable result} of the {@link Query} execution.
+   * @see org.cp.elements.data.oql.QueryArgument
+   * @see org.cp.elements.data.oql.Query
+   * @see #execute(Query, Iterable)
+   */
   @Overload
   default Iterable<T> execute(Query<S, T> query, QueryArgument<?>... arguments) {
     return execute(query, QueryArguments.of(arguments));
   }
 
+  /**
+   * Executes the given {@link Query} with the given {@link Iterable} of {@link QueryArgument query arguments}.
+   *
+   * @param query {@link Query} to execute.
+   * @param arguments {@link Iterable} of {@link QueryArgument query arguments} to pass as arguments to
+   * the {@link Query} parameters.
+   * @return the {@link Iterable result} of the {@link Query} execution.
+   * @see org.cp.elements.data.oql.QueryArguments
+   * @see org.cp.elements.data.oql.QueryArgument
+   * @see org.cp.elements.data.oql.Query
+   * @see #execute(Query, QueryArgument[])
+   * @see java.lang.Iterable
+   */
   Iterable<T> execute(Query<S, T> query, Iterable<QueryArgument<?>> arguments);
 
 }
