@@ -444,22 +444,25 @@ public class OqlIntegrationTests {
     Set<Person> people = new HashSet<>(PEOPLE);
 
     people.addAll(HANDY_FAMILY);
+    people.addAll(SMITH_FAMILY);
 
     Iterable<GroupByLastNameGenderView> results = Oql.defaultProvider()
       .select(groupByLastNameGenderProjection())
       .from(people)
+      .where(Person::isAdult)
       .groupBy(GroupByLastNameGenderView::getLastName, GroupByLastNameGenderView::getGender)
       .orderBy(GroupByLastNameGenderView::getLastName)
       .thenOrderBy(GroupByLastNameGenderView::getGender)
       .execute();
 
     assertThat(results).isNotNull();
-    assertThat(results).hasSize(4);
+    assertThat(results).hasSize(5);
     assertThat(results).containsExactly(
-      GroupByLastNameGenderView.from("Doe", Gender.FEMALE, 48, 5),
-      GroupByLastNameGenderView.from("Doe", Gender.MALE, 51, 7),
+      GroupByLastNameGenderView.from("Doe", Gender.FEMALE, 48, 2),
+      GroupByLastNameGenderView.from("Doe", Gender.MALE, 51, 6),
       GroupByLastNameGenderView.from("Handy", Gender.FEMALE, 36, 2),
-      GroupByLastNameGenderView.from("Handy", Gender.MALE, 44, 3)
+      GroupByLastNameGenderView.from("Handy", Gender.MALE, 44, 2),
+      GroupByLastNameGenderView.from("Smith", Gender.MALE, 56, 4)
     );
   }
 
@@ -472,19 +475,35 @@ public class OqlIntegrationTests {
     people.addAll(HANDY_FAMILY);
     people.addAll(SMITH_FAMILY);
 
-    Iterable<GroupByLastNameGenderView> results = Oql.defaultProvider()
+    Query<Person, GroupByLastNameGenderView> query = Oql.defaultProvider()
       .select(groupByLastNameGenderProjection())
       .from(people)
       .groupBy(GroupByLastNameGenderView::getLastName, GroupByLastNameGenderView::getGender)
-      .having(view -> view.getMaxAge() > 50)
+      .having((queryArguments, view) -> view.getMaxAge() > queryArguments.<Integer>requireBy("age").value())
       .orderBy(GroupByLastNameGenderView::getLastName)
       .thenOrderBy(GroupByLastNameGenderView::getGender)
-      .execute();
+      .compile();
 
-    assertThat(results).isNotNull();
-    assertThat(results).hasSize(2);
-    assertThat(results).containsExactly(
+    QueryArguments queryArguments = QueryArguments.of(QueryArgument.from("age", 50));
+
+    Iterable<GroupByLastNameGenderView> queryResults = query.execute(queryArguments);
+
+    assertThat(queryResults).isNotNull();
+    assertThat(queryResults).hasSize(2);
+    assertThat(queryResults).containsExactly(
       GroupByLastNameGenderView.from("Doe", Gender.MALE, 51, 7),
+      GroupByLastNameGenderView.from("Smith", Gender.MALE, 56, 4)
+    );
+
+    queryArguments = QueryArguments.of(QueryArgument.from("age", 40));
+    queryResults = query.execute(queryArguments);
+
+    assertThat(queryResults).isNotNull();
+    assertThat(queryResults).hasSize(4);
+    assertThat(queryResults).containsExactly(
+      GroupByLastNameGenderView.from("Doe", Gender.FEMALE, 48, 5),
+      GroupByLastNameGenderView.from("Doe", Gender.MALE, 51, 7),
+      GroupByLastNameGenderView.from("Handy", Gender.MALE, 44, 3),
       GroupByLastNameGenderView.from("Smith", Gender.MALE, 56, 4)
     );
   }
@@ -627,6 +646,10 @@ public class OqlIntegrationTests {
     @Override
     public String getName() {
       return NAME_FORMAT.formatted(getFirstName(), getLastName());
+    }
+
+    boolean isAdult() {
+      return getAge() >= 18;
     }
 
     boolean isFemale() {
