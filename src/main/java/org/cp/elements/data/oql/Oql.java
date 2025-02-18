@@ -31,7 +31,6 @@ import java.util.stream.Stream;
 
 import org.cp.elements.data.oql.support.Grouping;
 import org.cp.elements.data.oql.support.OqlUtils;
-import org.cp.elements.function.CannedPredicates;
 import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.Builder;
 import org.cp.elements.lang.Constants;
@@ -91,7 +90,7 @@ public interface Oql extends BaseOql {
    * Queries the {@link Iterable collection} of {@link Object objects}.
    *
    * @param <S> {@link Class type} of {@link Object objects} in the {@link Iterable collection} to query.
-   * @param collection {@link Iterable} to query.
+   * @param collection {@link Iterable} to query; required.
    * @return the {@link From} clause of an OQL query.
    * @throws IllegalArgumentException if {@link Iterable collection} is {@literal null}.
    * @see org.cp.elements.data.oql.Oql.Select#from(Iterable)
@@ -129,6 +128,7 @@ public interface Oql extends BaseOql {
    * @see org.cp.elements.data.oql.Oql.ObjectMapper
    * @see org.cp.elements.data.oql.Oql.Select
    * @see java.lang.FunctionalInterface
+   * @see #select(Projection)
    */
   @FunctionalInterface
   interface Projection<S, T> extends ObjectMapper<S, T> {
@@ -186,13 +186,11 @@ public interface Oql extends BaseOql {
    * @param <T> {@link Class type} of the {@link Object projected objects}.
    * @see org.cp.elements.data.oql.Oql.Projection
    * @see org.cp.elements.data.oql.QueryFunction
-   * @see org.cp.elements.data.oql.QueryResult
    * @see org.cp.elements.util.stream.Streamable
    * @see java.lang.Iterable
    */
   interface TransformingProjection<S, T>
-    extends Iterable<QueryFunction<T, ?>>, Projection<S, T>, Streamable<QueryFunction<T, ?>>
-  {
+      extends Iterable<QueryFunction<T, ?>>, Projection<S, T>, Streamable<QueryFunction<T, ?>> {
 
     T remap(QueryContext<S, T> queryContext, QueryResult<T> result);
 
@@ -263,7 +261,6 @@ public interface Oql extends BaseOql {
    */
   @FunctionalInterface
   interface Distinct<S, T> {
-
     @Dsl From<S, T> from(Iterable<S> collection);
   }
 
@@ -366,6 +363,17 @@ public interface Oql extends BaseOql {
   @FunctionalInterface
   interface Where<S, T> extends ExecutableQuery<S, T>, GroupBySpec<S, T>, LimitSpec<S, T>, OrderBySpec<S, T> {
 
+    /**
+     * Factory method used to compose a {@link Where} clause and a query {@link BiPredicate}.
+     *
+     * @param <S> {@link Class type} of {@link Object objects} in the {@link Iterable collection} to query.
+     * @param <T> {@link Class type} of the {@link Object projected objects}.
+     * @param where {@link Where} clause composed of a query {@link Predicate}; required.
+     * @param predicate {@link BiPredicate} specifying the query matching criteria; required.
+     * @return a new {@link Where} clause composed with a query {@link BiPredicate}.
+     * @throws IllegalArgumentException if the {@link Where} clause or {@link BiPredicate} are {@literal null}.
+     * @see java.util.function.BiFunction
+     */
     static <S, T> Where<S, T> compose(@NotNull Where<S, T> where, @NotNull BiPredicate<QueryArguments, S> predicate) {
 
       Assert.notNull(where, "Where clause is required");
@@ -433,6 +441,20 @@ public interface Oql extends BaseOql {
   interface OrderBy<S, T> extends ExecutableQuery<S, T>,
       Iterable<Comparator<T>>, LimitSpec<S, T>, Streamable<Comparator<T>> {
 
+    /**
+     * Factory method used to construct a new {@link OrderBy} with the given {@link From} clause
+     * and array of {@link Comparator Comparators} applied to order the query results.
+     *
+     * @param <S> {@link Class type} of {@link Object objects} in the {@link Iterable collection} to query.
+     * @param <T> {@link Class type} of the {@link Object projected objects}.
+     * @param from {@link From} clause linking this {@link OrderBy} to the {@link Query}; required.
+     * @param comparators array of {@link Comparator Comparators} defining the order of the query results.
+     * @return a new {@link OrderBy} clause with the given {@link Comparator Comparators}.
+     * @throws IllegalArgumentException if the {@link From} clause is {@literal null}
+     * or the array of {@link Comparator Comparators} are empty.
+     * @see org.cp.elements.data.oql.Oql.From
+     * @see java.util.Comparator
+     */
     @SafeVarargs
     static <S, T> OrderBy<S, T> of(@NotNull From<S, T> from, Comparator<T>... comparators) {
 
@@ -581,6 +603,19 @@ public interface Oql extends BaseOql {
   @FunctionalInterface
   interface GroupBy<S, T> extends ExecutableQuery<S, T>, LimitSpec<S, T>, OrderBySpec<S, T> {
 
+    /**
+     * Factory method used to construct a new {@link GroupBy} clause with the {@link Grouping}
+     * linked to the OQL {@link Query} with the {@link From} clause.
+     *
+     * @param <S> {@link Class type} of {@link Object objects} in the {@link Iterable collection} to query.
+     * @param <T> {@link Class type} of the {@link Object projected objects}.
+     * @param from {@link From} clause linking the {@link GroupBy} clause to the OQL {@link Query}.
+     * @param grouping {@link Grouping} defining the function to partition queried {@link Object objects} into groups.
+     * @return a new {@link GroupBy} clause
+     * @throws IllegalArgumentException if the {@link From} clause or {@link Grouping} are {@literal null}.
+     * @see org.cp.elements.data.oql.support.Grouping
+     * @see org.cp.elements.data.oql.Oql.From
+     */
     static <S, T> GroupBy<S, T> of(@NotNull From<S, T> from, @NotNull Grouping<T> grouping) {
 
       Assert.notNull(from, "From clause is required");
@@ -617,12 +652,12 @@ public interface Oql extends BaseOql {
      * @see java.util.function.Predicate
      */
     @SuppressWarnings("unchecked")
-    default Predicate<T> getPredicate() {
-      return (Predicate<T>) CannedPredicates.ACCEPT_ALL;
+    default BiPredicate<QueryArguments, T> getPredicate() {
+      return (BiPredicate<QueryArguments, T>) OqlUtils.ACCEPT_ALL_QUERY_PREDICATE;
     }
 
     @Dsl
-    default GroupBy<S, T> having(@NotNull Predicate<T> predicate) {
+    default GroupBy<S, T> having(@NotNull BiPredicate<QueryArguments, T> predicate) {
 
       Assert.notNull(predicate, "GroupBy Predicate is required");
 
@@ -639,10 +674,17 @@ public interface Oql extends BaseOql {
         }
 
         @Override
-        public Predicate<T> getPredicate() {
+        public BiPredicate<QueryArguments, T> getPredicate() {
           return predicate;
         }
       };
+    }
+
+    @Dsl
+    default GroupBy<S, T> having(@NotNull Predicate<T> predicate) {
+      Assert.notNull(predicate, "GroupBy Predicate is required");
+      BiPredicate<QueryArguments, T> biPredicate = OqlUtils.asBiPredicate(predicate);
+      return having(biPredicate);
     }
   }
 
@@ -833,8 +875,7 @@ public interface Oql extends BaseOql {
     private Iterable<QueryFunction<T, ?>> transformations;
 
     protected ProjectionTransformationBuilder(@NotNull Class<T> projectionType, @NotNull Class<S> fromType,
-      @NotNull BiFunction<QueryContext<S, T>, S, T> mapper)
-    {
+        @NotNull BiFunction<QueryContext<S, T>, S, T> mapper) {
 
       this.projectionType = ObjectUtils.requireObject(projectionType, "Projection type is required");
       this.mapper = ObjectUtils.requireObject(mapper, "Object mapping function is required");
