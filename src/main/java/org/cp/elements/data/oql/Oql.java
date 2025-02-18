@@ -215,6 +215,7 @@ public interface Oql extends BaseOql {
    * @param <S> {@link Class type} of {@link Object objects} in the {@link Iterable collection} to query.
    * @param <T> {@link Class type} of the {@link Object projected objects}.
    * @see org.cp.elements.data.oql.Oql.Projection
+   * @see org.cp.elements.data.oql.Oql.From
    */
   interface Select<S, T> {
 
@@ -261,7 +262,10 @@ public interface Oql extends BaseOql {
    */
   @FunctionalInterface
   interface Distinct<S, T> {
-    @Dsl From<S, T> from(Iterable<S> collection);
+
+    @Dsl
+    From<S, T> from(Iterable<S> collection);
+
   }
 
   /**
