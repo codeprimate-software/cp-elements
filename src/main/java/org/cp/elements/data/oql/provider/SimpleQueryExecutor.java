@@ -44,7 +44,6 @@ import org.cp.elements.data.oql.QueryResultSet;
 import org.cp.elements.data.oql.support.Groups;
 import org.cp.elements.data.oql.support.OqlUtils;
 import org.cp.elements.function.CannedPredicates;
-import org.cp.elements.function.FunctionUtils;
 import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.ObjectUtils;
 import org.cp.elements.lang.annotation.NotNull;
@@ -71,9 +70,9 @@ public class SimpleQueryExecutor<S, T> implements QueryExecutor<S, T> {
 
     Assert.notNull(query, "Query to execute is required");
 
-    QueryContext<S, T> queryContext = queryContext(query);
-
     QueryArguments queryArguments = QueryArguments.of(arguments);
+
+    QueryContext<S, T> queryContext = queryContext(query);
 
     Iterable<S> collection = query.collection();
 
@@ -84,12 +83,12 @@ public class SimpleQueryExecutor<S, T> implements QueryExecutor<S, T> {
     Function<T, T> groupFunction = groups::group;
 
     Stream<T> stream = stream(collection) // From
-      .filter(resolvePredicate(query, queryArguments)) // Where
+      .filter(resolveQueryPredicate(query, queryArguments)) // Where
       .map(resolveProjectionMapping(queryContext)) // Selection Projection
       .map(groupFunction); // Group By
 
     Stream<T> processedStream = query.groupBy()
-      .map(it -> groupsToStream(queryContext, stream, groups))
+      .map(it -> groupsToStream(queryContext, queryArguments, stream, groups))
       .orElseGet(() -> ifSelectDistinctElse(query, stream))
       .sorted(resolveSort(query)) // Order By (Sort before Limit)
       .limit(resolveLimit(query)); // Limit
@@ -109,7 +108,8 @@ public class SimpleQueryExecutor<S, T> implements QueryExecutor<S, T> {
   }
 
   @SuppressWarnings({ "all", "rawtypes", "unchecked" })
-  private Stream<T> groupsToStream(QueryContext<S, T> queryContext, Stream<T> originalStream, Groups<T> groups) {
+  private Stream<T> groupsToStream(QueryContext<S, T> queryContext, QueryArguments queryArguments,
+      Stream<T> originalStream, Groups<T> groups) {
 
     Oql.Projection<S, T> projection = resolveProjection(queryContext);
 
@@ -142,7 +142,7 @@ public class SimpleQueryExecutor<S, T> implements QueryExecutor<S, T> {
       queryResults.add(queryResult);
     });
 
-    Predicate<T> groupByPredicate = FunctionUtils.nullSafePredicateMatchingAll(groupBy.getPredicate());
+    Predicate<T> groupByPredicate = resolveGroupPredicate(groupBy, queryArguments);
 
     QueryResultSet<T> queryResultSet = QueryResultSet.of(queryResults);
 
@@ -161,13 +161,8 @@ public class SimpleQueryExecutor<S, T> implements QueryExecutor<S, T> {
     return query.limit();
   }
 
-  @SuppressWarnings("unchecked")
-  private Predicate<S> resolvePredicate(Query<S, T> query, QueryArguments arguments) {
-
-    return query.predicate()
-      .map(Where::getPredicate)
-      .map(predicate -> OqlUtils.asPredicate(predicate, arguments))
-      .orElseGet(() -> (Predicate<S>) CannedPredicates.ACCEPT_ALL);
+  private Predicate<T> resolveGroupPredicate(GroupBy<S, T> groupBy, QueryArguments queryArguments) {
+    return OqlUtils.asPredicate(groupBy.getPredicate(), queryArguments);
   }
 
   private Projection<S, T> resolveProjection(QueryContext<S, T> queryContext) {
@@ -178,14 +173,23 @@ public class SimpleQueryExecutor<S, T> implements QueryExecutor<S, T> {
     return target -> resolveProjection(queryContext).map(queryContext, target);
   }
 
+  @SuppressWarnings("unchecked")
+  private Predicate<S> resolveQueryPredicate(Query<S, T> query, QueryArguments arguments) {
+
+    return query.predicate()
+      .map(Where::getPredicate)
+      .map(predicate -> OqlUtils.asPredicate(predicate, arguments))
+      .orElseGet(() -> (Predicate<S>) CannedPredicates.ACCEPT_ALL);
+  }
+
+  private Comparator<T> defaultSort() {
+    return (comparableOne, comparableTwo) -> 0;
+  }
+
   private Comparator<T> resolveSort(Query<S, T> query) {
 
     return query.orderBy()
       .map(OrderBy::getOrder)
       .orElseGet(this::defaultSort);
-  }
-
-  private Comparator<T> defaultSort() {
-    return (comparableOne, comparableTwo) -> 0;
   }
 }
