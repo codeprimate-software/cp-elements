@@ -860,7 +860,7 @@ public interface Oql extends BaseOql {
     @Dsl
     public ProjectionTransformationBuilder<S, T> mappedWith(@NotNull Function<S, T> mapper) {
       Assert.notNull(mapper, "Object mapping function is required");
-      BiFunction<QueryContext<S, T>, S, T> function = (queryContext, target) -> mapper.apply(target);
+      BiFunction<QueryContext<S, T>, S, T> function = OqlUtils.asBiFunction(mapper);
       return mappedWith(function);
     }
   }
