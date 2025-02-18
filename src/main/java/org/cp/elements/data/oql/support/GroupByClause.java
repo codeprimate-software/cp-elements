@@ -16,10 +16,11 @@
 package org.cp.elements.data.oql.support;
 
 import java.util.Comparator;
-import java.util.function.Predicate;
+import java.util.function.BiPredicate;
 
 import org.cp.elements.data.oql.Oql;
 import org.cp.elements.data.oql.Query;
+import org.cp.elements.data.oql.QueryArguments;
 import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.ObjectUtils;
 import org.cp.elements.lang.annotation.NotNull;
@@ -84,11 +85,11 @@ public class GroupByClause<S, T> implements Oql.GroupBy<S, T> {
     return new GroupByClause<>(from, grouping);
   }
 
+  private volatile BiPredicate<QueryArguments, T> predicate;
+
   private final Oql.From<S, T> from;
 
   private final Grouping<T> grouping;
-
-  private volatile Predicate<T> predicate;
 
   /**
    * Constructs a new {@link Oql.GroupBy} clause initialized with the given {@link Oql.From} clause
@@ -117,12 +118,12 @@ public class GroupByClause<S, T> implements Oql.GroupBy<S, T> {
   }
 
   @Override
-  public Predicate<T> getPredicate() {
-    return this.predicate;
+  public BiPredicate<QueryArguments, T> getPredicate() {
+    return OqlUtils.nullSafePredicate(this.predicate);
   }
 
   @Override
-  public Oql.GroupBy<S, T> having(@Nullable Predicate<T> predicate) {
+  public Oql.GroupBy<S, T> having(@Nullable BiPredicate<QueryArguments, T> predicate) {
     this.predicate = predicate;
     return this;
   }
