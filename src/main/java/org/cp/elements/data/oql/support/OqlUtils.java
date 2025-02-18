@@ -55,12 +55,21 @@ public abstract class OqlUtils {
     return (queryArguments, target) -> predicate.test(target);
   }
 
-  public static <S> Predicate<S> asPredicate(@NotNull BiPredicate<QueryArguments, S> predicate) {
+  public static <T> Predicate<T> asPredicate(@NotNull BiPredicate<QueryArguments, T> predicate) {
     return asPredicate(predicate, QueryArguments.empty());
   }
 
-  public static <S> Predicate<S> asPredicate(@NotNull BiPredicate<QueryArguments, S> predicate, QueryArguments arguments) {
+  public static <T> Predicate<T> asPredicate(@NotNull BiPredicate<QueryArguments, T> predicate,
+      @NotNull QueryArguments queryArguments) {
+
     Assert.notNull(predicate, "Predicate is required");
-    return target -> predicate.test(arguments, target);
+    Assert.notNull(queryArguments, "QueryArguments are required");
+
+    return target -> predicate.test(queryArguments, target);
+  }
+
+  @SuppressWarnings("unchecked")
+  public static <T> BiPredicate<QueryArguments, T> nullSafePredicate(BiPredicate<QueryArguments, T> predicate) {
+    return predicate != null ? predicate : (BiPredicate<QueryArguments, T>) ACCEPT_ALL_QUERY_PREDICATE;
   }
 }
