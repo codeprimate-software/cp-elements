@@ -17,12 +17,13 @@ package org.cp.elements.lang;
 
 /**
  * Abstract Data Type (ADT) defining a {@link Class} that is 1 of many {@link Enum enumerated values}.
- * <p/>
+ * <p>
  * For example, an instance of a {@literal Currency} {@link Class type} might be {@literal USD}, {@literal EURO},
  * {@literal YEN} {@literal CRYPTO}, etc. That is, the {@literal Currency} {@link Class type} is not itself
  * an {@link Enum}, but is classified by a single {@link Enum enumerated value}.
  *
  * @author John Blum
+ * @param <T> {@link Class type} of {@link Enum}.
  * @see java.lang.Enum
  * @see java.lang.FunctionalInterface
  * @since 2.0.0
