@@ -28,6 +28,8 @@ import org.cp.elements.lang.annotation.NotNull;
  * @author John Blum
  * @param <S> {@link Class type} of {@link Object elements} in the {@link Iterable collection} being queried.
  * @param <T> {@link Class type} of the projected {@link Object elements}.
+ * @param query OQL {@link Query} to execute.
+ * @param metadata {@link Map} of contextual (e.g. environment) metadata useful when executing the {@link Query}.
  * @see org.cp.elements.data.oql.Query
  * @since 2.0.0
  */
