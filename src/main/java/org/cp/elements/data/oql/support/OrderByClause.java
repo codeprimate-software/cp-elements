@@ -30,6 +30,10 @@ import org.cp.elements.util.ArrayUtils;
  * Default implementation of {@link Oql.OrderBy}
  *
  * @author John Blum
+ * @param <S> {@link Class type} of {@link Object objects} in the {@link Iterable collection} to query.
+ * @param <T> {@link Class type} of the {@link Object projected objects}.
+ * @param from {@link Oql.From} clause in which this {@link Oql.OrderBy} clause is based.
+ * @param comparators array of {@link Comparator Comparators} defining the (sort) order.
  * @see java.util.Comparator
  * @see org.cp.elements.data.oql.Oql
  * @see org.cp.elements.data.oql.Oql.From
