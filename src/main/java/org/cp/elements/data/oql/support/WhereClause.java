@@ -32,6 +32,10 @@ import org.cp.elements.lang.annotation.NotNull;
  * Default implementation of {@link Oql.Where}.
  *
  * @author John Blum
+ * @param <S> {@link Class type} of {@link Object objects} in the {@link Iterable collection} to query.
+ * @param <T> {@link Class type} of the {@link Object projected objects}.
+ * @param from {@link Oql.From} clause in which this {@link Oql.Where} clause is based.
+ * @param predicate {@link BiPredicate} constituting the conditions or filter in this {@link Oql.Where} clause.
  * @see java.util.function.BiPredicate
  * @see org.cp.elements.data.oql.Oql
  * @see org.cp.elements.data.oql.Oql.From
@@ -40,6 +44,11 @@ import org.cp.elements.lang.annotation.NotNull;
  */
 @SuppressWarnings("unused")
 public record WhereClause<S, T>(From<S, T> from, BiPredicate<QueryArguments, S> predicate) implements Oql.Where<S, T> {
+
+  public WhereClause {
+    ObjectUtils.requireObject(from, "From is required");
+    ObjectUtils.requireObject(predicate, "Predicate is required");
+  }
 
   @SuppressWarnings("unchecked")
   public static <S, T> WhereClause<S, T> all(@NotNull From<S, T> from) {
@@ -64,11 +73,6 @@ public record WhereClause<S, T>(From<S, T> from, BiPredicate<QueryArguments, S> 
       @NotNull BiPredicate<QueryArguments, S> predicate) {
 
     return new WhereClause<>(from, predicate);
-  }
-
-  public WhereClause {
-    ObjectUtils.requireObject(from, "From is required");
-    ObjectUtils.requireObject(predicate, "Predicate is required");
   }
 
   @Override
