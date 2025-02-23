@@ -27,6 +27,7 @@ import org.cp.elements.util.MapUtils;
  * Abstract Data Type (ADT) modeling a single row from a result set generated from an OQL {@link Query}.
  *
  * @author John Blum
+ * @param <T> {@link Class type} of the query result modeled by this ADT.
  * @see org.cp.elements.data.oql.Oql
  * @see org.cp.elements.data.oql.Query
  * @since 2.0.0
