@@ -24,6 +24,9 @@ import org.cp.elements.lang.annotation.Nullable;
  * Abstract Data Type (ADT) modeling a OQL {@link Query} argument.
  *
  * @author John Blum
+ * @param <T> {@link Class type} of the query argument value.
+ * @param name {@link String name} for the query argument.
+ * @param value {@link T value} for the query argument.
  * @see org.cp.elements.lang.Nameable
  * @since 2.0.0
  */
