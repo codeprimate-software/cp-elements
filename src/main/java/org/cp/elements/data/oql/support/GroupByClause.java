@@ -30,6 +30,8 @@ import org.cp.elements.lang.annotation.Nullable;
  * Default implementation of {@link Oql.GroupBy}.
  *
  * @author John Blum
+ * @param <S> {@link Class type} of {@link Object objects} in the {@link Iterable collection} to query.
+ * @param <T> {@link Class type} of the {@link Object projected objects}.
  * @see org.cp.elements.data.oql.Oql
  * @see org.cp.elements.data.oql.Oql.GroupBy
  * @see org.cp.elements.data.oql.support.Group
