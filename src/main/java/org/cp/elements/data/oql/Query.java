@@ -31,12 +31,15 @@ import org.cp.elements.lang.annotation.NullSafe;
  * Abstract Data Type (ADT) modeling the query of an {@literal OQL} statement.
  *
  * @author John Blum
+ * @param <S> {@link Class type} of {@link Object objects} in the {@link Iterable collection} to query.
+ * @param <T> {@link Class type} of the {@link Object projected objects}.
  * @see java.lang.FunctionalInterface
  * @see org.cp.elements.data.oql.Oql
  * @see org.cp.elements.data.oql.Oql.Select
  * @see org.cp.elements.data.oql.Oql.From
  * @see org.cp.elements.data.oql.Oql.Where
  * @see org.cp.elements.data.oql.Oql.OrderBy
+ * @see org.cp.elements.data.oql.Oql.LimitSpec
  * @see org.cp.elements.data.oql.Oql.GroupBy
  * @see org.cp.elements.data.oql.Oql.Executable
  * @since 2.0.0
