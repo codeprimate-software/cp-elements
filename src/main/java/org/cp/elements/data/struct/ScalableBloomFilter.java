@@ -64,9 +64,9 @@ public class ScalableBloomFilter<T> implements BloomFilter<T>, Iterable<BloomFil
   protected static final int DEFAULT_SCALE = 64;
   protected static final int DEFAULT_NUMBER_OF_ELEMENTS_PER_FILTER = 10000000;
 
-  private float acceptableFalsePositiveRate = DEFAULT_ACCEPTABLE_FALSE_POSITIVE_RATE;
+  private volatile float acceptableFalsePositiveRate = DEFAULT_ACCEPTABLE_FALSE_POSITIVE_RATE;
 
-  private int approximateNumberOfElementsPerFilter = DEFAULT_NUMBER_OF_ELEMENTS_PER_FILTER;
+  private volatile int approximateNumberOfElementsPerFilter = DEFAULT_NUMBER_OF_ELEMENTS_PER_FILTER;
 
   private final BloomFilter<T>[] bloomFilters;
 
@@ -194,8 +194,8 @@ public class ScalableBloomFilter<T> implements BloomFilter<T>, Iterable<BloomFil
    * @param element {@link Object element} to add to this {@link BloomFilter}.
    * @see #accept(Object)
    */
-  @Override
   @NullSafe
+  @Override
   public synchronized void add(T element) {
 
     Optional.ofNullable(element)
@@ -220,6 +220,7 @@ public class ScalableBloomFilter<T> implements BloomFilter<T>, Iterable<BloomFil
    * @see java.util.Iterator
    */
   @Override
+  @SuppressWarnings("all")
   public Iterator<BloomFilter<T>> iterator() {
     return asIterator(getBloomFilters());
   }
@@ -264,10 +265,14 @@ public class ScalableBloomFilter<T> implements BloomFilter<T>, Iterable<BloomFil
   @NullSafe
   protected BloomFilter<T> resolveBloomFilter(int index) {
 
-    return Optional.ofNullable(getBloomFilters()[index])
-      .orElseGet(() ->
-        getBloomFilters()[index] =
-          newBloomFilter(getApproximateNumberOfElementsPerFilter(), getAcceptableFalsePositiveRate()));
+    BloomFilter<T> bloomFilter = getBloomFilters()[index];
+
+    if (bloomFilter == null) {
+      bloomFilter = newBloomFilter(getApproximateNumberOfElementsPerFilter(), getAcceptableFalsePositiveRate());
+      getBloomFilters()[index] = bloomFilter;
+    }
+
+    return bloomFilter;
   }
 
   /**
