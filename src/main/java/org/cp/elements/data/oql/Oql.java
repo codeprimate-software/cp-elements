@@ -224,7 +224,7 @@ public interface Oql extends BaseOql {
     /**
      * Determines whether the result set of the {@link Query} should be unique.
      * <p>
-     * Defaults to {@link false}.
+     * Defaults to {@literal false}.
      *
      * @return a boolean value indicating whether the result set of the {@link Query} should be unique.
      */
