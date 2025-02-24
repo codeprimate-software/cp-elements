@@ -31,6 +31,7 @@ import org.cp.elements.util.stream.Streamable;
  * Data structure used to aggregate a collection of {@link QueryResult} objects.
  *
  * @author John Blum
+ * @param <T> {@link Class type} of the individual query results contained in this result set.
  * @see org.cp.elements.util.stream.Streamable
  * @see org.cp.elements.data.oql.QueryResult
  * @see java.lang.FunctionalInterface
