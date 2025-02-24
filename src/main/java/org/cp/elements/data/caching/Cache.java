@@ -114,7 +114,7 @@ public interface Cache<KEY extends Comparable<KEY>, VALUE>
 
   /**
    * Determines whether this {@link Cache} contains any {@link Cache.Entry entries}.
-   * <p/>
+   * <p>
    * Alias for {@link #isEmpty()}.
    *
    * @return a boolean value indicating whether this {@link Cache} contains any {@link Cache.Entry entries}.
