@@ -27,7 +27,7 @@ import org.cp.elements.util.ArrayBuilder;
 import org.cp.elements.util.ArrayUtils;
 
 /**
- * Default implementation of {@link Oql.OrderBy}
+ * Default implementation of {@link Oql.OrderBy}.
  *
  * @author John Blum
  * @param <S> {@link Class type} of {@link Object objects} in the {@link Iterable collection} to query.
@@ -52,7 +52,7 @@ public record OrderByClause<S, T>(@NotNull From<S, T> from, Comparator<T>... com
     Comparator<T>[] comparators = ArrayBuilder.from(orderBy).build();
     OrderByClause<S, T> orderByClause = of(from, comparators);
 
-    if (from instanceof FromClause<S,T> fromClause) {
+    if (from instanceof FromClause<S, T> fromClause) {
       fromClause.withOrderBy(orderByClause);
     }
 
