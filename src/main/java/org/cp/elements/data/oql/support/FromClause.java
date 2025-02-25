@@ -249,7 +249,7 @@ public class FromClause<S, T> implements Oql.From<S, T> {
     Class<S> fromType = projection.getFromType();
 
     if (ObjectUtils.isUnclassified(fromType)) {
-      if (projection instanceof SelectClause.ProjectionWrapper<S,T> projectionWrapper) {
+      if (projection instanceof SelectClause.ProjectionWrapper<S, T> projectionWrapper) {
         projectionWrapper.usingFromType(getType());
       }
     }

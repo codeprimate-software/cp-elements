@@ -62,7 +62,7 @@ public class GroupByClause<S, T> implements Oql.GroupBy<S, T> {
 
     copy.having(groupBy.getPredicate());
 
-    if (from instanceof FromClause<S,T> fromClause) {
+    if (from instanceof FromClause<S, T> fromClause) {
       fromClause.withGroupBy(copy);
     }
 

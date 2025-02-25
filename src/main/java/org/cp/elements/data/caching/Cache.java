@@ -702,7 +702,7 @@ public interface Cache<KEY extends Comparable<KEY>, VALUE>
    * @see org.cp.elements.data.caching.Cache.Entry
    * @see #putIfAbsent(Comparable, Object)
    */
-  default VALUE putIfAbsent(@NotNull Cache.Entry<KEY, VALUE>  cacheEntry) {
+  default VALUE putIfAbsent(@NotNull Cache.Entry<KEY, VALUE> cacheEntry) {
 
     Assert.notNull(cacheEntry, "Cache.Entry to put when absent is required");
 

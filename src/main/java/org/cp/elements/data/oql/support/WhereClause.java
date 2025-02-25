@@ -62,7 +62,7 @@ public record WhereClause<S, T>(From<S, T> from, BiPredicate<QueryArguments, S> 
     From<S, T> from = where.getFrom();
     WhereClause<S, T> copy = where(from, where.getPredicate());
 
-    if (from instanceof FromClause<S,T> fromClause) {
+    if (from instanceof FromClause<S, T> fromClause) {
       fromClause.withWhere(copy);
     }
 
