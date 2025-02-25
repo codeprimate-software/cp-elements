@@ -21,6 +21,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Function;
 import java.util.stream.Stream;
 
 import org.cp.elements.data.oql.Oql;
@@ -58,7 +59,9 @@ public interface Groups<T> extends Iterable<Group<T>>, Streamable<Group<T>> {
 
       @Override
       public Group<T> compute(T target) {
-        return groups.computeIfAbsent(getGrouping().group(target), groupNumber -> Group.with(getGroupBy(), groupNumber));
+        int group = getGrouping().group(target);
+        Function<Integer, Group<T>> mappingFunction = groupNumber -> Group.with(getGroupBy(), groupNumber);
+        return groups.computeIfAbsent(group, mappingFunction);
       }
 
       @Override
