@@ -401,7 +401,7 @@ public interface Oql extends BaseOql {
      * Returns the {@link Predicate filtering criteria} of the {@link Where where clause}.
      *
      * @return the {@link Predicate filtering criteria} of the {@link Where where clause}.
-     * @see java.util.function.Predicate
+     * @see java.util.function.BiPredicate
      */
     BiPredicate<QueryArguments, S> getPredicate();
 
@@ -504,7 +504,6 @@ public interface Oql extends BaseOql {
     default OrderBy<S, T> descending() {
 
       ArrayBuilder<Comparator<T>> comparatorArrayBuilder = ArrayBuilder.from(this);
-
       Comparator<T> comparator = comparatorArrayBuilder.remove();
 
       comparator = comparator.reversed();
@@ -643,7 +642,7 @@ public interface Oql extends BaseOql {
      * Gets the {@link Grouping} defining the {@literal groups} in the result set of the {@link Query}.
      *
      * @return the {@link Grouping} defining the {@literal groups} in the result set of the {@link Query}.
-     * @see Grouping
+     * @see org.cp.elements.data.oql.support.Grouping
      */
     Grouping<T> getGrouping();
 
@@ -826,9 +825,7 @@ public interface Oql extends BaseOql {
     AtomicReference<Oql.Provider> LOADER_REFERENCE = new AtomicReference<>();
 
     static Oql.Provider getLoader() {
-      return LOADER_REFERENCE.updateAndGet(loader -> loader != null ? loader
-        : new Oql.Provider() {
-      });
+      return LOADER_REFERENCE.updateAndGet(loader -> loader != null ? loader : new Oql.Provider() { });
     }
 
     @Override
@@ -837,6 +834,12 @@ public interface Oql extends BaseOql {
     }
   }
 
+  /**
+   * Builder for an {@link Oql.Projection} based on a given {@link Class projected type}.
+   *
+   * @param <S> {@link Class type} of {@link Object objects} in the {@link Iterable collection} to query.
+   * @param <T> {@link Class type} of the {@link Object projected objects}.
+   */
   class ProjectionBuilder<S, T> {
 
     private final Class<T> projectionType;
@@ -869,6 +872,14 @@ public interface Oql extends BaseOql {
     }
   }
 
+  /**
+   * {@link Builder} for an {@link Oql.Projection} with transformation.
+   *
+   * @param <S> {@link Class type} of {@link Object objects} in the {@link Iterable collection} to query.
+   * @param <T> {@link Class type} of the {@link Object projected objects}.
+   * @see org.cp.elements.lang.Builder
+   * @see Oql.Projection
+   */
   class ProjectionTransformationBuilder<S, T> implements Builder<Projection<S, T>> {
 
     private final BiFunction<QueryContext<S, T>, S, T> mapper;
@@ -901,7 +912,7 @@ public interface Oql extends BaseOql {
     @Dsl
     public TransformingProjection<S, T> remappedWith(Function<QueryResult<T>, T> mapper) {
       Assert.notNull(mapper, "Object remapping function is required");
-      BiFunction<QueryContext<S, T>, QueryResult<T>, T> function = ((queryContext, result) -> mapper.apply(result));
+      BiFunction<QueryContext<S, T>, QueryResult<T>, T> function = (queryContext, result) -> mapper.apply(result);
       return remappedWith(function);
     }
 
@@ -944,8 +955,8 @@ public interface Oql extends BaseOql {
     @Override
     public Projection<S, T> build() {
 
-      Assert.state(CollectionUtils.isEmpty(this.transformations), "Using transformations requires remapping;"
-        + " you must call remappedWith(..)");
+      Assert.state(CollectionUtils.isEmpty(this.transformations),
+        "Using transformations requires remapping; you must call remappedWith(..)");
 
       return new Projection<>() {
 
