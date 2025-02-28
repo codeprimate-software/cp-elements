@@ -21,6 +21,8 @@ import static org.cp.elements.net.NetworkUtils.lenientParsePort;
 
 import java.io.IOException;
 import java.net.Socket;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.cp.elements.lang.ThrowableUtils;
 import org.cp.elements.net.ServicePort;
@@ -176,12 +178,8 @@ public class EchoClient extends AbstractClientServerSupport {
       return super.sendMessage(socket, message);
     }
     catch (IOException cause) {
-
-      getLogger().severe(String.format("Failed to send message [%1$s] to EchoServer [%2$s]",
-        message, socket.getRemoteSocketAddress()));
-
-      getLogger().severe(ThrowableUtils.getStackTrace(cause));
-
+      logSevere("Failed to send message [%1$s] to EchoServer [%2$s]", message, socket.getRemoteSocketAddress());
+      logSevere(ThrowableUtils.getStackTrace(cause));
       return socket;
     }
   }
@@ -192,13 +190,24 @@ public class EchoClient extends AbstractClientServerSupport {
       return super.receiveMessage(socket);
     }
     catch (IOException cause) {
-
-      getLogger().severe(String.format("Failed to receive response from EchoServer [%s]",
-        socket.getRemoteSocketAddress()));
-
-      getLogger().severe(ThrowableUtils.getStackTrace(cause));
-
+      logSevere("Failed to receive response from EchoServer [%s]", socket.getRemoteSocketAddress());
+      logSevere(ThrowableUtils.getStackTrace(cause));
       return "No Reply";
     }
+  }
+
+  private EchoClient logAt(Level level, String message, Object... arguments) {
+
+    Logger logger = getLogger();
+
+    if (logger.isLoggable(level)) {
+      logger.log(level, message.formatted(arguments));
+    }
+
+    return this;
+  }
+
+  private EchoClient logSevere(String message, Object... arguments) {
+    return logAt(Level.SEVERE, message, arguments);
   }
 }
