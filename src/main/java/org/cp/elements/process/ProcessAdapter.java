@@ -577,7 +577,7 @@ public class ProcessAdapter implements Identifiable<Integer>, Initable, Nameable
 
         try {
           int exitValue = futureExitValue.get(timeout, unit);
-          getLogger().info(String.format("Process [%d] has been stopped", safeGetId()));
+          logInfo("Process [%d] has been stopped", safeGetId());
           return exitValue;
         }
         catch (ExecutionException cause) {
@@ -589,8 +589,8 @@ public class ProcessAdapter implements Identifiable<Integer>, Initable, Nameable
           Thread.currentThread().interrupt();
         }
         catch (TimeoutException cause) {
-          getLogger().warning(String.format("Process [%1$d] could not be stopped within the given timeout [%2$d ms]",
-            safeGetId(), unit.toMillis(timeout)));
+          logWarning("Process [%1$d] could not be stopped within the given timeout [%2$d ms]",
+            safeGetId(), unit.toMillis(timeout));
         }
       }
       finally {
@@ -728,5 +728,24 @@ public class ProcessAdapter implements Identifiable<Integer>, Initable, Nameable
 
       return isNotRunning();
     }
+  }
+
+  private ProcessAdapter logAt(Level level, String message, Object... arguments) {
+
+    Logger logger = getLogger();
+
+    if (logger.isLoggable(level)) {
+      logger.log(level, message.formatted(arguments));
+    }
+
+    return this;
+  }
+
+  private ProcessAdapter logInfo(String message, Object... arguments) {
+    return logAt(Level.INFO, message, arguments);
+  }
+
+  private ProcessAdapter logWarning(String message, Object... arguments) {
+    return logAt(Level.WARNING, message, arguments);
   }
 }
