@@ -3,6 +3,42 @@ Codeprimate Elements changelog.txt
 https://github.com/codeprimate-software/cp-elements/blob/master/changelog.txt
 
 
+2.0.0-M6 - 2025-February-28
+---------------------------
+Release Codeprimate Elements 2.0.0-M6 with new features, such an Object Query Language (OQL), enhancements
+and improvements and minor bug fixes.
+
+* Built with Oracle Java (JDK) 17.0.14 2025-01-21 LTS (build 17.0.14+8-LTS-191).
+* Builds and supports Elements up to Java 21.0.6 (JDK) 2025-01-21 LTS (build 21.0.6+8-LTS-188).
+* Adds named(:String) method to Nameable interface.
+* Adds noText(:String) utility method to StringUtils.
+* Adds reverse(:String) utility method to StringUtils.
+* Adds isNotEmpty() method to Cache.
+* Adds putIfAbsent(:Cache.Entry<KEY, VALUE>) and putIfPresent(:Cache.Entry<KEY, VALUE>) methods to Cache.
+* Adds putIfAbsent(:Identifiable) and putIfPresent(:Identifiable) methods to Cache.
+* Adds unmodifiableIterable(:Iterable<?>) method to CollectionUtils.
+* Adds nullSafeStreamable(:Streamable<T>) method to StreamUtils.
+* Creates ArrayBuilder class in the org.cp.elements.utils package.
+* Creates EnumeratedType ADT used to classify application domain objects by an enumerated value.
+* Creates Generated annotation in the org.cp.elements.lang.annotation package to annotate a type as generated.
+* Creates Indexed interface in the org.cp.elements.lang package.
+* Creates Iterables abstract utility class in the org.cp.elements.data.support package to process Iterable objects.
+* Creates JarUtils utility class for processing JAR files.
+* Creates Numbered interface in the org.cp.elements.lang package.
+* Creates Object Query Language (OQL) framework in org.cp.elements.data.oql package.
+* Creates ThrowableConsumer in the org.cp.elements.function package.
+* Creates ThrowableSupplier in the org.cp.elements.function package.
+* Create TypeResolver interface in the org.cp.elements.lang package.
+* Create UndefinedMappingException in the org.cp.elements.data.mapping package.
+* Creates User ADT and aggregate type for User in org.cp.elements.security.model package.
+* Creates UserNotFoundException, Java RuntimeException in org.cp.elements.security.model package.
+* Refactors the Cache interface to extends Streamable.
+* Refactors View to implement Streamable<Row>.
+* Renames ObjectUtils.doOperationSafely(..) method to doSafely(..).
+* Renames Integers.invert(:int) method to negate(:int).
+* Upgrades to Apache Maven 3.9.9.
+* Upgrades to Codeprimate Build 2.0.0-M7.
+
 2.0.0-M5 - 2024-July-29
 -----------------------
 Release Codeprimate Elements 2.0.0-M5 with minor new features and enhancements.
