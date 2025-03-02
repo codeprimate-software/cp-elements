@@ -180,6 +180,34 @@ public abstract class ArrayUtils {
   }
 
   /**
+   * Returns the given {@link Object[] array} into a strongly typed array of the given {@link Class componentType}.
+   *
+   * @param <T> {@link Class type} of {@link Object elements} in the array.
+   * @param array {@link Object[] array} to process; required.
+   * @param componentType {@link Class type} of the elements in the new array/
+   * @return an array of {@link T type} from the given {@link Object[] array}.
+   * @throws IllegalArgumentException if {@link Object[] array} or {@link Class componentType} are {@literal null},
+   * or not all {@link Object elements} of the given {@link Object[] array} are of type {@link T}.
+   */
+  @SuppressWarnings("all")
+  public static @NotNull <T> T[] asTypedArray(@NotNull Object[] array, @NotNull Class<T> componentType) {
+
+    Assert.notNull(array, "Array is required");
+    Assert.notNull(componentType, "ComponentType is required");
+
+    Arrays.stream(array).forEach(element ->
+      Assert.isTrue(Objects.isNull(element) || componentType.isInstance(element),
+        "Expected elements of type [%s], but found an element of type [%s]",
+          componentType.getName(), ObjectUtils.getClassName(element)));
+
+    T[] typedArray = (T[]) Array.newInstance(componentType, array.length);
+
+    System.arraycopy(array, 0, typedArray, 0, array.length);
+
+    return typedArray;
+  }
+
+  /**
    * Returns an {@link Enumeration} enumerating over the elements in the array.
    *
    * @param <T> Class type of the elements in the array.
