@@ -254,7 +254,7 @@ public class SimpleBloomFilter<T> implements BloomFilter<T> {
    * @return a reference to the bit array used as the filter in this {@link BloomFilter}.
    */
   int[] getBitArray() {
-    return this.bitArray;
+    return Arrays.copyOf(this.bitArray, this.bitArray.length);
   }
 
   /**
