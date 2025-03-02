@@ -189,7 +189,7 @@ public abstract class ArrayUtils {
    * @throws IllegalArgumentException if {@link Object[] array} or {@link Class componentType} are {@literal null},
    * or not all {@link Object elements} of the given {@link Object[] array} are of type {@link T}.
    */
-  @SuppressWarnings("all")
+  @SuppressWarnings({ "all", "unchecked" })
   public static @NotNull <T> T[] asTypedArray(@NotNull Object[] array, @NotNull Class<T> componentType) {
 
     Assert.notNull(array, "Array is required");
