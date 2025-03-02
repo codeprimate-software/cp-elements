@@ -125,7 +125,7 @@ public abstract class StringUtils {
     StringBuilder buffer = new StringBuilder();
 
     for (String value : values) {
-      buffer.append(buffer.length() > 0 ? delimiter : EMPTY_STRING);
+      buffer.append(!buffer.isEmpty() ? delimiter : EMPTY_STRING);
       buffer.append(value);
     }
 
@@ -605,8 +605,8 @@ public abstract class StringUtils {
 
     StringBuilder reverse = new StringBuilder();
 
-    for (int index = value.length(); --index > -1; ) {
-      reverse.append(value.charAt(index));
+    for (int index = 1, length = value.length(); index <= length; index++) {
+      reverse.append(value.charAt(length - index));
     }
 
     return reverse.toString();
