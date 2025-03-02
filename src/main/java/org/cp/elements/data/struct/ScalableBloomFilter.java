@@ -15,7 +15,6 @@
  */
 package org.cp.elements.data.struct;
 
-import static org.cp.elements.util.ArrayUtils.asIterator;
 import static org.cp.elements.util.stream.StreamUtils.stream;
 
 import java.util.Iterator;
@@ -23,6 +22,7 @@ import java.util.Optional;
 
 import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.annotation.NullSafe;
+import org.cp.elements.util.Array;
 
 /**
  * Implementation of {@link BloomFilter} that is scalable at runtime.
@@ -64,12 +64,6 @@ public class ScalableBloomFilter<T> implements BloomFilter<T>, Iterable<BloomFil
   protected static final int DEFAULT_SCALE = 64;
   protected static final int DEFAULT_NUMBER_OF_ELEMENTS_PER_FILTER = 10000000;
 
-  private volatile float acceptableFalsePositiveRate = DEFAULT_ACCEPTABLE_FALSE_POSITIVE_RATE;
-
-  private volatile int approximateNumberOfElementsPerFilter = DEFAULT_NUMBER_OF_ELEMENTS_PER_FILTER;
-
-  private final BloomFilter<T>[] bloomFilters;
-
   /**
    * Factory method used to construct a new {@link ScalableBloomFilter} with a single {@link BloomFilter}.
    *
@@ -94,6 +88,12 @@ public class ScalableBloomFilter<T> implements BloomFilter<T>, Iterable<BloomFil
   public static <T> ScalableBloomFilter<T> of(int scale) {
     return new ScalableBloomFilter<>(scale);
   }
+
+  private volatile float acceptableFalsePositiveRate = DEFAULT_ACCEPTABLE_FALSE_POSITIVE_RATE;
+
+  private volatile int approximateNumberOfElementsPerFilter = DEFAULT_NUMBER_OF_ELEMENTS_PER_FILTER;
+
+  private final BloomFilter<T>[] bloomFilters;
 
   /**
    * Constructs a new {@link ScalableBloomFilter} initialized with the default scale.
@@ -152,8 +152,8 @@ public class ScalableBloomFilter<T> implements BloomFilter<T>, Iterable<BloomFil
    * @see org.cp.elements.data.struct.BloomFilter
    */
   @NullSafe
-  BloomFilter<T>[] getBloomFilters() {
-    return this.bloomFilters;
+  Array<BloomFilter<T>> getBloomFilters() {
+    return Array.immutableOf(this.bloomFilters);
   }
 
   /**
@@ -165,7 +165,7 @@ public class ScalableBloomFilter<T> implements BloomFilter<T>, Iterable<BloomFil
    * @see #getBloomFilters()
    */
   public int getScale() {
-    return getBloomFilters().length;
+    return getBloomFilters().length();
   }
 
   /**
@@ -180,10 +180,12 @@ public class ScalableBloomFilter<T> implements BloomFilter<T>, Iterable<BloomFil
   @NullSafe
   public synchronized boolean accept(T element) {
 
+    Array<BloomFilter<T>> bloomFilters = getBloomFilters();
+
     return Optional.ofNullable(element)
       .map(Object::hashCode)
       .map(hashCode -> hashCode % getScale())
-      .map(index -> getBloomFilters()[index])
+      .map(bloomFilters::get)
       .map(bloomFilter -> bloomFilter.accept(element))
       .orElse(false);
   }
@@ -222,7 +224,7 @@ public class ScalableBloomFilter<T> implements BloomFilter<T>, Iterable<BloomFil
   @Override
   @SuppressWarnings("all")
   public Iterator<BloomFilter<T>> iterator() {
-    return asIterator(getBloomFilters());
+    return getBloomFilters().iterator();
   }
 
   /**
@@ -265,11 +267,11 @@ public class ScalableBloomFilter<T> implements BloomFilter<T>, Iterable<BloomFil
   @NullSafe
   protected BloomFilter<T> resolveBloomFilter(int index) {
 
-    BloomFilter<T> bloomFilter = getBloomFilters()[index];
+    BloomFilter<T> bloomFilter = this.bloomFilters[index];
 
     if (bloomFilter == null) {
       bloomFilter = newBloomFilter(getApproximateNumberOfElementsPerFilter(), getAcceptableFalsePositiveRate());
-      getBloomFilters()[index] = bloomFilter;
+      this.bloomFilters[index] = bloomFilter;
     }
 
     return bloomFilter;

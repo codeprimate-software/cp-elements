@@ -171,16 +171,16 @@ public class ScalableBloomFilterTests {
 
     assertThat((Predicate<Object>) aggregateBloomFilter).isNotNull();
     assertThat(aggregateBloomFilter.getBloomFilters()).isNotNull();
-    assertThat(aggregateBloomFilter.getBloomFilters().length).isEqualTo(2);
+    assertThat(aggregateBloomFilter.getBloomFilters().length()).isEqualTo(2);
     assertThat(aggregateBloomFilter.getScale()).isEqualTo(2);
-    assertThat(aggregateBloomFilter.getBloomFilters()[0]).isNull();
-    assertThat(aggregateBloomFilter.getBloomFilters()[1]).isNull();
+    assertThat(aggregateBloomFilter.getBloomFilters().get(0)).isNull();
+    assertThat(aggregateBloomFilter.getBloomFilters().get(1)).isNull();
 
     BloomFilter<Object> bloomFilter = aggregateBloomFilter.resolveBloomFilter(0);
 
     assertThat(bloomFilter).isNotNull();
-    assertThat(aggregateBloomFilter.getBloomFilters()[0]).isSameAs(bloomFilter);
-    assertThat(aggregateBloomFilter.getBloomFilters()[1]).isNull();
+    assertThat(aggregateBloomFilter.getBloomFilters().get(0)).isSameAs(bloomFilter);
+    assertThat(aggregateBloomFilter.getBloomFilters().get(1)).isNull();
     assertThat(aggregateBloomFilter.resolveBloomFilter(0)).isSameAs(bloomFilter);
   }
 
