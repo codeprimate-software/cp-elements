@@ -28,6 +28,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.nio.charset.Charset;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.ExecutionException;
@@ -123,7 +124,7 @@ public class ProcessAdapter implements Identifiable<Integer>, Initable, Nameable
 
   private final AtomicBoolean initialized = new AtomicBoolean(false);
 
-  private final CopyOnWriteArraySet<ProcessStreamListener> listeners = new CopyOnWriteArraySet<>();
+  private final Set<ProcessStreamListener> listeners = new CopyOnWriteArraySet<>();
 
   private final Logger logger = Logger.getLogger(getClass().getName());
 
