@@ -39,17 +39,16 @@ import org.cp.elements.lang.Visitable;
  * Unit Tests for {@link InitableVisitor}.
  *
  * @author John J. Blum
- * @see org.junit.jupiter.api.Test
  * @see org.cp.elements.lang.Initable
  * @see org.cp.elements.lang.ParameterizedInitable
- * @see org.cp.elements.lang.Visitable
  * @see org.cp.elements.lang.support.InitableVisitor
+ * @see org.junit.jupiter.api.Test
  * @since 1.0.0
  */
-public class InitableVisitorUnitTests {
+class InitableVisitorUnitTests {
 
   @Test
-  public void constructInitableVisitor() {
+  void constructInitableVisitor() {
 
     InitableVisitor visitor = new InitableVisitor();
 
@@ -59,19 +58,19 @@ public class InitableVisitorUnitTests {
   }
 
   @Test
-  public void constructInitableVisitorWithArguments() {
+  void constructInitableVisitorWithArguments() {
 
     Object[] expectedArguments = { true, 'x', 2, Math.PI, "test" };
 
     InitableVisitor visitor = new InitableVisitor(expectedArguments);
 
     assertThat(visitor).isNotNull();
-    assertThat(visitor.getArguments()).isSameAs(expectedArguments);
+    assertThat(visitor.getArguments()).isEqualTo(expectedArguments);
     assertThat(visitor.getParameters()).isNull();
   }
 
   @Test
-  public void constructInitableVisitorWithParameters() {
+  void constructInitableVisitorWithParameters() {
 
     Map<String, String> expectedParameters = new HashMap<>(3);
 
@@ -87,7 +86,7 @@ public class InitableVisitorUnitTests {
   }
 
   @Test
-  public void visitNonInitableVisitable() {
+  void visitNonInitableVisitable() {
 
     Visitable mockVisitable = mock(Visitable.class);
 
@@ -97,19 +96,19 @@ public class InitableVisitorUnitTests {
   }
 
   @Test
-  public void visitNullVisitableObjectIsNullSafe() {
+  void visitNullVisitableObjectIsNullSafe() {
     new InitableVisitor().visit(null);
   }
 
   @Test
-  public void visitInitableObjectCallsInit() {
+  void visitInitableObjectCallsInit() {
 
     InitableVisitable mockInitable = mock(InitableVisitable.class);
 
     InitableVisitor visitor = new InitableVisitor(ObjectUtils.EMPTY_OBJECT_ARRAY);
 
     assertThat(visitor).isNotNull();
-    assertThat(visitor.getArguments()).isSameAs(ObjectUtils.EMPTY_OBJECT_ARRAY);
+    assertThat(visitor.getArguments()).isEqualTo(ObjectUtils.EMPTY_OBJECT_ARRAY);
     assertThat(visitor.getParameters()).isNull();
 
     visitor.visit(mockInitable);
@@ -119,7 +118,7 @@ public class InitableVisitorUnitTests {
   }
 
   @Test
-  public void visitParameterizedInitableObjectCallsInit() {
+  void visitParameterizedInitableObjectCallsInit() {
 
     ParameterizedInitableVisitable mockParameterizedInitable = mock(ParameterizedInitableVisitable.class);
 
@@ -138,7 +137,7 @@ public class InitableVisitorUnitTests {
   }
 
   @Test
-  public void visitParameterizedInitableObjectCallsInitWithArguments() {
+  void visitParameterizedInitableObjectCallsInitWithArguments() {
 
     ParameterizedInitableVisitable mockParameterizedInitable = mock(ParameterizedInitableVisitable.class);
 
@@ -147,7 +146,7 @@ public class InitableVisitorUnitTests {
     InitableVisitor visitor = new InitableVisitor(expectedArguments);
 
     assertThat(visitor).isNotNull();
-    assertThat(visitor.getArguments()).isSameAs(expectedArguments);
+    assertThat(visitor.getArguments()).isEqualTo(expectedArguments);
     assertThat(visitor.getParameters()).isNull();
 
     visitor.visit(mockParameterizedInitable);
@@ -159,7 +158,7 @@ public class InitableVisitorUnitTests {
   }
 
   @Test
-  public void visitParameterizedInitableObjectCallsInitWithParameters() {
+  void visitParameterizedInitableObjectCallsInitWithParameters() {
 
     ParameterizedInitableVisitable mockParameterizedInitable = mock(ParameterizedInitableVisitable.class);
 

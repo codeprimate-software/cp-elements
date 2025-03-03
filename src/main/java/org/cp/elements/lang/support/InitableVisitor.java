@@ -15,6 +15,7 @@
  */
 package org.cp.elements.lang.support;
 
+import java.util.Arrays;
 import java.util.Map;
 
 import org.cp.elements.lang.Initable;
@@ -56,7 +57,7 @@ public class InitableVisitor implements Visitor {
    * both {@link ParameterizedInitable} and {@link Initable} objects when visited.
    */
   public InitableVisitor(@Nullable Object... args) {
-    this.args = args;
+    this.args = Arrays.copyOf(args, args.length);
     this.parameters = null;
   }
 
@@ -80,7 +81,8 @@ public class InitableVisitor implements Visitor {
    * visited by this {@link Visitor}.
    */
   public @Nullable Object[] getArguments() {
-    return this.args;
+    Object[] arguments = this.args;
+    return arguments != null ? Arrays.copyOf(arguments, arguments.length) : null;
   }
 
   /**
