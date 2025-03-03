@@ -16,6 +16,7 @@
 package org.cp.elements.lang.concurrent;
 
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Supplier;
 
 import org.cp.elements.lang.Assert;
@@ -498,8 +499,8 @@ public abstract class ThreadUtils {
 
     protected static final TimeUnit DEFAULT_TIME_UNIT = TimeUnit.MILLISECONDS;
 
-    private long duration;
-    private long interval;
+    private final AtomicLong duration = new AtomicLong(0L);
+    private final AtomicLong interval = new AtomicLong(0L);
 
     private final Object waitTaskMonitor = new Object();
 
@@ -521,7 +522,7 @@ public abstract class ThreadUtils {
      * @return a long value representing the length in time to wait.
      */
     public long getDuration() {
-      return this.duration;
+      return this.duration.get();
     }
 
     /**
@@ -543,8 +544,8 @@ public abstract class ThreadUtils {
 
       long duration = getDuration();
 
-      return this.interval > 0
-        ? Math.min(this.interval, duration)
+      return this.interval.get() > 0
+        ? Math.min(this.interval.get(), duration)
         : duration;
     }
 
@@ -583,7 +584,7 @@ public abstract class ThreadUtils {
 
       Assert.argument(duration, argument -> argument > 0, "Duration [%d] must be greater than 0", duration);
 
-      this.duration = duration;
+      this.duration.set(duration);
       this.durationTimeUnit = ObjectUtils.returnFirstNonNullValue(durationTimeUnit, DEFAULT_TIME_UNIT);
 
       return this;
@@ -624,7 +625,7 @@ public abstract class ThreadUtils {
         "Interval [%1$d %2$s] must be greater than 0 and less than equal to duration [%3$d %4$s]",
           interval, intervalTimeUnit, getDuration(), getDurationTimeUnit());
 
-      this.interval = interval;
+      this.interval.set(interval);
       this.intervalTimeUnit = resolvedIntervalTimeUnit;
 
       return this;

@@ -60,7 +60,7 @@ import edu.umd.cs.mtc.TestFramework;
  */
 @SuppressWarnings("all")
 @ExtendWith(MockitoExtension.class)
-public class ThreadUtilsUnitTests {
+class ThreadUtilsUnitTests {
 
   @Mock
   private Thread mockThread;
@@ -84,12 +84,12 @@ public class ThreadUtilsUnitTests {
   }
 
   @Test
-  public void isAliveWithNullThreadIsNullSafe() {
+  void isAliveWithNullThreadIsNullSafe() {
     assertThat(ThreadUtils.isAlive(null)).isFalse();
   }
 
   @Test
-  public void isBlockedWithBlockedThread() {
+  void isBlockedWithBlockedThread() {
 
     doReturn(Thread.State.BLOCKED).when(this.mockThread).getState();
 
@@ -100,7 +100,7 @@ public class ThreadUtilsUnitTests {
   }
 
   @Test
-  public void isBlockedWithRunnableThread() {
+  void isBlockedWithRunnableThread() {
 
     doReturn(Thread.State.RUNNABLE).when(this.mockThread).getState();
 
@@ -111,12 +111,12 @@ public class ThreadUtilsUnitTests {
   }
 
   @Test
-  public void isBlockedWithNullThread() {
+  void isBlockedWithNullThread() {
     assertThat(ThreadUtils.isBlocked(null)).isFalse();
   }
 
   @Test
-  public void isDaemonWithDaemonThread() {
+  void isDaemonWithDaemonThread() {
 
     Thread thread = new Thread("testDaemonThread");
 
@@ -126,7 +126,7 @@ public class ThreadUtilsUnitTests {
   }
 
   @Test
-  public void isDaemonWithNonDaemonThread() {
+  void isDaemonWithNonDaemonThread() {
 
     Thread thread = new Thread("testNonDaemonThread");
 
@@ -136,12 +136,12 @@ public class ThreadUtilsUnitTests {
   }
 
   @Test
-  public void isDaemonWithNullThread() {
+  void isDaemonWithNullThread() {
     assertThat(ThreadUtils.isDaemon(null)).isFalse();
   }
 
   @Test
-  public void isNonDaemonWithNonDaemonThread() {
+  void isNonDaemonWithNonDaemonThread() {
 
     Thread thread = new Thread("testNonDaemonThread");
 
@@ -151,7 +151,7 @@ public class ThreadUtilsUnitTests {
   }
 
   @Test
-  public void isNonDaemonWithDaemonThread() {
+  void isNonDaemonWithDaemonThread() {
 
     Thread thread = new Thread("testDaemonThread");
 
@@ -161,12 +161,12 @@ public class ThreadUtilsUnitTests {
   }
 
   @Test
-  public void isNonDaemonWithNullThread() {
+  void isNonDaemonWithNullThread() {
     assertThat(ThreadUtils.isNonDaemon(null)).isFalse();
   }
 
   @Test
-  public void isUserWithDaemonThread() {
+  void isUserWithDaemonThread() {
 
     Thread thread = new Thread("testDaemonThread");
 
@@ -176,7 +176,7 @@ public class ThreadUtilsUnitTests {
   }
 
   @Test
-  public void isUserWithNonDaemonThread() {
+  void isUserWithNonDaemonThread() {
 
     Thread thread = new Thread("testNonDaemonThread");
 
@@ -186,12 +186,12 @@ public class ThreadUtilsUnitTests {
   }
 
   @Test
-  public void isUserWithNullThread() {
+  void isUserWithNullThread() {
     assertThat(ThreadUtils.isUserThread(null)).isFalse();
   }
 
   @Test
-  public void isInterruptedWithInterruptedThread() {
+  void isInterruptedWithInterruptedThread() {
 
     doReturn(true).when(this.mockThread).isInterrupted();
 
@@ -202,7 +202,7 @@ public class ThreadUtilsUnitTests {
   }
 
   @Test
-  public void isInterruptedWithNonInterruptedThread() {
+  void isInterruptedWithNonInterruptedThread() {
 
     doReturn(false).when(this.mockThread).isInterrupted();
 
@@ -213,7 +213,7 @@ public class ThreadUtilsUnitTests {
   }
 
   @Test
-  public void isInterruptedWithNullThread() {
+  void isInterruptedWithNullThread() {
     assertThat(ThreadUtils.isInterrupted(null)).isFalse();
   }
 
@@ -232,7 +232,7 @@ public class ThreadUtilsUnitTests {
   }
 
   @Test
-  public void isNewWithNewThread() {
+  void isNewWithNewThread() {
 
     doReturn(Thread.State.NEW).when(this.mockThread).getState();
 
@@ -243,7 +243,7 @@ public class ThreadUtilsUnitTests {
   }
 
   @Test
-  public void isNewWithTerminatedThread() {
+  void isNewWithTerminatedThread() {
 
     doReturn(Thread.State.TERMINATED).when(this.mockThread).getState();
 
@@ -254,17 +254,17 @@ public class ThreadUtilsUnitTests {
   }
 
   @Test
-  public void isNewWithNonNewThread() {
+  void isNewWithNonNewThread() {
     testThreadInNonDesiredState(Thread.State.NEW, ThreadUtils::isNew);
   }
 
   @Test
-  public void isNewWithNullThread() {
+  void isNewWithNullThread() {
     assertThat(ThreadUtils.isNew(null)).isFalse();
   }
 
   @Test
-  public void isRunnableWithRunnableThread() {
+  void isRunnableWithRunnableThread() {
 
     doReturn(Thread.State.RUNNABLE).when(this.mockThread).getState();
 
@@ -275,7 +275,7 @@ public class ThreadUtilsUnitTests {
   }
 
   @Test
-  public void isRunnableWithBlockedThread() {
+  void isRunnableWithBlockedThread() {
 
     doReturn(Thread.State.BLOCKED).when(this.mockThread).getState();
 
@@ -286,17 +286,17 @@ public class ThreadUtilsUnitTests {
   }
 
   @Test
-  public void isRunnableWithNonRunnableThread() {
+  void isRunnableWithNonRunnableThread() {
     testThreadInNonDesiredState(Thread.State.RUNNABLE, ThreadUtils::isRunnable);
   }
 
   @Test
-  public void isRunnableWithNullThread() {
+  void isRunnableWithNullThread() {
     assertThat(ThreadUtils.isRunnable(null)).isFalse();
   }
 
   @Test
-  public void isTerminatedWithTerminatedThread() {
+  void isTerminatedWithTerminatedThread() {
 
     doReturn(Thread.State.TERMINATED).when(this.mockThread).getState();
 
@@ -307,7 +307,7 @@ public class ThreadUtilsUnitTests {
   }
 
   @Test
-  public void isTerminatedWithNewThread() {
+  void isTerminatedWithNewThread() {
 
     doReturn(Thread.State.NEW).when(this.mockThread).getState();
 
@@ -318,17 +318,17 @@ public class ThreadUtilsUnitTests {
   }
 
   @Test
-  public void isTerminatedWithNonTerminatedThread() {
+  void isTerminatedWithNonTerminatedThread() {
     testThreadInNonDesiredState(Thread.State.TERMINATED, ThreadUtils::isTerminated);
   }
 
   @Test
-  public void isTerminatedWithNullThread() {
+  void isTerminatedWithNullThread() {
     assertThat(ThreadUtils.isTerminated(null)).isFalse();
   }
 
   @Test
-  public void isTimedWaitingWithTimedWaitingThread() {
+  void isTimedWaitingWithTimedWaitingThread() {
 
     doReturn(Thread.State.TIMED_WAITING).when(this.mockThread).getState();
 
@@ -339,7 +339,7 @@ public class ThreadUtilsUnitTests {
   }
 
   @Test
-  public void isTimedWaitingWithWaitingThread() {
+  void isTimedWaitingWithWaitingThread() {
 
     doReturn(Thread.State.WAITING).when(this.mockThread).getState();
 
@@ -350,17 +350,17 @@ public class ThreadUtilsUnitTests {
   }
 
   @Test
-  public void isTimedWaitingWithNonTimedWaitingThread() {
+  void isTimedWaitingWithNonTimedWaitingThread() {
     testThreadInNonDesiredState(Thread.State.TIMED_WAITING, ThreadUtils::isTimedWaiting);
   }
 
   @Test
-  public void isTimedWaitingWithNullThread() {
+  void isTimedWaitingWithNullThread() {
     assertThat(ThreadUtils.isTimedWaiting(null)).isFalse();
   }
 
   @Test
-  public void isWaitingWithWaitingThread() {
+  void isWaitingWithWaitingThread() {
 
     doReturn(Thread.State.WAITING).when(this.mockThread).getState();
 
@@ -371,7 +371,7 @@ public class ThreadUtilsUnitTests {
   }
 
   @Test
-  public void isWaitingWithTimedWaitingThread() {
+  void isWaitingWithTimedWaitingThread() {
 
     doReturn(Thread.State.TIMED_WAITING).when(this.mockThread).getState();
 
@@ -382,17 +382,17 @@ public class ThreadUtilsUnitTests {
   }
 
   @Test
-  public void isWaitingWithNonWaitingThread() {
+  void isWaitingWithNonWaitingThread() {
     testThreadInNonDesiredState(Thread.State.WAITING, ThreadUtils::isWaiting);
   }
 
   @Test
-  public void isWaitingWithNullThread() {
+  void isWaitingWithNullThread() {
     assertThat(ThreadUtils.isWaiting(null)).isFalse();
   }
 
   @Test
-  public void getContextClassLoaderFromMockThread() {
+  void getContextClassLoaderFromMockThread() {
 
     ClassLoader mockClassLoader = mock(ClassLoader.class);
 
@@ -405,7 +405,7 @@ public class ThreadUtilsUnitTests {
   }
 
   @Test
-  public void getContextClassLoaderFromNonNullThread() {
+  void getContextClassLoaderFromNonNullThread() {
 
     Thread thread = new Thread();
 
@@ -416,12 +416,12 @@ public class ThreadUtilsUnitTests {
   }
 
   @Test
-  public void getContextClassLoaderFromNullThread() {
+  void getContextClassLoaderFromNullThread() {
     assertThat(ThreadUtils.getContextClassLoader(null)).isEqualTo(ThreadUtils.class.getClassLoader());
   }
 
   @Test
-  public void getIdFromMockThread() {
+  void getIdFromMockThread() {
 
     doReturn(2L).when(this.mockThread).getId();
 
@@ -432,27 +432,27 @@ public class ThreadUtilsUnitTests {
   }
 
   @Test
-  public void getIdFromNonNullThread() {
+  void getIdFromNonNullThread() {
     assertThat(ThreadUtils.getId(new Thread())).isNotZero();
   }
 
   @Test
-  public void getIdFromNullThread() {
+  void getIdFromNullThread() {
     assertThat(ThreadUtils.getId(null)).isEqualTo(0L);
   }
 
   @Test
-  public void getNameFromNonNullThread() {
+  void getNameFromNonNullThread() {
     assertThat(ThreadUtils.getName(new Thread("test"))).isEqualTo("test");
   }
 
   @Test
-  public void getNameFromNullThread() {
+  void getNameFromNullThread() {
     assertThat(ThreadUtils.getName(null)).isNull();
   }
 
   @Test
-  public void getPriorityFromNonNullThread() {
+  void getPriorityFromNonNullThread() {
 
     Thread thread = new Thread("test");
 
@@ -462,12 +462,12 @@ public class ThreadUtilsUnitTests {
   }
 
   @Test
-  public void getPriorityFromNullThread() {
+  void getPriorityFromNullThread() {
     assertThat(ThreadUtils.getPriority(null)).isEqualTo(Thread.NORM_PRIORITY);
   }
 
   @Test
-  public void getStackTraceFromNonNullThread() {
+  void getStackTraceFromNonNullThread() {
 
     StackTraceElement[] expectedStackTrace = Thread.currentThread().getStackTrace();
 
@@ -480,7 +480,7 @@ public class ThreadUtilsUnitTests {
   }
 
   @Test
-  public void getStackTraceFromNullThread() {
+  void getStackTraceFromNullThread() {
 
     StackTraceElement[] stackTrace = ThreadUtils.getStackTrace(null);
 
@@ -489,7 +489,7 @@ public class ThreadUtilsUnitTests {
   }
 
   @Test
-  public void getStateFromMockThread() {
+  void getStateFromMockThread() {
 
     doReturn(Thread.State.RUNNABLE).when(this.mockThread).getState();
 
@@ -500,17 +500,17 @@ public class ThreadUtilsUnitTests {
   }
 
   @Test
-  public void getStateFromNonNullThread() {
+  void getStateFromNonNullThread() {
     assertThat(ThreadUtils.getState(new Thread())).isEqualTo(Thread.State.NEW);
   }
 
   @Test
-  public void getStateFromNullThread() {
+  void getStateFromNullThread() {
     assertThat(ThreadUtils.getState(null)).isNull();
   }
 
   @Test
-  public void getThreadGroupFromNonNullThread() {
+  void getThreadGroupFromNonNullThread() {
 
     ThreadGroup expectedThreadGroup = new ThreadGroup("TestGroup");
 
@@ -520,12 +520,12 @@ public class ThreadUtilsUnitTests {
   }
 
   @Test
-  public void getThreadGroupFromNullThread() {
+  void getThreadGroupFromNullThread() {
     assertThat(ThreadUtils.getThreadGroup(null)).isNull();
   }
 
   @Test
-  public void dumpStackWasCalled() {
+  void dumpStackWasCalled() {
 
     PrintStream systemErrorStream = System.err;
 
@@ -563,7 +563,7 @@ public class ThreadUtilsUnitTests {
   }
 
   @Test
-  public void interruptInterruptsThread() {
+  void interruptInterruptsThread() {
 
     ThreadUtils.interrupt(this.mockThread);
 
@@ -572,12 +572,12 @@ public class ThreadUtilsUnitTests {
   }
 
   @Test
-  public void interruptNullThread() {
+  void interruptNullThread() {
     ThreadUtils.interrupt(null);
   }
 
   @Test
-  public void join() {
+  void join() {
 
     final long expectedWait = 500L;
 
@@ -608,12 +608,12 @@ public class ThreadUtilsUnitTests {
   }
 
   @Test
-  public void joinInterrupted() throws Throwable {
+  void joinInterrupted() throws Throwable {
     TestFramework.runOnce(new JoinInterruptedMultithreadedTestCase());
   }
 
   @Test
-  public void joinMainThreadInterruptingTestThread() {
+  void joinMainThreadInterruptingTestThread() {
 
     AtomicBoolean joinSuccess = new AtomicBoolean(true);
     AtomicBoolean ran = new AtomicBoolean(false);
@@ -641,7 +641,7 @@ public class ThreadUtilsUnitTests {
   }
 
   @Test
-  public void joinNullThread() {
+  void joinNullThread() {
 
     long t0 = System.currentTimeMillis();
     boolean success = ThreadUtils.join(null, 1000, 1000);
@@ -652,7 +652,7 @@ public class ThreadUtilsUnitTests {
   }
 
   @Test
-  public void runAtomicallyUsingRunnableIsCorrect() {
+  void runAtomicallyUsingRunnableIsCorrect() {
 
     AtomicBoolean run = new AtomicBoolean(false);
 
@@ -669,7 +669,7 @@ public class ThreadUtilsUnitTests {
   }
 
   @Test
-  public void runAtomicallyUsingRunnableWithoutLockIsCorrect() {
+  void runAtomicallyUsingRunnableWithoutLockIsCorrect() {
 
     AtomicBoolean run = new AtomicBoolean(false);
 
@@ -681,7 +681,7 @@ public class ThreadUtilsUnitTests {
   }
 
   @Test
-  public void runAtomicallyUsingRunnableWithNullOperation() {
+  void runAtomicallyUsingRunnableWithNullOperation() {
 
     assertThatIllegalArgumentException()
       .isThrownBy(() -> ThreadUtils.runAtomically(null, (Runnable) null))
@@ -690,7 +690,7 @@ public class ThreadUtilsUnitTests {
   }
 
   @Test
-  public void runAtomicallyUsingSupplierIsCorrect() {
+  void runAtomicallyUsingSupplierIsCorrect() {
 
     Object lock = new Object();
 
@@ -703,7 +703,7 @@ public class ThreadUtilsUnitTests {
   }
 
   @Test
-  public void runAtomicallyUsingSupplierWithoutLockIsCorrect() {
+  void runAtomicallyUsingSupplierWithoutLockIsCorrect() {
 
     Supplier<String> operation = () -> "mock";
 
@@ -711,7 +711,7 @@ public class ThreadUtilsUnitTests {
   }
 
   @Test
-  public void runAtomicallyUsingSupplierWithNullOperation() {
+  void runAtomicallyUsingSupplierWithNullOperation() {
 
     assertThatIllegalArgumentException()
       .isThrownBy(() -> ThreadUtils.runAtomically(null, (Supplier<?>) null))
@@ -720,7 +720,7 @@ public class ThreadUtilsUnitTests {
   }
 
   @Test
-  public void sleep() {
+  void sleep() {
 
     long expectedWait = 500L;
     long t0 = System.currentTimeMillis();
@@ -734,12 +734,12 @@ public class ThreadUtilsUnitTests {
   }
 
   @Test
-  public void sleepInterrupted() throws Throwable {
+  void sleepInterrupted() throws Throwable {
     TestFramework.runOnce(new SleepInterruptedMultithreadedTestCase());
   }
 
   @Test
-  public void waitForDuration() {
+  void waitForDuration() {
 
     long timeout = System.currentTimeMillis() + 500L;
 
@@ -748,7 +748,7 @@ public class ThreadUtilsUnitTests {
   }
 
   @Test
-  public void waitForPassesConditionImmediately() {
+  void waitForPassesConditionImmediately() {
 
     AtomicInteger count = new AtomicInteger(0);
 
@@ -765,12 +765,12 @@ public class ThreadUtilsUnitTests {
   }
 
   @Test
-  public void waitForInterrupted() throws Throwable {
+  void waitForInterrupted() throws Throwable {
     TestFramework.runOnce(new WaitForInterruptedMultithreadedTestCase());
   }
 
   @Test
-  public void waitForWithInvalidDuration() {
+  void waitForWithInvalidDuration() {
 
     assertThatIllegalArgumentException()
       .isThrownBy(() -> ThreadUtils.waitFor(-500L))
@@ -779,7 +779,7 @@ public class ThreadUtilsUnitTests {
   }
 
   @Test
-  public void waitForWithIntervalGreaterThanDuration() {
+  void waitForWithIntervalGreaterThanDuration() {
 
     assertThatIllegalArgumentException()
       .isThrownBy(() ->ThreadUtils.waitFor(500L).checkEvery(2L, TimeUnit.SECONDS))
@@ -788,7 +788,7 @@ public class ThreadUtilsUnitTests {
   }
 
   @Test
-  public void waitForWithNegativeInterval() {
+  void waitForWithNegativeInterval() {
 
     assertThatIllegalArgumentException()
       .isThrownBy(() ->ThreadUtils.waitFor(500L).checkEvery(-1L, TimeUnit.SECONDS))
@@ -802,7 +802,7 @@ public class ThreadUtilsUnitTests {
     private volatile Thread interruptingThread;
     private volatile Thread joiningThread;
 
-    public void thread1() throws InterruptedException {
+    void thread1() throws InterruptedException {
 
       assertTick(0);
 
