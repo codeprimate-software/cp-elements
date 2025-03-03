@@ -65,6 +65,16 @@ public abstract class Integers {
   }
 
   /**
+   * Returns the given {@link Integer} if not {@literal null} or {@literal -1} if {@literal null}.
+   *
+   * @param number {@link Integer} to evaluate.
+   * @return the given {@link Integer} if not {@literal null} or {@literal -1} if {@literal null}.
+   */
+  public static int defaultInteger(@Nullable Integer number) {
+    return number != null ? number : -1;
+  }
+
+  /**
    * Null-safe method used to determine whether the given {@link Integer value} is greater than {@literal 0}.
    *
    * @param value {@link Integer value} to evaluate.

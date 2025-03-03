@@ -46,6 +46,21 @@ public class IntegersUnitTests {
   }
 
   @Test
+  @SuppressWarnings("all")
+  void defaultIntegerReturnsGivenInteger() {
+
+    assertThat(Integers.defaultInteger(-1)).isEqualTo(-1);
+    assertThat(Integers.defaultInteger(1)).isOne();
+    assertThat(Integers.defaultInteger(2)).isEqualTo(2);
+    assertThat(Integers.defaultInteger(100)).isEqualTo(100);
+  }
+
+  @Test
+  void defaultIntegerForNull() {
+    assertThat(Integers.defaultInteger(null)).isEqualTo(-1);
+  }
+
+  @Test
   public void minusOneIsNotGreaterThanZero() {
     assertThat(Integers.isGreaterThanZero(-1)).isFalse();
   }
