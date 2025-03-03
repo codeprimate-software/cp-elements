@@ -29,6 +29,7 @@ import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.charset.Charset;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -444,7 +445,7 @@ public abstract class FileUtils extends IOUtils {
     Assert.isTrue(isFile(file), "[%s] must be a file", file);
     Assert.state(file.canRead(), "[%s] is not readable", tryGetCanonicalPathElseGetAbsolutePath(file));
 
-    try (BufferedReader fileReader = new BufferedReader(new FileReader(file))) {
+    try (BufferedReader fileReader = new BufferedReader(new FileReader(file, Charset.defaultCharset()))) {
       return fileReader.lines().collect(Collectors.toList());
     }
   }
