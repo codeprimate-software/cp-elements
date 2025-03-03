@@ -997,7 +997,7 @@ public abstract class ReflectionUtils extends ClassUtils {
      */
     @Dsl
     public @NotNull MethodReference withParameterTypes(Class<?>... parameterTypes) {
-      this.parameterTypes = parameterTypes;
+      this.parameterTypes = Arrays.copyOf(parameterTypes, parameterTypes.length);
       return this;
     }
   }
