@@ -76,7 +76,7 @@ public enum Modifiers implements Predicate<Object> {
   @NullSafe
   public static @NotNull Set<Modifiers> modifiersFrom(@Nullable Object target) {
 
-    EnumSet<Modifiers> modifiers = EnumSet.noneOf(Modifiers.class);
+    Set<Modifiers> modifiers = EnumSet.noneOf(Modifiers.class);
 
     int targetModifiers = ModifierUtils.getModifiers(target);
 
