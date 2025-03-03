@@ -46,14 +46,13 @@ import org.cp.elements.test.annotation.IntegrationTest;
  *
  * @author John J. Blum
  * @see java.lang.Process
+ * @see org.cp.elements.process.util.ProcessUtils
+ * @see org.cp.elements.test.annotation.IntegrationTest
  * @see org.junit.jupiter.api.Test
  * @see org.mockito.Mockito
- * @see org.cp.elements.process.util.ProcessUtils
- * @see org.cp.elements.test.TestUtils
- * @see org.cp.elements.test.annotation.IntegrationTest
  * @since 1.0.0
  */
-public class ProcessUtilsTests {
+class ProcessUtilsTests {
 
   @AfterAll
   @SuppressWarnings("all")
@@ -62,17 +61,17 @@ public class ProcessUtilsTests {
   }
 
   @Test
-  public void getProcessIdIsSuccessful() {
+  void getProcessIdIsSuccessful() {
     assertThat(ProcessUtils.getProcessId()).isGreaterThan(0);
   }
 
   @Test
-  public void isAliveWithNullProcess() {
+  void isAliveWithNullProcess() {
     assertThat(ProcessUtils.isAlive(null)).isFalse();
   }
 
   @Test
-  public void isAliveWithRunningProcess() {
+  void isAliveWithRunningProcess() {
 
     Process mockProcess = mock(Process.class);
 
@@ -85,7 +84,7 @@ public class ProcessUtilsTests {
   }
 
   @Test
-  public void isAliveWithTerminatedProcess() {
+  void isAliveWithTerminatedProcess() {
 
     Process mockProcess = mock(Process.class);
 
@@ -98,22 +97,22 @@ public class ProcessUtilsTests {
   }
 
   @Test
-  public void isRunningWithNonExistingProcessId() {
+  void isRunningWithNonExistingProcessId() {
     assertThat(ProcessUtils.isRunning(-12345)).isFalse();
   }
 
   @Test
-  public void isRunningWithRunningProcessId() {
+  void isRunningWithRunningProcessId() {
     assertThat(ProcessUtils.isRunning(ProcessUtils.getProcessId())).isTrue();
   }
 
   @Test
-  public void isRunningWithNullProcess() {
+  void isRunningWithNullProcess() {
     assertThat(ProcessUtils.isRunning((Process) null)).isFalse();
   }
 
   @Test
-  public void isRunningWithRunningProcess() {
+  void isRunningWithRunningProcess() {
 
     Process mockProcess = mock(Process.class);
 
@@ -126,7 +125,7 @@ public class ProcessUtilsTests {
   }
 
   @Test
-  public void isRunningWithTerminatedProcess() {
+  void isRunningWithTerminatedProcess() {
 
     Process mockProcess = mock(Process.class);
 
@@ -139,12 +138,12 @@ public class ProcessUtilsTests {
   }
 
   @Test
-  public void isRunningWithNullProcessAdapter() {
+  void isRunningWithNullProcessAdapter() {
     assertThat(ProcessUtils.isRunning((ProcessAdapter) null)).isFalse();
   }
 
   @Test
-  public void isRunningWithRunningProcessAdapter() {
+  void isRunningWithRunningProcessAdapter() {
 
     Process mockProcess = mock(Process.class);
 
@@ -157,7 +156,7 @@ public class ProcessUtilsTests {
   }
 
   @Test
-  public void isRunningWithTerminatedProcessAdapter() {
+  void isRunningWithTerminatedProcessAdapter() {
 
     Process mockProcess = mock(Process.class);
 
@@ -170,7 +169,7 @@ public class ProcessUtilsTests {
   }
 
   @Test
-  public void killTerminatedProcessIsSuccessful() throws Exception {
+  void killTerminatedProcessIsSuccessful() throws Exception {
 
     Process mockProcess = mock(Process.class);
 
@@ -185,7 +184,7 @@ public class ProcessUtilsTests {
   }
 
   @Test
-  public void killRunningProcessIsSuccessful() throws Exception {
+  void killRunningProcessIsSuccessful() throws Exception {
 
     Process mockProcess = mock(Process.class);
 
@@ -201,7 +200,7 @@ public class ProcessUtilsTests {
   }
 
   @Test
-  public void killRunningProcessForciblyIsSuccessful() throws Exception {
+  void killRunningProcessForciblyIsSuccessful() throws Exception {
 
     Process mockProcess = mock(Process.class);
 
@@ -217,7 +216,7 @@ public class ProcessUtilsTests {
   }
 
   @Test
-  public void killRunningProcessIsUnsuccessful() throws Exception {
+  void killRunningProcessIsUnsuccessful() throws Exception {
 
     Process mockProcess = mock(Process.class);
 
@@ -234,12 +233,12 @@ public class ProcessUtilsTests {
   }
 
   @Test
-  public void killNullProcessIsSuccessful() {
+  void killNullProcessIsSuccessful() {
     assertThat(ProcessUtils.kill((Process) null)).isTrue();
   }
 
   @Test
-  public void killRunningProcessIsInterruptedWhileWaitingIsSuccessful() throws Exception {
+  void killRunningProcessIsInterruptedWhileWaitingIsSuccessful() throws Exception {
 
     Process mockProcess = mock(Process.class);
 
@@ -257,7 +256,7 @@ public class ProcessUtilsTests {
   }
 
   @Test
-  public void killRunningProcessIsInterruptedTwiceWhileWaitingIsUnsuccessful() throws Exception {
+  void killRunningProcessIsInterruptedTwiceWhileWaitingIsUnsuccessful() throws Exception {
 
     Process mockProcess = mock(Process.class);
 
@@ -275,7 +274,7 @@ public class ProcessUtilsTests {
   }
 
   @Test
-  public void killRunningProcessAdapterIsSuccessful() throws Exception {
+  void killRunningProcessAdapterIsSuccessful() throws Exception {
 
     Process mockProcess = mock(Process.class);
 
@@ -292,7 +291,7 @@ public class ProcessUtilsTests {
 
   @Test
   @IntegrationTest
-  public void writeAndReadPidIsSuccessful() throws IOException {
+  void writeAndReadPidIsSuccessful() throws IOException {
 
     File pidFile = null;
 
@@ -317,7 +316,7 @@ public class ProcessUtilsTests {
 
   @Test
   @IntegrationTest
-  public void readPidFromEmptyFileThrowsPidUnknownExceptionCausedByNumberFormatException() throws IOException {
+  void readPidFromEmptyFileThrowsPidUnknownExceptionCausedByNumberFormatException() throws IOException {
 
     File tmpPid = File.createTempFile("tempFile", ".pid");
 
@@ -336,7 +335,7 @@ public class ProcessUtilsTests {
 
   @Test
   @SuppressWarnings("all")
-  public void readPidFromNonExistingFileThrowsPidUnknownExceptionCausedByIllegalArgumentException() {
+  void readPidFromNonExistingFileThrowsPidUnknownExceptionCausedByIllegalArgumentException() {
 
     File mockFile = mock(File.class);
 
@@ -355,7 +354,7 @@ public class ProcessUtilsTests {
 
   @Test
   @SuppressWarnings("all")
-  public void readPidFromUnreadableFileThrowsPidUnknownExceptionCausedByIllegalStateException() {
+  void readPidFromUnreadableFileThrowsPidUnknownExceptionCausedByIllegalStateException() {
 
     File mockFile = mock(File.class);
 
@@ -374,12 +373,12 @@ public class ProcessUtilsTests {
   }
 
   @Test
-  public void findPidFileInCurrentWorkingDirectoryReturnsNull() {
+  void findPidFileInCurrentWorkingDirectoryReturnsNull() {
     assertThat(ProcessUtils.findPidFile(FileSystemUtils.WORKING_DIRECTORY)).isNull();
   }
 
   @Test
-  public void findPidFileWithNonExistingPathThrowsIllegalArgumentException() {
+  void findPidFileWithNonExistingPathThrowsIllegalArgumentException() {
 
     File nonExistingFile = new File("/absolute/path/to/non/existing/file");
 
@@ -390,7 +389,7 @@ public class ProcessUtilsTests {
   }
 
   @Test
-  public void findPidFileWithNullThrowsIllegalArgumentException() {
+  void findPidFileWithNullThrowsIllegalArgumentException() {
 
     assertThatIllegalArgumentException()
       .isThrownBy(() -> ProcessUtils.findPidFile(null))

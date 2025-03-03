@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.lang.management.ManagementFactory;
 import java.lang.management.RuntimeMXBean;
+import java.nio.charset.StandardCharsets;
 import java.util.concurrent.TimeUnit;
 
 import com.sun.tools.attach.VirtualMachine;
@@ -139,7 +140,7 @@ public abstract class ProcessUtils {
   public static boolean isRunning(@Nullable Process process) {
 
     try {
-      return process != null && process.exitValue() == Double.NaN;
+      return process != null && Double.isNaN(process.exitValue());
     }
     catch (IllegalThreadStateException ignore) {
       return true;
@@ -376,7 +377,7 @@ public abstract class ProcessUtils {
   }
 
   private static @NotNull PrintWriter newPrintWriter(@NotNull File file) throws IOException {
-    return new PrintWriter(new BufferedWriter(new FileWriter(file, false), 32), true);
+    return new PrintWriter(new BufferedWriter(new FileWriter(file, StandardCharsets.UTF_8, false), 32), true);
   }
 
   enum VirtualMachineAccessor {
