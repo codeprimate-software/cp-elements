@@ -120,7 +120,7 @@ public class SimpleTypeResolverUnitTests {
 
     assertThatExceptionOfType(TypeNotFoundException.class)
       .isThrownBy(() -> SimpleTypeResolver.INSTANCE.resolveType(null))
-      .withMessage("Unable to resolve type of object [null]")
+      .withMessage("Cannot resolve type for null Object")
       .withNoCause();
   }
 

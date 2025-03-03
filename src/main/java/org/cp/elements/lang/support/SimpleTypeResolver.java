@@ -61,7 +61,7 @@ public class SimpleTypeResolver implements TypeResolver {
     }
 
     // Most likely, target is null.
-    throw newTypeNotFoundException("Unable to resolve type of object [%s]", target);
+    throw newTypeNotFoundException("Cannot resolve type for null Object");
   }
 
   Class<?> finalResolveType(Object target) {
