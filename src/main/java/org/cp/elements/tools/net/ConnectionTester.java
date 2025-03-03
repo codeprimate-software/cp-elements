@@ -210,7 +210,7 @@ public class ConnectionTester implements Condition, Tester {
    * @see #getPort()
    */
   @Override
-  public boolean test() {
+  public boolean test() { // NOPMD
 
     if (isNotConnected()) {
       try (Socket socket = newSocket()) {
