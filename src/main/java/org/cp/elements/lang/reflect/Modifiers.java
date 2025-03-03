@@ -16,7 +16,7 @@
 package org.cp.elements.lang.reflect;
 
 import java.lang.reflect.Modifier;
-import java.util.HashSet;
+import java.util.EnumSet;
 import java.util.Set;
 import java.util.function.Predicate;
 
@@ -76,7 +76,7 @@ public enum Modifiers implements Predicate<Object> {
   @NullSafe
   public static @NotNull Set<Modifiers> modifiersFrom(@Nullable Object target) {
 
-    Set<Modifiers> modifiers = new HashSet<>();
+    EnumSet<Modifiers> modifiers = EnumSet.noneOf(Modifiers.class);
 
     int targetModifiers = ModifierUtils.getModifiers(target);
 

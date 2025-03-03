@@ -34,19 +34,16 @@ import org.junit.jupiter.api.Test;
  * Unit Tests for {@link Modifiers}.
  *
  * @author John Blum
- * @see java.lang.reflect.Field
- * @see java.lang.reflect.Member
- * @see java.lang.reflect.Method
  * @see java.lang.reflect.Modifier
+ * @see org.cp.elements.lang.reflect.Modifiers
  * @see org.junit.jupiter.api.Test
  * @see org.mockito.Mockito
- * @see org.cp.elements.lang.reflect.Modifiers
  * @since 1.0.0
  */
-public class ModifiersUnitTests {
+class ModifiersUnitTests {
 
   @Test
-  public void fromJavaModifierToModifierEnumeratedValueIsCorrect() {
+  void fromJavaModifierToModifierEnumeratedValueIsCorrect() {
 
     for (int javaModifier : ModifierUtils.JAVA_MODIFIERS) {
 
@@ -59,7 +56,7 @@ public class ModifiersUnitTests {
   }
 
   @Test
-  public void fromUnknownJavaModifierReturnsNull() {
+  void fromUnknownJavaModifierReturnsNull() {
 
     assertThat((Object) Modifiers.from(0)).isNull();
     assertThat((Object) Modifiers.from(-1)).isNull();
@@ -67,7 +64,7 @@ public class ModifiersUnitTests {
   }
 
   @Test
-  public void modifiersFromClass() {
+  void modifiersFromClass() {
 
     Set<Modifiers> modifiers = Modifiers.modifiersFrom(Object.class);
 
@@ -77,7 +74,7 @@ public class ModifiersUnitTests {
   }
 
   @Test
-  public void modifiersFromClassMemberWithNoModifiers() {
+  void modifiersFromClassMemberWithNoModifiers() {
 
     Set<Modifiers> modifiers = Modifiers.modifiersFrom(DummyClass.class);
 
@@ -86,7 +83,7 @@ public class ModifiersUnitTests {
   }
 
   @Test
-  public void modifiersFromInterface() {
+  void modifiersFromInterface() {
 
     Set<Modifiers> modifiers = Modifiers.modifiersFrom(Cloneable.class);
 
@@ -96,7 +93,7 @@ public class ModifiersUnitTests {
   }
 
   @Test
-  public void modifiersFromInterfaceMember() {
+  void modifiersFromInterfaceMember() {
 
     Set<Modifiers> modifiers = Modifiers.modifiersFrom(TestInterface.class);
 
@@ -106,7 +103,7 @@ public class ModifiersUnitTests {
   }
 
   @Test
-  public void modifiersFromField() throws NoSuchFieldException {
+  void modifiersFromField() throws NoSuchFieldException {
 
     Field testField = TestClass.class.getDeclaredField("testField");
 
@@ -121,7 +118,7 @@ public class ModifiersUnitTests {
   }
 
   @Test
-  public void modifiersFromMember() {
+  void modifiersFromMember() {
 
     Member mockMember = mock(Member.class);
 
@@ -140,7 +137,7 @@ public class ModifiersUnitTests {
   }
 
   @Test
-  public void modifiersFromMethod() throws NoSuchMethodException {
+  void modifiersFromMethod() throws NoSuchMethodException {
 
     Method testMethod = TestClass.class.getDeclaredMethod("testMethod");
 
@@ -155,7 +152,7 @@ public class ModifiersUnitTests {
   }
 
   @Test
-  public void modifiersFromNull() {
+  void modifiersFromNull() {
 
     Set<Modifiers> modifiers = Modifiers.modifiersFrom(null);
 
@@ -164,7 +161,7 @@ public class ModifiersUnitTests {
   }
 
   @Test
-  public void modifiersFromObject() {
+  void modifiersFromObject() {
 
     Set<Modifiers> modifiers = Modifiers.modifiersFrom(new TestClass());
 
@@ -174,32 +171,32 @@ public class ModifiersUnitTests {
   }
 
   @Test
-  public void predicateTestReturnsTrue() {
+  void predicateTestReturnsTrue() {
     assertThat(Modifiers.PRIVATE.test(TestClass.class)).isTrue();
   }
 
   @Test
-  public void predicateTestReturnsFalse() {
+  void predicateTestReturnsFalse() {
     assertThat(Modifiers.INTERFACE.test(TestClass.class)).isFalse();
   }
 
   @Test
-  public void predicateAndTestReturnsTrue() {
+  void predicateAndTestReturnsTrue() {
     assertThat(Modifiers.ABSTRACT.and(Modifiers.INTERFACE).and(Modifiers.STATIC).test(TestInterface.class)).isTrue();
   }
 
   @Test
-  public void predicateAndTestReturnsFalse() {
+  void predicateAndTestReturnsFalse() {
     assertThat(Modifiers.PRIVATE.and(Modifiers.STATIC).and(Modifiers.INTERFACE).test(TestClass.class)).isFalse();
   }
 
   @Test
-  public void predicateOrTestReturnsTrue() {
+  void predicateOrTestReturnsTrue() {
     assertThat(Modifiers.PRIVATE.or(Modifiers.INTERFACE).test(TestClass.class)).isTrue();
   }
 
   @Test
-  public void predicateOrTestReturnsFalse() {
+  void predicateOrTestReturnsFalse() {
     assertThat(Modifiers.PUBLIC.or(Modifiers.FINAL).test(TestInterface.class)).isFalse();
   }
 
