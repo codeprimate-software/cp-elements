@@ -15,6 +15,7 @@
  */
 package org.cp.elements.data.oql.support;
 
+import java.io.Serializable;
 import java.util.Comparator;
 import java.util.Iterator;
 
@@ -95,7 +96,7 @@ public record OrderByClause<S, T>(@NotNull From<S, T> from, Comparator<T>... com
     return copy(OrderBy.super.thenOrderBy(comparator));
   }
 
-  protected static class NoOrder<S> implements Comparator<S> {
+  protected static class NoOrder<S> implements Comparator<S>, Serializable {
 
     @Override
     public int compare(S comparableOne, S comparableTwo) {
