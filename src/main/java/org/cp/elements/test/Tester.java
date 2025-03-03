@@ -30,6 +30,6 @@ public interface Tester {
    *
    * @return a boolean value indicating whether the test passed or failed.
    */
-  boolean test();
+  boolean test(); // NOPMD
 
 }
