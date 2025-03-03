@@ -22,6 +22,7 @@ import java.time.Month;
 import java.time.Year;
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
@@ -777,11 +778,11 @@ public class Timespan implements Comparable<Timespan>, Renderable {
   @SuppressWarnings("all")
   public int compareTo(@NotNull Timespan that) {
 
-    return this.getBegin() == null ? -1
-      : that.getBegin() == null ? 1
+    return Objects.isNull(this.getBegin()) ? -1
+      : Objects.isNull(that.getBegin()) ? 1
       : this.getBegin().isBefore(that.getBegin()) ? -1
-      : that.getEnd() == null ? -1
-      : this.getEnd() == null ? 1
+      : Objects.isNull(that.getEnd()) ? -1
+      : Objects.isNull(this.getEnd()) ? 1
       : this.getEnd().isBefore(that.getEnd()) ? -1
       : 0;
   }
