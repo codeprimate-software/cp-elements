@@ -86,7 +86,7 @@ public class SimpleBloomFilter<T> implements BloomFilter<T> {
     BIT_MASKS[31] = 0x80000000;
   }
 
-  private float falsePositiveRate;
+  private volatile float falsePositiveRate;
 
   private final int hashFunctionCount;
 
