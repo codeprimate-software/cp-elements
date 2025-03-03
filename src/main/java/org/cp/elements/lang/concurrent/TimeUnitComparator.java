@@ -13,17 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.lang.concurrent;
 
 import java.util.Comparator;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.EnumMap;
 import java.util.concurrent.TimeUnit;
 
+import org.cp.elements.lang.annotation.NotNull;
+import org.cp.elements.lang.annotation.Nullable;
+import org.cp.elements.util.ComparatorResultBuilder;
+
 /**
- * The TimeUnitComparator class is a Comparator implementation that compares 2 java.util.concurrent.TimeUnit objects
- * for order.
+ * {@link Comparator} implementation that compares 2 {@link TimeUnit} objects to determine order.
  *
  * @author John J. Blum
  * @see java.util.Comparator
@@ -35,7 +36,7 @@ public class TimeUnitComparator implements Comparator<TimeUnit> {
 
   public static final Comparator<TimeUnit> INSTANCE = new TimeUnitComparator();
 
-  private static final Map<TimeUnit, Integer> TIME_UNIT_VALUE = new HashMap<>(TimeUnit.values().length + 1);
+  private static final EnumMap<TimeUnit, Integer> TIME_UNIT_VALUE = new EnumMap<>(TimeUnit.class);
 
   static {
     int value = 0;
@@ -46,14 +47,13 @@ public class TimeUnitComparator implements Comparator<TimeUnit> {
     TIME_UNIT_VALUE.put(TimeUnit.MINUTES, ++value);
     TIME_UNIT_VALUE.put(TimeUnit.HOURS, ++value);
     TIME_UNIT_VALUE.put(TimeUnit.DAYS, ++value);
-    TIME_UNIT_VALUE.put(null, Integer.MAX_VALUE);
   }
 
   /**
-   * Compares 2 TimeUnit values for order.
+   * Compares 2 {@link TimeUnit} values for order.
    *
-   * @param timeUnitOne the first TimeUnit operand in the relational comparison.
-   * @param timeUnitTwo the second TimeUnit operand in the relational comparison
+   * @param timeUnitOne first {@link TimeUnit} operand in the relational comparison.
+   * @param timeUnitTwo second {@link TimeUnit} operand in the relational comparison
    * @return an integer value indicating the relative order of TimeUnit 1 to TimeUnit 2 returning a negative value
    * if TimeUnit 1 is less than TimeUnit 2, a positive value if Time Unit 1 is greater than TimeUnit 2 or 0
    * if the 2 TimUnit objects are equal.
@@ -61,9 +61,14 @@ public class TimeUnitComparator implements Comparator<TimeUnit> {
    * @see java.util.concurrent.TimeUnit
    */
   @Override
-  public int compare(final TimeUnit timeUnitOne, final TimeUnit timeUnitTwo) {
-    return Integer.valueOf(String.valueOf(TIME_UNIT_VALUE.get(timeUnitOne))).compareTo(
-      TIME_UNIT_VALUE.get(timeUnitTwo));
+  public int compare(@NotNull TimeUnit timeUnitOne, @NotNull TimeUnit timeUnitTwo) {
+
+    return ComparatorResultBuilder.<Integer>create()
+      .doCompare(defaultInteger(TIME_UNIT_VALUE.get(timeUnitOne)), defaultInteger(TIME_UNIT_VALUE.get(timeUnitTwo)))
+      .build();
   }
 
+  private int defaultInteger(@Nullable Integer value) {
+    return value != null ? value : Integer.MAX_VALUE;
+  }
 }

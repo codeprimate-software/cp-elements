@@ -26,14 +26,14 @@ import org.junit.jupiter.api.Test;
  *
  * @author John J. Blum
  * @see java.util.concurrent.TimeUnit
- * @see org.junit.jupiter.api.Test
  * @see org.cp.elements.lang.concurrent.TimeUnitComparator
+ * @see org.junit.jupiter.api.Test
  * @since 1.0.0
  */
-public class TimeUnitComparatorTest {
+class TimeUnitComparatorTest {
 
   @Test
-  public void compareTimeUnitsAllEqualTo() {
+  void compareTimeUnitsAllEqualTo() {
 
     assertThat(TimeUnitComparator.INSTANCE.compare(null, null)).isZero();
     assertThat(TimeUnitComparator.INSTANCE.compare(TimeUnit.DAYS, TimeUnit.DAYS)).isZero();
@@ -46,7 +46,7 @@ public class TimeUnitComparatorTest {
   }
 
   @Test
-  public void compareTimeUnitsAllGreaterThan() {
+  void compareTimeUnitsAllGreaterThan() {
 
     assertThat(TimeUnitComparator.INSTANCE.compare(null, TimeUnit.DAYS)).isGreaterThan(0);
     assertThat(TimeUnitComparator.INSTANCE.compare(TimeUnit.DAYS, TimeUnit.HOURS)).isGreaterThan(0);
@@ -58,7 +58,7 @@ public class TimeUnitComparatorTest {
   }
 
   @Test
-  public void compareTimeUnitsAllLessThan() {
+  void compareTimeUnitsAllLessThan() {
 
     assertThat(TimeUnitComparator.INSTANCE.compare(TimeUnit.NANOSECONDS, TimeUnit.MICROSECONDS)).isLessThan(0);
     assertThat(TimeUnitComparator.INSTANCE.compare(TimeUnit.MICROSECONDS, TimeUnit.MILLISECONDS)).isLessThan(0);
