@@ -17,6 +17,7 @@ package org.cp.elements.lang.concurrent;
 
 import java.util.Comparator;
 import java.util.EnumMap;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import org.cp.elements.lang.annotation.NotNull;
@@ -36,7 +37,7 @@ public class TimeUnitComparator implements Comparator<TimeUnit> {
 
   public static final Comparator<TimeUnit> INSTANCE = new TimeUnitComparator();
 
-  private static final EnumMap<TimeUnit, Integer> TIME_UNIT_VALUE = new EnumMap<>(TimeUnit.class);
+  private static final Map<TimeUnit, Integer> TIME_UNIT_VALUE = new EnumMap<>(TimeUnit.class);
 
   static {
     int value = 0;
