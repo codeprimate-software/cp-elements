@@ -60,7 +60,7 @@ public abstract class CollectionExtensions {
   @Dsl
   @SafeVarargs
   public static <T> From<T> from(T... array) {
-    return new FromExpression<>(array);
+    return new FromExpression<>(ArrayUtils.nullSafeArray(array));
   }
 
   /**
@@ -106,7 +106,7 @@ public abstract class CollectionExtensions {
 
     @SafeVarargs
     public FromExpression(T... array) {
-      this.array = array;
+      this.array = Arrays.copyOf(array, array.length);
     }
 
     @Override
