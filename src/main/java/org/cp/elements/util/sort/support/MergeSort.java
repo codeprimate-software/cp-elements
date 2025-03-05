@@ -49,7 +49,7 @@ public class MergeSort extends AbstractSorter {
   @SuppressWarnings("unchecked")
   public <E> E[] sort(E... elements) {
 
-    return (E[]) sort(new SortableArrayList<>(elements)).toArray(
+    return sort(new SortableArrayList<>(elements)).toArray(
       (E[]) Array.newInstance(elements.getClass().getComponentType(), elements.length));
   }
 
