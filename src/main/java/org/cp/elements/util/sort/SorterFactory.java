@@ -15,6 +15,8 @@
  */
 package org.cp.elements.util.sort;
 
+import static org.cp.elements.lang.RuntimeExceptionsFactory.newIllegalArgumentException;
+
 import org.cp.elements.lang.annotation.NotNull;
 import org.cp.elements.lang.annotation.Nullable;
 import org.cp.elements.util.sort.support.BubbleSort;
@@ -59,27 +61,18 @@ public final class SorterFactory {
 
     SortType resolvedSortType = type != null ? type : SortType.UNKONWN;
 
-    switch (resolvedSortType) {
-      case BUBBLE_SORT:
-        return (T) new BubbleSort();
-      case COMB_SORT:
-        return (T) new CombSort();
-      case HEAP_SORT:
-        return (T) new HeapSort();
-      case INSERTION_SORT:
-        return (T) new InsertionSort();
-      case MERGE_SORT:
-        return (T) new MergeSort();
-      case QUICK_SORT:
-        return (T) new QuickSort();
-      case SELECTION_SORT:
-        return (T) new SelectionSort();
-      case SHELL_SORT:
-        return (T) new ShellSort();
-      default:
-        throw new IllegalArgumentException(String.format("The SortType (%1$s) is not supported by the %2$s!", type,
-          SorterFactory.class.getSimpleName()));
-    }
+    return switch (resolvedSortType) {
+      case BUBBLE_SORT -> (T) new BubbleSort();
+      case COMB_SORT -> (T) new CombSort();
+      case HEAP_SORT -> (T) new HeapSort();
+      case INSERTION_SORT -> (T) new InsertionSort();
+      case MERGE_SORT -> (T) new MergeSort();
+      case QUICK_SORT -> (T) new QuickSort();
+      case SELECTION_SORT -> (T) new SelectionSort();
+      case SHELL_SORT -> (T) new ShellSort();
+      default -> throw newIllegalArgumentException("The SortType (%1$s) is not supported by the %2$s!",
+        type, SorterFactory.class.getSimpleName());
+    };
   }
 
   /**
