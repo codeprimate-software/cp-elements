@@ -64,7 +64,7 @@ import org.cp.elements.util.stream.StreamUtils;
 @SuppressWarnings("unused")
 public abstract class CollectionUtils {
 
-  private static final Random random = new Random();
+  private static final Random RANDOM = new Random();
 
   /**
    * Assert that the given {@link Collection} is not {@literal null} and not {@literal empty}.
@@ -702,10 +702,10 @@ public abstract class CollectionUtils {
 
     if (isNotEmpty(list)) {
 
-      random.setSeed(System.currentTimeMillis());
+      RANDOM.setSeed(System.currentTimeMillis());
 
       for (int index = 0, sizeMinusOne = nullSafeSize(list) - 1; index < sizeMinusOne; index++) {
-        int randomIndex = random.nextInt(sizeMinusOne - index) + 1;
+        int randomIndex = RANDOM.nextInt(sizeMinusOne - index) + 1;
         Collections.swap(list, index, index + randomIndex);
       }
     }
