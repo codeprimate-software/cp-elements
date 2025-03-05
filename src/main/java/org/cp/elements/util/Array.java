@@ -219,6 +219,15 @@ public interface Array<T> extends Iterable<T>, Streamable<T> {
     return StreamUtils.stream(this);
   }
 
+  /**
+   * Transforms the {@link T elements} in this {@link Array} into {@link Object Objects} of type {@link V}.
+   *
+   * @param <V> {@link Class transformed type} of the {@link T element} in this {@link Array}.
+   * @param function {@link Function} used to transform the {@link T elements} in this {@link Array}.
+   * @return a new {@link Array} with {@link T elements} from this {@link Array} transformed into {@link Object Objects}
+   * of type {@link V}.
+   * @see java.util.function.Function
+   */
   @SuppressWarnings("unchecked")
   default <V> Array<V> transform(@NotNull Function<T, V> function) {
     Assert.notNull(function, "Function is required");
@@ -240,6 +249,8 @@ public interface Array<T> extends Iterable<T>, Streamable<T> {
 
   /**
    * Abstract base class for all {@link Array} implementations.
+   *
+   * @param <T> {@link Class type} of {@link Object elements} in the array.
    */
   abstract class AbstractArray<T> implements Array<T> {
 
