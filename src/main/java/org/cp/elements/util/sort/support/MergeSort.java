@@ -17,6 +17,7 @@ package org.cp.elements.util.sort.support;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 import org.cp.elements.util.sort.AbstractSorter;
@@ -79,13 +80,14 @@ public class MergeSort extends AbstractSorter {
   }
 
   /**
-   * Merges two List of elements in sorted order as determined by the orderBy Comparator, or as determined by the
-   * natural order of the elements in the Lists.
+   * Merges two {@link List} of elements in sorted order as determined by the {@link Comparator orderBy},
+   * or as determined by the natural order of the elements in the 2 {@link List Lists}.
    *
-   * @param <E> the Class type of the elements in the List.
-   * @param leftElements the left List of elements to merge.
-   * @param rightElements the right List of elements to merge.
-   * @return a new List containing the elements from the left and right Lists merged in sorted order.
+   * @param <E> {@link Class type} of the elements in the {@link List}.
+   * @param leftElements left {@link List} of elements to merge.
+   * @param rightElements right {@link List} of elements to merge.
+   * @return a new {@link List} containing the elements from the left and right {@link List Lists}
+   * merged in sorted order.
    * @see java.util.List
    */
   // TODO: Solve the ArrayList allocation (memory resource consumption) problem!
