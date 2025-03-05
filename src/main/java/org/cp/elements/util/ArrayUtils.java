@@ -180,7 +180,8 @@ public abstract class ArrayUtils {
   }
 
   /**
-   * Returns the given {@link Object[] array} into a strongly typed array of the given {@link Class componentType}.
+   * Returns the given array of {@link Object Objects} into a strongly typed array
+   * of the given {@link Class componentType}.
    *
    * @param <T> {@link Class type} of {@link Object elements} in the array.
    * @param array {@link Object[] array} to process; required.
