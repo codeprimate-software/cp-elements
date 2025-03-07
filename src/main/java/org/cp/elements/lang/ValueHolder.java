@@ -150,6 +150,10 @@ public class ValueHolder<T> {
    * @param value {@link Object value} held by {@literal this} {@link ValueHolder}.
    */
   public void setValue(@Nullable T value) {
+    writeValue(value);
+  }
+
+  final void writeValue(T value) {
     this.value = value;
   }
 
@@ -237,7 +241,7 @@ public class ValueHolder<T> {
     @Serial
     @SuppressWarnings("unchecked")
     private void readObject(@NotNull ObjectInputStream in) throws ClassNotFoundException, IOException {
-      setValue((T) in.readObject());
+      writeValue((T) in.readObject());
     }
 
     @Serial

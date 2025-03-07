@@ -36,10 +36,10 @@ import org.junit.jupiter.api.Test;
  * @see org.cp.elements.test.TestUtils
  * @since 1.0.0
  */
-public class ValueHolderUnitTests {
+class ValueHolderUnitTests {
 
   @Test
-  public void constructWithNullValue() {
+  void constructWithNullValue() {
 
     ValueHolder<Object> valueHolder = new ValueHolder<>(null);
 
@@ -48,7 +48,7 @@ public class ValueHolderUnitTests {
   }
 
   @Test
-  public void constructWithNonNullValue() {
+  void constructWithNonNullValue() {
 
     ValueHolder<String> valueHolder = new ValueHolder<>("test");
 
@@ -57,7 +57,7 @@ public class ValueHolderUnitTests {
   }
 
   @Test
-  public void setAndGetValue() {
+  void setAndGetValue() {
 
     ValueHolder<String> valueHolder = new ValueHolder<>();
 
@@ -77,7 +77,7 @@ public class ValueHolderUnitTests {
   }
 
   @Test
-  public void equalValues() {
+  void equalValues() {
 
     ValueHolder<String> testValueOne = new ValueHolder<>("test");
     ValueHolder<String> testValueTwo = new ValueHolder<>("test");
@@ -88,7 +88,7 @@ public class ValueHolderUnitTests {
   }
 
   @Test
-  public void unequalValues() {
+  void unequalValues() {
 
     ValueHolder<String> testValue = new ValueHolder<>("test");
     ValueHolder<String> mockValue = new ValueHolder<>("mock");
@@ -99,7 +99,7 @@ public class ValueHolderUnitTests {
   }
 
   @Test
-  public void hashCodeValue() {
+  void hashCodeValue() {
 
     ValueHolder<String> valueHolder = new ValueHolder<>("test");
 
@@ -109,7 +109,7 @@ public class ValueHolderUnitTests {
   }
 
   @Test
-  public void toStringIsValue() {
+  void toStringIsValue() {
 
     ValueHolder<Object> valueHolder = new ValueHolder<>("test");
 
@@ -133,7 +133,7 @@ public class ValueHolderUnitTests {
   }
 
   @Test
-  public void withComparableValue() {
+  void withComparableValue() {
 
     ValueHolder.ComparableValueHolder<String> comparableValue = ValueHolder.withComparableValue("one");
 
@@ -146,7 +146,7 @@ public class ValueHolderUnitTests {
   }
 
   @Test
-  public void withComparableValueInitializedWithNullIsNullSafe() {
+  void withComparableValueInitializedWithNullIsNullSafe() {
 
     ValueHolder.ComparableValueHolder<String> nullComparableValue = ValueHolder.withComparableValue(null);
 
@@ -156,7 +156,7 @@ public class ValueHolderUnitTests {
   }
 
   @Test
-  public void withImmutableValue() {
+  void withImmutableValue() {
 
     Calendar today = Calendar.getInstance();
 
@@ -206,7 +206,7 @@ public class ValueHolderUnitTests {
   }
 
   @Test
-  public void withImmutableValueInitializedWithNull() {
+  void withImmutableValueInitializedWithNull() {
 
     assertThatExceptionOfType(IllegalTypeException.class)
       .isThrownBy(() -> ValueHolder.withImmutableValue(null))
@@ -215,7 +215,7 @@ public class ValueHolderUnitTests {
   }
 
   @Test
-  public void withNonNullValue() {
+  void withNonNullValue() {
 
     ValueHolder<String> nonNullValue = ValueHolder.withNonNullValue("test");
 
@@ -236,7 +236,7 @@ public class ValueHolderUnitTests {
   }
 
   @Test
-  public void withNonNullValueInitializedWithNull() {
+  void withNonNullValueInitializedWithNull() {
 
     assertThatIllegalArgumentException()
       .isThrownBy(() -> ValueHolder.withNonNullValue(null))
@@ -245,7 +245,7 @@ public class ValueHolderUnitTests {
   }
 
   @Test
-  public void withNonNullValueSetToNull() {
+  void withNonNullValueSetToNull() {
 
     ValueHolder<String> nonNullValue = ValueHolder.withNonNullValue("test");
 
@@ -262,7 +262,7 @@ public class ValueHolderUnitTests {
 
   @Test
   @SuppressWarnings("unchecked")
-  public void withSerializableValue() throws Exception {
+  void withSerializableValue() throws Exception {
 
     ValueHolder<Integer> twentyOne = ValueHolder.withSerializableValue(21);
 
