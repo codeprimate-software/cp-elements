@@ -920,6 +920,12 @@ public interface Oql extends BaseOql {
   @FunctionalInterface
   interface Executable<T> {
 
+    /**
+     * Counts the results in the query result set.
+     *
+     * @return a {@link Long value} with the number of results in the query result set.
+     * @see #execute(QueryArgument[])
+     */
     @SuppressWarnings("all")
     default Long count() {
       Iterable<T> results = execute();
@@ -928,10 +934,28 @@ public interface Oql extends BaseOql {
       return count;
     }
 
+    /**
+     * Executes the OQL query with the given array of {@link QueryArgument QueryArguments}.
+     *
+     * @param arguments array of {@link QueryArgument QueryArguments} passed to the OQL query.
+     * @return the {@link Iterable result set} of executing the OQL query.
+     * @see java.lang.Iterable
+     * @see #execute(Iterable)
+     * @see QueryArgument
+     */
     default Iterable<T> execute(QueryArgument<?>... arguments) {
       return execute(QueryArguments.of(arguments));
     }
 
+    /**
+     * Executes the OQL query with the given {@link Iterable} of {@link QueryArgument QueryArguments}.
+     *
+     * @param arguments {@link Iterable} of {@link QueryArgument QueryArguments} passed to the OQL query.
+     * @return the {@link Iterable result set} of executing the OQL query.
+     * @see #execute(QueryArgument[])
+     * @see java.lang.Iterable
+     * @see QueryArgument
+     */
     Iterable<T> execute(Iterable<QueryArgument<?>> arguments);
 
   }
@@ -989,6 +1013,11 @@ public interface Oql extends BaseOql {
 
     AtomicReference<Oql.Provider> LOADER_REFERENCE = new AtomicReference<>();
 
+    /**
+     * Returns the {@link Oql.Provider} used to load the OQL service provider implementation.
+     *
+     * @return the {@link Oql.Provider} used to load the OQL service provider implementation.
+     */
     static Oql.Provider getLoader() {
       return LOADER_REFERENCE.updateAndGet(loader -> loader != null ? loader : new Oql.Provider() { });
     }
