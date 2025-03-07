@@ -40,7 +40,7 @@ import org.cp.elements.io.FileSystemUtils;
  * @see org.cp.elements.context.configure.support.PropertiesConfiguration
  * @since 1.0.0
  */
-public class PropertiesConfigurationIntegrationTests {
+class PropertiesConfigurationIntegrationTests {
 
   @BeforeAll
   public static void beforeTestSuite() {
@@ -49,7 +49,7 @@ public class PropertiesConfigurationIntegrationTests {
 
   @Test
   @SuppressWarnings("unchecked")
-  public void propertiesFileBaseConfigurationIsCorrect() throws Exception {
+  void propertiesFileBaseConfigurationIsCorrect() throws Exception {
 
     Properties testJdbcProperties = new Properties();
 

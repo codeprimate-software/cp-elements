@@ -15,6 +15,8 @@
  */
 package org.cp.elements.context.configure.support;
 
+import static org.cp.elements.lang.ElementsExceptionsFactory.newConfigurationException;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -24,6 +26,7 @@ import java.util.Properties;
 
 import org.cp.elements.context.configure.AbstractConfiguration;
 import org.cp.elements.context.configure.Configuration;
+import org.cp.elements.context.configure.ConfigurationException;
 import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.ObjectUtils;
 import org.cp.elements.lang.StringUtils;
@@ -31,7 +34,7 @@ import org.cp.elements.lang.annotation.NotNull;
 import org.cp.elements.lang.annotation.Nullable;
 
 /**
- * {@link Configuration} implementation for reading configuration information backed by a {@link Properties} object.
+ * {@link Configuration} implementation for reading configuration metadata backed by {@link Properties}.
  *
  * @author John J. Blum
  * @see java.util.Properties
@@ -51,10 +54,10 @@ public class PropertiesConfiguration extends AbstractConfiguration {
    * @param propertiesFile {@link File} containing {@link Properties} for this {@link Configuration};
    * must not be {@literal null}.
    * @throws IllegalArgumentException if {@link File} is {@literal null}.
-   * @throws IOException if an error occurs while reading the {@link File}.
+   * @throws ConfigurationException if an error occurs while reading the {@link File properties}.
    * @see java.io.File
    */
-  public PropertiesConfiguration(@NotNull File propertiesFile) throws IOException {
+  public PropertiesConfiguration(@NotNull File propertiesFile) {
     this(propertiesFile, null);
   }
 
@@ -65,14 +68,14 @@ public class PropertiesConfiguration extends AbstractConfiguration {
    * @param propertiesFile {@link File} containing {@link Properties} for this {@link Configuration};
    * must not be {@literal null}.
    * @param parent {@link Configuration} used as the {@literal parent} of this {@link Configuration}.
-   * @throws IllegalArgumentException if {@link File} is {@literal null}.
-   * @throws IOException if an error occurs while reading the {@link File}.
+   * @throws IllegalArgumentException if {@link File properties} is {@literal null}.
+   * @throws ConfigurationException if an error occurs while reading the {@link File properties}.
    * @see org.cp.elements.context.configure.AbstractConfiguration.FileConfigurationDescriptor
    * @see org.cp.elements.context.configure.Configuration
    * @see #setDescriptor(Descriptor)
    * @see java.io.File
    */
-  public PropertiesConfiguration(@NotNull File propertiesFile, @Nullable Configuration parent) throws IOException {
+  public PropertiesConfiguration(@NotNull File propertiesFile, @Nullable Configuration parent) {
 
     super(parent);
 
@@ -84,6 +87,10 @@ public class PropertiesConfiguration extends AbstractConfiguration {
 
     try (FileInputStream fileInputStream = new FileInputStream(propertiesFile)) {
       this.properties.load(fileInputStream);
+    }
+    catch (IOException cause) {
+      throw newConfigurationException(cause, "Failed to initialize configuration from properties file [%s]",
+        propertiesFile);
     }
   }
 

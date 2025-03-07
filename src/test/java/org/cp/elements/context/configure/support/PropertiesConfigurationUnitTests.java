@@ -42,7 +42,7 @@ import org.cp.elements.context.configure.Configuration;
  * @see org.cp.elements.context.configure.support.PropertiesConfiguration
  * @since 1.0.0
  */
-public class PropertiesConfigurationUnitTests {
+class PropertiesConfigurationUnitTests {
 
   private Properties properties;
 
@@ -64,7 +64,7 @@ public class PropertiesConfigurationUnitTests {
 
   @Test
   @SuppressWarnings("unchecked")
-  public void constructPropertiesConfigurationWithProperties() {
+  void constructPropertiesConfigurationWithProperties() {
 
     Properties properties = new Properties();
 
@@ -83,7 +83,7 @@ public class PropertiesConfigurationUnitTests {
   }
 
   @Test
-  public void constructPropertiesConfigurationWithNullFile() {
+  void constructPropertiesConfigurationWithNullFile() {
 
     assertThatIllegalArgumentException()
       .isThrownBy(() -> new PropertiesConfiguration((File) null))
@@ -92,7 +92,7 @@ public class PropertiesConfigurationUnitTests {
   }
 
   @Test
-  public void constructPropertiesConfigurationWithNullProperties() {
+  void constructPropertiesConfigurationWithNullProperties() {
 
     assertThatIllegalArgumentException()
       .isThrownBy(() -> new PropertiesConfiguration((Properties) null))
@@ -101,7 +101,7 @@ public class PropertiesConfigurationUnitTests {
   }
 
   @Test
-  public void isPresentReturnsTrue() {
+  void isPresentReturnsTrue() {
 
     assertThat(this.configuration.isPresent("boolean.property")).isTrue();
     assertThat(this.configuration.isPresent("character.property")).isTrue();
@@ -111,7 +111,7 @@ public class PropertiesConfigurationUnitTests {
   }
 
   @Test
-  public void isPresentReturnsFalse() {
+  void isPresentReturnsFalse() {
 
     assertThat(this.configuration.isPresent("big.decimal.property")).isFalse();
     assertThat(this.configuration.isPresent("big.integer.property")).isFalse();
@@ -124,7 +124,7 @@ public class PropertiesConfigurationUnitTests {
   }
 
   @Test
-  public void doGetPropertyValueIsCorrect() {
+  void doGetPropertyValueIsCorrect() {
 
     assertThat(this.configuration.doGetPropertyValue("boolean.property")).isEqualTo("true");
     assertThat(this.configuration.doGetPropertyValue("character.property")).isEqualTo("X");
@@ -134,7 +134,7 @@ public class PropertiesConfigurationUnitTests {
   }
 
   @Test
-  public void doGetPropertyValueReturnsNull() {
+  void doGetPropertyValueReturnsNull() {
 
     assertThat(this.configuration.doGetPropertyValue("bool.prop")).isNull();
     assertThat(this.configuration.doGetPropertyValue("chr.prop")).isNull();
@@ -145,7 +145,7 @@ public class PropertiesConfigurationUnitTests {
   }
 
   @Test
-  public void doGetParentPropertyValueIsCorrect() {
+  void doGetParentPropertyValueIsCorrect() {
 
     Properties parentConfigurationSetting = new Properties();
 
@@ -168,7 +168,7 @@ public class PropertiesConfigurationUnitTests {
   }
 
   @Test
-  public void iteratorIsCorrect() {
+  void iteratorIsCorrect() {
 
     Set<String> expectedPropertyNames = new HashSet<>(this.properties.stringPropertyNames());
 
