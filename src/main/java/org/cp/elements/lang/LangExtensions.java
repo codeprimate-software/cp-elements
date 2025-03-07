@@ -77,7 +77,7 @@ public abstract class LangExtensions {
    * @see org.cp.elements.lang.reflect.ProxyFactory#adviseWith(MethodInterceptor[])
    * @see SafeNavigationHandler#newSafeNavigationHandler(ProxyFactory)
    * @see org.cp.elements.lang.reflect.ProxyFactory#newProxy()
-   * @see ExperimentalApi
+   * @see org.cp.elements.lang.annotation.ExperimentalApi
    * @see org.cp.elements.lang.annotation.Dsl
    */
   @Dsl
@@ -86,9 +86,9 @@ public abstract class LangExtensions {
 
     ProxyFactory<T> proxyFactory = ProxyFactory.newProxyFactory(obj, interfaces);
 
-    return proxyFactory
-      .adviseWith(SafeNavigationHandler.newSafeNavigationHandler(proxyFactory))
-      .newProxy();
+    SafeNavigationHandler<T> safeNavigationHandler = SafeNavigationHandler.newSafeNavigationHandler(proxyFactory);
+
+    return proxyFactory.adviseWith(safeNavigationHandler).newProxy();
   }
 
   /**
@@ -102,7 +102,7 @@ public abstract class LangExtensions {
    * @see org.cp.elements.lang.FluentApiExtension
    * @see org.cp.elements.lang.DslExtension
    */
-  @org.cp.elements.lang.annotation.FluentApi
+  @FluentApi
   protected static class SafeNavigationHandler<T> implements DslExtension, FluentApiExtension,
       org.cp.elements.lang.reflect.MethodInterceptor<T> {
 
@@ -155,9 +155,9 @@ public abstract class LangExtensions {
     }
 
     /**
-     * Returns the target {@link Object} of the {@link Method} interception.
+     * Returns the {@link Object target} of the {@link Method} interception.
      *
-     * @return the target {@link Object} of the {@link Method} interception.
+     * @return the {@link Object target} of the {@link Method} interception.
      * @see org.cp.elements.lang.reflect.MethodInterceptor#getTarget()
      * @see org.cp.elements.lang.reflect.ProxyFactory#getTarget()
      */
@@ -209,21 +209,23 @@ public abstract class LangExtensions {
     @Override
     public @Nullable Object invoke(@NotNull Object proxy, @NotNull Method method, Object[] arguments) {
 
-      return intercept(MethodInvocation.newMethodInvocation(resolveTarget(proxy), method, arguments))
-        .orElse(null);
+      Object target = resolveTarget(proxy);
+
+      MethodInvocation methodInvocation = MethodInvocation.newMethodInvocation(target, method, arguments);
+
+      return intercept(methodInvocation).orElse(null);
     }
 
-    @SuppressWarnings("unchecked")
     private @Nullable <R> R resolveNextTarget(@NotNull MethodInvocation methodInvocation) {
 
-      return (R) Optional.ofNullable(getTarget())
-        .flatMap(target -> methodInvocation.makeAccessible().invoke(target))
-        .orElse(null);
+      T target = getTarget();
+
+      return target != null ? methodInvocation.makeAccessible().<R>invoke(target).orElse(null) : null;
     }
 
     private @Nullable Object resolveTarget(@Nullable Object proxy) {
 
-      Object target = getTarget();
+      T target = getTarget();
 
       return target != null ? target : proxy;
     }
