@@ -133,12 +133,29 @@ public interface Oql extends BaseOql {
   @FunctionalInterface
   interface Projection<S, T> extends ObjectMapper<S, T> {
 
+    /**
+     * Factory method used to construct a new {@link Projection} as the given {@link Class type}.
+     *
+     * @param <S> {@link Class type} of {@link Object objects} in the {@link Iterable collection} to query.
+     * @param <T> {@link Class type} of the {@link Object projected objects}.
+     * @param type {@link Class type} of the projection.
+     * @return a new {@link ProjectionBuilder} used to build a {@link Projection} as the given {@link Class type}.
+     * @throws IllegalArgumentException if {@link Class type} is {@literal null}.
+     * @see ProjectionBuilder
+     */
     @Dsl
     static <S, T> ProjectionBuilder<S, T> as(@NotNull Class<T> type) {
       Assert.notNull(type, "Type is required");
       return new ProjectionBuilder<>(type);
     }
 
+    /**
+     * Factory method used to construct a new {@literal star} {@link Projection}.
+     *
+     * @param <S> {@link Class type} of {@link Object objects} in the {@link Iterable collection} to query.
+     * @return a new {@literal star} {@link Projection} effectively returning the same type of {@link S object}
+     * that is being queried.
+     */
     @Dsl
     static <S> Projection<S, S> star() {
 
@@ -242,11 +259,27 @@ public interface Oql extends BaseOql {
      */
     Projection<S, T> getProjection();
 
+    /**
+     * Selects a {@link Distinct} result set.
+     *
+     * @return a new {@link Distinct} clause.
+     * @throws UnsupportedOperationException by default.
+     * @see Distinct
+     */
     @Dsl
     default Distinct<S, T> distinct() {
       throw newUnsupportedOperationException(Constants.UNSUPPORTED_OPERATION);
     }
 
+    /**
+     * Selects {@link Object objects} from the given {@link Iterable collection} when building the result set
+     * of the query.
+     *
+     * @param collection {@link Iterable collection} to query.
+     * @return a new {@link From} clause.
+     * @see java.lang.Iterable
+     * @see From
+     */
     @Dsl
     From<S, T> from(Iterable<S> collection);
 
@@ -263,6 +296,15 @@ public interface Oql extends BaseOql {
   @FunctionalInterface
   interface Distinct<S, T> {
 
+    /**
+     * Selects {@literal distinct} @link Object objects} from the given {@link Iterable collection}
+     * when building the result set of the query.
+     *
+     * @param collection {@link Iterable collection} to query.
+     * @return a new {@link From} clause.
+     * @see java.lang.Iterable
+     * @see From
+     */
     @Dsl
     From<S, T> from(Iterable<S> collection);
 
@@ -335,16 +377,44 @@ public interface Oql extends BaseOql {
       return Optional.empty();
     }
 
+    /**
+     * Builder method used to construct the {@link Where} clause of the query given a {@link BiPredicate}.
+     *
+     * @param predicate {@link BiPredicate} forming the condition of the {@link Where} clause.
+     * @return a new {@link Where} clause.
+     * @throws UnsupportedOperationException by default.
+     * @see java.util.function.BiPredicate
+     * @see #where(Predicate)
+     * @see Where
+     */
     @Dsl
     default Where<S, T> where(BiPredicate<QueryArguments, S> predicate) {
       throw newUnsupportedOperationException(Constants.UNSUPPORTED_OPERATION);
     }
 
+    /**
+     * Builder method used to construct the {@link Where} clause of the query given a {@link Predicate}.
+     *
+     * @param predicate {@link Predicate} forming the condition of the {@link Where} clause.
+     * @return a new {@link Where} clause.
+     * @throws UnsupportedOperationException by default.
+     * @see java.util.function.Predicate
+     * @see #where(BiPredicate)
+     * @see Where
+     */
     @Dsl
     default Where<S, T> where(Predicate<S> predicate) {
       return where(OqlUtils.asBiPredicate(predicate));
     }
 
+    /**
+     * Limits the result of the OQL query.
+     *
+     * @param limit {@link Long} defining the maximum number of results returned in the query result set.
+     * @return the {@link ExecutableQuery}.
+     * @throws UnsupportedOperationException by default.
+     * @see ExecutableQuery
+     */
     @Dsl
     @Override
     default ExecutableQuery<S, T> limit(long limit) {
@@ -405,11 +475,32 @@ public interface Oql extends BaseOql {
      */
     BiPredicate<QueryArguments, S> getPredicate();
 
+    /**
+     * Joins the {@link #getPredicate() predicate} of this {@link Where} clause with the given {@link BiPredicate}
+     * using the {@literal AND} operator.
+     *
+     * @param predicate {@link BiPredicate} to join with this {@link Where} clause.
+     * @return a new {@link Where} clause joining the {@link #getPredicate() predicate} from this {@link Where} clause
+     * with the given {@link BiPredicate} using the {@literal AND} operator.
+     * @see java.util.function.BiPredicate#and(BiPredicate)
+     * @see #compose(Where, BiPredicate)
+     * @see #getPredicate()
+     */
     @Dsl
     default Where<S, T> and(@NotNull BiPredicate<QueryArguments, S> predicate) {
       return compose(this, getPredicate().and(predicate));
     }
 
+    /**
+     * Joins the {@link #getPredicate() predicate} of this {@link Where} clause with the given {@link Predicate}
+     * using the {@literal AND} operator.
+     *
+     * @param predicate {@link Predicate} to join with this {@link Where} clause.
+     * @return a new {@link Where} clause joining the {@link #getPredicate() predicate} from this {@link Where} clause
+     * with the given {@link Predicate} using the {@literal AND} operator.
+     * @see java.util.function.Predicate
+     * @see #and(BiPredicate)
+     */
     @Dsl
     default Where<S, T> and(@NotNull Predicate<S> predicate) {
       Assert.notNull(predicate, "Query Predicate is required");
@@ -417,11 +508,32 @@ public interface Oql extends BaseOql {
       return and(biPredicate);
     }
 
+    /**
+     * Joins the {@link #getPredicate() predicate} of this {@link Where} clause with the given {@link BiPredicate}
+     * using the {@literal OR} operator.
+     *
+     * @param predicate {@link BiPredicate} to join with this {@link Where} clause.
+     * @return a new {@link Where} clause joining the {@link #getPredicate() predicate} from this {@link Where} clause
+     * with the given {@link BiPredicate} using the {@literal OR} operator.
+     * @see java.util.function.BiPredicate#or(BiPredicate)
+     * @see #compose(Where, BiPredicate)
+     * @see #getPredicate()
+     */
     @Dsl
     default Where<S, T> or(@NotNull BiPredicate<QueryArguments, S> predicate) {
       return compose(this, getPredicate().or(predicate));
     }
 
+    /**
+     * Joins the {@link #getPredicate() predicate} of this {@link Where} clause with the given {@link Predicate}
+     * using the {@literal OR} operator.
+     *
+     * @param predicate {@link Predicate} to join with this {@link Where} clause.
+     * @return a new {@link Where} clause joining the {@link #getPredicate() predicate} from this {@link Where} clause
+     * with the given {@link Predicate} using the {@literal OR} operator.
+     * @see java.util.function.Predicate
+     * @see #or(BiPredicate)
+     */
     @Dsl
     default Where<S, T> or(@NotNull Predicate<S> predicate) {
       Assert.notNull(predicate, "Query Predicate is required");
@@ -495,11 +607,23 @@ public interface Oql extends BaseOql {
         .orElseThrow(() -> newIllegalStateException("No Order Defined"));
     }
 
+    /**
+     * Sorts the query results in ascending order.
+     *
+     * @return this {@link OrderBy} clause.
+     * @see #descending()
+     */
     @Dsl
     default OrderBy<S, T> ascending() {
       return this;
     }
 
+    /**
+     * Sorts the query results in descending order.
+     *
+     * @return this {@link OrderBy} clause.
+     * @see #ascending()
+     */
     @Dsl
     default OrderBy<S, T> descending() {
 
@@ -519,11 +643,32 @@ public interface Oql extends BaseOql {
       return StreamUtils.stream(this);
     }
 
+    /**
+     * Joins the {@link Comparator} from this {@link OrderBy} clause with the given {@link Comparator}.
+     *
+     * @param comparator {@link Comparator} used to sort the query result set.
+     * @return a new {@link OrderBy} clause joining the {@link Comparator} from this {@link OrderBy} clause
+     * with the given {@link Comparator}.
+     * @see #of(From, Comparator[])
+     * @see java.util.Comparator
+     */
     @Dsl
     default OrderBy<S, T> thenOrderBy(@NotNull Comparator<T> comparator) {
       return of(getFrom(), getOrder(), comparator);
     }
 
+    /**
+     * Uses the {@link Function} to get a {@link Comparable value} from the projected result
+     * to further refine the sort order.
+     *
+     * @param function {@link Function} used to get a {@link Comparable value} from the projected result
+     * and further refine the sort order.
+     * @return a new {@link OrderBy} clause using the {@link Function} to get a value from the projected result
+     * to further refine the sort order.
+     * @see java.util.function.Function
+     * @see #thenOrderBy(Comparator)
+     * @see java.lang.Comparable
+     */
     @Dsl
     default <U extends Comparable<U>> OrderBy<S, T> thenOrderBy(@NotNull Function<T, U> function) {
       return thenOrderBy(Comparator.comparing(function));
@@ -659,6 +804,16 @@ public interface Oql extends BaseOql {
       return (BiPredicate<QueryArguments, T>) OqlUtils.ACCEPT_ALL_QUERY_PREDICATE;
     }
 
+    /**
+     * Redefines the {@link GroupBy} clause by only returning groups of objects matching the given {@link BiPredicate}.
+     *
+     * @param predicate {@link BiPredicate} defining the criteria used to match groups of objects
+     * returned in the query result set.
+     * @return a new {@link GroupBy} clause with the given {@link BiPredicate}.
+     * @throws IllegalArgumentException if {@link BiPredicate} is {@literal null}.
+     * @see java.util.function.BiPredicate
+     * @see #having(Predicate)
+     */
     @Dsl
     default GroupBy<S, T> having(@NotNull BiPredicate<QueryArguments, T> predicate) {
 
@@ -683,6 +838,16 @@ public interface Oql extends BaseOql {
       };
     }
 
+    /**
+     * Redefines the {@link GroupBy} clause by only returning groups of objects matching the given {@link Predicate}.
+     *
+     * @param predicate {@link Predicate} defining the criteria used to match groups of objects
+     * returned in the query result set.
+     * @return a new {@link GroupBy} clause with the given {@link Predicate}.
+     * @throws IllegalArgumentException if {@link Predicate} is {@literal null}.
+     * @see java.util.function.Predicate
+     * @see #having(BiPredicate)
+     */
     @Dsl
     default GroupBy<S, T> having(@NotNull Predicate<T> predicate) {
       Assert.notNull(predicate, "GroupBy Predicate is required");
