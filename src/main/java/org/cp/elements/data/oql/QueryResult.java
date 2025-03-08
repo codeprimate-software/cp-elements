@@ -21,6 +21,7 @@ import java.util.function.Function;
 
 import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.annotation.NotNull;
+import org.cp.elements.lang.annotation.NullSafe;
 import org.cp.elements.util.MapUtils;
 
 /**
@@ -36,10 +37,24 @@ import org.cp.elements.util.MapUtils;
 @SuppressWarnings("unused")
 public interface QueryResult<T> {
 
+  /**
+   * Factory method returning a {@link QueryResult.Builder} used to construct a new {@link QueryResult}.
+   *
+   * @param <T> {@link Class type} of {@link Object} contained in the {@link QueryResult}.
+   * @return a {@link QueryResult.Builder} used to construct a new {@link QueryResult}.
+   * @see QueryResult.Builder
+   */
   static <T> QueryResult.Builder<T> builder() {
     return new QueryResult.Builder<>();
   }
 
+  /**
+   * Gets the {@link T value} of a {@link String named field} in the {@link QueryResult}.
+   *
+   * @param <V> {@link Class type} of the {@link String field} value.
+   * @param fieldName {@link String} containing the name of a field in the {@link QueryResult}.
+   * @return the {@link T value} of a {@link String named field} in the {@link QueryResult}.
+   */
   <V> V get(String fieldName);
 
   default T map(@NotNull Function<QueryResult<T>, T> mapper) {
@@ -47,15 +62,36 @@ public interface QueryResult<T> {
     return mapper.apply(this);
   }
 
+  /**
+   * Elements {@link org.cp.elements.lang.Builder} used to construct a new {@link QueryResult}.
+   *
+   * @param <T> {@link Class type} of {@link Object} encapsulated and modeled by the {@link QueryResult}.
+   * @see org.cp.elements.lang.Builder
+   */
   class Builder<T> implements org.cp.elements.lang.Builder<QueryResult<T>> {
 
     private final Map<String, Object> namedValues = new HashMap<>();
 
+    /**
+     * Builder method used to construct a new {@link QueryResult} from the given {@link Map}.
+     *
+     * @param map {@link Map} object used as the source of the {@link QueryResult}.
+     * @return a new {@link QueryResult.Builder} based on the given {@link Map}.
+     * @see java.util.Map
+     */
+    @NullSafe
     public Builder<T> withMap(Map<String, Object> map) {
       this.namedValues.putAll(MapUtils.nullSafeMap(map));
       return this;
     }
 
+    /**
+     * Gets a {@link V named value} from the {@link QueryResult}.
+     *
+     * @param <V> {@link Class type} of the {@link String field} value.
+     * @param name {@link String} of the {@link V value} in the {@link QueryResult}.
+     * @return the {@link V named value} from the {@link QueryResult}.
+     */
     @SuppressWarnings("unchecked")
     <V> V getNamedValue(String name) {
       return (V) this.namedValues.get(name);
