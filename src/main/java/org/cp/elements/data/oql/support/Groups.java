@@ -44,6 +44,17 @@ import org.cp.elements.util.stream.Streamable;
 @SuppressWarnings("unused")
 public interface Groups<T> extends Iterable<Group<T>>, Streamable<Group<T>> {
 
+  /**
+   * Factory method used to construct a new {@link Groups} object initialized with the given {@link GroupBy} clause
+   * defining the criteria used to determine the groups.
+   *
+   * @param <S> {@link Class type} of {@link Object objects} in the {@link Iterable collection} to query.
+   * @param <T> {@link Class type} of the {@link Object projected objects}.
+   * @param groupBy {@link GroupBy} clause defining the criteria to determine the groups.
+   * @return a new collection of {@link Group Groups}.
+   * @throws IllegalArgumentException if {@link GroupBy} is {@literal null}.
+   * @see GroupBy
+   */
   static <S, T> Groups<T> from(@NotNull Oql.GroupBy<S, T> groupBy) {
 
     Assert.notNull(groupBy, "GroupBy is required");
@@ -72,6 +83,12 @@ public interface Groups<T> extends Iterable<Group<T>>, Streamable<Group<T>> {
     };
   }
 
+  /**
+   * Factory method used to construct a new, non-operable {@link Groups} object.
+   *
+   * @param <T> {@link Class type} of the {@link Object projected objects}.
+   * @return a new, non-operable collection of {@link Group Groups}.
+   */
   static <T> Groups<T> noop() {
 
     return new Groups<>() {
