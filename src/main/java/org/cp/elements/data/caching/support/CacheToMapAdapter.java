@@ -35,13 +35,13 @@ import org.cp.elements.text.FormatUtils;
 import org.cp.elements.util.CollectionUtils;
 
 /**
- * The {@link CacheToMapAdapter} class is a {@link Map} implementation backed by a {@link Cache}.
+ * {@link Map} implementation backed by a {@link Cache}.
  * <p>
  * This class adapts the {@link Cache} interface as an instance of a {@link Map}.
  *
  * @author John Blum
- * @param <KEY> {@link Class type} of the {@link Map} key.
- * @param <VALUE> {@link Class type} of the {@link Map} value.
+ * @param <KEY> {@link Class type} for the {@link Map} key.
+ * @param <VALUE> {@link Class type} for the {@link Map} value.
  * @see java.lang.Comparable
  * @see java.util.AbstractMap
  * @see java.util.Map
@@ -53,12 +53,12 @@ import org.cp.elements.util.CollectionUtils;
 public class CacheToMapAdapter<KEY extends Comparable<KEY>, VALUE> extends AbstractMap<KEY, VALUE> {
 
   /**
-   * Factory method used to construct a new {@link CacheToMapAdapter} initialized with the given, required {@link Cache}
+   * Factory method used to construct a new {@link CacheToMapAdapter} initialized with the given {@link Cache}
    * adapted and used to back the returned {@link Map} implementation.
    *
    * @param <KEY> {@link Class type} of keys used by the {@link Map}.
    * @param <VALUE> {@link Class type} of the values stored by the {@link Map}.
-   * @param cache {@link Cache} to adapt as a {@link Map}; must not be {@literal null}.
+   * @param cache {@link Cache} to adapt as a {@link Map}; required.
    * @return a new {@link CacheToMapAdapter} initialized with the given {@link Cache}.
    * @throws IllegalArgumentException if {@link Cache} is {@literal null}.
    * @see org.cp.elements.data.caching.Cache
@@ -73,10 +73,10 @@ public class CacheToMapAdapter<KEY extends Comparable<KEY>, VALUE> extends Abstr
   private final Cache<KEY, VALUE> cache;
 
   /**
-   * Constructs a new {@link CacheToMapAdapter} initialized with the given, required {@link Cache}
+   * Constructs a new {@link CacheToMapAdapter} initialized with the given {@link Cache}
    * adapted and used to back this {@link Map} implementation.
    *
-   * @param cache {@link Cache} to adapt as a {@link Map}; must not be {@literal null}.
+   * @param cache {@link Cache} to adapt as a {@link Map}; required.
    * @throws IllegalArgumentException if {@link Cache} is {@literal null}.
    * @see org.cp.elements.data.caching.Cache
    */
@@ -107,6 +107,7 @@ public class CacheToMapAdapter<KEY extends Comparable<KEY>, VALUE> extends Abstr
   }
 
   @Override
+  @SuppressWarnings("all")
   public Set<Map.Entry<KEY, VALUE>> entrySet() {
 
     return new AbstractSet<>() {
@@ -155,6 +156,7 @@ public class CacheToMapAdapter<KEY extends Comparable<KEY>, VALUE> extends Abstr
   }
 
   @Override
+  @SuppressWarnings("all")
   public Set<KEY> keySet() {
     return getCache().keys();
   }
