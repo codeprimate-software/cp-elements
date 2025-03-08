@@ -22,8 +22,8 @@ import org.cp.elements.beans.BeansException;
 import org.cp.elements.beans.IllegalPropertyValueException;
 import org.cp.elements.beans.PropertyNotFoundException;
 import org.cp.elements.beans.PropertyNotSetException;
-import org.cp.elements.beans.PropertyReadException;
 import org.cp.elements.beans.PropertyWriteException;
+import org.cp.elements.beans.ReadPropertyException;
 import org.cp.elements.biz.rules.RuleException;
 import org.cp.elements.context.configure.ConfigurationException;
 import org.cp.elements.dao.DataAccessException;
@@ -93,7 +93,7 @@ import org.cp.elements.util.sort.SortException;
  * @see org.cp.elements.beans.IllegalPropertyValueException
  * @see org.cp.elements.beans.PropertyNotFoundException
  * @see org.cp.elements.beans.PropertyNotSetException
- * @see org.cp.elements.beans.PropertyReadException
+ * @see org.cp.elements.beans.ReadPropertyException
  * @see org.cp.elements.beans.PropertyWriteException
  * @see org.cp.elements.biz.rules.RuleException
  * @see org.cp.elements.context.configure.ConfigurationException
@@ -325,32 +325,32 @@ public abstract class ElementsExceptionsFactory {
   }
 
   /**
-   * Constructs a new {@link PropertyReadException} initialized with the given {@link String message}
-   * to describe the {@link PropertyReadException}.
+   * Constructs a new {@link ReadPropertyException} initialized with the given {@link String message}
+   * to describe the {@link ReadPropertyException}.
    *
    * @param message {@link String} containing a message to describe the exception.
    * @param args optional array of {@link Object arguments} used to replace the placeholders in the message.
-   * @return a new {@link PropertyReadException}.
-   * @see #newPropertyReadException(Throwable, String, Object...)
-   * @see org.cp.elements.beans.PropertyReadException
+   * @return a new {@link ReadPropertyException}.
+   * @see #newReadPropertyException(Throwable, String, Object...)
+   * @see org.cp.elements.beans.ReadPropertyException
    */
-  public static PropertyReadException newPropertyReadException(String message, Object... args) {
-    return newPropertyReadException(null, message, args);
+  public static ReadPropertyException newReadPropertyException(String message, Object... args) {
+    return newReadPropertyException(null, message, args);
   }
 
   /**
-   * Constructs a new {@link PropertyReadException} initialized with the given {@link String message}
-   * to describe the {@link PropertyReadException} along with a {@link Throwable cause} used as the reason
-   * why the {@link PropertyReadException} was thrown.
+   * Constructs a new {@link ReadPropertyException} initialized with the given {@link String message}
+   * to describe the {@link ReadPropertyException} along with a {@link Throwable cause} used as the reason
+   * why the {@link ReadPropertyException} was thrown.
    *
    * @param cause {@link Throwable} used as the cause of the exception.
    * @param message {@link String} containing a message to describe the exception.
    * @param args optional array of {@link Object arguments} used to replace the placeholders in the message.
-   * @return a new {@link PropertyReadException}.
-   * @see org.cp.elements.beans.PropertyReadException
+   * @return a new {@link ReadPropertyException}.
+   * @see org.cp.elements.beans.ReadPropertyException
    */
-  public static PropertyReadException newPropertyReadException(Throwable cause, String message, Object... args) {
-    return new PropertyReadException(format(message, args), cause);
+  public static ReadPropertyException newReadPropertyException(Throwable cause, String message, Object... args) {
+    return new ReadPropertyException(format(message, args), cause);
   }
 
   /**

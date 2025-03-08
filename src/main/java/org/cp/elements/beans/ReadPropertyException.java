@@ -23,42 +23,42 @@ package org.cp.elements.beans;
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
-public class PropertyReadException extends BeansException {
+public class ReadPropertyException extends BeansException {
 
   /**
-   * Constructs a new, uninitialized instance of {@link PropertyReadException}
+   * Constructs a new, uninitialized instance of {@link ReadPropertyException}
    * with no {@link String message} or {@link Throwable cause}.
    */
-  public PropertyReadException() { }
+  public ReadPropertyException() { }
 
   /**
-   * Constructs a new {@link PropertyReadException} initialized with the given {@link String message}
+   * Constructs a new {@link ReadPropertyException} initialized with the given {@link String message}
    * describing the exception.
    *
    * @param message {@link String} describing the exception.
    */
-  public PropertyReadException(String message) {
+  public ReadPropertyException(String message) {
     super(message);
   }
 
   /**
-   * Constructs a new {@link PropertyReadException} initialized with the given {@link Throwable}
+   * Constructs a new {@link ReadPropertyException} initialized with the given {@link Throwable}
    * used as the underlying cause of this exception.
    *
    * @param cause {@link Throwable} used as the cause of this exception.
    */
-  public PropertyReadException(Throwable cause) {
+  public ReadPropertyException(Throwable cause) {
     super(cause);
   }
 
   /**
-   * Constructs a new {@link PropertyReadException} initialized with the given {@link String message}
+   * Constructs a new {@link ReadPropertyException} initialized with the given {@link String message}
    * describing the exception and {@link Throwable} used as the underlying cause of this exception.
    *
    * @param message {@link String} describing the exception.
    * @param cause {@link Throwable} used as the cause of this exception.
    */
-  public PropertyReadException(String message, Throwable cause) {
+  public ReadPropertyException(String message, Throwable cause) {
     super(message, cause);
   }
 }

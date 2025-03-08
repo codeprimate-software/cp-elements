@@ -15,7 +15,7 @@
  */
 package org.cp.elements.beans.model;
 
-import static org.cp.elements.lang.ElementsExceptionsFactory.newPropertyReadException;
+import static org.cp.elements.lang.ElementsExceptionsFactory.newReadPropertyException;
 import static org.cp.elements.lang.ElementsExceptionsFactory.newPropertyWriteException;
 
 import java.beans.PropertyDescriptor;
@@ -35,13 +35,14 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-import org.cp.elements.beans.PropertyReadException;
+import org.cp.elements.beans.ReadPropertyException;
 import org.cp.elements.beans.PropertyWriteException;
 import org.cp.elements.beans.annotation.Required;
 import org.cp.elements.beans.model.support.AbstractIndexedProperty;
 import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.ClassUtils;
 import org.cp.elements.lang.Describable;
+import org.cp.elements.lang.ElementsExceptionsFactory;
 import org.cp.elements.lang.Nameable;
 import org.cp.elements.lang.ObjectUtils;
 import org.cp.elements.lang.PrimitiveTypeUtils;
@@ -723,12 +724,12 @@ public class Property implements Comparable<Property>, Describable<PropertyDescr
    * Gets the {@link Object value} of this {@link Property}.
    *
    * @return the {@link Object value} of this {@link Property}.
-   * @throws PropertyReadException if this {@link Property} cannot be read.
+   * @throws ReadPropertyException if this {@link Property} cannot be read.
    * @see java.lang.Object
    */
   public @Nullable Object getValue() {
 
-    Assert.state(isReadable(), newPropertyReadException("Property [%s] of bean [%s] is not readable",
+    Assert.state(isReadable(), ElementsExceptionsFactory.newReadPropertyException("Property [%s] of bean [%s] is not readable",
       getName(), getBean()));
 
     return ObjectUtils.invoke(getTargetObject(), getReadMethod(), new Object[0], Object.class);

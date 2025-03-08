@@ -71,7 +71,7 @@ import static org.cp.elements.lang.ElementsExceptionsFactory.newProcessExecution
 import static org.cp.elements.lang.ElementsExceptionsFactory.newProcessNotRespondingException;
 import static org.cp.elements.lang.ElementsExceptionsFactory.newPropertyNotFoundException;
 import static org.cp.elements.lang.ElementsExceptionsFactory.newPropertyNotSetException;
-import static org.cp.elements.lang.ElementsExceptionsFactory.newPropertyReadException;
+import static org.cp.elements.lang.ElementsExceptionsFactory.newReadPropertyException;
 import static org.cp.elements.lang.ElementsExceptionsFactory.newPropertyWriteException;
 import static org.cp.elements.lang.ElementsExceptionsFactory.newReadOnlyException;
 import static org.cp.elements.lang.ElementsExceptionsFactory.newResourceNotFoundException;
@@ -103,7 +103,7 @@ import org.cp.elements.beans.BeansException;
 import org.cp.elements.beans.IllegalPropertyValueException;
 import org.cp.elements.beans.PropertyNotFoundException;
 import org.cp.elements.beans.PropertyNotSetException;
-import org.cp.elements.beans.PropertyReadException;
+import org.cp.elements.beans.ReadPropertyException;
 import org.cp.elements.beans.PropertyWriteException;
 import org.cp.elements.biz.rules.RuleException;
 import org.cp.elements.context.configure.ConfigurationException;
@@ -252,13 +252,13 @@ public class ElementsExceptionsFactoryUnitTests {
 
   @Test
   public void newPropertyReadExceptionWithMessage() {
-    assertThrowable(newPropertyReadException("test"), PropertyReadException.class, "test");
+    assertThrowable(ElementsExceptionsFactory.newReadPropertyException("test"), ReadPropertyException.class, "test");
   }
 
   @Test
   public void newPropertyReadExceptionWithFormattedMessageAndCause() {
-    assertThrowable(newPropertyReadException(this.mockCause, "%s is a {1}", "This", "test"),
-      PropertyReadException.class, "This is a test", this.mockCause);
+    assertThrowable(newReadPropertyException(this.mockCause, "%s is a {1}", "This", "test"),
+      ReadPropertyException.class, "This is a test", this.mockCause);
   }
 
   @Test

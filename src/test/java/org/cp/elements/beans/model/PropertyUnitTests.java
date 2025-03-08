@@ -52,7 +52,7 @@ import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.Test;
 
-import org.cp.elements.beans.PropertyReadException;
+import org.cp.elements.beans.ReadPropertyException;
 import org.cp.elements.beans.PropertyWriteException;
 import org.cp.elements.beans.annotation.Required;
 import org.cp.elements.data.struct.KeyValue;
@@ -893,7 +893,7 @@ public class PropertyUnitTests {
     assertThat(property.getName()).isEqualTo("salt");
     assertThat(property.isReadable()).isFalse();
 
-    ThrowableAssertions.assertThatThrowableOfType(PropertyReadException.class)
+    ThrowableAssertions.assertThatThrowableOfType(ReadPropertyException.class)
       .isThrownBy(args -> property.getValue())
       .havingMessage("Property [salt] of bean [%s] is not readable", bean)
       .withNoCause();
