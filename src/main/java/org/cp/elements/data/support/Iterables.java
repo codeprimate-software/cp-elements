@@ -108,9 +108,9 @@ public abstract class Iterables {
   /**
    * Returns an unmodifiable {@link Iterable} over the {@link Row Rows} stored in the {@link Table}.
    *
-   * @return an {@link Iterable} over the {@link Row Rows} stored in the {@link Table}.
    * @param table {@link Table} used to construct a new {@link Iterable}
    * iterating over the {@link Table} {@link Row Rows}; required.
+   * @return an {@link Iterable} over the {@link Row Rows} stored in the {@link Table}.
    * @throws IllegalArgumentException if {@link Table} is {@literal null}.
    * @see org.cp.elements.data.struct.tabular.Table
    * @see org.cp.elements.data.struct.tabular.Row
