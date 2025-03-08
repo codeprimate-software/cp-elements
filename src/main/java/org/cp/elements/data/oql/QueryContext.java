@@ -35,28 +35,76 @@ import org.cp.elements.lang.annotation.NotNull;
  */
 public record QueryContext<S, T>(@NotNull Query<S, T> query, Map<String, Object> metadata) {
 
+  /**
+   * Constructs a new {@link QueryContext} initialized with the given {@link Query} and {@link Map} of metadata
+   * containing environment-specific information when executing the {@link Query}.
+   *
+   * @param query {@link Query} that is the subject of execution.
+   * @param metadata {@link Map} containing metadata about the context in which the {@link Query} will be executed.
+   * @throws IllegalArgumentException if {@link Query} or the {@link Map metadata} are {@literal null}.
+   * @see Query
+   */
   public QueryContext {
     Assert.notNull(query, "Query is required");
     Assert.notNull(metadata, "Map of metadata is required");
   }
 
+  /**
+   * Factory metho used to construct a new {@link QueryContext} with the given {@link Query}
+   * with no {@link Map metadata}.
+   *
+   * @param <S> {@link Class type} of {@link Object objects} in the {@link Iterable collection} to query.
+   * @param <T> {@link Class type} of the {@link Object projected objects}.
+   * @param query {@link Query} that is the subject of execution.
+   * @return a new {@link QueryContext}.
+   * @throws IllegalArgumentException if {@link Query} is {@literal null}.
+   * @see Query
+   */
   public static <S, T> QueryContext<S, T> from(@NotNull Query<S, T> query) {
     return new QueryContext<>(query, new ConcurrentHashMap<>());
   }
 
+  /**
+   * Returns the {@link Iterable collection} to query.
+   *
+   * @return the {@link Iterable collection} to query.
+   * @see java.lang.Iterable
+   */
   public Iterable<S> getCollection() {
     return query().collection();
   }
 
+  /**
+   * Returns the selected {@link Projection} of the {@link Query}.
+   *
+   * @return the selected {@link Projection} of the {@link Query}.
+   * @see Projection
+   */
   public Projection<S, T> getProjection() {
     return query().selection().getProjection();
   }
 
+  /**
+   * Gets a {@link S value} from the {@link Map metadata} for th given {@link String key}.
+   *
+   * @param <S> {@link Class type} if the metadata value.
+   * @param key {@link String} containing the key in the metadata referencing the value to get.
+   * @return a {@link S value} from the {@link Map metadata} for th given {@link String key}.
+   * @see #metadata()
+   */
   @SuppressWarnings("unchecked")
   public <S> S get(String key) {
     return (S) metadata().get(key);
   }
 
+  /**
+   * Sets the given {@link String key} to the provided {@link Object value} in the {@link Map metadata}.
+   *
+   * @param key {@link String} containing the name of the key to set.
+   * @param value {@link Object} value of the key.
+   * @throws IllegalArgumentException if the {@link String key} is {@literal null} or {@literal empty},
+   * or the {@link Object value} is {@literal null}.
+   */
   public void put(@NotNull String key, @NotNull Object value) {
     Assert.hasText(key, "Key [%s] is required", key);
     Assert.notNull(value, "Value is required");
