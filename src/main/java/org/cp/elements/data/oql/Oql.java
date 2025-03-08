@@ -661,6 +661,7 @@ public interface Oql extends BaseOql {
      * Uses the {@link Function} to get a {@link Comparable value} from the projected result
      * to further refine the sort order.
      *
+     * @param <U> {@link Comparable value} used in the sort when ordering the query results.
      * @param function {@link Function} used to get a {@link Comparable value} from the projected result
      * and further refine the sort order.
      * @return a new {@link OrderBy} clause using the {@link Function} to get a value from the projected result
