@@ -184,11 +184,12 @@ public abstract class ArrayUtils {
    * of the given {@link Class componentType}.
    *
    * @param <T> {@link Class type} of {@link Object elements} in the array.
-   * @param array array of {@link Objects} to process; required.
+   * @param array array of {@link Object Objects} to process; required.
    * @param componentType {@link Class type} of the elements in the new array/
-   * @return an array of {@link T type} from the given {@link Object[] array}.
-   * @throws IllegalArgumentException if {@link Object[] array} or {@link Class componentType} are {@literal null},
-   * or not all {@link Object elements} of the given {@link Object[] array} are of type {@link T}.
+   * @return an array of {@link T type} from the given array of {@link Object Objects}.
+   * @throws IllegalArgumentException if array of {@link Object Objects} or {@link Class componentType}
+   * are {@literal null}, or not all {@link Object elements} of the given array of {@link Object Objects}
+   * are of type {@link T}.
    */
   @SuppressWarnings({ "all", "unchecked" })
   public static @NotNull <T> T[] asTypedArray(@NotNull Object[] array, @NotNull Class<T> componentType) {
