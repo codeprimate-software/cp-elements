@@ -70,34 +70,92 @@ public interface Query<S, T> extends Oql.Executable<T> {
    */
   From<S, T> getFrom();
 
+  /**
+   * Gets the {@link Select} clause of the OQL query.
+   *
+   * @return the {@link Select} clause of the OQL query.
+   * @see #getFrom()
+   * @see Select
+   */
   default Select<S, T> selection() {
     return getFrom().getSelection();
   }
 
+  /**
+   * Gets the selected {@link Projection} of the OQL query.
+   *
+   * @return the selected {@link Projection} of the OQL query.
+   * @see #selection()
+   * @see Projection
+   */
   default Projection<S, T> projection() {
     return selection().getProjection();
   }
 
+  /**
+   * Gets the {@link Optional} {@link Where} clause of the OQL query.
+   *
+   * @return the {@link Optional} {@link Where} clause of the OQL query.
+   * @see java.util.Optional
+   * @see #getFrom()
+   * @see Where
+   */
   default Optional<Where<S, T>> predicate() {
     return getFrom().getWhere();
   }
 
+  /**
+   * Gets the {@link Optional} {@link OrderBy} clause of the OQL query.
+   *
+   * @return the {@link Optional} {@link OrderBy} clause of the OQL query.
+   * @see java.util.Optional
+   * @see #getFrom()
+   * @see OrderBy
+   */
   default Optional<OrderBy<S, T>> orderBy() {
     return getFrom().getOrderBy();
   }
 
+  /**
+   * Gets the {@link Long limit} for the query results returned by the OQL query.
+   *
+   * @return the {@link Long limit} for the query results returned by the OQL query.
+   * @see #getFrom()
+   */
   default long limit() {
     return getFrom().getLimit();
   }
 
+  /**
+   * Gets the {@link Optional} {@link GroupBy} clause of the OQL query.
+   *
+   * @return the {@link Optional} {@link GroupBy} clause of the OQL query.
+   * @see java.util.Optional
+   * @see #getFrom()
+   * @see GroupBy
+   */
   default Optional<GroupBy<S, T>> groupBy() {
     return getFrom().getGroupBy();
   }
 
+  /**
+   * Returns the {@link Iterable collection} to query.
+   *
+   * @return the {@link Iterable collection} to query.
+   * @see java.lang.Iterable
+   */
   default Iterable<S> collection() {
     return getFrom().getCollection();
   }
 
+  /**
+   * Executes this {@link Query} with the given {@link Iterable query arguments}.
+   *
+   * @param arguments {@link Iterable} of {@link QueryArgument QueryArguments} passed to the OQL query.
+   * @return the {@link Iterable result set} from excuting this {@link Query}.
+   * @see java.lang.Iterable
+   * @see QueryArgument
+   */
   @NullSafe
   @Override
   default Iterable<T> execute(Iterable<QueryArgument<?>> arguments) {
