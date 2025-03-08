@@ -32,14 +32,37 @@ import org.cp.elements.lang.annotation.Nullable;
  */
 public record QueryArgument<T>(@NotNull String name, @Nullable T value) implements Nameable<String> {
 
+  /**
+   * Factory method used to construct a new {@link QueryArgument} with the given {@link String argument name}
+   * and {@link T argument value}.
+   *
+   * @param <T> {@link Class type} of the {@link Object query argument}.
+   * @param name {@link String} containing a name for the query argument.
+   * @param value {@link T value} of the query argument.
+   * @return a new {@link QueryArgument} with the given {@link String argument name} and {@link T argument value}.
+   * @throws IllegalArgumentException if {@link String name} is {@literal null} or {@literal empty}.
+   */
   static <T> QueryArgument<T> from(@NotNull String name, @Nullable T value) {
     return new QueryArgument<>(name, value);
   }
 
+  /**
+   * Constructs a new {@link QueryArgument} with the given {@link String argument name} and {@link T argument value}.
+   *
+   * @param name {@link String} containing a name for the query argument.
+   * @param value {@link T value} of the query argument.
+   * @throws IllegalArgumentException if {@link String name} is {@literal null} or {@literal empty}.
+   */
   public QueryArgument {
     Assert.hasText(name, "Name [%s] is required", name);
   }
 
+  /**
+   * Returns the {@link String name} of the query argument.
+   *
+   * @return the {@link String name} of the query argument.
+   * @see #name()
+   */
   @Override
   public String getName() {
     return name();
