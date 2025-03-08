@@ -22,8 +22,8 @@ import org.cp.elements.beans.BeansException;
 import org.cp.elements.beans.IllegalPropertyValueException;
 import org.cp.elements.beans.PropertyNotFoundException;
 import org.cp.elements.beans.PropertyNotSetException;
-import org.cp.elements.beans.PropertyWriteException;
 import org.cp.elements.beans.ReadPropertyException;
+import org.cp.elements.beans.WritePropertyException;
 import org.cp.elements.biz.rules.RuleException;
 import org.cp.elements.context.configure.ConfigurationException;
 import org.cp.elements.dao.DataAccessException;
@@ -94,7 +94,7 @@ import org.cp.elements.util.sort.SortException;
  * @see org.cp.elements.beans.PropertyNotFoundException
  * @see org.cp.elements.beans.PropertyNotSetException
  * @see org.cp.elements.beans.ReadPropertyException
- * @see org.cp.elements.beans.PropertyWriteException
+ * @see org.cp.elements.beans.WritePropertyException
  * @see org.cp.elements.biz.rules.RuleException
  * @see org.cp.elements.context.configure.ConfigurationException
  * @see org.cp.elements.dao.DataAccessException
@@ -354,32 +354,32 @@ public abstract class ElementsExceptionsFactory {
   }
 
   /**
-   * Constructs a new {@link PropertyWriteException} initialized with the given {@link String message}
-   * to describe the {@link PropertyWriteException}.
+   * Constructs a new {@link WritePropertyException} initialized with the given {@link String message}
+   * to describe the {@link WritePropertyException}.
    *
    * @param message {@link String} containing a message to describe the exception.
    * @param args optional array of {@link Object arguments} used to replace the placeholders in the message.
-   * @return a new {@link PropertyWriteException}.
-   * @see #newPropertyWriteException(Throwable, String, Object...)
-   * @see org.cp.elements.beans.PropertyWriteException
+   * @return a new {@link WritePropertyException}.
+   * @see #newWritePropertyException(Throwable, String, Object...)
+   * @see org.cp.elements.beans.WritePropertyException
    */
-  public static PropertyWriteException newPropertyWriteException(String message, Object... args) {
-    return newPropertyWriteException(null, message, args);
+  public static WritePropertyException newWritePropertyException(String message, Object... args) {
+    return newWritePropertyException(null, message, args);
   }
 
   /**
-   * Constructs a new {@link PropertyWriteException} initialized with the given {@link String message}
-   * to describe the {@link PropertyWriteException} along with a {@link Throwable cause} used as the reason
-   * why the {@link PropertyWriteException} was thrown.
+   * Constructs a new {@link WritePropertyException} initialized with the given {@link String message}
+   * to describe the {@link WritePropertyException} along with a {@link Throwable cause} used as the reason
+   * why the {@link WritePropertyException} was thrown.
    *
    * @param cause {@link Throwable} used as the cause of the exception.
    * @param message {@link String} containing a message to describe the exception.
    * @param args optional array of {@link Object arguments} used to replace the placeholders in the message.
-   * @return a new {@link PropertyWriteException}.
-   * @see org.cp.elements.beans.PropertyWriteException
+   * @return a new {@link WritePropertyException}.
+   * @see org.cp.elements.beans.WritePropertyException
    */
-  public static PropertyWriteException newPropertyWriteException(Throwable cause, String message, Object... args) {
-    return new PropertyWriteException(format(message, args), cause);
+  public static WritePropertyException newWritePropertyException(Throwable cause, String message, Object... args) {
+    return new WritePropertyException(format(message, args), cause);
   }
 
   // package org.cp.elements.biz.rules

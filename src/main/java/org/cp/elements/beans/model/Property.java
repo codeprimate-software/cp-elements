@@ -15,9 +15,6 @@
  */
 package org.cp.elements.beans.model;
 
-import static org.cp.elements.lang.ElementsExceptionsFactory.newReadPropertyException;
-import static org.cp.elements.lang.ElementsExceptionsFactory.newPropertyWriteException;
-
 import java.beans.PropertyDescriptor;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
@@ -36,7 +33,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 
 import org.cp.elements.beans.ReadPropertyException;
-import org.cp.elements.beans.PropertyWriteException;
+import org.cp.elements.beans.WritePropertyException;
 import org.cp.elements.beans.annotation.Required;
 import org.cp.elements.beans.model.support.AbstractIndexedProperty;
 import org.cp.elements.lang.Assert;
@@ -729,8 +726,9 @@ public class Property implements Comparable<Property>, Describable<PropertyDescr
    */
   public @Nullable Object getValue() {
 
-    Assert.state(isReadable(), ElementsExceptionsFactory.newReadPropertyException("Property [%s] of bean [%s] is not readable",
-      getName(), getBean()));
+    Assert.state(isReadable(),
+      ElementsExceptionsFactory.newReadPropertyException("Property [%s] of bean [%s] is not readable",
+        getName(), getBean()));
 
     return ObjectUtils.invoke(getTargetObject(), getReadMethod(), new Object[0], Object.class);
   }
@@ -739,13 +737,14 @@ public class Property implements Comparable<Property>, Describable<PropertyDescr
    * Sets the {@link Object value} of this {@link Property}.
    *
    * @param value {@link Object value} to set for this {@link Property}.
-   * @throws PropertyWriteException if this {@link Property} cannot be written.
+   * @throws WritePropertyException if this {@link Property} cannot be written.
    * @see java.lang.Object
    */
   public void setValue(Object value) {
 
-    Assert.state(isWritable(), newPropertyWriteException("Property [%s] of bean [%s] is not writable",
-      getName(), getBean()));
+    Assert.state(isWritable(),
+      ElementsExceptionsFactory.newWritePropertyException("Property [%s] of bean [%s] is not writable",
+          getName(), getBean()));
 
     ObjectUtils.invoke(getTargetObject(), getWriteMethod(), new Object[] { value }, Void.class);
   }

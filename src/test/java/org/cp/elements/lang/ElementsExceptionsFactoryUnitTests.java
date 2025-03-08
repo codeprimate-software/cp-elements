@@ -71,9 +71,8 @@ import static org.cp.elements.lang.ElementsExceptionsFactory.newProcessExecution
 import static org.cp.elements.lang.ElementsExceptionsFactory.newProcessNotRespondingException;
 import static org.cp.elements.lang.ElementsExceptionsFactory.newPropertyNotFoundException;
 import static org.cp.elements.lang.ElementsExceptionsFactory.newPropertyNotSetException;
-import static org.cp.elements.lang.ElementsExceptionsFactory.newReadPropertyException;
-import static org.cp.elements.lang.ElementsExceptionsFactory.newPropertyWriteException;
 import static org.cp.elements.lang.ElementsExceptionsFactory.newReadOnlyException;
+import static org.cp.elements.lang.ElementsExceptionsFactory.newReadPropertyException;
 import static org.cp.elements.lang.ElementsExceptionsFactory.newResourceNotFoundException;
 import static org.cp.elements.lang.ElementsExceptionsFactory.newRuleException;
 import static org.cp.elements.lang.ElementsExceptionsFactory.newSearchException;
@@ -94,6 +93,7 @@ import static org.cp.elements.lang.ElementsExceptionsFactory.newUnhandledMethodI
 import static org.cp.elements.lang.ElementsExceptionsFactory.newUserException;
 import static org.cp.elements.lang.ElementsExceptionsFactory.newUserNotFoundException;
 import static org.cp.elements.lang.ElementsExceptionsFactory.newWriteOnlyException;
+import static org.cp.elements.lang.ElementsExceptionsFactory.newWritePropertyException;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -104,7 +104,7 @@ import org.cp.elements.beans.IllegalPropertyValueException;
 import org.cp.elements.beans.PropertyNotFoundException;
 import org.cp.elements.beans.PropertyNotSetException;
 import org.cp.elements.beans.ReadPropertyException;
-import org.cp.elements.beans.PropertyWriteException;
+import org.cp.elements.beans.WritePropertyException;
 import org.cp.elements.biz.rules.RuleException;
 import org.cp.elements.context.configure.ConfigurationException;
 import org.cp.elements.dao.DataAccessException;
@@ -251,25 +251,25 @@ public class ElementsExceptionsFactoryUnitTests {
   }
 
   @Test
-  public void newPropertyReadExceptionWithMessage() {
+  public void newReadPropertyExceptionWithMessage() {
     assertThrowable(ElementsExceptionsFactory.newReadPropertyException("test"), ReadPropertyException.class, "test");
   }
 
   @Test
-  public void newPropertyReadExceptionWithFormattedMessageAndCause() {
+  public void newReadPropertyExceptionWithFormattedMessageAndCause() {
     assertThrowable(newReadPropertyException(this.mockCause, "%s is a {1}", "This", "test"),
       ReadPropertyException.class, "This is a test", this.mockCause);
   }
 
   @Test
-  public void newPropertyWriteExceptionWithMessage() {
-    assertThrowable(newPropertyWriteException("test"), PropertyWriteException.class, "test");
+  public void newWritePropertyExceptionWithMessage() {
+    assertThrowable(ElementsExceptionsFactory.newWritePropertyException("test"), WritePropertyException.class, "test");
   }
 
   @Test
-  public void newPropertyWriteExceptionWithFormattedMessageAndCause() {
-    assertThrowable(newPropertyWriteException(this.mockCause, "%s is a {1}", "This", "test"),
-      PropertyWriteException.class, "This is a test", this.mockCause);
+  public void newWritePropertyExceptionWithFormattedMessageAndCause() {
+    assertThrowable(newWritePropertyException(this.mockCause, "%s is a {1}", "This", "test"),
+      WritePropertyException.class, "This is a test", this.mockCause);
   }
 
   @Test

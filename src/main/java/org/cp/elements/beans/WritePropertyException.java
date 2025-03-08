@@ -23,42 +23,42 @@ package org.cp.elements.beans;
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
-public class PropertyWriteException extends BeansException {
+public class WritePropertyException extends BeansException {
 
   /**
-   * Constructs a new, uninitialized instance of {@link PropertyWriteException}
+   * Constructs a new, uninitialized instance of {@link WritePropertyException}
    * with no {@link String message} or {@link Throwable cause}.
    */
-  public PropertyWriteException() { }
+  public WritePropertyException() { }
 
   /**
-   * Constructs a new {@link PropertyWriteException} initialized with the given {@link String message}
+   * Constructs a new {@link WritePropertyException} initialized with the given {@link String message}
    * describing the exception.
    *
    * @param message {@link String} describing the exception.
    */
-  public PropertyWriteException(String message) {
+  public WritePropertyException(String message) {
     super(message);
   }
 
   /**
-   * Constructs a new {@link PropertyWriteException} initialized with the given {@link Throwable}
+   * Constructs a new {@link WritePropertyException} initialized with the given {@link Throwable}
    * used as the underlying cause of this exception.
    *
    * @param cause {@link Throwable} used as the cause of this exception.
    */
-  public PropertyWriteException(Throwable cause) {
+  public WritePropertyException(Throwable cause) {
     super(cause);
   }
 
   /**
-   * Constructs a new {@link PropertyWriteException} initialized with the given {@link String message}
+   * Constructs a new {@link WritePropertyException} initialized with the given {@link String message}
    * describing the exception and {@link Throwable} used as the underlying cause of this exception.
    *
    * @param message {@link String} describing the exception.
    * @param cause {@link Throwable} used as the cause of this exception.
    */
-  public PropertyWriteException(String message, Throwable cause) {
+  public WritePropertyException(String message, Throwable cause) {
     super(message, cause);
   }
 }

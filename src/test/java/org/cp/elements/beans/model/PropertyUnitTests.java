@@ -53,7 +53,7 @@ import java.util.stream.Collectors;
 import org.junit.jupiter.api.Test;
 
 import org.cp.elements.beans.ReadPropertyException;
-import org.cp.elements.beans.PropertyWriteException;
+import org.cp.elements.beans.WritePropertyException;
 import org.cp.elements.beans.annotation.Required;
 import org.cp.elements.data.struct.KeyValue;
 import org.cp.elements.function.FunctionUtils;
@@ -1010,7 +1010,7 @@ public class PropertyUnitTests {
     assertThat(property.getName()).isEqualTo("name");
     assertThat(property.isWritable()).isFalse();
 
-    ThrowableAssertions.assertThatThrowableOfType(PropertyWriteException.class)
+    ThrowableAssertions.assertThatThrowableOfType(WritePropertyException.class)
       .isThrownBy(args -> { property.setValue("Roller In Dough"); return null; })
       .havingMessage("Property [name] of bean [%s] is not writable", bean)
       .withNoCause();
