@@ -25,16 +25,42 @@ package org.cp.elements.data.oql;
 @SuppressWarnings("unused")
 public class QueryException extends RuntimeException {
 
+  /**
+   * Constructs a new {@link MalformedQueryException} with no {@link String message} and no {@link Throwable cause}.
+   */
   public QueryException() { }
 
+  /**
+   * Constructs a new {@link javax.naming.MalformedLinkException} initialized with a {@link String message}
+   * describing this exception.
+   *
+   * @param message {@link String} containing a description of this exception.
+   * @see java.lang.RuntimeException#RuntimeException(String)
+   */
   public QueryException(String message) {
     super(message);
   }
 
+  /**
+   * Constructs a new {@link MalformedQueryException} initialized with a {@link Throwable}
+   * object indicating the cause of this exception.
+   *
+   * @param cause {@link Throwable} indicating the cause of this exception.
+   * @see java.lang.RuntimeException#RuntimeException(Throwable)
+   */
   public QueryException(Throwable cause) {
     super(cause);
   }
 
+  /**
+   * Constructs a new {@link MalformedQueryException} initialized with a {@link String}
+   * describing this exception along with a {@link Throwable} object indicating the cause
+   * of this exception.
+   *
+   * @param message {@link String} containing a description of this exception.
+   * @param cause {@link Throwable} indicating the cause of this exception.
+   * @see java.lang.RuntimeException#RuntimeException(String, Throwable)
+   */
   public QueryException(String message, Throwable cause) {
     super(message, cause);
   }
