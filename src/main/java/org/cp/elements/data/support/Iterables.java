@@ -53,6 +53,7 @@ public abstract class Iterables {
    * Returns an unmodifiable {@link Iterable} over the {@link Object elements} in the array.
    *
    * @param <T> {@link Class type} of {@link Object elements} stored in the array.
+   * @param array array of objects used to construct an {@link Iterable}; required.
    * @return an {@link Iterable} over the {@link Object elements} in the array.
    * @throws IllegalArgumentException if array is {@literal null}.
    * @see java.lang.Iterable
@@ -69,6 +70,8 @@ public abstract class Iterables {
    * stored in the {@link Cache}.
    *
    * @param <T> {@link Class type} of {@link Object values} stored in the {@link Cache}.
+   * @param cache {@link Cache} used to construct a new {@link Iterable}
+   * iterating over the {@link Cache.Entry cache entries}; required.
    * @return an {@link Iterable} over the {@link Cache.Entry#getValue()} values} stored in the {@link Cache}.
    * @throws IllegalArgumentException if {@link Cache} is {@literal null}.
    * @see org.cp.elements.data.caching.Cache
@@ -89,6 +92,8 @@ public abstract class Iterables {
    * Returns an unmodifiable {@link Iterable} over the {@link Map#values() values} stored in the {@link Map}.
    *
    * @param <T> {@link Class type} of {@link Object values} stored in the {@link Map}.
+   * @param map {@link Map} used to construct a new {@link Iterable}
+   * iterating over the {@link Map.Entry map entries}; required.
    * @return an {@link Iterable} over the {@link Map#values() values} stored in the {@link Map}.
    * @throws IllegalArgumentException if {@link Map} is {@literal null}.
    * @see java.lang.Iterable
@@ -104,6 +109,8 @@ public abstract class Iterables {
    * Returns an unmodifiable {@link Iterable} over the {@link Row Rows} stored in the {@link Table}.
    *
    * @return an {@link Iterable} over the {@link Row Rows} stored in the {@link Table}.
+   * @param table {@link Table} used to construct a new {@link Iterable}
+   * iterating over the {@link Table} {@link Row Rows}; required.
    * @throws IllegalArgumentException if {@link Table} is {@literal null}.
    * @see org.cp.elements.data.struct.tabular.Table
    * @see org.cp.elements.data.struct.tabular.Row
