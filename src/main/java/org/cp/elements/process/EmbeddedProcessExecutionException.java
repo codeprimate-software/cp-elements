@@ -32,7 +32,7 @@ public class EmbeddedProcessExecutionException extends ProcessExecutionException
   public EmbeddedProcessExecutionException() { }
 
   /**
-   * Constructs an instance of {@link EmbeddedProcessExecutionException} initialized with the given message
+   * Constructs a new {@link EmbeddedProcessExecutionException} initialized with the given message
    * describing this {@link ProcessException}.
    *
    * @param message {@link String} describing this {@link ProcessException}.
@@ -42,7 +42,7 @@ public class EmbeddedProcessExecutionException extends ProcessExecutionException
   }
 
   /**
-   * Constructs an instance of {@link EmbeddedProcessExecutionException} initialized with the given {@link Throwable}
+   * Constructs a new {@link EmbeddedProcessExecutionException} initialized with the given {@link Throwable}
    * indicating the cause of this {@link ProcessException}.
    *
    * @param cause {@link Throwable} object indicating the cause of this {@link ProcessException}.
@@ -53,7 +53,7 @@ public class EmbeddedProcessExecutionException extends ProcessExecutionException
   }
 
   /**
-   * Constructs an instance of {@link EmbeddedProcessExecutionException} initialized with the given message
+   * Constructs a new {@link EmbeddedProcessExecutionException} initialized with the given message
    * describing this {@link ProcessException} and cause to indicate the reason this {@link ProcessException}
    * was thrown.
    *
