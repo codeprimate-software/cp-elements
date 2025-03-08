@@ -38,20 +38,50 @@ import org.cp.elements.util.stream.Streamable;
 @SuppressWarnings("unused")
 public interface QueryArguments extends Iterable<QueryArgument<?>>, Streamable<QueryArgument<?>> {
 
+  /**
+   * Factory method used to construct an empty collection of {@link QueryArguments}.
+   *
+   * @return an empty collection of {@link QueryArguments}.
+   */
   static QueryArguments empty() {
     return Collections::emptyIterator;
   }
 
+  /**
+   * Factory method used to construct a new {@link QueryArguments} aggregate initialized from
+   * the array of {@link QueryArgument} objects.
+   *
+   * @param arguments array of {@link QueryArgument} objects used to construct and initialize the aggregate.
+   * @return a new {@link QueryArguments} aggregate initialized from the array of {@link QueryArgument} objects.
+   * @see #from(Iterable)
+   */
   @NullSafe
   static QueryArguments of(QueryArgument<?>... arguments) {
     return of(Arrays.asList(ArrayUtils.nullSafeArray(arguments, QueryArgument.class)));
   }
 
+  /**
+   * Factory method used to construct a new {@link QueryArguments} aggregate initialized from
+   * the {@link Iterable} of {@link QueryArgument} objects.
+   *
+   * @param arguments {@link Iterable} of {@link QueryArgument} objects used to construct and initialize the aggregate.
+   * @return a new {@link QueryArguments} aggregate initialized from the {@link Iterable} of {@link QueryArgument}
+   * objects.
+   * @see #from(Object[])
+   */
   @NullSafe
   static QueryArguments of(Iterable<QueryArgument<?>> arguments) {
     return CollectionUtils.nullSafeIterable(arguments)::iterator;
   }
 
+  /**
+   * Looks up and finds an {@link Optional} {@link QueryArgument} by {@link String name}.
+   *
+   * @param <T> {@link Class type} of argument value.
+   * @param name {@link String} containing the name of the {@link QueryArgument} to find in this aggregate.
+   * @return an {@link Optional} {@link QueryArgument} with the given {@link String name}.
+   * @see java.util.Optional
+   */
   @SuppressWarnings("unchecked")
   default <T> Optional<QueryArgument<T>> findBy(String name) {
 
@@ -61,6 +91,15 @@ public interface QueryArguments extends Iterable<QueryArgument<?>>, Streamable<Q
       .findFirst();
   }
 
+  /**
+   * Looks up and finds an required {@link QueryArgument} by {@link String name}.
+   *
+   * @param <T> {@link Class type} of argument value.
+   * @param name {@link String} containing the name of the {@link QueryArgument} to find in this aggregate.
+   * @return a {@link QueryArgument} with the given {@link String name}.
+   * @throws QueryException if a {@link QueryArgument} by {@link String name} is not found.
+   * @see #findBy(String)
+   */
   @SuppressWarnings("unchecked")
   default <T> QueryArgument<T> requireBy(String name) {
 
@@ -69,6 +108,13 @@ public interface QueryArguments extends Iterable<QueryArgument<?>>, Streamable<Q
       .orElseThrow(() -> new QueryException("Query argument with name [%s] not found".formatted(name)));
   }
 
+  /**
+   * Returns a {@link Stream} over the {@link QueryArgument QueryArguments} in this aggregate.
+   *
+   * @return a {@link Stream} over the {@link QueryArgument QueryArguments} in this aggregate.
+   * @see java.util.stream.Stream
+   * @see QueryArgument
+   */
   @Override
   default Stream<QueryArgument<?>> stream() {
     return StreamUtils.stream(this);
