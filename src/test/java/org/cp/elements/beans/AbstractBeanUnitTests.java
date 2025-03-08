@@ -71,7 +71,7 @@ import org.mockito.stubbing.Answer;
  * @see org.cp.elements.beans.AbstractBean
  * @since 1.0.0
  */
-public class AbstractBeanUnitTests {
+class AbstractBeanUnitTests {
 
   @SuppressWarnings("unchecked")
   private static @NotNull User<Long> mockUser(@Nullable String name) {
@@ -85,31 +85,33 @@ public class AbstractBeanUnitTests {
   }
 
   @Test
-  public void constructAbstractBean() {
+  void constructAbstractBean() {
 
     TestBean<Integer> bean = new TestBean<>();
 
     assertThat(bean).isNotNull();
     assertThat(bean.getId()).isNull();
     assertThat(bean.isNew()).isTrue();
+    assertThat(bean.isNotNew()).isFalse();
     assertThat(bean.isModified()).isFalse();
     assertThat(bean.isEventDispatchEnabled()).isTrue();
   }
 
   @Test
-  public void constructAbstractBeanWithId() {
+  void constructAbstractBeanWithId() {
 
     TestBean<Integer> bean = new TestBean<>(2);
 
     assertThat(bean).isNotNull();
     assertThat(bean.getId()).isEqualTo(2);
     assertThat(bean.isNew()).isFalse();
+    assertThat(bean.isNotNew()).isTrue();
     assertThat(bean.isModified()).isTrue();
     assertThat(bean.isEventDispatchEnabled()).isTrue();
   }
 
   @Test
-  public void getAdapter() {
+  void getAdapter() {
 
     TestBean<Integer> bean = new TestBean<>(1);
 
@@ -121,7 +123,7 @@ public class AbstractBeanUnitTests {
   }
 
   @Test
-  public void setAndGetId() {
+  void setAndGetId() {
 
     TestBean<Integer> bean = new TestBean<>(null);
 
@@ -149,7 +151,7 @@ public class AbstractBeanUnitTests {
   }
 
   @Test
-  public void setAndGetEventDispatchEnabled() {
+  void setAndGetEventDispatchEnabled() {
 
     TestBean<Integer> bean = new TestBean<>();
 
@@ -166,7 +168,7 @@ public class AbstractBeanUnitTests {
   }
 
   @Test
-  public void setAndGetAuditableFields() {
+  void setAndGetAuditableFields() {
 
     User<Long> jonDoe = mockUser("jonDoe");
     User<Long> pieDoe = mockUser("pieDoe");
@@ -213,7 +215,7 @@ public class AbstractBeanUnitTests {
   }
 
   @Test
-  public void isModified() {
+  void isModified() {
 
     ValueHolder valueHolder = new ValueHolder("test");
 
@@ -252,7 +254,7 @@ public class AbstractBeanUnitTests {
   }
 
   @Test
-  public void acceptsVisitor() {
+  void acceptsVisitor() {
 
     Visitor mockVisitor = mock(Visitor.class);
 
@@ -265,7 +267,7 @@ public class AbstractBeanUnitTests {
   }
 
   @Test
-  public void changeStateIsSuccessful() {
+  void changeStateIsSuccessful() {
 
     ValueHolder valueHolder = new ValueHolder("test");
 
@@ -278,7 +280,7 @@ public class AbstractBeanUnitTests {
   }
 
   @Test
-  public void changeStateForPropertyMappedFieldIsSuccessful() {
+  void changeStateForPropertyMappedFieldIsSuccessful() {
 
     ValueHolder valueHolder = new ValueHolder("test");
 
@@ -293,7 +295,7 @@ public class AbstractBeanUnitTests {
   }
 
   @Test
-  public void changeStateForPropertyWithUnmappedFieldThrowsException() {
+  void changeStateForPropertyWithUnmappedFieldThrowsException() {
 
     ValueHolder valueHolder = new ValueHolder("test");
 
@@ -315,7 +317,7 @@ public class AbstractBeanUnitTests {
   }
 
   @Test
-  public void firePropertyChangeEventWithNullEvent() {
+  void firePropertyChangeEventWithNullEvent() {
 
     assertThatIllegalArgumentException()
       .isThrownBy(() -> new TestBean<>().firePropertyChangeEvent(null))
@@ -324,7 +326,7 @@ public class AbstractBeanUnitTests {
   }
 
   @Test
-  public void fireVetoableChangeEventWithNullEvent() {
+  void fireVetoableChangeEventWithNullEvent() {
 
     assertThatIllegalArgumentException()
       .isThrownBy(() ->new TestBean<>().fireVetoableChangeEvent(null))
@@ -333,7 +335,7 @@ public class AbstractBeanUnitTests {
   }
 
   @Test
-  public void mapAndUnmapPropertyNameToFieldName() {
+  void mapAndUnmapPropertyNameToFieldName() {
 
     TestBean<Integer> bean = new TestBean<>();
 
@@ -346,7 +348,7 @@ public class AbstractBeanUnitTests {
   }
 
   @Test
-  public void mapIllegalPropertyNameToFieldName() {
+  void mapIllegalPropertyNameToFieldName() {
 
     Arrays.asList("  ", "", null).forEach(propertyName ->
       assertThatIllegalArgumentException()
@@ -356,7 +358,7 @@ public class AbstractBeanUnitTests {
   }
 
   @Test
-  public void mapPropertyNameToIllegalFieldName() {
+  void mapPropertyNameToIllegalFieldName() {
 
     Arrays.asList("  ", "", null).forEach(fieldName ->
       assertThatIllegalArgumentException()
@@ -367,7 +369,7 @@ public class AbstractBeanUnitTests {
 
   @Test
   @SuppressWarnings("unchecked")
-  public void mapAndUnmapPropertyNameToStateChangeCallback() {
+  void mapAndUnmapPropertyNameToStateChangeCallback() {
 
     StateChangeCallback<Object> mockCallback = mock(StateChangeCallback.class);
 
@@ -390,7 +392,7 @@ public class AbstractBeanUnitTests {
 
   @Test
   @SuppressWarnings("unchecked")
-  public void mapIllegalPropertyNameToStateChangeCallback() {
+  void mapIllegalPropertyNameToStateChangeCallback() {
 
     StateChangeCallback<Object> mockStateChangeCallback = mock(StateChangeCallback.class);
 
@@ -404,7 +406,7 @@ public class AbstractBeanUnitTests {
   }
 
   @Test
-  public void mapPropertyNameToNullStateChangeCallback() {
+  void mapPropertyNameToNullStateChangeCallback() {
 
     assertThatIllegalArgumentException()
       .isThrownBy(() -> new ValueHolder().mapPropertyNameToStateChangeCallback("alias", null))
@@ -413,7 +415,7 @@ public class AbstractBeanUnitTests {
   }
 
   @Test
-  public void newPropertyChangeEventWasInitialized() {
+  void newPropertyChangeEventWasInitialized() {
 
     TestBean<?> bean = new TestBean<>();
 
@@ -430,7 +432,7 @@ public class AbstractBeanUnitTests {
   }
 
   @Test
-  public void setPropertyForUnmappedFieldAndUnmappedStateChangeCallback() {
+  void setPropertyForUnmappedFieldAndUnmappedStateChangeCallback() {
 
     ValueHolder valueHolder = new ValueHolder("test");
 
@@ -450,7 +452,7 @@ public class AbstractBeanUnitTests {
   }
 
   @Test
-  public void setPropertyWhenPropertyNameIsMappedToFieldName() {
+  void setPropertyWhenPropertyNameIsMappedToFieldName() {
 
     ValueHolder valueHolder = spy(new ValueHolder("test"));
 
@@ -470,7 +472,7 @@ public class AbstractBeanUnitTests {
   }
 
   @Test
-  public void setPropertyWhenPropertyNameIsMappedToStateChangeCallback() {
+  void setPropertyWhenPropertyNameIsMappedToStateChangeCallback() {
 
     ValueHolder valueHolder = spy(new ValueHolder("test"));
 
@@ -492,7 +494,7 @@ public class AbstractBeanUnitTests {
   }
 
   @Test
-  public void propertyChangeFiresAllRegisteredEventListeners() throws PropertyVetoException {
+  void propertyChangeFiresAllRegisteredEventListeners() throws PropertyVetoException {
 
     Instant beforeEventDateTime = Instant.now();
 
@@ -559,7 +561,7 @@ public class AbstractBeanUnitTests {
   }
 
   @Test
-  public void propertyChangeFiresNoRegisteredEventListenersWhenEventDispatchIsDisabled() {
+  void propertyChangeFiresNoRegisteredEventListenersWhenEventDispatchIsDisabled() {
 
     ChangeListener mockChangeListener = mock(ChangeListener.class);
 
@@ -590,7 +592,7 @@ public class AbstractBeanUnitTests {
   }
 
   @Test
-  public void propertyChangeFiresPropertySpecificEventListenersBasedOnRegistration() throws PropertyVetoException {
+  void propertyChangeFiresPropertySpecificEventListenersBasedOnRegistration() throws PropertyVetoException {
 
     Instant beforeEventDateTime = Instant.now();
 
@@ -676,7 +678,7 @@ public class AbstractBeanUnitTests {
   }
 
   @Test
-  public void propertyChangeIsVetoed() throws PropertyVetoException {
+  void propertyChangeIsVetoed() throws PropertyVetoException {
 
     ChangeListener mockChangeListener = mock(ChangeListener.class);
 
@@ -731,7 +733,7 @@ public class AbstractBeanUnitTests {
 
   @Test
   @SuppressWarnings({ "all", "unchecked" })
-  public void compareToNonAbstractBean() {
+  void compareToNonAbstractBean() {
 
     Bean mockBean = mock(Bean.class);
 
@@ -745,7 +747,7 @@ public class AbstractBeanUnitTests {
   }
 
   @Test
-  public void compareToEqualBean() {
+  void compareToEqualBean() {
 
     TestBean<Integer> beanOne = new TestBean<>(1);
     TestBean<Integer> beanTwo = new TestBean<>(1);
@@ -754,7 +756,7 @@ public class AbstractBeanUnitTests {
   }
 
   @Test
-  public void compareToGreaterBean() {
+  void compareToGreaterBean() {
 
     TestBean<Integer> beanOne = new TestBean<>(1);
     TestBean<Integer> beanTwo = new TestBean<>(2);
@@ -763,7 +765,7 @@ public class AbstractBeanUnitTests {
   }
 
   @Test
-  public void compareToLesserBean() {
+  void compareToLesserBean() {
 
     TestBean<Integer> beanOne = new TestBean<>(1);
     TestBean<Integer> beanTwo = new TestBean<>(2);
@@ -773,7 +775,7 @@ public class AbstractBeanUnitTests {
 
   @Test
   @SuppressWarnings("all")
-  public void compareToSameBean() {
+  void compareToSameBean() {
 
     TestBean<Integer> bean = new TestBean<>(0);
 
@@ -781,7 +783,7 @@ public class AbstractBeanUnitTests {
   }
 
   @Test
-  public void equalsWithEqualBean() {
+  void equalsWithEqualBean() {
 
     ValueHolder testValueOne = new ValueHolder("test");
     ValueHolder testValueTwo = new ValueHolder("test");
@@ -791,7 +793,7 @@ public class AbstractBeanUnitTests {
 
   @Test
   @SuppressWarnings("all")
-  public void equalsWithSameBean() {
+  void equalsWithSameBean() {
 
     ValueHolder value = new ValueHolder("test");
 
@@ -799,7 +801,7 @@ public class AbstractBeanUnitTests {
   }
 
   @Test
-  public void equalsWithUnequalBean() {
+  void equalsWithUnequalBean() {
 
     ValueHolder testValue = new ValueHolder("test");
     ValueHolder mockValue = new ValueHolder("mock");
@@ -809,25 +811,25 @@ public class AbstractBeanUnitTests {
 
   @Test
   @SuppressWarnings("all")
-  public void equalsWithNonBeanIsFalse() {
+  void equalsWithNonBeanIsFalse() {
     assertThat(new ValueHolder("test").equals("test")).isFalse();
   }
 
   @Test
   @SuppressWarnings("all")
-  public void equalsWithNullIsFalse() {
+  void equalsWithNullIsFalse() {
     assertThat(new ValueHolder("test").equals(null)).isFalse();
   }
 
   @Test
-  public void hashCodeIsNotZero() {
+  void hashCodeIsNotZero() {
 
     assertThat(new TestBean<Integer>().hashCode()).isNotZero();
     assertThat(new ValueHolder("test").hashCode()).isNotZero();
   }
 
   @Test
-  public void hashCodeForEqualBeansIsEqual() {
+  void hashCodeForEqualBeansIsEqual() {
 
     TestBean<Integer> beanOne = new TestBean<>(1);
     TestBean<Integer> beanTwo = new TestBean<>(1);
@@ -836,7 +838,7 @@ public class AbstractBeanUnitTests {
   }
 
   @Test
-  public void hashCodeForSameBeanIsEqual() {
+  void hashCodeForSameBeanIsEqual() {
 
     TestBean<Integer> bean = new TestBean<>(0);
 
@@ -844,7 +846,7 @@ public class AbstractBeanUnitTests {
   }
 
   @Test
-  public void hashCodeForUnequalsBeansIsNotEqual() {
+  void hashCodeForUnequalsBeansIsNotEqual() {
 
     TestBean<Integer> beanOne = new TestBean<>(1);
     TestBean<Integer> beanTwo = new TestBean<>(2);

@@ -24,6 +24,7 @@ import java.beans.VetoableChangeSupport;
 import java.lang.reflect.Field;
 import java.time.Instant;
 import java.util.Map;
+import java.util.Objects;
 import java.util.TreeMap;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -769,18 +770,16 @@ public abstract class AbstractBean<ID extends Comparable<ID>, USER, PROCESS> ext
    * @see java.lang.Object#equals(Object)
    */
   @Override
-  @SuppressWarnings("unchecked")
+  @SuppressWarnings({ "rawtypes" })
   public boolean equals(@Nullable Object obj) {
 
     if (this == obj) {
       return true;
     }
 
-    if (!(obj instanceof Bean)) {
+    if (!(obj instanceof Bean that)) {
       return false;
     }
-
-    Bean<ID, USER, PROCESS> that = (Bean<ID, USER, PROCESS>) obj;
 
     return ObjectUtils.equals(this.getId(), that.getId());
   }
@@ -795,12 +794,7 @@ public abstract class AbstractBean<ID extends Comparable<ID>, USER, PROCESS> ext
    */
   @Override
   public int hashCode() {
-
-    int hashValue = 17;
-
-    hashValue = 37 * hashValue + ObjectUtils.hashCode(getId());
-
-    return hashValue;
+    return Objects.hash(getId());
   }
 
   /**
