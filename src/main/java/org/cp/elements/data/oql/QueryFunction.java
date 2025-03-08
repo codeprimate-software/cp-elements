@@ -34,6 +34,7 @@ public interface QueryFunction<T, V> extends Nameable<String> {
    * Apply the computation of this {@link QueryFunction} to the given {@link T objects}.
    *
    * @param array array of {@link T Objects} on which this {@link QueryFunction} is applied.
+   * @return the {@link V} computed by this {@link QueryFunction}.
    * @see #apply(Iterable)
    */
   @SuppressWarnings("unchecked")
@@ -45,6 +46,8 @@ public interface QueryFunction<T, V> extends Nameable<String> {
    * Apply the computation of this {@link QueryFunction} to the given {@link T objects}.
    *
    * @param iterable {@link Iterable} of {@link T Objects} on which this {@link QueryFunction} is applied.
+   * @return the {@link V} computed by this {@link QueryFunction}.
+   * @see java.lang.Iterable
    * @see #apply(Object[])
    */
   V apply(Iterable<T> iterable);
