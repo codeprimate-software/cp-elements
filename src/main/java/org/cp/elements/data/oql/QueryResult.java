@@ -57,6 +57,14 @@ public interface QueryResult<T> {
    */
   <V> V get(String fieldName);
 
+  /**
+   * Applies the given {@link Function} to map this {@link QueryResult} into an {@link Object} of type {@link T}.
+   *
+   * @param mapper {@link Function} used to map this {@link QueryResult} to an {@link Object} of type {@link T}.
+   * @return the mapped {@link T object}.
+   * @throws IllegalArgumentException if {@link Function} is {@literal null}.
+   * @see java.util.function.Function
+   */
   default T map(@NotNull Function<QueryResult<T>, T> mapper) {
     Assert.notNull(mapper, "Function is required");
     return mapper.apply(this);
