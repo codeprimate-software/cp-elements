@@ -25,20 +25,52 @@ package org.cp.elements.data.oql;
 @SuppressWarnings("unused")
 public class MalformedQueryException extends QueryException {
 
+  /**
+   * Factory method used to construct a new {@link MalformedQueryException} with the given {@link String message}.
+   *
+   * @param message {@link String} containing a description of this exception.
+   * @return a new {@link MalformedQueryException} with the given {@link String message}.
+   */
   public static MalformedQueryException withMessage(String message) {
     return new MalformedQueryException(message);
   }
 
+  /**
+   * Constructs a new {@link MalformedQueryException} with no {@link String message} and no {@link Throwable cause}.
+   */
   public MalformedQueryException() { }
 
+  /**
+   * Constructs a new {@link javax.naming.MalformedLinkException} initialized with a {@link String message}
+   * describing this exception.
+   *
+   * @param message {@link String} containing a description of this exception.
+   * @see java.lang.RuntimeException#RuntimeException(String)
+   */
   public MalformedQueryException(String message) {
     super(message);
   }
 
+  /**
+   * Constructs a new {@link MalformedQueryException} initialized with a {@link Throwable}
+   * object indicating the cause of this exception.
+   *
+   * @param cause {@link Throwable} indicating the cause of this exception.
+   * @see java.lang.RuntimeException#RuntimeException(Throwable)
+   */
   public MalformedQueryException(Throwable cause) {
     super(cause);
   }
 
+  /**
+   * Constructs a new {@link MalformedQueryException} initialized with a {@link String}
+   * describing this exception along with a {@link Throwable} object indicating the cause
+   * of this exception.
+   *
+   * @param message {@link String} containing a description of this exception.
+   * @param cause {@link Throwable} indicating the cause of this exception.
+   * @see java.lang.RuntimeException#RuntimeException(String, Throwable)
+   */
   public MalformedQueryException(String message, Throwable cause) {
     super(message, cause);
   }
