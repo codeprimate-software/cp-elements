@@ -16,8 +16,8 @@
 package org.cp.elements.process;
 
 /**
- * The {@link EmbeddedProcessExecutionException} class is a special {@link ProcessExecutionException} to indicate
- * a runtime error occurred while executing a embedded program, which will run in the containing process.
+ * {@link ProcessExecutionException} thrown to indicate a runtime error occurred while executing a embedded program,
+ * which will run in the containing (parent) process.
  *
  * @author John Blum
  * @see org.cp.elements.process.ProcessExecutionException
@@ -27,10 +27,9 @@ package org.cp.elements.process;
 public class EmbeddedProcessExecutionException extends ProcessExecutionException {
 
   /**
-   * Constructs an uninitialized instance of {@link EmbeddedProcessExecutionException} with no message or cause.
+   * Constructs a new {@link EmbeddedProcessExecutionException} with no message and no cause.
    */
-  public EmbeddedProcessExecutionException() {
-  }
+  public EmbeddedProcessExecutionException() { }
 
   /**
    * Constructs an instance of {@link EmbeddedProcessExecutionException} initialized with the given message
