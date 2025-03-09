@@ -83,7 +83,7 @@ public abstract class ReadOnlyCache<KEY extends Comparable<KEY>, VALUE> extends 
     Cache.Entry<KEY, VALUE> existingCacheEntry = doGetEntry(key);
 
     Function<Cache.Entry<KEY, VALUE>, Cache.Entry<KEY, VALUE>> readOnlyCacheEntryFunction = cacheEntry ->
-      new Cache.Entry<KEY, VALUE>() {
+      new Cache.Entry<>() {
 
         @Override
         public @NotNull KEY getKey() {
@@ -114,6 +114,13 @@ public abstract class ReadOnlyCache<KEY extends Comparable<KEY>, VALUE> extends 
     return existingCacheEntry != null ? readOnlyCacheEntryFunction.apply(existingCacheEntry) : null;
   }
 
+  /**
+   * Gets the {@link Cache.Entry} for the given {@link KEY key}.
+   *
+   * @param key {@link KEY key} referencing the {@link Cache.Entry} to get.
+   * @return the {@link Cache.Entry} for the given {@link KEY key}.
+   * @see Cache.Entry
+   */
   @Nullable
   Cache.Entry<KEY, VALUE> doGetEntry(KEY key) {
     return super.getEntry(key);
