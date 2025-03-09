@@ -41,12 +41,14 @@ import org.cp.elements.util.ArrayUtils;
  * @see java.lang.Exception
  * @see java.lang.RuntimeException
  * @see java.lang.Throwable
- * @see java.util.function.BiFunction
- * @see java.util.regex.Pattern
+ * @see org.cp.elements.function.ThrowableConsumer
+ * @see org.cp.elements.function.ThrowableFunction
+ * @see org.cp.elements.function.ThrowableSupplier
  * @see org.cp.elements.lang.annotation.Dsl
  * @see org.cp.elements.lang.annotation.FluentApi
  * @since 1.0.0
  */
+@FluentApi
 @SuppressWarnings("unused")
 public abstract class ThrowableAssertions {
 
@@ -318,6 +320,16 @@ public abstract class ThrowableAssertions {
   protected static class AssertThatThrowableExpression
       implements AssertThatThrowable, DslExtension, FluentApiExtension {
 
+    /**
+     * Factory method used to construct a new {@link AssertThatThrowableExpression} initialized with
+     * the given {@link Throwable} {@link Class type} and {@link Throwable}.
+     *
+     * @param type {@link Class type} of {@link Throwable}.
+     * @param throwable {@link Throwable} used in assertions.
+     * @return a new {@link AssertThatThrowableExpression}.
+     * @throws IllegalArgumentException if {@link Class Throwable type} is {@literal null} or the {@link Throwable}
+     * is not an instance of the given {@link Class Throwable type}.
+     */
     protected static AssertThatThrowableExpression from(@NotNull Class<? extends Throwable> type,
         @NotNull Throwable throwable) {
 
@@ -328,6 +340,15 @@ public abstract class ThrowableAssertions {
 
     private final Throwable throwable;
 
+    /**
+     * Constructs a new {@link AssertThatThrowableExpression} initialized with the given {@link Throwable}
+     * {@link Class type} and {@link Throwable}.
+     *
+     * @param type {@link Class type} of {@link Throwable}.
+     * @param throwable {@link Throwable} used in assertions.
+     * @throws IllegalArgumentException if {@link Class Throwable type} is {@literal null} or the {@link Throwable}
+     * is not an instance of the given {@link Class Throwable type}.
+     */
     protected AssertThatThrowableExpression(@NotNull Class<? extends Throwable> type,
         @NotNull Throwable throwable) {
 
@@ -340,10 +361,20 @@ public abstract class ThrowableAssertions {
       this.throwable = throwable;
     }
 
+    /**
+     * Returns a reference to the {@link Throwable} used in assertions.
+     *
+     * @return a reference to the {@link Throwable} used in assertions.
+     */
     protected @NotNull Throwable getThrowable() {
       return this.throwable;
     }
 
+    /**
+     * Returns the specific {@link Class Throwable subtype}.
+     *
+     * @return the specific {@link Class Throwable subtype}.
+     */
     protected @NotNull Class<? extends Throwable> getType() {
       return this.type;
     }
@@ -550,8 +581,22 @@ public abstract class ThrowableAssertions {
 
   }
 
+  /**
+   * {@link ThrowableSource} implementation representing the operational expression
+   * capable of throwing an {@link Throwable exception}.
+   *
+   * @see ThrowableSource
+   */
   protected static class ThrowableSourceExpression implements DslExtension, FluentApiExtension, ThrowableSource {
 
+    /**
+     * Factory method used to construct a new {@link ThrowableSourceExpression} initialized with
+     * the specific {@link Class Throwable subtype}.
+     *
+     * @param type {@link Class subtype} of {@link Throwable}.
+     * @return a new {@link ThrowableSourceExpression}.
+     * @throws IllegalArgumentException if {@link Class Throwable type} is {@literal null}.
+     */
     protected static ThrowableSourceExpression from(@NotNull Class<? extends Throwable> type) {
       return new ThrowableSourceExpression(type);
     }
@@ -562,14 +607,32 @@ public abstract class ThrowableAssertions {
 
     private Supplier<Object[]> arguments;
 
+    /**
+     * Constructs a new {@link ThrowableSourceExpression} initialized with the specific {@link Class Throwable subtype}.
+     *
+     * @param type {@link Class subtype} of {@link Throwable}.
+     * @throws IllegalArgumentException if {@link Class Throwable type} is {@literal null}.
+     */
     protected ThrowableSourceExpression(@NotNull Class<? extends Throwable> type) {
       this.type = ObjectUtils.requireObject(type, "Type of Throwable is required");
     }
 
+    /**
+     * Gets a {@link Supplier} of {@link Object arguments} passed to the operation
+     * capable of throwing an {@link Throwable exception}.
+     *
+     * @return a {@link Supplier} of {@link Object arguments} passed to the operation
+     * capable of throwing an {@link Throwable exception}.
+     */
     protected @NotNull Supplier<Object[]> getArguments() {
       return FunctionUtils.nullSafeSupplier(this.arguments);
     }
 
+    /**
+     * Gets a {@link String description} of the message returned on assertion failure.
+     *
+     * @return a {@link String description} of the message returned on assertion failure.
+     */
     public @NotNull String getDescription() {
 
       String description = this.description;
@@ -578,6 +641,11 @@ public abstract class ThrowableAssertions {
         : String.format("Expected Throwable of type [%s] to be thrown by operation", ObjectUtils.getName(getType()));
     }
 
+    /**
+     * Returns the configured {@link Class subtype} of {@link Throwable}.
+     *
+     * @return the configured {@link Class subtype} of {@link Throwable}.
+     */
     protected @NotNull Class<? extends Throwable> getType() {
       return this.type;
     }
