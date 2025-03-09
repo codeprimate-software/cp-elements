@@ -36,7 +36,7 @@
 
   <module name="SuppressionSingleFilter">
     <property name="checks" value="MagicNumber"/>
-    <property name="files" value="SimpleBloomFilter.java"/>
+    <property name="files" value="SimpleBloomFilter.java|.+Utils\.java"/>
   </module>
 
   <module name="SuppressionSingleFilter">
@@ -175,7 +175,7 @@
     <module name="IllegalType"/>
     <module name="InnerAssignment"/>
     <module name="MagicNumber">
-      <property name="ignoreNumbers" value="-2, -1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 24, 32, 37, 64, 100, 128, 256, 500, 512"/>
+      <property name="ignoreNumbers" value="-2, -1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 24, 31, 32, 37, 64, 100, 128, 256, 500, 512"/>
       <property name="ignoreAnnotation" value="true"/>
       <property name="ignoreHashCodeMethod" value="true"/>
     </module>
@@ -240,11 +240,10 @@
     <module name="AvoidStarImport"/>
     <!--module name="AvoidStaticImport"/-->
     <module name="CustomImportOrder">
-      <property name="customImportOrderRules"
-                value="STATIC###STANDARD_JAVA_PACKAGE###THIRD_PARTY_PACKAGE"/>
+      <property name="customImportOrderRules" value="STATIC###STANDARD_JAVA_PACKAGE###THIRD_PARTY_PACKAGE"/>
       <property name="separateLineBetweenGroups" value="true"/>
       <property name="sortImportsInGroupAlphabetically" value="true"/>
-      <property name="standardPackageRegExp" value="^java\."/>
+      <property name="standardPackageRegExp" value="^(java|javax)\."/>
     </module>
     <module name="IllegalImport"/> <!-- defaults to sun.* packages -->
     <!--module name="ImportControl"/-->
