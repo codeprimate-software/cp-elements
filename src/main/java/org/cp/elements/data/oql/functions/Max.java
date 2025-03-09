@@ -23,20 +23,36 @@ import org.cp.elements.lang.Constants;
 import org.cp.elements.lang.ObjectUtils;
 import org.cp.elements.lang.StringUtils;
 import org.cp.elements.lang.annotation.NotNull;
+import org.cp.elements.lang.annotation.NullSafe;
+import org.cp.elements.lang.annotation.ThreadSafe;
 
 /**
  * {@link QueryFunction} used to calculate the {@literal maximum value} in a set.
  *
  * @author John Blum
- * @param <T> {@link Class type} of {@link Object} on which this function is applied.
- * @param <V> {@link Comparable} type.
+ * @param <T> {@link Class type} of {@link Object} on which this {@link Function} is applied.
+ * @param <V> {@link Comparable type} of the value compared in the max operation.
  * @see java.lang.Comparable
  * @see org.cp.elements.data.oql.QueryFunction
+ * @see org.cp.elements.lang.annotation.ThreadSafe
  * @since 2.0.0
  */
+@ThreadSafe
 @SuppressWarnings("unused")
 public class Max<T, V extends Comparable<V>> implements QueryFunction<T, V> {
 
+  /**
+   * Factory method used to construct a new {@link Max} query function.
+   *
+   * @param <T> {@link Class type} of {@link Object} on which this {@link Function} is applied.
+   * @param <V> {@link Comparable type} of the value compared in the max operation.
+   * @param function {@link Function} used to extract the {@link Comparable value} from an {@link Object}
+   * of type {@link T} used in the max operation.
+   * @return a new {@link Max} query function.
+   * @throws IllegalArgumentException if {@link Function} is {@literal null}.
+   * @see java.util.function.Function
+   * @see java.lang.Comparable
+   */
   public static <T, V extends Comparable<V>> Max<T, V> of(@NotNull Function<T, V> function) {
     return new Max<>(function);
   }
@@ -45,15 +61,38 @@ public class Max<T, V extends Comparable<V>> implements QueryFunction<T, V> {
 
   private final Function<T, V> function;
 
+  /**
+   * Construct a new {@link Max} query function.
+   *
+   * @param function {@link Function} used to extract the {@link Comparable value} from an {@link Object}
+   * of type {@link T} used in the max operation.
+   * @throws IllegalArgumentException if {@link Function} is {@literal null}.
+   * @see java.util.function.Function
+   * @see java.lang.Comparable
+   */
   protected Max(@NotNull Function<T, V> function) {
     this.function = ObjectUtils.requireObject(function, "Function is required");
   }
 
+  /**
+   * Returns the {@link String name} given to this query function.
+   *
+   * @return the {@link String name} given to this query function.
+   */
   @Override
   public String getName() {
     return StringUtils.defaultIfBlank(this.name, Constants.UNKNOWN);
   }
 
+  /**
+   * Computes the maximum {@link Comparable value} from the collection of {@link Iterable objects}.
+   *
+   * @param resultSet {@link Iterable} of {@link T Objects} use to compute a maximum value.
+   * @return the {@link V maximum value} from the collection of {@link Iterable objects};
+   * returns {@literal null} if the {@link Iterable collection} is {@literal null} or {@literal empty}.
+   * @see java.lang.Iterable
+   */
+  @NullSafe
   @Override
   public V apply(Iterable<T> resultSet) {
 
@@ -69,6 +108,12 @@ public class Max<T, V extends Comparable<V>> implements QueryFunction<T, V> {
     return max;
   }
 
+  /**
+   * Builder method used to assign a {@link String name} to this query function.
+   *
+   * @param name {@link String} containing the name given to this query function.
+   * @return this query function.
+   */
   public Max<T, V> named(String name) {
     this.name = name;
     return this;
