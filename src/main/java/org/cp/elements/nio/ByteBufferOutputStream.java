@@ -23,7 +23,7 @@ import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.annotation.NotNull;
 
 /**
- * An {@link OutputStream} implementation that writes to a Java {@link ByteBuffer}.
+ * {@link OutputStream} implementation that writes to a Java {@link ByteBuffer}.
  *
  * @author John Blum
  * @see java.io.OutputStream
@@ -34,7 +34,7 @@ public class ByteBufferOutputStream extends OutputStream {
 
   protected static final int CAPACITY_INCREMENT = BufferUtils.EIGHT_KILOBYTE_BUFFER_SIZE;
 
-  protected static final float LOAD_FACTOR = 0.85f;
+  protected static final float LOAD_FACTOR = 0.85f; // 85%
 
   private static final int MASK = 0x000000FF;
 
@@ -45,8 +45,8 @@ public class ByteBufferOutputStream extends OutputStream {
    * @param byteBuffer {@link ByteBuffer} into which this {@link OutputStream} will write data;
    * must not be {@literal null} and must be {@link ByteBuffer#isReadOnly() writable}.
    * @return a new {@link ByteBufferOutputStream}.
-   * @throws IllegalArgumentException if the {@link ByteBuffer} is {@literal null}.
-   * @throws IllegalStateException if the {@link ByteBuffer} is {@link ByteBuffer#isReadOnly() read-only}.
+   * @throws IllegalArgumentException if {@link ByteBuffer} is {@literal null}.
+   * @throws IllegalStateException if {@link ByteBuffer} is {@link ByteBuffer#isReadOnly() read-only}.
    * @see ByteBufferOutputStream#ByteBufferOutputStream(ByteBuffer)
    * @see java.nio.ByteBuffer
    */
@@ -141,11 +141,20 @@ public class ByteBufferOutputStream extends OutputStream {
     this.closed = true;
   }
 
+  /**
+   * Converts the {@link Integer value} to a {@link Byte}.
+   *
+   * @param value {@link Integer} to convert into a {@link Byte}.
+   * @return a {@link Byte value} for the given {@link Integer}.
+   */
   protected byte convertToByte(int value) {
     //return Integer.valueOf(value).byteValue();
     return (byte) (value & MASK);
   }
 
+  /**
+   * Increases the capacity (resizes) the {@link ByteBuffer}.
+   */
   protected void reallocateBuffer() {
 
     assertNotClosed();
@@ -159,7 +168,6 @@ public class ByteBufferOutputStream extends OutputStream {
 
   @Override
   public void write(int byteToWrite) throws IOException {
-
     assertNotClosed();
     reallocateBuffer();
     this.byteBuffer.put(convertToByte(byteToWrite));
