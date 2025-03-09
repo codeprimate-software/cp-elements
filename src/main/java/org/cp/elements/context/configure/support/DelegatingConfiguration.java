@@ -61,6 +61,12 @@ public class DelegatingConfiguration implements Configuration, ConversionService
     }
   }
 
+  /**
+   * Returns a reference to the {@link Configuration} class wrapped by this {@link DelegatingConfiguration}.
+   *
+   * @return a reference to the {@link Configuration} class wrapped by this {@link DelegatingConfiguration}.
+   * @see Configuration
+   */
   protected @NotNull Configuration getDelegate() {
     return this.delegate;
   }
