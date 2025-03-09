@@ -385,7 +385,7 @@ public class Timespan implements Comparable<Timespan>, Renderable {
    * @see java.time.LocalDateTime
    */
   @SuppressWarnings("all")
-  private Timespan(@Nullable LocalDateTime begin, @Nullable LocalDateTime end) {
+  Timespan(@Nullable LocalDateTime begin, @Nullable LocalDateTime end) {
     this.begin = begin;
     this.end = end;
   }
