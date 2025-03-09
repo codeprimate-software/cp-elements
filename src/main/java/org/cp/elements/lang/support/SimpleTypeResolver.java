@@ -64,6 +64,12 @@ public class SimpleTypeResolver implements TypeResolver {
     throw newTypeNotFoundException("Cannot resolve type for null Object");
   }
 
+  /**
+   * Perform the final attempt to resolve the {@link Class type} of the given {@link Object}.
+   *
+   * @param target {@link Object} from which to resolve its {@link Class type}.
+   * @return the resolved {@link Class type} of the given {@link Object}.
+   */
   Class<?> finalResolveType(Object target) {
 
     Stream<?> resolvedStream = resolveStream(target);
