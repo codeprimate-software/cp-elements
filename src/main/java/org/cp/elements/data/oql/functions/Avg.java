@@ -21,6 +21,7 @@ import java.util.function.Function;
 
 import org.cp.elements.data.oql.QueryFunction;
 import org.cp.elements.lang.annotation.NotNull;
+import org.cp.elements.lang.annotation.ThreadSafe;
 import org.cp.elements.util.CollectionUtils;
 
 /**
@@ -28,16 +29,35 @@ import org.cp.elements.util.CollectionUtils;
  *
  * @author John Blum
  * @param <T> {@link Class type} of {@link Object} on which this function is applied.
+ * @see org.cp.elements.lang.annotation.ThreadSafe
  * @see org.cp.elements.data.oql.functions.Sum
  * @since 2.0.0
  */
+@ThreadSafe
 @SuppressWarnings("unused")
 public class Avg<T> extends Sum<T> {
 
+  /**
+   * Factory method used to construct a new {@link Avg} query function used to compute an average
+   * from a collection of numerical values.
+   *
+   * @param <T> {@link Class type} of {@link Object} from which the numerical value is extracted.
+   * @param function {@link Function} used to extract the numerical value from the {@link T type}.
+   * @return a new {@link Avg} query function.
+   * @throws IllegalArgumentException if {@link Function} is {@literal null}.
+   * @see java.util.function.Function
+   */
   public static <T> Avg<T> of(@NotNull Function<T, ? extends Number> function) {
     return new Avg<>(function);
   }
 
+  /**
+   * Construct a new {@link Avg} query function used to compute an average from a collection of numerical values.
+   *
+   * @param function {@link Function} used to extract the numerical value from the {@link T type}.
+   * @throws IllegalArgumentException if {@link Function} is {@literal null}.
+   * @see java.util.function.Function
+   */
   protected Avg(@NotNull Function<T, ? extends Number> function) {
     super(function);
   }
