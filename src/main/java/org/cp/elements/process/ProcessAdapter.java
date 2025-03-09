@@ -180,6 +180,15 @@ public class ProcessAdapter implements Identifiable<Integer>, Initable, Nameable
     this.initialized.set(true);
   }
 
+  /**
+   * Constructs a new {@link Runnable process stream reader} from the given {@link InputStream process inputstream}
+   * to read the output from the {@link Process}.
+   *
+   * @param in {@link InputStream} capturing the output returned by the {@link Process}.
+   * @return a new {@link Runnable process stream reader}.
+   * @see java.io.InputStream
+   * @see java.lang.Runnable
+   */
   protected Runnable newProcessStreamReader(@NotNull InputStream in) {
 
     return () -> {
@@ -198,10 +207,26 @@ public class ProcessAdapter implements Identifiable<Integer>, Initable, Nameable
     };
   }
 
+  /**
+   * Constructs a new {@link BufferedReader} reading from the given {@link InputStream}.
+   *
+   * @param in {@link InputStream} from to read.
+   * @return a new {@link BufferedReader}.
+   * @see java.io.BufferedReader
+   * @see java.io.InputStream
+   */
   protected BufferedReader newReader(@NotNull InputStream in) {
     return new BufferedReader(new InputStreamReader(in, Charset.defaultCharset()));
   }
 
+  /**
+   * Constructs a new {@link Thread} with the given {@link String name} and {@link Runnable task} to run.
+   *
+   * @param name {@link String} containing the name of the new {@link Thread}.
+   * @param task {@link Runnable} task executed by the {@link Thread}.
+   * @return a new {@link Thread}
+   * @see java.lang.Thread
+   */
   protected Thread newThread(String name, Runnable task) {
 
     return newThreadFactory()
@@ -211,6 +236,12 @@ public class ProcessAdapter implements Identifiable<Integer>, Initable, Nameable
       .newThread(name, task);
   }
 
+  /**
+   * Returns the resolved {@link ThreadGroup}.
+   *
+   * @return the resolved {@link ThreadGroup}.
+   * @see java.lang.ThreadGroup
+   */
   protected ThreadGroup resolveThreadGroup() {
     return this.threadGroup;
   }
@@ -525,10 +556,26 @@ public class ProcessAdapter implements Identifiable<Integer>, Initable, Nameable
     return execute(this, getProcessContext());
   }
 
+  /**
+   * Executes the given {@link ProcessAdapter process} within the given {@link ProcessContext context}.
+   *
+   * @param processAdapter {@link ProcessAdapter} to execute.
+   * @param processContext {@link ProcessContext context} in which the {@link ProcessAdapter process} executes.
+   * @return the given {@link ProcessAdapter}.
+   * @see ProcessAdapter
+   * @see ProcessContext
+   */
   protected ProcessAdapter execute(ProcessAdapter processAdapter, ProcessContext processContext) {
     return newProcessExecutor().execute(processAdapter.getDirectory(), processAdapter.getCommandLine());
   }
 
+  /**
+   * Constructs a new {@literal runtime} {@link ProcessExecutor}.
+   *
+   * @return a new {@literal runtime} {@link ProcessExecutor}.
+   * @see ProcessExecutor
+   * @see ProcessAdapter
+   */
   protected ProcessExecutor<ProcessAdapter> newProcessExecutor() {
     return newRuntimeProcessExecutor();
   }
