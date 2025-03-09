@@ -24,19 +24,32 @@ import org.cp.elements.lang.Constants;
 import org.cp.elements.lang.ObjectUtils;
 import org.cp.elements.lang.StringUtils;
 import org.cp.elements.lang.annotation.NotNull;
+import org.cp.elements.lang.annotation.NullSafe;
+import org.cp.elements.lang.annotation.ThreadSafe;
 
 /**
  * {@link QueryFunction} used to concatenate multiple values.
  *
  * @author John Blum
  * @param <T> {@link Class type} of {@link Object} on which this function is applied.
+ * @see org.cp.elements.lang.annotation.ThreadSafe
  * @see org.cp.elements.data.oql.QueryFunction
  * @since 2.0.0
  */
+@ThreadSafe
 public class Concat<T> implements QueryFunction<T, String> {
 
   protected static final String DEFAULT_DELIMITER = StringUtils.COMMA_SPACE_DELIMITER;
 
+  /**
+   * Factory method used to construct a new {@link Concat} query function.
+   *
+   * @param <S> {@link Class type} of {@link Object} from which the value to concatenate is extracted.
+   * @param function {@link Function} used to extract the value from the {@link S type} used in concatenation operation.
+   * @return a new {@link Concat} query function.
+   * @throws IllegalArgumentException if {@link Function} is {@literal null}.
+   * @see java.util.function.Function
+   */
   public static <S> Concat<S> of(@NotNull Function<S, ?> function) {
     return new Concat<>(function);
   }
@@ -46,16 +59,36 @@ public class Concat<T> implements QueryFunction<T, String> {
 
   private final Function<T, String> function;
 
+  /**
+   * Construct a new {@link Concat} query function.
+   *
+   * @param function {@link Function} used to extract the value from the {@link T type} used in concatenation operation.
+   * @throws IllegalArgumentException if {@link Function} is {@literal null}.
+   * @see java.util.function.Function
+   */
   protected Concat(@NotNull Function<T, ?> function) {
     Assert.notNull(function, "Function is required");
     this.function = function.andThen(String::valueOf);
   }
 
+  /**
+   * Returns the {@link String name} given to this query function.
+   *
+   * @return the {@link String name} given to this query function.
+   */
   @Override
   public String getName() {
     return StringUtils.defaultIfBlank(this.name, Constants.UNKNOWN);
   }
 
+  /**
+   * Concatenates the collection of values in the {@link Iterable}.
+   *
+   * @param iterable {@link Iterable} of {@link T Objects} to concatenate.
+   * @return the {@link String} resulting from the concatenation.
+   * @see java.lang.Iterable
+   */
+  @NullSafe
   @Override
   public String apply(Iterable<T> iterable) {
 
@@ -69,11 +102,24 @@ public class Concat<T> implements QueryFunction<T, String> {
     return concatenation;
   }
 
+  /**
+   * Builder method used to configure the {@link String delimiter} used when concatenating the values
+   * into a {@link String}.
+   *
+   * @param delimiter {@link String} containing the delimiter used in concatenation; defaults to comma.
+   * @return this {@link Concat} query function.
+   */
   public Concat<T> delimitedWith(String delimiter) {
     this.delimiter = ObjectUtils.returnValueOrDefaultIfNull(delimiter, DEFAULT_DELIMITER);
     return this;
   }
 
+  /**
+   * Builder method used to assign a {@link String name} to this query function.
+   *
+   * @param name {@link String} containing the name given to this query function.
+   * @return this query function.
+   */
   public Concat<T> named(String name) {
     this.name = name;
     return this;
