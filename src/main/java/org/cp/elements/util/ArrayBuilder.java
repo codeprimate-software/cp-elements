@@ -81,7 +81,7 @@ public class ArrayBuilder<T> implements Builder<T[]> {
    * @param list {@link List} used to model the elements of the array.
    * @see List
    */
-  private ArrayBuilder(List<T> list) {
+  protected ArrayBuilder(List<T> list) {
     this.list = list;
   }
 
