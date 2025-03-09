@@ -809,34 +809,82 @@ public class Timespan implements Comparable<Timespan>, Renderable {
 
     private final LocalDateTime beginning;
 
+    /**
+     * Constructs a new {@link WithTo} builder to declare the end of a {@link Timespan}.
+     *
+     * @param beginning {@link LocalDateTime date/time} marking the beginning of the {@link Timespan}.
+     * @throws IllegalArgumentException if {@link LocalDateTime beginning} of {@link Timespan} is {@literal null}.
+     * @see java.time.LocalDateTime
+     */
     protected WithTo(@NotNull LocalDateTime beginning) {
       this.beginning = ObjectUtils.requireObject(beginning, "Begin date and time are required");
     }
 
+    /**
+     * Returns the {@link LocalDateTime beginning} of the {@link Timespan}.
+     *
+     * @return the {@link LocalDateTime beginning} of the {@link Timespan}.
+     * @see java.time.LocalDateTime
+     */
     protected @NotNull LocalDateTime getBeginning() {
       return this.beginning;
     }
 
+    /**
+     * Marks the {@link Year end} of the {@link Timespan} as a year.
+     *
+     * @param ending {@link Year end} of the {@link Timespan}.
+     * @return the {@link Year end} of the {@link Timespan} as a year.
+     * @see java.time.Year
+     */
     @Dsl
     public @NotNull Builder to(@Nullable Year ending) {
       return to(ending != null ? ending.atMonth(Month.DECEMBER) : null);
     }
 
+    /**
+     * Marks the {@link YearMonth end} of the {@link Timespan} as both a year and month
+     *
+     * @param ending {@link YearMonth end} of the {@link Timespan}.
+     * @return the {@link YearMonth end} of the {@link Timespan} as both a year and month.
+     * @see java.time.YearMonth
+     */
     @Dsl
     public @NotNull Builder to(@Nullable YearMonth ending) {
       return to(ending != null ? ending.atEndOfMonth() : null);
     }
 
+    /**
+     * Marks the {@link LocalDate end} of the {@link Timespan} as a date.
+     *
+     * @param ending {@link LocalDate end} of the {@link Timespan}.
+     * @return the {@link LocalDate end} of the {@link Timespan} as a date.
+     * @see java.time.LocalDate
+     */
     @Dsl
     public @NotNull Builder to(@Nullable LocalDate ending) {
       return to(ending != null ? ending.atTime(LocalTime.MAX) : null);
     }
 
+    /**
+     * Marks the {@link LocalDateTime end} of the {@link Timespan} in both date and time.
+     *
+     * @param ending {@link LocalDateTime end} of the {@link Timespan}.
+     * @return the {@link LocalDateTime end} of the {@link Timespan} in both date and time.
+     * @see java.time.LocalDateTime
+     */
     @Dsl
     public @NotNull Builder to(@Nullable LocalDateTime ending) {
       return new Builder(getBeginning(), ending);
     }
 
+    /**
+     * Marks the {@link LocalTime end} of the {@link Timespan} in time.
+     *
+     * @param ending {@link LocalTime end} of the {@link Timespan}.
+     * @return the {@link LocalTime end} of the {@link Timespan} in time.
+     * @see java.time.LocalTime
+     */
     @Dsl
     public @NotNull Builder to(@Nullable LocalTime ending) {
       return to(ending != null ? ending.atDate(LocalDate.now()) : null);
@@ -853,15 +901,37 @@ public class Timespan implements Comparable<Timespan>, Renderable {
     private final LocalDateTime beginning;
     private final LocalDateTime ending;
 
+    /**
+     * Constructs a new {@link Builder} used to build a {@link Timespan} with the given {@link LocalDateTime beginning}
+     * and {@link LocalDateTime ending}.
+     *
+     * @param beginning {@link LocalDateTime} marking the beginning of the {@link Timespan}.
+     * @param ending {@link LocalDateTime} marking the ending of the {@link Timespan}.
+     * @throws IllegalArgumentException if the {@link LocalDateTime beginning} or {@link LocalDateTime ending}
+     * of the {@link Timespan} are {@literal null}.
+     * @see java.time.LocalDateTime
+     */
     protected Builder(@NotNull LocalDateTime beginning, @NotNull LocalDateTime ending) {
       this.beginning = ObjectUtils.requireObject(beginning, "Begin date and time are required");
       this.ending = ObjectUtils.requireObject(ending, "End date and time are required");
     }
 
+    /**
+     * Returns the {@link LocalDateTime beginning} of the {@link Timespan}.
+     *
+     * @return the {@link LocalDateTime beginning} of the {@link Timespan}.
+     * @see java.time.LocalDateTime
+     */
     protected @NotNull LocalDateTime getBeginning() {
       return this.beginning;
     }
 
+    /**
+     * Returns the {@link LocalDateTime end} of the {@link Timespan}.
+     *
+     * @return the {@link LocalDateTime end} of the {@link Timespan}.
+     * @see java.time.LocalDateTime
+     */
     protected @NotNull LocalDateTime getEnding() {
       return this.ending;
     }
