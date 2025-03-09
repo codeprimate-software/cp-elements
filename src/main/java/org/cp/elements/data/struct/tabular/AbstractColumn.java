@@ -140,6 +140,13 @@ public abstract class AbstractColumn<T> implements Column<T>, Comparable<Column<
     return Optional.ofNullable(this.view);
   }
 
+  /**
+   * Returns the resolve {@link View}.
+   *
+   * @return the resolve {@link View}.
+   * @see #getView()
+   * @see View
+   */
   protected @Nullable View getResolvedView() {
     return getView().orElse(null);
   }
@@ -243,17 +250,16 @@ public abstract class AbstractColumn<T> implements Column<T>, Comparable<Column<
    * @see #getView()
    */
   @Override
+  @SuppressWarnings("rawtypes")
   public boolean equals(@Nullable Object obj) {
 
     if (this == obj) {
       return true;
     }
 
-    if (!(obj instanceof Column)) {
+    if (!(obj instanceof Column that)) {
       return false;
     }
-
-    Column<?> that = (Column<?>) obj;
 
     return this.getName().equals(that.getName())
       && ObjectUtils.equalsIgnoreNull(resolveView(this), resolveView(that));
