@@ -54,6 +54,15 @@ public class NumberConverter extends AbstractConverter<Object, Number> {
   protected static final String CONVERSION_EXCEPTION_MESSAGE =
     "[%1$s] is not a valid number of the qualifying type [%2$s]";
 
+  /**
+   * Parses the given {@link String} representing a number and returns the value as a {@link QT qualified number type}.
+   *
+   * @param <QT> {@link Class qualified subtype} of {@link Number}.
+   * @param number {@link String} containing the number to convert into a {@link Number}.
+   * @param numberType {@link Class subtype} of {@link Number}.
+   * @return a {@link Number} parsed from the {@link String} containing a number.
+   * @throws ConversionException if the {@link String} cannot be converted into a {@link Number}.
+   */
   protected @NotNull <QT extends Number> QT parseNumber(@NotNull String number, @NotNull Class<QT> numberType) {
 
     if (AtomicInteger.class.isAssignableFrom(numberType)) {
@@ -90,6 +99,16 @@ public class NumberConverter extends AbstractConverter<Object, Number> {
     throw newConversionException("[%s] is not a valid Number type", numberType.getName());
   }
 
+  /**
+   * Returns the given {@link Number} as a {@link Class qualified subtype} of {@link Number}.
+   *
+   * @param <QT> {@link Class qualified subtype} of {@link Number}.
+   * @param number {@link Number} to qualify.
+   * @param numberType {@link Class qualified subtype} of {@link Number}.
+   * @return the given {@link Number} as a {@link QT qualified subtype} of {@link Number}.
+   * @throws ConversionException if {@link Number} cannot be qualified
+   * as the desired {@link Class subtype} of {@link Number}.
+   */
   protected @NotNull <QT extends Number> QT toQualifyingNumber(@NotNull Number number, @NotNull Class<QT> numberType) {
 
     if (AtomicInteger.class.isAssignableFrom(numberType)) {
