@@ -46,7 +46,6 @@ import org.cp.elements.util.ArrayUtils;
  * a data set populating the {@literal table}.
  *
  * @author John Blum
- * @see java.util.List
  * @see org.cp.elements.data.struct.tabular.AbstractColumn
  * @see org.cp.elements.data.struct.tabular.AbstractRow
  * @see org.cp.elements.data.struct.tabular.AbstractTable
@@ -428,6 +427,13 @@ public class InMemoryTable extends AbstractTable {
       }
     }
 
+    /**
+     * Returns the {@link Integer number} of {@link Column columns} in the table.
+     *
+     * @param table {@link Table} to evaluate; must not be {@literal null}.
+     * @return the {@link Integer number} of {@link Column columns} in the table.
+     * @see InMemoryTable
+     */
     int getColumnSize(@NotNull InMemoryTable table) {
       return table.getColumns().size();
     }
@@ -459,6 +465,9 @@ public class InMemoryTable extends AbstractTable {
       throw newUnsupportedOperationException("The View for this Row [%d] cannot be changed", index());
     }
 
+    /**
+     * Adds a {@link Column} to the table.
+     */
     synchronized void addColumn() {
 
       int columnsSize = getColumnSize(InMemoryTable.this);
@@ -474,6 +483,11 @@ public class InMemoryTable extends AbstractTable {
       }
     }
 
+    /**
+     * Removes the {@link Column} at {@link Integer index} from this table.
+     *
+     * @param index {@link Integer index} of the {@link Column} to remove.
+     */
     synchronized void removeColumn(int index) {
 
       int valuesLength = this.values.length;
