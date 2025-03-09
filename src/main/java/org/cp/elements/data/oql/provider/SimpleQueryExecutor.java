@@ -98,6 +98,15 @@ public class SimpleQueryExecutor<S, T> implements QueryExecutor<S, T> {
     return results;
   }
 
+  /**
+   * Gets a {@link Stream} for the given {@link Iterable collection}.
+   *
+   * @param <E>  {@link Class type} of {@link Object elements} contained in the {@link Stream}
+   * @param iterable {@link Iterable collection} to {@link Stream}.
+   * @return a {@link Stream} for the given {@link Iterable collection}.
+   * @see java.util.stream.Stream
+   * @see java.lang.Iterable
+   */
   @NullSafe
   protected <E> Stream<E> stream(Iterable<E> iterable) {
     return StreamUtils.stream(CollectionUtils.nullSafeIterable(iterable));
