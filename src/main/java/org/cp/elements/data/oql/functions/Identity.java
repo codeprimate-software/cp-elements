@@ -22,6 +22,7 @@ import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.ObjectUtils;
 import org.cp.elements.lang.StringUtils;
 import org.cp.elements.lang.annotation.NotNull;
+import org.cp.elements.lang.annotation.ThreadSafe;
 
 /**
  * {@link QueryFunction} implementation that returns the {@link Object result} of the {@link Function}
@@ -30,11 +31,23 @@ import org.cp.elements.lang.annotation.NotNull;
  * @author John Blum
  * @param <T> {@link Class type} of {@link Object} on which this function is applied.
  * @param <V> {@link Class type} of {@link Object value resulting} from the computation of this function
+ * @see org.cp.elements.lang.annotation.ThreadSafe
  * @see org.cp.elements.data.oql.QueryFunction
  * @since 2.0.0
  */
+@ThreadSafe
 public class Identity<T, V> implements QueryFunction<T, V> {
 
+  /**
+   * Factory method used to construct a new {@link Identity} query function.
+   *
+   * @param <T> {@link Class type} of {@link Object} from which the value is extracted.
+   * @param <V> {@link Class type} of the extracted {@link Object value}.
+   * @param function {@link Function} used to extract the vale from an {@link Object} of type {@link T}.
+   * @return a new {@link Identity} query function.
+   * @throws IllegalArgumentException if {@link Function} is {@literal null}.
+   * @see java.util.function.Function
+   */
   public static <T, V> Identity<T, V> of(@NotNull Function<T, V> function) {
     return new Identity<>(function);
   }
@@ -45,10 +58,22 @@ public class Identity<T, V> implements QueryFunction<T, V> {
 
   private final Function<T, V> function;
 
+  /**
+   * Constructs a new {@link Identity} query function.
+   *
+   * @param function {@link Function} used to extract the vale from an {@link Object} of type {@link T}.
+   * @throws IllegalArgumentException if {@link Function} is {@literal null}.
+   * @see java.util.function.Function
+   */
   protected Identity(@NotNull Function<T, V> function) {
     this.function = ObjectUtils.requireObject(function, "Function is required");
   }
 
+  /**
+   * Returns the {@link String name} given to this query function.
+   *
+   * @return the {@link String name} given to this query function.
+   */
   @Override
   public String getName() {
     return StringUtils.defaultIfBlank(this.name, DEFAULT_NAME);
@@ -61,6 +86,12 @@ public class Identity<T, V> implements QueryFunction<T, V> {
     return this.function.apply(element);
   }
 
+  /**
+   * Builder method used to assign a {@link String name} to this query function.
+   *
+   * @param name {@link String} containing the name given to this query function.
+   * @return this query function.
+   */
   public Identity<T, V> named(String name) {
     this.name = name;
     return this;
