@@ -19,8 +19,10 @@ import static org.cp.elements.lang.ElementsExceptionsFactory.newConversionExcept
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.function.Function;
 
 import org.cp.elements.data.conversion.AbstractConverter;
 import org.cp.elements.data.conversion.ConversionException;
@@ -31,6 +33,7 @@ import org.cp.elements.lang.annotation.NotNull;
 import org.cp.elements.lang.annotation.NullSafe;
 import org.cp.elements.lang.annotation.Nullable;
 import org.cp.elements.lang.annotation.Order;
+import org.cp.elements.util.MapBuilder;
 
 /**
  * {@link NumberConverter} converts an {@link Object} to a {@link Number} of a {@link Class qualified numerical type}.
@@ -65,38 +68,25 @@ public class NumberConverter extends AbstractConverter<Object, Number> {
    */
   protected @NotNull <QT extends Number> QT parseNumber(@NotNull String number, @NotNull Class<QT> numberType) {
 
-    if (AtomicInteger.class.isAssignableFrom(numberType)) {
-      return numberType.cast(new AtomicInteger(Integer.parseInt(number)));
-    }
-    else if (AtomicLong.class.isAssignableFrom(numberType)) {
-      return numberType.cast(new AtomicLong(Long.parseLong(number)));
-    }
-    else if (BigDecimal.class.isAssignableFrom(numberType)) {
-      return numberType.cast(new BigDecimal(number));
-    }
-    else if (BigInteger.class.isAssignableFrom(numberType)) {
-      return numberType.cast(new BigInteger(number));
-    }
-    else if (Byte.class.isAssignableFrom(numberType)) {
-      return numberType.cast(Byte.parseByte(number));
-    }
-    else if (Short.class.isAssignableFrom(numberType)) {
-      return numberType.cast(Short.parseShort(number));
-    }
-    else if (Integer.class.isAssignableFrom(numberType)) {
-      return numberType.cast(Integer.parseInt(number));
-    }
-    else if (Long.class.isAssignableFrom(numberType)) {
-      return numberType.cast(Long.parseLong(number));
-    }
-    else if (Float.class.isAssignableFrom(numberType)) {
-      return numberType.cast(Float.parseFloat(number));
-    }
-    else if (Double.class.isAssignableFrom(numberType)) {
-      return numberType.cast(Double.parseDouble(number));
-    }
+    Map<Class<? extends Number>, Function<String, QT>> numberConversions =
+      MapBuilder.<Class<? extends Number>, Function<String, QT>>newHashMap()
+        .put(AtomicInteger.class, it -> numberType.cast(new AtomicInteger(Integer.parseInt(it))))
+        .put(AtomicLong.class, it -> numberType.cast(new AtomicLong(Long.parseLong(it))))
+        .put(BigDecimal.class, it -> numberType.cast(new BigDecimal(it)))
+        .put(BigInteger.class, it -> numberType.cast(new BigInteger(it)))
+        .put(Byte.class, it -> numberType.cast(Byte.parseByte(it)))
+        .put(Short.class, it -> numberType.cast(Short.parseShort(it)))
+        .put(Integer.class, it -> numberType.cast(Integer.parseInt(it)))
+        .put(Long.class, it -> numberType.cast(Long.parseLong(it)))
+        .put(Float.class, it -> numberType.cast(Float.parseFloat(it)))
+        .put(Double.class, it -> numberType.cast(Double.parseDouble(it)))
+        .build();
 
-    throw newConversionException("[%s] is not a valid Number type", numberType.getName());
+    return numberConversions.entrySet().stream()
+      .filter(entry -> entry.getKey().isAssignableFrom(numberType))
+      .findFirst()
+      .map(entry -> entry.getValue().apply(number))
+      .orElseThrow(() -> newConversionException("[%s] is not a valid Number type", numberType.getName()));
   }
 
   /**
@@ -111,38 +101,25 @@ public class NumberConverter extends AbstractConverter<Object, Number> {
    */
   protected @NotNull <QT extends Number> QT toQualifyingNumber(@NotNull Number number, @NotNull Class<QT> numberType) {
 
-    if (AtomicInteger.class.isAssignableFrom(numberType)) {
-      return numberType.cast(new AtomicInteger(number.intValue()));
-    }
-    else if (AtomicLong.class.isAssignableFrom(numberType)) {
-      return numberType.cast(new AtomicLong(number.longValue()));
-    }
-    else if (BigDecimal.class.isAssignableFrom(numberType)) {
-      return numberType.cast(BigDecimal.valueOf(number.doubleValue()));
-    }
-    else if (BigInteger.class.isAssignableFrom(numberType)) {
-      return numberType.cast(new BigInteger(number.toString()));
-    }
-    else if (Byte.class.isAssignableFrom(numberType)) {
-      return numberType.cast(number.byteValue());
-    }
-    else if (Short.class.isAssignableFrom(numberType)) {
-      return numberType.cast(number.shortValue());
-    }
-    else if (Integer.class.isAssignableFrom(numberType)) {
-      return numberType.cast(number.intValue());
-    }
-    else if (Long.class.isAssignableFrom(numberType)) {
-      return numberType.cast(number.longValue());
-    }
-    else if (Float.class.isAssignableFrom(numberType)) {
-      return numberType.cast(number.floatValue());
-    }
-    else if (Double.class.isAssignableFrom(numberType)) {
-      return numberType.cast(number.doubleValue());
-    }
+    Map<Class<? extends Number>, Function<Number, QT>> numberConversions =
+      MapBuilder.<Class<? extends Number>, Function<Number, QT>>newHashMap()
+        .put(AtomicInteger.class, it -> numberType.cast(new AtomicInteger(it.intValue())))
+        .put(AtomicLong.class, it -> numberType.cast(new AtomicLong(it.longValue())))
+        .put(BigDecimal.class, it -> numberType.cast(new BigDecimal(it.toString())))
+        .put(BigInteger.class, it -> numberType.cast(new BigInteger(it.toString())))
+        .put(Byte.class, it -> numberType.cast(it.byteValue()))
+        .put(Short.class, it -> numberType.cast(it.shortValue()))
+        .put(Integer.class, it -> numberType.cast(it.intValue()))
+        .put(Long.class, it -> numberType.cast(it.longValue()))
+        .put(Float.class, it -> numberType.cast(it.floatValue()))
+        .put(Double.class, it -> numberType.cast(it.doubleValue()))
+        .build();
 
-    throw newConversionException("[%s] is not a valid Number type", numberType.getName());
+    return numberConversions.entrySet().stream()
+      .filter(entry -> entry.getKey().isAssignableFrom(numberType))
+      .findFirst()
+      .map(entry -> entry.getValue().apply(number))
+      .orElseThrow(() -> newConversionException("[%s] is not a valid Number type", numberType.getName()));
   }
 
   /**
