@@ -243,7 +243,8 @@
       <property name="customImportOrderRules" value="STATIC###STANDARD_JAVA_PACKAGE###THIRD_PARTY_PACKAGE"/>
       <property name="separateLineBetweenGroups" value="true"/>
       <property name="sortImportsInGroupAlphabetically" value="true"/>
-      <property name="standardPackageRegExp" value="^(java|javax)\."/>
+      <property name="standardPackageRegExp" value="^java\."/>
+      <property name="thirdPartyPackageRegExp" value="^org\.cp\.elements\."/>
     </module>
     <module name="IllegalImport"/> <!-- defaults to sun.* packages -->
     <!--module name="ImportControl"/-->
