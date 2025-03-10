@@ -44,9 +44,9 @@ import org.cp.elements.lang.annotation.Nullable;
  * @see java.time.LocalDate
  * @see java.time.LocalDateTime
  * @see java.time.LocalTime
- * @see java.time.YearMonth
  * @see java.time.Month
  * @see java.time.Year
+ * @see java.time.YearMonth
  * @see org.cp.elements.lang.Builder
  * @see org.cp.elements.lang.Renderable
  * @see org.cp.elements.lang.annotation.Dsl
@@ -754,13 +754,25 @@ public class Timespan implements Comparable<Timespan>, Renderable {
   @NullSafe
   public boolean isOverlapping(@NotNull Timespan timespan) {
 
-    Supplier<Boolean> anyTrue = () -> this.isAnEternity() || timespan.isAnEternity()
-      || (timespan.hasNoBeginning() && isDuring(timespan.getEnd()))
-      || (timespan.hasNoEnding() && isDuring(timespan.getBegin()))
+    Supplier<Boolean> anyTrue = () -> isOverlappingEternity(timespan)
+      || isOverlappingBeginning(timespan)
+      || isOverlappingEnding(timespan)
       || isDuring(timespan.getBegin())
       || isDuring(timespan.getEnd());
 
     return timespan != null && anyTrue.get();
+  }
+
+  private boolean isOverlappingEternity(Timespan timespan) {
+    return this.isAnEternity() || timespan.isAnEternity();
+  }
+
+  private boolean isOverlappingBeginning(Timespan timespan) {
+    return timespan.hasNoEnding() && isDuring(timespan.getBegin());
+  }
+
+  private boolean isOverlappingEnding(Timespan timespan) {
+    return timespan.hasNoBeginning() && isDuring(timespan.getEnd());
   }
 
   /**
@@ -839,7 +851,8 @@ public class Timespan implements Comparable<Timespan>, Renderable {
      */
     @Dsl
     public @NotNull Builder to(@Nullable Year ending) {
-      return to(ending != null ? ending.atMonth(Month.DECEMBER) : null);
+      YearMonth yearMonth = ending != null ? ending.atMonth(Month.DECEMBER) : null;
+      return to(yearMonth);
     }
 
     /**
@@ -851,7 +864,8 @@ public class Timespan implements Comparable<Timespan>, Renderable {
      */
     @Dsl
     public @NotNull Builder to(@Nullable YearMonth ending) {
-      return to(ending != null ? ending.atEndOfMonth() : null);
+      LocalDate date = ending != null ? ending.atEndOfMonth() : null;
+      return to(date);
     }
 
     /**
@@ -863,7 +877,8 @@ public class Timespan implements Comparable<Timespan>, Renderable {
      */
     @Dsl
     public @NotNull Builder to(@Nullable LocalDate ending) {
-      return to(ending != null ? ending.atTime(LocalTime.MAX) : null);
+      LocalDateTime dateTime = ending != null ? ending.atTime(LocalTime.MAX) : null;
+      return to(dateTime);
     }
 
     /**
@@ -887,7 +902,8 @@ public class Timespan implements Comparable<Timespan>, Renderable {
      */
     @Dsl
     public @NotNull Builder to(@Nullable LocalTime ending) {
-      return to(ending != null ? ending.atDate(LocalDate.now()) : null);
+      LocalDateTime dateTime = ending != null ? ending.atDate(LocalDate.now()) : null;
+      return to(dateTime);
     }
   }
 
