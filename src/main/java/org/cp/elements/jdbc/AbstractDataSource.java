@@ -17,8 +17,11 @@ package org.cp.elements.jdbc;
 
 import static org.cp.elements.lang.RuntimeExceptionsFactory.newUnsupportedOperationException;
 
+import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+import java.nio.charset.Charset;
 import java.sql.Connection;
+import java.util.logging.Logger;
 
 import javax.sql.DataSource;
 
@@ -36,6 +39,15 @@ import org.cp.elements.lang.Constants;
 @SuppressWarnings("unused")
 public abstract class AbstractDataSource implements DataSource {
 
+  protected static final int DEFAULT_LOGIN_TIMEOUT_SECONDS = 30;
+
+  protected static final PrintWriter DEFAULT_LOG_WRITER =
+    new PrintWriter(new OutputStreamWriter(System.out, Charset.defaultCharset()));
+
+  private int loginTimeout = DEFAULT_LOGIN_TIMEOUT_SECONDS;
+
+  private PrintWriter logWriter = DEFAULT_LOG_WRITER;
+
   @Override
   public Connection getConnection() {
     throw newUnsupportedOperationException(Constants.OPERATION_NOT_SUPPORTED);
@@ -48,22 +60,27 @@ public abstract class AbstractDataSource implements DataSource {
 
   @Override
   public PrintWriter getLogWriter() {
-    throw newUnsupportedOperationException(Constants.OPERATION_NOT_SUPPORTED);
+    return this.logWriter;
   }
 
   @Override
-  public void setLogWriter(PrintWriter out) {
-    throw newUnsupportedOperationException(Constants.OPERATION_NOT_SUPPORTED);
+  public void setLogWriter(PrintWriter logWriter) {
+    this.logWriter = logWriter != null ? logWriter : DEFAULT_LOG_WRITER;
   }
 
   @Override
   public int getLoginTimeout() {
-    throw newUnsupportedOperationException(Constants.OPERATION_NOT_SUPPORTED);
+    return this.loginTimeout;
   }
 
   @Override
   public void setLoginTimeout(int seconds) {
-    throw newUnsupportedOperationException(Constants.OPERATION_NOT_SUPPORTED);
+    this.loginTimeout = seconds;
+  }
+
+  @Override
+  public Logger getParentLogger() {
+    return Logger.getLogger(getClass().getName());
   }
 
   @Override
