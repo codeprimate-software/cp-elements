@@ -69,7 +69,7 @@ public class LoggingWriter extends Writer {
     return new LoggingWriter(logger, level);
   }
 
-  private volatile boolean closed = false;
+  private volatile boolean closed;
 
   private final Logger logger;
 
