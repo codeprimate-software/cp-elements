@@ -219,22 +219,51 @@ public class FromClause<S, T> implements Oql.From<S, T> {
     return groupBy;
   }
 
+  /**
+   * Builder method used to configure the {@link Select} clause in the OQL query.
+   *
+   * @param selection {@link Select} clause of the OQL query.
+   * @return this {@link FromClause}
+   * @throws IllegalArgumentException if {@link Select} clause is {@literal null}.
+   * @see Select
+   */
   protected FromClause<S, T> withSelection(@NotNull Select<S, T> selection) {
     this.selection = ObjectUtils.requireObject(selection, "Selection is required");
     initProjectionFromType(selection);
     return this;
   }
 
+  /**
+   * Builder method used to configure the {@link Where} clause in the OQL query.
+   *
+   * @param where {@link Where} clause of the OQL query.
+   * @return this {@link FromClause}
+   * @see Where
+   */
   protected FromClause<S, T> withWhere(@Nullable Where<S, T> where) {
     this.where = where;
     return this;
   }
 
+  /**
+   * Builder method used to configure the {@link OrderBy} clause in the OQL query.
+   *
+   * @param orderBy {@link OrderBy} clause of the OQL query.
+   * @return this {@link FromClause}
+   * @see OrderBy
+   */
   protected FromClause<S, T> withOrderBy(@Nullable OrderBy<S, T> orderBy) {
     this.orderBy = orderBy;
     return this;
   }
 
+  /**
+   * Builder method used to configure the {@link GroupBy} clause in the OQL query.
+   *
+   * @param groupBy {@link GroupBy} clause of the OQL query.
+   * @return this {@link FromClause}
+   * @see GroupBy
+   */
   protected FromClause<S, T> withGroupBy(@Nullable GroupBy<S, T> groupBy) {
     this.groupBy = groupBy;
     return this;
@@ -255,17 +284,44 @@ public class FromClause<S, T> implements Oql.From<S, T> {
     }
   }
 
+  /**
+   * {@literal Builder} used to construct a new {@link FromClause}.
+   *
+   * @param <S> {@link Class type} of {@link Object objects} in the {@link Iterable collection} to query.
+   * @param <T> {@link Class type} of the {@link Object projected objects}.
+   * @param collection {@link Iterable collection} to query; required.
+   * @see java.lang.Iterable
+   */
   public record Builder<S, T>(@NotNull Iterable<S> collection)
       implements org.cp.elements.lang.Builder<FromClause<S, T>> {
 
+    /**
+     * @param collection {@link Iterable collection} to query; required.
+     * @throws IllegalArgumentException if {@link Iterable collection} is {@literal null}.
+     */
     public Builder {
       ObjectUtils.requireObject(collection, "Collection is required");
     }
 
+    /**
+     * Builder method used to configure the {@link Class type} of {@link S object} being queried.
+     *
+     * @param elementType {@link Class type} of the {@link T object} being queried.
+     * @return a new {@link FromClause}.
+     * @see #collection()
+     */
     public FromClause<S, T> of(Class<S> elementType) {
       return new FromClause<>(collection(), elementType);
     }
 
+    /**
+     * Builds a new {@link FromClause} from the {@link Iterable collection} to query.
+     *
+     * @return a new {@link FromClause}.
+     * @throws IllegalArgumentException if {@link Iterable collection} to query is {@literal null}.
+     * @see #collection()
+     * @see FromClause
+     */
     public FromClause<S, T> build() {
       return new FromClause<>(collection());
     }
