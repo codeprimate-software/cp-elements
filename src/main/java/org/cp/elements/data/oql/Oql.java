@@ -1046,6 +1046,13 @@ public interface Oql extends BaseOql {
       this.projectionType = ObjectUtils.requireObject(projectionType, "Projection type is required");
     }
 
+    /**
+     * Builder method used to configure the {@link Class type} of {@link S object} being queried and projected.
+     *
+     * @param fromType {@link Class type} of {@link S object} being queried and projected; required.
+     * @return this {@link ProjectionBuilder}.
+     * @throws IllegalArgumentException if {@link Class fromType} is {@literal null}.
+     */
     @Dsl
     public ProjectionBuilder<S, T> fromType(@NotNull Class<S> fromType) {
       Assert.notNull(fromType, "From type is required");
@@ -1053,14 +1060,34 @@ public interface Oql extends BaseOql {
       return this;
     }
 
+    /**
+     * Builder method used to configure the {@link BiFunction mapping} for the projected query result set.
+     *
+     * @param mapper {@link BiPredicate} used for mapping; required.
+     * @return a new {@link TransformingProjectionBuilder}.
+     * @throws IllegalArgumentException if {@link BiFunction mapping} is {@literal null}.
+     * @see java.util.function.BiFunction
+     * @see TransformingProjectionBuilder
+     * @see #mappedWith(Function)
+     */
     @Dsl
-    public ProjectionTransformationBuilder<S, T> mappedWith(@NotNull BiFunction<QueryContext<S, T>, S, T> mapper) {
+    public TransformingProjectionBuilder<S, T> mappedWith(@NotNull BiFunction<QueryContext<S, T>, S, T> mapper) {
       Assert.notNull(mapper, "Object mapping function is required");
-      return new ProjectionTransformationBuilder<>(this.projectionType, this.fromType, mapper);
+      return new TransformingProjectionBuilder<>(this.projectionType, this.fromType, mapper);
     }
 
+    /**
+     * Builder method used to configure the {@link Function mapping} for the projected query result set.
+     *
+     * @param mapper {@link Function} used for mapping; required.
+     * @return a new {@link TransformingProjectionBuilder}.
+     * @throws IllegalArgumentException if {@link Function mapping} is {@literal null}.
+     * @see TransformingProjectionBuilder
+     * @see java.util.function.Function
+     * @see #mappedWith(BiFunction)
+     */
     @Dsl
-    public ProjectionTransformationBuilder<S, T> mappedWith(@NotNull Function<S, T> mapper) {
+    public TransformingProjectionBuilder<S, T> mappedWith(@NotNull Function<S, T> mapper) {
       Assert.notNull(mapper, "Object mapping function is required");
       BiFunction<QueryContext<S, T>, S, T> function = OqlUtils.asBiFunction(mapper);
       return mappedWith(function);
@@ -1075,7 +1102,7 @@ public interface Oql extends BaseOql {
    * @see org.cp.elements.lang.Builder
    * @see Oql.Projection
    */
-  class ProjectionTransformationBuilder<S, T> implements Builder<Projection<S, T>> {
+  class TransformingProjectionBuilder<S, T> implements Builder<Projection<S, T>> {
 
     private final BiFunction<QueryContext<S, T>, S, T> mapper;
 
@@ -1084,7 +1111,7 @@ public interface Oql extends BaseOql {
 
     private Iterable<QueryFunction<T, ?>> transformations;
 
-    protected ProjectionTransformationBuilder(@NotNull Class<T> projectionType, @NotNull Class<S> fromType,
+    TransformingProjectionBuilder(@NotNull Class<T> projectionType, @NotNull Class<S> fromType,
         @NotNull BiFunction<QueryContext<S, T>, S, T> mapper) {
 
       this.projectionType = ObjectUtils.requireObject(projectionType, "Projection type is required");
@@ -1092,18 +1119,48 @@ public interface Oql extends BaseOql {
       this.fromType = ObjectUtils.requireObject(fromType, "From type is required");
     }
 
+    /**
+     * Builder method used to configure the given array of {@link QueryFunction transformations}
+     * applied to the query result set.
+     *
+     * @param transformations array of {@link QueryFunction QueryFunctions} performing the transformations
+     * on the query result set.
+     * @return this {@link TransformingProjectionBuilder}.
+     * @see #apply(Iterable)
+     * @see QueryFunction
+     */
     @Dsl
     @SuppressWarnings("unchecked")
-    public <V> ProjectionTransformationBuilder<S, T> apply(QueryFunction<T, ?>... transformations) {
+    public <V> TransformingProjectionBuilder<S, T> apply(QueryFunction<T, ?>... transformations) {
       return apply(ArrayUtils.asIterable(ArrayUtils.nullSafeArray(transformations)));
     }
 
+    /**
+     * Builder method used to configure the given {@link Iterable} of {@link QueryFunction transformations}
+     * applied to the query result set.
+     *
+     * @param transformations {@link Iterable} of {@link QueryFunction QueryFunctions} performing the transformations
+     * on the query result set.
+     * @return this {@link TransformingProjectionBuilder}.
+     * @see QueryFunction
+     */
     @Dsl
-    public ProjectionTransformationBuilder<S, T> apply(Iterable<QueryFunction<T, ?>> transformations) {
+    public TransformingProjectionBuilder<S, T> apply(Iterable<QueryFunction<T, ?>> transformations) {
       this.transformations = CollectionUtils.nullSafeIterable(transformations);
       return this;
     }
 
+    /**
+     * Builder method used to remap the {@link QueryResult projected grouping} as an {@link Object} of type {@link T}.
+     *
+     * @param mapper {@link Function} used to perform the {@link QueryResult projected group result}
+     * to {@link T object} mapping; required.
+     * @return a new {@link TransformingProjection}.
+     * @throws IllegalArgumentException if {@link Function} is {@literal null}.
+     * @see java.util.function.Function
+     * @see #remappedWith(BiFunction)
+     * @see TransformingProjection
+     */
     @Dsl
     public TransformingProjection<S, T> remappedWith(Function<QueryResult<T>, T> mapper) {
       Assert.notNull(mapper, "Object remapping function is required");
@@ -1111,6 +1168,19 @@ public interface Oql extends BaseOql {
       return remappedWith(function);
     }
 
+    /**
+     * Builder method used to remap the {@link QueryResult projected grouping} as an {@link Object} of type {@link T}.
+     *
+     * @param mapper {@link BiFunction} used to perform the {@link QueryResult projected group result}
+     * to {@link T object} mapping; required.
+     * @return a new {@link TransformingProjection}.
+     * @throws IllegalArgumentException if {@link BiFunction} is {@literal null}.
+     * @throws IllegalStateException if the {@link Iterable} of {@link QueryFunction QueryFunctions}
+     * used in the transformation is {@literal null} or {@literal empty}.
+     * @see java.util.function.BiFunction
+     * @see #remappedWith(Function)
+     * @see TransformingProjection
+     */
     @Dsl
     public TransformingProjection<S, T> remappedWith(BiFunction<QueryContext<S, T>, QueryResult<T>, T> mapper) {
 
@@ -1121,23 +1191,23 @@ public interface Oql extends BaseOql {
 
         @Override
         public Class<T> getType() {
-          return ProjectionTransformationBuilder.this.projectionType;
+          return TransformingProjectionBuilder.this.projectionType;
         }
 
         @Override
         public Class<S> getFromType() {
-          return ProjectionTransformationBuilder.this.fromType;
+          return TransformingProjectionBuilder.this.fromType;
         }
 
         @Override
         @SuppressWarnings("all")
         public Iterator<QueryFunction<T, ?>> iterator() {
-          return ProjectionTransformationBuilder.this.transformations.iterator();
+          return TransformingProjectionBuilder.this.transformations.iterator();
         }
 
         @Override
         public T map(QueryContext<S, T> queryContext, S target) {
-          return ProjectionTransformationBuilder.this.mapper.apply(queryContext, target);
+          return TransformingProjectionBuilder.this.mapper.apply(queryContext, target);
         }
 
         @Override
@@ -1157,17 +1227,17 @@ public interface Oql extends BaseOql {
 
         @Override
         public Class<T> getType() {
-          return ProjectionTransformationBuilder.this.projectionType;
+          return TransformingProjectionBuilder.this.projectionType;
         }
 
         @Override
         public Class<S> getFromType() {
-          return ProjectionTransformationBuilder.this.fromType;
+          return TransformingProjectionBuilder.this.fromType;
         }
 
         @Override
         public T map(@NotNull QueryContext<S, T> queryContext, S target) {
-          return ProjectionTransformationBuilder.this.mapper.apply(queryContext, target);
+          return TransformingProjectionBuilder.this.mapper.apply(queryContext, target);
         }
       };
     }

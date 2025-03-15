@@ -45,6 +45,7 @@ import org.cp.elements.data.oql.Oql.From;
 import org.cp.elements.data.oql.Oql.Projection;
 import org.cp.elements.data.oql.Oql.Select;
 import org.cp.elements.data.oql.Oql.TransformingProjection;
+import org.cp.elements.data.oql.Oql.TransformingProjectionBuilder;
 import org.cp.elements.data.oql.Oql.Where;
 import org.cp.elements.data.oql.provider.SimpleOqlProvider;
 import org.cp.elements.lang.Constants;
@@ -198,7 +199,7 @@ public class OqlUnitTests {
 
     Function<Object, User> mockFunction = mockFunction();
 
-    assertThat(projectionBuilder.mappedWith(mockFunction)).isInstanceOf(Oql.ProjectionTransformationBuilder.class);
+    assertThat(projectionBuilder.mappedWith(mockFunction)).isInstanceOf(TransformingProjectionBuilder.class);
 
     verify(projectionBuilder, times(1)).mappedWith(isA(Function.class));
     verify(projectionBuilder, times(1)).mappedWith(isA(BiFunction.class));
