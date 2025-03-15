@@ -96,7 +96,7 @@ public class LoggingWriter extends Writer {
    * @see java.util.logging.Logger
    */
   protected Logger getLogger() {
-    return logger;
+    return this.logger;
   }
 
   /**
