@@ -17,15 +17,19 @@ package org.cp.elements.jdbc;
 
 import static org.cp.elements.lang.RuntimeExceptionsFactory.newUnsupportedOperationException;
 
-import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
-import java.nio.charset.Charset;
 import java.sql.Connection;
+import java.util.function.Supplier;
 import java.util.logging.Logger;
 
 import javax.sql.DataSource;
 
+import org.cp.elements.function.ThrowableSupplier;
+import org.cp.elements.io.LoggingWriter;
+import org.cp.elements.io.NoOpWriter;
 import org.cp.elements.lang.Constants;
+import org.cp.elements.lang.ObjectUtils;
+import org.cp.elements.lang.ThrowableOperation;
 
 /**
  * Abstract base class and implementation of the {@link DataSource} interface enabling easy extension and support
@@ -41,8 +45,34 @@ public abstract class AbstractDataSource implements DataSource {
 
   protected static final int DEFAULT_LOGIN_TIMEOUT_SECONDS = 30;
 
-  protected static final PrintWriter DEFAULT_LOG_WRITER =
-    new PrintWriter(new OutputStreamWriter(System.out, Charset.defaultCharset()));
+  protected static final PrintWriter DEFAULT_LOG_WRITER = defaultLogWriter();
+
+  private static PrintWriter defaultLogWriter() {
+
+    ThrowableOperation<PrintWriter> operation = ThrowableOperation.fromSupplier(loggingPrintWriterSupplier());
+
+    return ObjectUtils.doSafely(operation, noOpPrintWriterSupplier());
+  }
+
+  @SuppressWarnings("all")
+  private static ThrowableSupplier<PrintWriter> loggingPrintWriterSupplier() {
+
+    Logger logger = Logger.getLogger(AbstractDataSource.class.getName());
+
+    ThrowableSupplier<PrintWriter> loggingPrintWriter = () -> {
+      try (LoggingWriter writer = LoggingWriter.from(logger)) {
+        return writer.asPrintWriter();
+      }
+    };
+
+    return loggingPrintWriter;
+  }
+
+  private static Supplier<PrintWriter> noOpPrintWriterSupplier() {
+    try (NoOpWriter writer = NoOpWriter.create()) {
+      return writer::asPrintWriter;
+    }
+  }
 
   private int loginTimeout = DEFAULT_LOGIN_TIMEOUT_SECONDS;
 
