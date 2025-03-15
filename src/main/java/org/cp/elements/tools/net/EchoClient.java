@@ -184,6 +184,12 @@ public class EchoClient extends AbstractClientServerSupport {
     }
   }
 
+  /**
+   * Receives (reads) a {@link String message} sent on the given {@link Socket} to this program.
+   *
+   * @param socket {@link Socket} from which to read the {@link String message}.
+   * @return the read {@link String message}.
+   */
   protected String receiveResponse(Socket socket) {
 
     try {
