@@ -178,6 +178,12 @@ public class ListFiles implements Runnable {
     });
   }
 
+  /**
+   * Indents the directory content.
+   *
+   * @param indent {@link String} containing the index (offset).
+   * @return the formatted {@link String indent}.
+   */
   @NotNull String buildDirectoryContentIndent(@Nullable String indent) {
 
     return Optional.ofNullable(indent)
@@ -186,17 +192,33 @@ public class ListFiles implements Runnable {
       .orElse(StringUtils.SINGLE_SPACE + DIRECTORY_SWIM_LANE);
   }
 
+  /**
+   * Formats the output referencing the given {@link File directory}.
+   *
+   * @param indent {@link String} containing the character index (offset).
+   * @param directory {@link File directory} to display in the output.
+   * @return the formatted {@link String}.
+   * @see java.io.File
+   */
   @NotNull String concatIndentAndDirectoryName(@Nullable String indent, @NotNull File directory) {
 
     String resolvedIndent = StringUtils.hasText(indent)
       ? indent + SUB_DIRECTORY_DASH_PLUS_OFFSET
       : StringUtils.EMPTY_STRING;
 
-    return String.format(resolvedIndent + DIRECTORY_MARKER_WITH_DIRECTORY_NAME, directory.getName());
+    return resolvedIndent + DIRECTORY_MARKER_WITH_DIRECTORY_NAME.formatted(directory.getName());
   }
 
+  /**
+   * Formats the output referencing the given {@link File}.
+   *
+   * @param indent {@link String} containing the character index (offset).
+   * @param file {@link File} to display in the output.
+   * @return the formatted {@link String}.
+   * @see java.io.File
+   */
   @NotNull String concatIndentAndFileName(@Nullable String indent, @NotNull File file) {
-    return String.format(indent + SUB_DIRECTORY_OFFSET + FILE_MARKER_WITH_FILENAME, file.getName());
+    return indent + SUB_DIRECTORY_OFFSET + FILE_MARKER_WITH_FILENAME.formatted(file.getName());
   }
 
   private void logOutput(String message, Object... args) {
@@ -218,6 +240,13 @@ public class ListFiles implements Runnable {
     return file;
   }
 
+  /**
+   * Prints a {@link String message} to the user about listing the contents of the given {@link File directory}.
+   *
+   * @param directory {@link File directory} logged in the output to the user.
+   * @return the given {@link File directory}.
+   * @see java.io.File
+   */
   File printHeader(File directory) {
 
     logOutput("Listing contents for directory [%s]...%n%n", directory.getAbsolutePath());
