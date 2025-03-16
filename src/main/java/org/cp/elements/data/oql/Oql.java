@@ -29,6 +29,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
+import org.cp.elements.data.oql.support.Group;
 import org.cp.elements.data.oql.support.Grouping;
 import org.cp.elements.data.oql.support.OqlUtils;
 import org.cp.elements.lang.Assert;
@@ -209,6 +210,16 @@ public interface Oql extends BaseOql {
   interface TransformingProjection<S, T>
       extends Iterable<QueryFunction<T, ?>>, Projection<S, T>, Streamable<QueryFunction<T, ?>> {
 
+    /**
+     * Remaps the {@link QueryResult} into a {@link T projected result}.
+     *
+     * @param queryContext {@link QueryContext} containing metadata about the context
+     * in which the OQL query is executed.
+     * @param result {@link QueryResult} from the query result set.
+     * @return the remapped {@link T projected result}.
+     * @see QueryContext
+     * @see QueryResult
+     */
     T remap(QueryContext<S, T> queryContext, QueryResult<T> result);
 
     @Override
@@ -697,6 +708,20 @@ public interface Oql extends BaseOql {
       return Optional.empty();
     }
 
+    /**
+     * Builder method used to configure the {@link Function ordering function} applied to {@link S queried objects}
+     * to get the values of the fields used in the ordering (sorting) operation.
+     *
+     * @param <U> {@link Comparable} {@link Class type} of value returned by the {@link Function ordering function}.
+     * @param orderingFunction {@link Function} applied to the {@link S queried object} to get the values of fields
+     * used in the ordering (sorting) operation.
+     * @return the {@link Oql.OrderBy} clause in the OQL query.
+     * @throws IllegalArgumentException if {@link Function ordering function} is {@literal null}.
+     * @throws UnsupportedOperationException by default.
+     * @see java.util.function.Function
+     * @see java.lang.Comparable
+     * @see Oql.OrderBy
+     */
     @Dsl
     default <U extends Comparable<U>> OrderBy<S, T> orderBy(@NotNull Function<T, U> orderingFunction) {
       Assert.notNull(orderingFunction, "Function defining order is required");
@@ -704,6 +729,15 @@ public interface Oql extends BaseOql {
       return orderBy(comparator);
     }
 
+    /**
+     * Builder method used to configure the {@link Comparator} to order (sort) the query result set.
+     *
+     * @param comparator {@link Comparator} to order (sort) the query result set.
+     * @return the {@link OrderBy} clause in the OQL query.
+     * @throws UnsupportedOperationException by default.
+     * @see java.util.Comparator
+     * @see Oql.OrderBy
+     */
     @Dsl
     default OrderBy<S, T> orderBy(Comparator<T> comparator) {
       throw newUnsupportedOperationException(Constants.UNSUPPORTED_OPERATION);
@@ -730,6 +764,14 @@ public interface Oql extends BaseOql {
       return DEFAULT_LIMIT;
     }
 
+    /**
+     * Builder method used to configure the {@link Long limit} on the number of results
+     * returned in the query result set.
+     *
+     * @param limit {@link Long} limiting the results returned in the query result set.
+     * @return an {@link Oql.ExecutableQuery}.
+     * @see ExecutableQuery
+     */
     @Dsl
     default ExecutableQuery<S, T> limit(long limit) {
       return getFrom().limit(limit);
@@ -878,11 +920,33 @@ public interface Oql extends BaseOql {
       return Optional.empty();
     }
 
+    /**
+     * Builder method used to configure the {@link Grouping logic} to form {@link Group Groups}
+     * aggregated from the query result set.
+     *
+     * @param grouping {{@link Grouping} used to form {@link Group Groups} from the query result set.
+     * @return thw {@link GroupBy} clause in the OQL query.
+     * @throws UnsupportedOperationException by default.
+     * @see #groupBy(Function[])
+     * @see Oql.GroupBy
+     * @see Grouping
+     */
     @Dsl
     default GroupBy<S, T> groupBy(Grouping<T> grouping) {
       throw newUnsupportedOperationException(Constants.UNSUPPORTED_OPERATION);
     }
 
+    /**
+     * Builder method used to configure the {@link Function grouping function} to form {@link Group Groups}
+     * aggregated from the query result set.
+     *
+     * @param groupFunctions {{@link Function} defining the {@link Grouping} applied to the query result set.
+     * @return thw {@link GroupBy} clause in the OQL query.
+     * @throws UnsupportedOperationException by default.
+     * @see java.util.function.Function
+     * @see #groupBy(Grouping)
+     * @see Oql.GroupBy
+     */
     @Dsl
     @SuppressWarnings("unchecked")
     default GroupBy<S, T> groupBy(Function<T, ?>... groupFunctions) {
@@ -1131,7 +1195,7 @@ public interface Oql extends BaseOql {
      */
     @Dsl
     @SuppressWarnings("unchecked")
-    public <V> TransformingProjectionBuilder<S, T> apply(QueryFunction<T, ?>... transformations) {
+    public TransformingProjectionBuilder<S, T> apply(QueryFunction<T, ?>... transformations) {
       return apply(ArrayUtils.asIterable(ArrayUtils.nullSafeArray(transformations)));
     }
 
