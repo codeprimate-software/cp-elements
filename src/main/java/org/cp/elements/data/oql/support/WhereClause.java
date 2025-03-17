@@ -19,10 +19,6 @@ import java.util.Comparator;
 import java.util.function.BiPredicate;
 
 import org.cp.elements.data.oql.Oql;
-import org.cp.elements.data.oql.Oql.From;
-import org.cp.elements.data.oql.Oql.GroupBy;
-import org.cp.elements.data.oql.Oql.OrderBy;
-import org.cp.elements.data.oql.Oql.Where;
 import org.cp.elements.data.oql.QueryArguments;
 import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.ObjectUtils;
@@ -43,23 +39,50 @@ import org.cp.elements.lang.annotation.NotNull;
  * @since 2.0.0
  */
 @SuppressWarnings("unused")
-public record WhereClause<S, T>(From<S, T> from, BiPredicate<QueryArguments, S> predicate) implements Oql.Where<S, T> {
+public record WhereClause<S, T>(Oql.From<S, T> from, BiPredicate<QueryArguments, S> predicate)
+    implements Oql.Where<S, T> {
 
+  /**
+   * Record constructor used to perform additional initialization and argument/state validation.
+   *
+   * @throws IllegalArgumentException if the {@link Oql.From} clause or {@link BiPredicate} are {@literal null}.
+   */
   public WhereClause {
     ObjectUtils.requireObject(from, "From is required");
     ObjectUtils.requireObject(predicate, "Predicate is required");
   }
 
+  /**
+   * Factory method used to construct a new {@link WhereClause} with no {@literal query predicated (filter)},
+   * thereby returning all results from the query result set.
+   *
+   * @param <S> {@link Class type} of {@link Object objects} in the {@link Iterable collection} to query.
+   * @param <T> {@link Class type} of the {@link Object projected objects}.
+   * @param from {@link Oql.From} clause in the OQL query; required.
+   * @return a new {@link WhereClause} returning all results in the query result set.
+   * @throws IllegalArgumentException if the {@link Oql.From} clause is {@literal null}.
+   * @see Oql.From
+   */
   @SuppressWarnings("unchecked")
-  public static <S, T> WhereClause<S, T> all(@NotNull From<S, T> from) {
+  public static <S, T> WhereClause<S, T> all(@NotNull Oql.From<S, T> from) {
     return where(from, (BiPredicate<QueryArguments, S>) OqlUtils.ACCEPT_ALL_QUERY_PREDICATE);
   }
 
-  public static <S, T> WhereClause<S, T> copy(@NotNull Where<S, T> where) {
+  /**
+   * Factory method used to copy (clone) an existing {@link Oql.Where} clause.
+   *
+   * @param <S> {@link Class type} of {@link Object objects} in the {@link Iterable collection} to query.
+   * @param <T> {@link Class type} of the {@link Object projected objects}.
+   * @param where {@link Oql.Where} clause to copy (clone); required.
+   * @return a new {@link WhereClause} copied from the given {@link Oql.Where} clause.
+   * @throws IllegalArgumentException if the {@link Oql.Where} clause is {@literal null}.
+   * @see Oql.Where
+   */
+  public static <S, T> WhereClause<S, T> copy(@NotNull Oql.Where<S, T> where) {
 
     Assert.notNull(where, "Where clause to copy is required");
 
-    From<S, T> from = where.getFrom();
+    Oql.From<S, T> from = where.getFrom();
     WhereClause<S, T> copy = where(from, where.getPredicate());
 
     if (from instanceof FromClause<S, T> fromClause) {
@@ -69,14 +92,28 @@ public record WhereClause<S, T>(From<S, T> from, BiPredicate<QueryArguments, S> 
     return copy;
   }
 
-  public static <S, T> WhereClause<S, T> where(@NotNull From<S, T> from,
+  /**
+   * Builder method used to construct a new {@link WhereClause} from the given {@link Oql.From} clause
+   * and {@link BiPredicate query predicate}.
+   *
+   * @param <S> {@link Class type} of {@link Object objects} in the {@link Iterable collection} to query.
+   * @param <T> {@link Class type} of the {@link Object projected objects}.
+   * @param from {@link Oql.From} clause in the OQL query; required.
+   * @param predicate {@link BiPredicate} defining the criteria to match results in the query result set.
+   * @return a new {@link WhereClause} defining the {@link BiPredicate query predicate}.
+   * @throws IllegalArgumentException if the {@link Oql.From} clause {@link BiPredicate} are {@literal null}.
+   * @see java.util.function.BiPredicate
+   * @see QueryArguments
+   * @see Oql.From
+   */
+  public static <S, T> WhereClause<S, T> where(@NotNull Oql.From<S, T> from,
       @NotNull BiPredicate<QueryArguments, S> predicate) {
 
     return new WhereClause<>(from, predicate);
   }
 
   @Override
-  public From<S, T> getFrom() {
+  public Oql.From<S, T> getFrom() {
     return from();
   }
 
@@ -86,22 +123,22 @@ public record WhereClause<S, T>(From<S, T> from, BiPredicate<QueryArguments, S> 
   }
 
   @Override
-  public Where<S, T> and(BiPredicate<QueryArguments, S> predicate) {
-    return copy(Where.super.and(predicate));
+  public Oql.Where<S, T> and(BiPredicate<QueryArguments, S> predicate) {
+    return copy(Oql.Where.super.and(predicate));
   }
 
   @Override
-  public Where<S, T> or(BiPredicate<QueryArguments, S> predicate) {
-    return copy(Where.super.or(predicate));
+  public Oql.Where<S, T> or(BiPredicate<QueryArguments, S> predicate) {
+    return copy(Oql.Where.super.or(predicate));
   }
 
   @Override
-  public OrderBy<S, T> orderBy(Comparator<T> comparator) {
+  public Oql.OrderBy<S, T> orderBy(Comparator<T> comparator) {
     return OrderByClause.copy(OrderByClause.of(getFrom(), comparator));
   }
 
   @Override
-  public GroupBy<S, T> groupBy(Grouping<T> grouping) {
+  public Oql.GroupBy<S, T> groupBy(Grouping<T> grouping) {
     return GroupByClause.copy(GroupByClause.of(getFrom(), grouping));
   }
 }
