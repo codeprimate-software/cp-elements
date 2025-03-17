@@ -856,7 +856,7 @@ public class Timespan implements Comparable<Timespan>, Renderable {
     }
 
     /**
-     * Marks the {@link YearMonth end} of the {@link Timespan} as both a year and month
+     * Marks the {@link YearMonth end} of the {@link Timespan} as both a year and month.
      *
      * @param ending {@link YearMonth end} of the {@link Timespan}.
      * @return the {@link YearMonth end} of the {@link Timespan} as both a year and month.
