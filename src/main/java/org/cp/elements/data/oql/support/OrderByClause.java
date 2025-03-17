@@ -20,8 +20,6 @@ import java.util.Comparator;
 import java.util.Iterator;
 
 import org.cp.elements.data.oql.Oql;
-import org.cp.elements.data.oql.Oql.From;
-import org.cp.elements.data.oql.Oql.OrderBy;
 import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.annotation.NotNull;
 import org.cp.elements.util.ArrayBuilder;
@@ -42,14 +40,35 @@ import org.cp.elements.util.ArrayUtils;
  * @since 2.0.0
  */
 @SuppressWarnings({ "unchecked", "unused" })
-public record OrderByClause<S, T>(@NotNull From<S, T> from, Comparator<T>... comparators)
+public record OrderByClause<S, T>(@NotNull Oql.From<S, T> from, Comparator<T>... comparators)
     implements Oql.OrderBy<S, T> {
 
-  public static <S, T> OrderByClause<S, T> copy(OrderBy<S, T> orderBy) {
+  /**
+   * Record constructor used to perform additional initialization and argument/stated validation.
+   *
+   * @throws IllegalArgumentException if the {@link Oql.From} clause is {@literal null}
+   * or the array of {@link Comparator Comparators} are {@literal null} or {@literal empty}.
+   */
+  public OrderByClause {
+    Assert.notNull(from, "From is required");
+    Assert.notEmpty(comparators, "Comparators used to sort are required");
+  }
+
+  /**
+   * Factory method used to construct a new {@link OrderByClause} copied (cloned) from the existing {@link Oql.OrderBy}.
+   *
+   * @param <S> {@link Class type} of {@link Object objects} in the {@link Iterable collection} to query.
+   * @param <T> {@link Class type} of the {@link Object projected objects}.
+   * @param orderBy {@link Oql.OrderBy} clause to copy; required.
+   * @return a new {@link OrderByClause} copied form the existing {@link Oql.OrderBy}.
+   * @throws IllegalArgumentException if the {@link Oql.OrderBy} clause to copy is {@literal null}.
+   * @see Oql.OrderBy
+   */
+  public static <S, T> OrderByClause<S, T> copy(Oql.OrderBy<S, T> orderBy) {
 
     Assert.notNull(orderBy, "OrderBy clause to copy is required");
 
-    From<S, T> from = orderBy.getFrom();
+    Oql.From<S, T> from = orderBy.getFrom();
     Comparator<T>[] comparators = ArrayBuilder.from(orderBy).build();
     OrderByClause<S, T> orderByClause = of(from, comparators);
 
@@ -60,29 +79,49 @@ public record OrderByClause<S, T>(@NotNull From<S, T> from, Comparator<T>... com
     return orderByClause;
   }
 
+  /**
+   * Factory method used to construct a new {@link OrderByClause} with no sort order.
+   *
+   * @param <S> {@link Class type} of {@link Object objects} in the {@link Iterable collection} to query.
+   * @param <T> {@link Class type} of the {@link Object projected objects}.
+   * @param from {@link Oql.From} clause in the OQL query; required.
+   * @return a new {@link OrderByClause} defining no sort order.
+   * @throws IllegalArgumentException if the {@link Oql.From} clause is {@literal null}.
+   * @see Oql.From
+   */
   @SuppressWarnings("unchecked")
-  public static <S, T> OrderByClause<S, T> noOrder(@NotNull From<S, T> from) {
+  public static <S, T> OrderByClause<S, T> noOrder(@NotNull Oql.From<S, T> from) {
     return new OrderByClause<>(from);
   }
 
+  /**
+   * Factory method used to construct a new {@link OrderByClause} initialized with
+   * the given array of {@link Comparator Comparators} to order (sort) the query result set.
+   *
+   * @param <S> {@link Class type} of {@link Object objects} in the {@link Iterable collection} to query.
+   * @param <T> {@link Class type} of the {@link Object projected objects}.
+   * @param from {@link Oql.From} clause in the OQL query; required.
+   * @param comparators array of {@link Comparator Comparators} used to order (sort) the results
+   * in the query result set.
+   * @return a new {@link OrderByClause}.
+   * @throws IllegalArgumentException if the {@link Oql.From} clause is {@literal null}
+   * or the array of {@link Comparator Comparators} are {@literal null} or {@literal empty}.
+   * @see java.util.Comparator
+   * @see Oql.From
+   */
   @SafeVarargs
-  public static <S, T> OrderByClause<S, T> of(@NotNull From<S, T> from, Comparator<T>... comparators) {
+  public static <S, T> OrderByClause<S, T> of(@NotNull Oql.From<S, T> from, Comparator<T>... comparators) {
     return new OrderByClause<>(from, comparators);
   }
 
-  public OrderByClause {
-    Assert.notNull(from, "From is required");
-    Assert.notEmpty(comparators, "Comparators used to sort are required");
-  }
-
   @Override
-  public From<S, T> getFrom() {
+  public Oql.From<S, T> getFrom() {
     return from();
   }
 
   @Override
-  public OrderBy<S, T> descending() {
-    return copy(OrderBy.super.descending());
+  public Oql.OrderBy<S, T> descending() {
+    return copy(Oql.OrderBy.super.descending());
   }
 
   @Override
@@ -92,8 +131,8 @@ public record OrderByClause<S, T>(@NotNull From<S, T> from, Comparator<T>... com
   }
 
   @Override
-  public OrderBy<S, T> thenOrderBy(Comparator<T> comparator) {
-    return copy(OrderBy.super.thenOrderBy(comparator));
+  public Oql.OrderBy<S, T> thenOrderBy(Comparator<T> comparator) {
+    return copy(Oql.OrderBy.super.thenOrderBy(comparator));
   }
 
   protected static class NoOrder<S> implements Comparator<S>, Serializable {
