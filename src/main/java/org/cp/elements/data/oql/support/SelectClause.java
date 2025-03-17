@@ -18,11 +18,6 @@ package org.cp.elements.data.oql.support;
 import java.util.Iterator;
 
 import org.cp.elements.data.oql.Oql;
-import org.cp.elements.data.oql.Oql.Distinct;
-import org.cp.elements.data.oql.Oql.From;
-import org.cp.elements.data.oql.Oql.Projection;
-import org.cp.elements.data.oql.Oql.Select;
-import org.cp.elements.data.oql.Oql.TransformingProjection;
 import org.cp.elements.data.oql.QueryContext;
 import org.cp.elements.data.oql.QueryFunction;
 import org.cp.elements.data.oql.QueryResult;
@@ -48,15 +43,30 @@ import org.cp.elements.lang.annotation.ThreadSafe;
 @ThreadSafe
 public class SelectClause<S, T> implements Oql.Select<S, T> {
 
-  public static <S, T> SelectClause<S, T> select(@NotNull Projection<S, T> projection) {
+  /**
+   * Factory method used to construct a new {@link SelectClause} with the given {@link Oql.Projection}.
+   *
+   * @param <S> {@link Class type} of {@link Object objects} in the {@link Iterable collection} to query.
+   * @param <T> {@link Class type} of the {@link Object projected objects}.
+   * @param projection {@link Oql.Projection} selected in the OQL query.
+   * @return a new {@link SelectClause}.
+   * @see Oql.Projection
+   */
+  public static <S, T> SelectClause<S, T> select(@NotNull Oql.Projection<S, T> projection) {
     return new SelectClause<>(projection);
   }
 
-  private volatile boolean distinct = Select.DEFAULT_DISTINCT;
+  private volatile boolean distinct = Oql.Select.DEFAULT_DISTINCT;
 
-  private final Projection<S, T> projection;
+  private final Oql.Projection<S, T> projection;
 
-  public SelectClause(@NotNull Projection<S, T> projection) {
+  /**
+   * Constructs a new {@link SelectClause} with the given {@link Oql.Projection}.
+   *
+   * @param projection {@link Oql.Projection} selected in the OQL query.
+   * @see Oql.Projection
+   */
+  public SelectClause(@NotNull Oql.Projection<S, T> projection) {
     this.projection = ProjectionWrapper.wrap(projection);
   }
 
@@ -66,33 +76,39 @@ public class SelectClause<S, T> implements Oql.Select<S, T> {
   }
 
   @Override
-  public Projection<S, T> getProjection() {
+  public Oql.Projection<S, T> getProjection() {
     return this.projection;
   }
 
+  /**
+   * Applies uniqueness to (distinct results in) the query result set.
+   *
+   * @return the {@link Oql.Distinct} clause in the OQL query.
+   * @see Oql.Distinct
+   */
   @Override
-  public Distinct<S, T> distinct() {
+  public Oql.Distinct<S, T> distinct() {
     this.distinct = true;
     return new DistinctBuilder<>(this);
   }
 
   @Override
-  public From<S, T> from(Iterable<S> collection) {
+  public Oql.From<S, T> from(Iterable<S> collection) {
     return buildFrom(this, collection);
   }
 
-  private static <S, T> From<S, T> buildFrom(Select<S, T> select, Iterable<S> collection) {
+  private static <S, T> Oql.From<S, T> buildFrom(Oql.Select<S, T> select, Iterable<S> collection) {
     return FromClause.<S, T>collection(collection).build().withSelection(select);
   }
 
-  record DistinctBuilder<S, T>(@NotNull Select<S, T> select) implements Oql.Distinct<S, T> {
+  record DistinctBuilder<S, T>(@NotNull Oql.Select<S, T> select) implements Oql.Distinct<S, T> {
 
     DistinctBuilder {
       ObjectUtils.requireObject(select, "Select is required");
     }
 
     @Override
-    public From<S, T> from(Iterable<S> collection) {
+    public Oql.From<S, T> from(Iterable<S> collection) {
       return buildFrom(select(), collection);
     }
   }
@@ -108,16 +124,16 @@ public class SelectClause<S, T> implements Oql.Select<S, T> {
         : new ProjectionWrapper<>(projection);
     }
 
-    private final Projection<S, T> projection;
+    private final Oql.Projection<S, T> projection;
 
     private Class<S> fromType;
 
-    ProjectionWrapper(@NotNull Projection<S, T> projection) {
+    ProjectionWrapper(@NotNull Oql.Projection<S, T> projection) {
       this.projection = ObjectUtils.requireObject(projection, "Projection is required");
     }
 
     @SuppressWarnings("unchecked")
-    protected <P extends Projection<S, T>> P getProjection() {
+    protected <P extends Oql.Projection<S, T>> P getProjection() {
       return (P) this.projection;
     }
 
@@ -138,7 +154,7 @@ public class SelectClause<S, T> implements Oql.Select<S, T> {
     }
 
     @SuppressWarnings("unchecked")
-    public <P extends Projection<S, T>> P usingFromType(Class<S> fromType) {
+    public <P extends Oql.Projection<S, T>> P usingFromType(Class<S> fromType) {
       this.fromType = fromType;
       return (P) this;
     }
@@ -147,19 +163,19 @@ public class SelectClause<S, T> implements Oql.Select<S, T> {
   static class TransformingProjectionWrapper<S, T> extends ProjectionWrapper<S, T>
       implements Oql.TransformingProjection<S, T> {
 
-    TransformingProjectionWrapper(@NotNull Projection<S, T> projection) {
+    TransformingProjectionWrapper(@NotNull Oql.Projection<S, T> projection) {
       super(projection);
     }
 
     @Override
     public T remap(QueryContext<S, T> queryContext, QueryResult<T> result) {
-      return this.<TransformingProjection<S, T>>getProjection().remap(queryContext, result);
+      return this.<Oql.TransformingProjection<S, T>>getProjection().remap(queryContext, result);
     }
 
     @Override
     @SuppressWarnings("all")
     public Iterator<QueryFunction<T, ?>> iterator() {
-      return this.<TransformingProjection<S, T>>getProjection().iterator();
+      return this.<Oql.TransformingProjection<S, T>>getProjection().iterator();
     }
   }
 }
