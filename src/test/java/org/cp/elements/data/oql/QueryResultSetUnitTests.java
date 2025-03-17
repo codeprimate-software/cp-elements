@@ -79,7 +79,7 @@ public class QueryResultSetUnitTests {
   }
 
   @Test
-  void ofNulArrayIsNullSafe() {
+  void ofNullArrayIsNullSafe() {
 
     QueryResultSet<Object> resultSet = QueryResultSet.of((QueryResult<Object>[]) null);
 
@@ -153,6 +153,40 @@ public class QueryResultSetUnitTests {
     assertThat(resultSet).containsExactly(mockQueryResult);
 
     verifyNoInteractions(mockQueryResult);
+  }
+
+  @Test
+  void isEmpty() {
+
+    QueryResultSet<?> queryResultSet = mock(QueryResultSet.class);
+
+    doReturn(0).when(queryResultSet).size();
+    doCallRealMethod().when(queryResultSet).isEmpty();
+    doCallRealMethod().when(queryResultSet).isNotEmpty();
+
+    assertThat(queryResultSet.isEmpty()).isTrue();
+    assertThat(queryResultSet.isNotEmpty()).isFalse();
+
+    verify(queryResultSet, times(2)).isEmpty();
+    verify(queryResultSet, times(1)).isNotEmpty();
+    verify(queryResultSet, times(2)).size();
+  }
+
+  @Test
+  void isNotEmpty() {
+
+    QueryResultSet<?> queryResultSet = mock(QueryResultSet.class);
+
+    doReturn(1).when(queryResultSet).size();
+    doCallRealMethod().when(queryResultSet).isEmpty();
+    doCallRealMethod().when(queryResultSet).isNotEmpty();
+
+    assertThat(queryResultSet.isEmpty()).isFalse();
+    assertThat(queryResultSet.isNotEmpty()).isTrue();
+
+    verify(queryResultSet, times(2)).isEmpty();
+    verify(queryResultSet, times(1)).isNotEmpty();
+    verify(queryResultSet, times(2)).size();
   }
 
   @Test
@@ -233,6 +267,21 @@ public class QueryResultSetUnitTests {
 
     assertThat(results).isNotNull();
     assertThat(results).isEmpty();
+  }
+
+  @Test
+  void sizeOfEmptyQueryResultSet() {
+    assertThat(QueryResultSet.empty().size()).isZero();
+  }
+
+  @Test
+  void sizeOfMultiElementQueryResultSet() {
+    assertThat(QueryResultSet.of(mock(QueryResult.class), mock(QueryResult.class)).size()).isEqualTo(2);
+  }
+
+  @Test
+  void sizeOfSingleElementQueryResultSet() {
+    assertThat(QueryResultSet.of(mock(QueryResult.class)).size()).isOne();
   }
 
   @Test

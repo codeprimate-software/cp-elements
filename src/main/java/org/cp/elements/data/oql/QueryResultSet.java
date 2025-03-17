@@ -94,6 +94,16 @@ public interface QueryResultSet<T> extends Iterable<QueryResult<T>>, Streamable<
   }
 
   /**
+   * Determines whether this {@link QueryResultSet} is empty.
+   *
+   * @return a boolean value indicating whether this {@link QueryResultSet} is empty.
+   * @see #isEmpty()
+   */
+  default boolean isNotEmpty() {
+    return !isEmpty();
+  }
+
+  /**
    * Finds all the {@link QueryResult QueryResults} in this {@link QueryResultSet} matching the given {@link Predicate}.
    *
    * @param predicate {@link Predicate} used to match {@link QueryResult QueryResults} in this {@link QueryResultSet}.
