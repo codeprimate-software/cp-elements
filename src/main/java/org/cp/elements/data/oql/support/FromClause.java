@@ -291,13 +291,16 @@ public class FromClause<S, T> implements Oql.From<S, T> {
    * @param <T> {@link Class type} of the {@link Object projected objects}.
    * @param collection {@link Iterable collection} to query; required.
    * @see java.lang.Iterable
+   * @see FromClause
    */
   public record Builder<S, T>(@NotNull Iterable<S> collection)
       implements org.cp.elements.lang.Builder<FromClause<S, T>> {
 
     /**
-     * @param collection {@link Iterable collection} to query; required.
-     * @throws IllegalArgumentException if {@link Iterable collection} is {@literal null}.
+     * Constructor method for {@link Builder} used to perform any necessary initialization
+     * and argument/state validation.
+     *
+     * @throws IllegalArgumentException if {@link Iterable collection} to query is {@literal null}.
      */
     public Builder {
       ObjectUtils.requireObject(collection, "Collection is required");
