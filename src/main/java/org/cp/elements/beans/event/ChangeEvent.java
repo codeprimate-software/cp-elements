@@ -15,6 +15,8 @@
  */
 package org.cp.elements.beans.event;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.time.Instant;
 import java.util.EventObject;
 
@@ -24,11 +26,15 @@ import org.cp.elements.lang.annotation.NotNull;
  * {@link EventObject} implementation used as the record for the change in state to the source {@link Object}.
  *
  * @author John J. Blum
+ * @see java.io.Serializable
  * @see java.time.Instant
  * @see java.util.EventObject
  * @since 1.0.0
  */
-public class ChangeEvent extends EventObject {
+public class ChangeEvent extends EventObject implements Serializable {
+
+  @Serial
+  private static final long serialVersionUID = 8829182406443515752L;
 
   private final Instant changeDateTime = Instant.now();
 
