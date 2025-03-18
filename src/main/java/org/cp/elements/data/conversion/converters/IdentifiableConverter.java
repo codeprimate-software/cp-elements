@@ -117,7 +117,6 @@ public class IdentifiableConverter extends AbstractConverter<Long, Identifiable<
    * @throws ConversionException if the {@link Object} cannot be converted.
    * @throws IllegalArgumentException if {@link Class qualifying type} is {@literal null}.
    * @see org.cp.elements.data.conversion.ConversionService#convert(Object, Class)
-   * @see #convert(Object)
    */
   @Override
   public <QT extends Identifiable<Long>> QT convert(Long value, Class<QT> identifiableType) {
@@ -125,7 +124,7 @@ public class IdentifiableConverter extends AbstractConverter<Long, Identifiable<
     try {
 
       Identifiable<Long> identifiableObject =
-        getObjectFactory().create(identifiableType, new Class[] { Long.class }, value);
+        getObjectFactory().create(identifiableType, new Class<?>[] { Long.class }, value);
 
       if (identifiableObject.isNew()) {
         identifiableObject.setId(value);
