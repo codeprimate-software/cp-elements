@@ -85,12 +85,14 @@ public abstract class AbstractBean<ID extends Comparable<ID>, USER, PROCESS> ext
 
   private final AtomicReference<BeanAdapter> beanAdapterReference = new AtomicReference<>(null);
 
-  private final ChangeRecorder changeRecorder = new ChangeRecorder();
+  private final transient ChangeRecorder changeRecorder = new ChangeRecorder();
 
-  private final ChangeSupport changeSupport = new ChangeSupport(this);
+  private final transient ChangeSupport changeSupport = new ChangeSupport(this);
 
-  private final Map<String, String> propertyNameToFieldNameMapping = new TreeMap<>();
-  private final Map<String, StateChangeCallback<Object>> propertyNameToStateChangeCallbackMapping = new TreeMap<>();
+  private final transient Map<String, String> propertyNameToFieldNameMapping = new TreeMap<>();
+
+  private final transient Map<String, StateChangeCallback<Object>> propertyNameToStateChangeCallbackMapping =
+    new TreeMap<>();
 
   private final PropertyChangeSupport propertyChangeSupport = new PropertyChangeSupport(this);
 
