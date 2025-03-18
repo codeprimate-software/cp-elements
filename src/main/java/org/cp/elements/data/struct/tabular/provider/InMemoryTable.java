@@ -24,7 +24,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.stream.Collectors;
 
 import org.cp.elements.data.struct.tabular.AbstractColumn;
 import org.cp.elements.data.struct.tabular.AbstractRow;
@@ -116,9 +115,9 @@ public class InMemoryTable extends AbstractTable {
 
     Assert.notEmpty(columns, "Columns are required");
 
-    List<Column> inMemoryColumns = (List<Column>) Arrays.stream(columns)
+    List<Column> inMemoryColumns = Arrays.stream(columns)
       .map(this::newColumn)
-      .collect(Collectors.toList());
+      .toList();
 
     this.columns = new CopyOnWriteArrayList(inMemoryColumns);
     this.rows = Collections.synchronizedList(new ArrayList<>(DEFAULT_ROW_COUNT));
@@ -246,6 +245,7 @@ public class InMemoryTable extends AbstractTable {
    * @see #rows()
    */
   @Override
+  @SuppressWarnings("all")
   public Iterator<Row> iterator() {
     return rows().iterator();
   }
