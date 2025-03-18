@@ -15,6 +15,7 @@
  */
 package org.cp.elements.context.configure.support;
 
+import java.io.Serial;
 import java.util.Iterator;
 
 import org.cp.elements.context.configure.AbstractConfiguration;
@@ -35,6 +36,9 @@ import org.cp.elements.lang.annotation.Nullable;
  */
 @SuppressWarnings("unused")
 public class EnvironmentVariablesConfiguration extends AbstractConfiguration {
+
+  @Serial
+  private static final long serialVersionUID = 4833204520688141812L;
 
   /**
    * Constructs a new {@link EnvironmentVariablesConfiguration} with
