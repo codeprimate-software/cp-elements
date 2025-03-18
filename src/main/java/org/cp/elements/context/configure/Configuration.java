@@ -341,9 +341,10 @@ public interface Configuration extends Describable<Descriptor<?>>, Iterable<Stri
    * @param <SOURCE> {@link Class type} of the {@literal source} of the configuration metadata, for example,
    * such as a {@link File}.
    * @see java.lang.FunctionalInterface
+   * @see java.io.Serializable
    */
   @FunctionalInterface
-  interface Descriptor<SOURCE> {
+  interface Descriptor<SOURCE> extends Serializable {
 
     /**
      * Gets the {@link SOURCE} of the {@link Configuration}.
