@@ -55,7 +55,7 @@ public abstract class AbstractConfiguration implements Configuration, Conversion
   private Configuration.Descriptor<?> descriptor;
 
   // TODO: Use PropertyEditors in addition to ConversionService!?!
-  private ConversionService conversionService;
+  private transient ConversionService conversionService;
 
   /**
    * Constructs a new {@link AbstractConfiguration} with no parent {@link Configuration}.
