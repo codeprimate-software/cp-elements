@@ -38,6 +38,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Supplier;
 
 import org.cp.elements.lang.annotation.NotNull;
 import org.cp.elements.lang.annotation.NullSafe;
@@ -1043,7 +1044,7 @@ public abstract class ClassUtils {
    */
   @NullSafe
   @SuppressWarnings("all")
-  public static boolean notInstanceOf(@Nullable Object obj, Class... types) {
+  public static boolean notInstanceOf(@Nullable Object obj, Class<?>... types) {
 
     boolean result = true;
 
@@ -1064,11 +1065,10 @@ public abstract class ClassUtils {
    * @see java.lang.reflect.Type
    */
   @NullSafe
-  @SuppressWarnings("all")
   public static @NotNull Class<?> toRawType(@Nullable Type type) {
 
     Type resolvedType = type instanceof ParameterizedType parameterizedType ? parameterizedType.getRawType()
-      : type instanceof TypeVariable typeVariable ? safeGetValue(() -> loadClass(typeVariable.getName()), Object.class)
+      : type instanceof TypeVariable<?> typeVariable ? safeGetValue(classLoadingSupplier(typeVariable), Object.class)
       : type;
 
     if (resolvedType instanceof Class<?> classType) {
@@ -1076,5 +1076,9 @@ public abstract class ClassUtils {
     }
 
     throw newIllegalArgumentException("[%1$s] is not resolvable as a %2$s", type, Class.class.getName());
+  }
+
+  private static Supplier<Class<?>> classLoadingSupplier(TypeVariable<?> typeVariable) {
+    return () -> loadClass(typeVariable.getName());
   }
 }
