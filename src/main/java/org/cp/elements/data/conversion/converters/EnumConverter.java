@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.data.conversion.converters;
 
 import static org.cp.elements.lang.ElementsExceptionsFactory.newConversionException;
@@ -31,7 +30,7 @@ import org.cp.elements.data.conversion.Converter;
  * @see org.cp.elements.data.conversion.AbstractConverter
  * @since 1.0.0
  */
-@SuppressWarnings("unused")
+@SuppressWarnings({ "rawtypes", "unused" })
 public class EnumConverter extends AbstractConverter<String, Enum> {
 
   /**
@@ -57,10 +56,9 @@ public class EnumConverter extends AbstractConverter<String, Enum> {
    * @return the converted {@link Object} of {@link Class type T}.
    * @throws ConversionException if the {@link Object} cannot be converted.
    * @see org.cp.elements.data.conversion.ConversionService#convert(Object, Class)
-   * @see #convert(Object, Class)
    */
   @Override
-  @SuppressWarnings("unchecked")
+  @SuppressWarnings({ "rawtypes", "unchecked" })
   public <QT extends Enum> QT convert(String value, Class<QT> enumType) {
 
     try {
