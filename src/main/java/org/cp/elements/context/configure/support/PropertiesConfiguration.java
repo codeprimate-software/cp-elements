@@ -20,6 +20,7 @@ import static org.cp.elements.lang.ElementsExceptionsFactory.newConfigurationExc
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.Serial;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.Properties;
@@ -44,6 +45,9 @@ import org.cp.elements.lang.annotation.Nullable;
  */
 @SuppressWarnings("unused")
 public class PropertiesConfiguration extends AbstractConfiguration {
+
+  @Serial
+  private static final long serialVersionUID = -6032166841545827263L;
 
   private final Properties properties;
 
