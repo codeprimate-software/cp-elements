@@ -108,7 +108,7 @@ public class IdentifiableUnitTests {
 
     doCallRealMethod().when(this.mockIdentifiable).identifiedBy(anyInt());
 
-    assertThat((Identifiable<Integer>) this.mockIdentifiable.identifiedBy(1)).isSameAs(this.mockIdentifiable);
+    assertThat(this.mockIdentifiable.<Identifiable<Integer>>identifiedBy(1)).isSameAs(this.mockIdentifiable);
 
     verify(this.mockIdentifiable, times(1)).identifiedBy(eq(1));
     verify(this.mockIdentifiable, times(1)).setId(eq(1));
