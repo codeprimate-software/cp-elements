@@ -15,6 +15,7 @@
  */
 package org.cp.elements.context.configure.support;
 
+import java.io.Serial;
 import java.util.Collections;
 import java.util.Iterator;
 
@@ -36,6 +37,9 @@ import org.cp.elements.lang.annotation.Nullable;
  */
 @SuppressWarnings("unused")
 public class SystemPropertiesConfiguration extends AbstractConfiguration {
+
+  @Serial
+  private static final long serialVersionUID = 4662216742832693581L;
 
   /**
    * Constructs a new {@link SystemPropertiesConfiguration} initialized with
