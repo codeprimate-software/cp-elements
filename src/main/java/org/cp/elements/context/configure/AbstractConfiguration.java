@@ -19,6 +19,7 @@ import static org.cp.elements.lang.ElementsExceptionsFactory.newConfigurationExc
 import static org.cp.elements.lang.ElementsExceptionsFactory.newConversionException;
 
 import java.io.File;
+import java.io.Serial;
 import java.util.Map;
 import java.util.Properties;
 
@@ -334,6 +335,9 @@ public abstract class AbstractConfiguration implements Configuration, Conversion
    */
   protected abstract static class AbstractConfigurationDescriptor<SOURCE> implements Configuration.Descriptor<SOURCE> {
 
+    @Serial
+    private static final long serialVersionUID = -8409881060869950345L;
+
     private final SOURCE source;
 
     /**
@@ -364,6 +368,9 @@ public abstract class AbstractConfiguration implements Configuration, Conversion
    * @see java.io.File
    */
   public static class FileConfigurationDescriptor extends AbstractConfigurationDescriptor<File> {
+
+    @Serial
+    private static final long serialVersionUID = -5905967044530804719L;
 
     /**
      * Factory method used to construct a new {@link FileConfigurationDescriptor} initialized with the given,
@@ -398,6 +405,9 @@ public abstract class AbstractConfiguration implements Configuration, Conversion
    */
   public static class MapConfigurationDescriptor extends AbstractConfigurationDescriptor<Map<String, String>> {
 
+    @Serial
+    private static final long serialVersionUID = -6942306112940895815L;
+
     /**
      * Factory method used to construct a new {@link MapConfigurationDescriptor} initialized with the given,
      * required {@link Map} used as the {@literal source} of the {@link Configuration}.
@@ -430,6 +440,9 @@ public abstract class AbstractConfiguration implements Configuration, Conversion
    * @see java.util.Properties
    */
   public static class PropertiesConfigurationDescriptor extends AbstractConfigurationDescriptor<Properties> {
+
+    @Serial
+    private static final long serialVersionUID = -7052948695011846203L;
 
     /**
      * Factory method used to construct a new {@link PropertiesConfigurationDescriptor} initialized with the given,
