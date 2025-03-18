@@ -15,6 +15,7 @@
  */
 package org.cp.elements.context.configure.support;
 
+import java.io.Serial;
 import java.util.Iterator;
 
 import org.cp.elements.context.configure.Configuration;
@@ -34,6 +35,9 @@ import org.cp.elements.lang.annotation.NotNull;
  */
 @SuppressWarnings("unused")
 public class DelegatingConfiguration implements Configuration, ConversionServiceAware {
+
+  @Serial
+  private static final long serialVersionUID = 3482390856060498752L;
 
   protected static final String DELEGATE_NAME_SUFFIX = "Delegate";
 
