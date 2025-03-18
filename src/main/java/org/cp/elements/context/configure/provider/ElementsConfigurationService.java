@@ -17,6 +17,7 @@ package org.cp.elements.context.configure.provider;
 
 import java.io.File;
 import java.io.InputStream;
+import java.io.Serial;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Properties;
@@ -232,6 +233,9 @@ public class ElementsConfigurationService extends AbstractConfigurationService {
    * @see org.cp.elements.lang.Orderable
    */
   protected static class OrderedConfiguration extends DelegatingConfiguration implements Orderable<Integer> {
+
+    @Serial
+    private static final long serialVersionUID = 2642866430826543965L;
 
     private final Integer order;
 
