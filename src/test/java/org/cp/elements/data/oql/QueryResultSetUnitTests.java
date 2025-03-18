@@ -275,13 +275,23 @@ public class QueryResultSetUnitTests {
   }
 
   @Test
+  @SuppressWarnings("unchecked")
   void sizeOfMultiElementQueryResultSet() {
-    assertThat(QueryResultSet.of(mock(QueryResult.class), mock(QueryResult.class)).size()).isEqualTo(2);
+
+    QueryResult<Object> mockQueryResultOne = mock(QueryResult.class);
+    QueryResult<Object> mockQueryResultTwo = mock(QueryResult.class);
+
+    assertThat(QueryResultSet.of(mockQueryResultOne, mockQueryResultTwo).size()).isEqualTo(2);
+
+    verifyNoInteractions(mockQueryResultOne, mockQueryResultTwo);
   }
 
   @Test
+  @SuppressWarnings("unchecked")
   void sizeOfSingleElementQueryResultSet() {
-    assertThat(QueryResultSet.of(mock(QueryResult.class)).size()).isOne();
+    QueryResult<Object> mockQueryResult = mock(QueryResult.class);
+    assertThat(QueryResultSet.of(mockQueryResult).size()).isOne();
+    verifyNoInteractions(mockQueryResult);
   }
 
   @Test
