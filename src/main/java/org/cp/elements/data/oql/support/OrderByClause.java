@@ -15,6 +15,7 @@
  */
 package org.cp.elements.data.oql.support;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Comparator;
 import java.util.Iterator;
@@ -136,6 +137,9 @@ public record OrderByClause<S, T>(@NotNull Oql.From<S, T> from, Comparator<T>...
   }
 
   protected static class NoOrder<S> implements Comparator<S>, Serializable {
+
+    @Serial
+    private static final long serialVersionUID = 6130342585715959145L;
 
     @Override
     public int compare(S comparableOne, S comparableTwo) {
