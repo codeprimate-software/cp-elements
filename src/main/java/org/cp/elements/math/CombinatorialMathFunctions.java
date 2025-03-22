@@ -36,7 +36,6 @@ import org.cp.elements.lang.annotation.NotNull;
  * @see MathUtils
  * @since 0.1.0
  */
-@SuppressWarnings("unused")
 public abstract class CombinatorialMathFunctions {
 
   /**
@@ -125,10 +124,6 @@ public abstract class CombinatorialMathFunctions {
 
   protected static BigInteger computeFactorial(int value) {
     return MathUtils.factorial(asBigInteger(value));
-  }
-
-  private static int asSize(int index) {
-    return index + 1;
   }
 
   private static int asIndex(int size) {
