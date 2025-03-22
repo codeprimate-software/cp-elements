@@ -18,7 +18,6 @@ package org.cp.elements.lang;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.ObjectStreamException;
 import java.io.Serial;
 import java.io.Serializable;
 
@@ -242,11 +241,6 @@ public class ValueHolder<T> {
     @SuppressWarnings("unchecked")
     private void readObject(@NotNull ObjectInputStream in) throws ClassNotFoundException, IOException {
       writeValue((T) in.readObject());
-    }
-
-    @Serial
-    private void readObjectNoData() throws ObjectStreamException {
-      setValue(null);
     }
 
     @Serial
