@@ -72,12 +72,10 @@ public class ByteBufferOutputStreamIntegrationTests {
     doReturn(false).when(mockByteBuffer).isReadOnly();
 
     try (ByteBufferOutputStream outputStream = new ByteBufferOutputStream(mockByteBuffer)) {
-      assertThat(outputStream).isNotNull();
       assertThat(outputStream.getByteBuffer()).isEqualTo(mockByteBuffer);
     }
 
     verify(mockByteBuffer, times(1)).isReadOnly();
-    verifyNoMoreInteractions(mockByteBuffer);
   }
 
   @Test
@@ -120,7 +118,6 @@ public class ByteBufferOutputStreamIntegrationTests {
     assertThat(outputStream.getByteBuffer()).isEqualTo(mockByteBuffer);
 
     verify(mockByteBuffer, times(1)).isReadOnly();
-    verifyNoMoreInteractions(mockByteBuffer);
   }
 
   @Test
@@ -187,7 +184,6 @@ public class ByteBufferOutputStreamIntegrationTests {
     assertThat(outputStream.isOpen()).isFalse();
 
     verify(mockByteBuffer, times(1)).isReadOnly();
-    verifyNoMoreInteractions(mockByteBuffer);
   }
 
   @Test

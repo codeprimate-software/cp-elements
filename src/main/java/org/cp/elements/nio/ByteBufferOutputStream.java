@@ -98,7 +98,7 @@ public class ByteBufferOutputStream extends OutputStream {
    */
   public @NotNull ByteBuffer getByteBuffer() {
     close();
-    return this.byteBuffer;
+    return BufferUtils.copy(this.byteBuffer, 0);
   }
 
   /**
