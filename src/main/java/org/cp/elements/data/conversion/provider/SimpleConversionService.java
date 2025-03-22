@@ -30,6 +30,7 @@ import java.util.Map;
 import java.util.function.Supplier;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
+import java.util.logging.Logger;
 
 import org.cp.elements.data.conversion.AbstractConversionService;
 import org.cp.elements.data.conversion.ConversionException;
@@ -76,7 +77,7 @@ import org.cp.elements.util.CollectionUtils;
  * @since 1.0.0
  */
 @Service
-@SuppressWarnings("unused")
+//@SuppressWarnings("unused")
 public class SimpleConversionService extends AbstractConversionService {
 
   protected static final Class<?> CONVERTER_CLASS = StringConverter.class;
@@ -84,6 +85,8 @@ public class SimpleConversionService extends AbstractConversionService {
   protected static final Package CONVERTERS_PACKAGE = CONVERTER_CLASS.getPackage();
 
   private volatile boolean defaultsEnabled;
+
+  private final Logger logger = Logger.getLogger(getClass().getName());
 
   private final Map<Class<?>, Object> defaultValues =
     Collections.synchronizedMap(new HashMap<>(13, 0.95f));
@@ -170,6 +173,9 @@ public class SimpleConversionService extends AbstractConversionService {
   }
 
   private void registerConvertersFromJarFile(String converterClassResourceName, URL converterClassResourceLocation) {
+
+    this.logger.config("Registering Converters from URL [%s] having Converter class resource name [%s]"
+      .formatted(converterClassResourceLocation, converterClassResourceName));
 
     String converterClassResourceLocationString = converterClassResourceLocation.toExternalForm();
 
