@@ -43,6 +43,7 @@ import org.cp.elements.lang.Executable;
 import org.cp.elements.lang.ObjectUtils;
 import org.cp.elements.lang.StringUtils;
 import org.cp.elements.lang.annotation.NullSafe;
+import org.cp.elements.lang.annotation.Nullable;
 import org.cp.elements.process.EmbeddedProcessExecutionException;
 import org.cp.elements.process.ProcessExecutor;
 
@@ -205,14 +206,30 @@ public class EmbeddedJavaProcessExecutor implements ProcessExecutor<Void> {
      */
     Optional<T> execute(Class type, Object... args);
 
+    /**
+     * Determines whether the given {@link Constructor} is the {@literal default} {@link Constructor}
+     * or {@link Constructor} accepting an object array.
+     *
+     * @param constructor {@link Constructor} to evaluate.
+     * @return a boolean value indicating whether the given {@link Constructor} is the target {@link Constructor}.
+     * @see java.lang.reflect.Constructor
+     */
     @NullSafe
-    default boolean isTargetConstructor(Constructor<?> constructor) {
+    default boolean isTargetConstructor(@Nullable Constructor<?> constructor) {
 
-      return Optional.ofNullable(constructor).map(localConstructor ->
-        isDefaultConstructor(constructor) || isConstructorWithArrayParameter(constructor))
-          .orElse(false);
+      return constructor != null
+        && (isDefaultConstructor(constructor) || isConstructorWithArrayParameter(constructor));
     }
 
+    /**
+     * Finds a {@link Constructor} in {@link Class type}.
+     *
+     * @param <T> parameterized {@link Class type}.
+     * @param type {@link Class} from which the {@link Constructor} is resolved; required.
+     * @return the matching {@link Constructor} from the {@link Class type}.
+     * @throws EmbeddedProcessExecutionException if a {@link Constructor} cannot be found.
+     * @see java.lang.reflect.Constructor
+     */
     @SuppressWarnings("unchecked")
     default <T> Constructor<T> findConstructor(Class<T> type) {
 
@@ -225,6 +242,15 @@ public class EmbeddedJavaProcessExecutor implements ProcessExecutor<Void> {
             getSimpleName(type), getName(type)));
     }
 
+    /**
+     * Constructs a new instance of {@link Class type} using the given array of {@link Object arguments}.
+     *
+     * @param <T> parameterize {@link Class type}.
+     * @param type {@link Class type} of the instance to construct.
+     * @param args array of {@link Object arguments} used to initialize the instance.
+     * @return a new {@link Object instance} of {@link Class type}.
+     * @throws IllegalArgumentException if {@link Object} could not be constructed.
+     */
     default <T> T constructInstance(Class<T> type, Object[] args) {
 
       try {
