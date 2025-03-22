@@ -82,7 +82,8 @@ class InitableVisitorUnitTests {
 
     assertThat(visitor).isNotNull();
     assertThat(visitor.getArguments()).isNull();
-    assertThat(visitor.getParameters()).isSameAs(expectedParameters);
+    assertThat(visitor.getParameters()).isEqualTo(expectedParameters);
+    assertThat(visitor.getParameters()).isNotSameAs(expectedParameters);
   }
 
   @Test
@@ -172,7 +173,8 @@ class InitableVisitorUnitTests {
 
     assertThat(visitor).isNotNull();
     assertThat(visitor.getArguments()).isNull();
-    assertThat(visitor.getParameters()).isSameAs(expectedParameters);
+    assertThat(visitor.getParameters()).isEqualTo(expectedParameters);
+    assertThat(visitor.getParameters()).isNotSameAs(expectedParameters);
 
     visitor.visit(mockParameterizedInitable);
 

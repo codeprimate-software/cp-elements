@@ -69,7 +69,7 @@ public class InitableVisitor implements Visitor {
    * @see java.util.Map
    */
   public InitableVisitor(@Nullable Map<?, ?> parameters) {
-    this.parameters = parameters;
+    this.parameters = parameters != null ? Map.copyOf(parameters) : null;
     this.args = null;
   }
 
@@ -94,7 +94,8 @@ public class InitableVisitor implements Visitor {
    * @see java.util.Map
    */
   public @Nullable Map<?, ?> getParameters() {
-    return this.parameters;
+    Map<?, ?> parameters = this.parameters;
+    return parameters != null ? Map.copyOf(parameters) : null;
   }
 
   /**
