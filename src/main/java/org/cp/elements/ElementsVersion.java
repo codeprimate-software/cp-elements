@@ -20,6 +20,8 @@ import java.io.InputStream;
 import java.time.LocalDate;
 import java.util.Optional;
 import java.util.Properties;
+import java.util.function.Supplier;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.cp.elements.io.IOUtils;
@@ -125,7 +127,13 @@ public class ElementsVersion implements Runnable {
   }
 
   private int resolveYear(int defaultYear) {
-    this.logger.fine("Inception Year [%d]".formatted(defaultYear));
+    log(() -> "Inception Year [%d]".formatted(defaultYear));
     return LocalDate.now().getYear();
+  }
+
+  private void log(Supplier<String> message) {
+    if (this.logger.isLoggable(Level.FINE)) {
+      this.logger.fine(message.get());
+    }
   }
 }
