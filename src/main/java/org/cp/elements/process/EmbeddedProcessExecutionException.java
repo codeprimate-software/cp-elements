@@ -16,7 +16,7 @@
 package org.cp.elements.process;
 
 /**
- * {@link ProcessExecutionException} thrown to indicate a runtime error occurred while executing a embedded program,
+ * {@link ProcessExecutionException} thrown when a runtime error occurs while executing a embedded program,
  * which will run in the containing (parent) process.
  *
  * @author John Blum
