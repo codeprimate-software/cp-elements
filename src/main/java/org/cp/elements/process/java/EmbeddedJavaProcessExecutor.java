@@ -58,8 +58,9 @@ import org.cp.elements.process.ProcessExecutor;
 @SuppressWarnings({ "rawtypes", "unused" })
 public class EmbeddedJavaProcessExecutor implements ProcessExecutor<Void> {
 
-  protected static final Collection<JavaClassExecutor> JAVA_CLASS_EXECUTORS =
-    List.of(new ExecutableExecutor<>(), new RunnableExecutor<>(), new CallableExecutor<>(), new MainMethodExecutor<>());
+  protected static final Collection<JavaClassExecutor> JAVA_CLASS_EXECUTORS = List.of(
+    new ExecutableExecutor<>(), new RunnableExecutor<>(), new CallableExecutor<>(), new MainMethodExecutor<>()
+  );
 
   /**
    * Factory method used to construct a new {@link EmbeddedJavaProcessExecutor}, which is used to
@@ -138,8 +139,12 @@ public class EmbeddedJavaProcessExecutor implements ProcessExecutor<Void> {
    * @see java.lang.Class
    */
   protected <T> Class<T> resolveJavaClassFrom(String... args) {
-    return Arrays.stream(nullSafeArray(args, String.class)).filter(ObjectUtils::isPresent).findFirst()
-      .<Class<T>>map(ObjectUtils::loadClass).orElse(null);
+
+    return Arrays.stream(nullSafeArray(args, String.class))
+      .filter(ObjectUtils::isPresent)
+      .findFirst()
+      .<Class<T>>map(ObjectUtils::loadClass)
+      .orElse(null);
   }
 
   /**
@@ -164,11 +169,13 @@ public class EmbeddedJavaProcessExecutor implements ProcessExecutor<Void> {
 
     Assert.notNull(type, "Class type must not be null");
 
-    return JAVA_CLASS_EXECUTORS.stream().filter(javaClassExecutor -> javaClassExecutor.isExecutable(type))
-      .findFirst().map(javaClassExecutor -> javaClassExecutor.execute(type, (Object[]) args)).orElseThrow(() ->
-        new EmbeddedProcessExecutionException(String.format("Unable to execute Java class [%s];"
-          + " Please verify that your class either implements Runnable, Callable, Executable or has a main method",
-            getName(type))));
+    return JAVA_CLASS_EXECUTORS.stream()
+      .filter(javaClassExecutor -> javaClassExecutor.isExecutable(type))
+      .findFirst()
+      .map(javaClassExecutor -> javaClassExecutor.execute(type, (Object[]) args))
+      .orElseThrow(() -> newEmbeddedProcessExecutionException("Unable to execute Java class [%s];"
+        + " Please verify that your class either implements Runnable, Callable, Executable or has a main method",
+        getName(type)));
   }
 
   /**
@@ -176,7 +183,7 @@ public class EmbeddedJavaProcessExecutor implements ProcessExecutor<Void> {
    *
    * @param <T> {@link Class} type of the executions return value (result).
    */
-  interface JavaClassExecutor<T> {
+  public interface JavaClassExecutor<T> {
 
     /**
      * Determines whether the given Java {@link Class} is executable by this executor.
@@ -213,9 +220,9 @@ public class EmbeddedJavaProcessExecutor implements ProcessExecutor<Void> {
         .filter(this::isTargetConstructor)
         .min((constructorOne, constructorTwo) ->
           constructorTwo.getParameterCount() - constructorOne.getParameterCount())
-        .orElseThrow(() -> new EmbeddedProcessExecutionException(String.format(
+        .orElseThrow(() -> newEmbeddedProcessExecutionException(
           "No default constructor or constructor with arguments (%1$s(:Object[]) for type [%2$s] was found",
-            getSimpleName(type), getName(type))));
+            getSimpleName(type), getName(type)));
     }
 
     default <T> T constructInstance(Class<T> type, Object[] args) {
@@ -225,8 +232,9 @@ public class EmbeddedJavaProcessExecutor implements ProcessExecutor<Void> {
 
         constructor.setAccessible(true);
 
-        return (isConstructorWithArrayParameter(constructor) ? constructor.newInstance((Object) args)
-          : constructor.newInstance());
+        return isConstructorWithArrayParameter(constructor)
+          ? constructor.newInstance((Object) args)
+          : constructor.newInstance();
       }
       catch (IllegalAccessException | InstantiationException | InvocationTargetException cause) {
         throw newEmbeddedProcessExecutionException(cause, "Failed to construct an instance of Java class [%s]",
@@ -300,9 +308,7 @@ public class EmbeddedJavaProcessExecutor implements ProcessExecutor<Void> {
 
       try {
         Method mainMethod = type.getDeclaredMethod(ClassUtils.MAIN_METHOD_NAME, String[].class);
-
         mainMethod.invoke(null, (Object) toStringArray(args));
-
         return Optional.empty();
       }
       catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException cause) {
@@ -328,11 +334,8 @@ public class EmbeddedJavaProcessExecutor implements ProcessExecutor<Void> {
     @Override
     @SuppressWarnings("unchecked")
     public Optional<T> execute(Class type, Object... args) {
-
       Runnable runnable = this.<Runnable>constructInstance(type, args);
-
       runnable.run();
-
       return Optional.empty();
     }
   }
