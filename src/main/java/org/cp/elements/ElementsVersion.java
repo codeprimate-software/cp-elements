@@ -20,6 +20,7 @@ import java.io.InputStream;
 import java.time.LocalDate;
 import java.util.Optional;
 import java.util.Properties;
+import java.util.logging.Logger;
 
 import org.cp.elements.io.IOUtils;
 import org.cp.elements.lang.StringUtils;
@@ -50,6 +51,8 @@ public class ElementsVersion implements Runnable {
   public static final String PROJECT_LICENSE = "Apache License, version 2.0";
   public static final String PROJECT_NAME = "Codeprimate Elements";
   public static final String PROJECT_VERSION = "version 1.0.0-M7";
+
+  private final Logger logger = Logger.getLogger(getClass().getName());
 
   private Properties maven;
 
@@ -122,6 +125,7 @@ public class ElementsVersion implements Runnable {
   }
 
   private int resolveYear(int defaultYear) {
+    this.logger.fine("Inception Year [%d]".formatted(defaultYear));
     return LocalDate.now().getYear();
   }
 }
