@@ -86,11 +86,15 @@ public class PropertiesConfiguration extends AbstractConfiguration {
     Assert.notNull(propertiesFile, "The file to load properties from is required");
 
     setDescriptor(FileConfigurationDescriptor.from(propertiesFile));
+    this.properties = load(propertiesFile);
+  }
 
-    this.properties = new Properties();
+  private Properties load(File propertiesFile) {
 
     try (FileInputStream fileInputStream = new FileInputStream(propertiesFile)) {
-      this.properties.load(fileInputStream);
+      Properties properties = new Properties();
+      properties.load(fileInputStream);
+      return properties;
     }
     catch (IOException cause) {
       throw newConfigurationException(cause, "Failed to initialize configuration from properties file [%s]",
