@@ -52,6 +52,7 @@ import org.cp.elements.data.conversion.converters.ShortConverter;
 import org.cp.elements.data.conversion.converters.StringConverter;
 import org.cp.elements.data.conversion.converters.URIConverter;
 import org.cp.elements.data.conversion.converters.URLConverter;
+import org.cp.elements.data.conversion.converters.UUIDConverter;
 import org.cp.elements.io.FileExtensionFilter;
 import org.cp.elements.io.FileUtils;
 import org.cp.elements.lang.Assert;
@@ -101,7 +102,6 @@ public class SimpleConversionService extends AbstractConversionService {
    * @see #initDefaultValues()
    */
   public SimpleConversionService() {
-
     registerConverters();
     initDefaultValues();
   }
@@ -120,8 +120,8 @@ public class SimpleConversionService extends AbstractConversionService {
     URL converterClassResourceLocation = resolveResourceLocation(converterClassResourceName);
 
     Assert.notNull(converterClassResourceLocation,
-        "Could not resolve URL for Converter class [%1$s] having resource name [%2$s]",
-          CONVERTER_CLASS.getName(), converterClassResourceName);
+      "Could not resolve URL for Converter class [%1$s] having resource name [%2$s]",
+        CONVERTER_CLASS.getName(), converterClassResourceName);
 
     try {
       if (isJarFile(converterClassResourceLocation)) {
@@ -157,8 +157,8 @@ public class SimpleConversionService extends AbstractConversionService {
     register(new BigIntegerConverter());
     register(new BooleanConverter());
     register(new ByteConverter());
-    register(new DateConverter());
     register(new CharacterConverter());
+    register(new DateConverter());
     register(new DoubleConverter());
     register(new EnumConverter());
     register(new FloatConverter());
@@ -170,6 +170,7 @@ public class SimpleConversionService extends AbstractConversionService {
     register(new StringConverter());
     register(new URIConverter());
     register(new URLConverter());
+    register(new UUIDConverter());
   }
 
   private void registerConvertersFromJarFile(String converterClassResourceName, URL converterClassResourceLocation) {
