@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 /**
- * The Element {@literal context.configure} package contains a framework for configure a Java program (application)
- * at runtime and a means to access configuration metadata from the runtime environment, such as environment variables,
+ * The Elements {@literal context.configure} package contains a framework for configuring a Java program (application)
+ * at runtime and means to access configuration metadata from the runtime environment, such as environment variables,
  * system properties and property configuration accessed from a file or network.
  *
  * @author John Blum
  * @see org.cp.elements.context.configure.Configuration
  * @see org.cp.elements.context.configure.ConfigurationService
- * @see org.cp.elements.context.configure.provider.ElementsConfigurationService
+ * @see org.cp.elements.context.configure.provider.SimpleConfigurationService
  * @since 1.0.0
  */
 package org.cp.elements.context.configure;

@@ -36,7 +36,7 @@ import org.cp.elements.service.loader.ServiceLoaderSupport;
 import org.cp.elements.util.ArrayUtils;
 
 /**
- * {@link Service} interface defining a contract for Java programs (applications) requiring configuration
+ * {@link Service} interface defining a contract for Java programs (applications) requiring configuration metadata
  * at launch and runtime.
  *
  * @author John Blum

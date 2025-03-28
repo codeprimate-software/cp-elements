@@ -59,9 +59,9 @@ import org.cp.elements.util.PropertiesBuilder;
  * @see org.cp.elements.util.PropertiesBuilder
  * @since 1.0.0
  */
-public class ElementsConfigurationService extends AbstractConfigurationService {
+public class SimpleConfigurationService extends AbstractConfigurationService {
 
-  protected static final Class<?> RESOURCE_SOURCE_TYPE = ElementsConfigurationService.class;
+  protected static final Class<?> RESOURCE_SOURCE_TYPE = SimpleConfigurationService.class;
 
   protected static final Function<File, Properties> FROM_FILE_TO_PROPERTIES_FUNCTION =
     propertiesFile -> PropertiesBuilder.from(propertiesFile).build();
@@ -80,7 +80,7 @@ public class ElementsConfigurationService extends AbstractConfigurationService {
   private static final int USER_CONFIGURATION_ORDER_BASE = 1_000;
 
   /**
-   * Constructs a new the {@link ElementsConfigurationService} initialized with configuration metadata
+   * Constructs a new the {@link SimpleConfigurationService} initialized with configuration metadata
    * ({@link java.util.Properties}) contained in files in the file system or the Java classpath
    * in well known locations.
    *
@@ -90,7 +90,7 @@ public class ElementsConfigurationService extends AbstractConfigurationService {
    * @see #registerEnvironmentVariables()
    * @see #registerProgramApplicationProperties(List)
    */
-  public ElementsConfigurationService() {
+  public SimpleConfigurationService() {
 
     List<String> activeProfiles = getActiveProfilesList();
 

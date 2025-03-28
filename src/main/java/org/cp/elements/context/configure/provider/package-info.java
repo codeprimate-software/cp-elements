@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 /**
- * The Elements {@literal context.configure.provider} package contains a provider implementation of
+ * Elements {@literal context.configure.provider} package containing a provider implementation of
  * the Elements {@link org.cp.elements.context.configure.ConfigurationService}.
  *
  * @author John Blum
- * @see org.cp.elements.context.configure.provider.ElementsConfigurationService
+ * @see org.cp.elements.context.configure.provider.SimpleConfigurationService
  * @since 1.0.0
  */
 package org.cp.elements.context.configure.provider;

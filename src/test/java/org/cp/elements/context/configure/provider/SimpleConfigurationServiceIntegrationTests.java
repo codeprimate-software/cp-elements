@@ -22,19 +22,19 @@ import org.junit.jupiter.api.Test;
 import org.cp.elements.context.annotation.ActiveProfiles;
 
 /**
- * Integration Tests for {@link ElementsConfigurationService}.
+ * Integration Tests for {@link SimpleConfigurationService}.
  *
  * @author John Blum
+ * @see SimpleConfigurationService
  * @see org.junit.jupiter.api.Test
- * @see org.cp.elements.context.configure.provider.ElementsConfigurationService
  * @since 1.0.0
  */
-public class ElementsConfigurationServiceIntegrationTests {
+public class SimpleConfigurationServiceIntegrationTests {
 
   @Test
   public void usingDefaultNonProfiledConfiguration() {
 
-    ElementsConfigurationService configurationService = new ElementsConfigurationService();
+    SimpleConfigurationService configurationService = new SimpleConfigurationService();
 
     assertThat(configurationService).isNotNull();
     assertThat(configurationService).hasSize(3);
@@ -46,7 +46,7 @@ public class ElementsConfigurationServiceIntegrationTests {
   @Test
   public void usingDevProfiledConfiguration() {
 
-    ElementsConfigurationService configurationService = new DevElementsConfigurationService();
+    SimpleConfigurationService configurationService = new DevSimpleConfigurationService();
 
     assertThat(configurationService).isNotNull();
     assertThat(configurationService).hasSize(4);
@@ -58,7 +58,7 @@ public class ElementsConfigurationServiceIntegrationTests {
   @Test
   public void usingDevAndQaProfiledConfiguration() {
 
-    ElementsConfigurationService configurationService = new DevAndQaElementsConfigurationService();
+    SimpleConfigurationService configurationService = new DevAndQaSimpleConfigurationService();
 
     assertThat(configurationService).isNotNull();
     assertThat(configurationService).hasSize(5);
@@ -68,9 +68,9 @@ public class ElementsConfigurationServiceIntegrationTests {
   }
 
   @ActiveProfiles(names = "DEV")
-  static class DevElementsConfigurationService extends ElementsConfigurationService { }
+  static class DevSimpleConfigurationService extends SimpleConfigurationService { }
 
   @ActiveProfiles(names = { "DEV", "QA" })
-  static class DevAndQaElementsConfigurationService extends ElementsConfigurationService { }
+  static class DevAndQaSimpleConfigurationService extends SimpleConfigurationService { }
 
 }

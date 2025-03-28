@@ -33,9 +33,10 @@ import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
 
+import org.assertj.core.api.InstanceOfAssertFactories;
 import org.cp.elements.context.configure.Configuration;
 import org.cp.elements.context.configure.ConfigurationService;
-import org.cp.elements.context.configure.provider.ElementsConfigurationService;
+import org.cp.elements.context.configure.provider.SimpleConfigurationService;
 import org.cp.elements.context.container.DependencyInjection;
 import org.cp.elements.context.container.provider.Syringe;
 import org.cp.elements.data.caching.Cache;
@@ -49,8 +50,6 @@ import org.cp.elements.lang.factory.provider.PrototypeObjectFactory;
 import org.cp.elements.lang.reflect.ProxyService;
 import org.cp.elements.util.ArrayUtils;
 import org.cp.elements.util.CollectionUtils;
-
-import org.assertj.core.api.InstanceOfAssertFactories;
 
 /**
  * Unit Tests for {@link ServiceTemplate}.
@@ -186,7 +185,7 @@ public class ServiceTemplateUnitTests {
 
     ConfigurationService configurationService = serviceTemplate.getConfigurationService().orElse(null);
 
-    assertThat(configurationService).isInstanceOf(ElementsConfigurationService.class);
+    assertThat(configurationService).isInstanceOf(SimpleConfigurationService.class);
 
     verify(serviceTemplate, times(1)).getConfigurationService();
     verifyNoMoreInteractions(serviceTemplate);
