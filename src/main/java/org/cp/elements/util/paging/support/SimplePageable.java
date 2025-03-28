@@ -16,8 +16,6 @@
 package org.cp.elements.util.paging.support;
 
 import static org.cp.elements.lang.ElementsExceptionsFactory.newPageNotFoundException;
-import static org.cp.elements.util.ArrayUtils.nullSafeArray;
-import static org.cp.elements.util.CollectionUtils.nullSafeList;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -27,6 +25,8 @@ import java.util.List;
 import java.util.NoSuchElementException;
 
 import org.cp.elements.lang.Assert;
+import org.cp.elements.util.ArrayUtils;
+import org.cp.elements.util.CollectionUtils;
 import org.cp.elements.util.paging.Page;
 import org.cp.elements.util.paging.PageNotFoundException;
 import org.cp.elements.util.paging.Pageable;
@@ -72,7 +72,7 @@ public class SimplePageable<T> implements Pageable<T> {
    */
   @SafeVarargs
   public static <T> SimplePageable<T> of(T... array) {
-    return new SimplePageable<>(Arrays.asList(nullSafeArray(array)));
+    return new SimplePageable<>(Arrays.asList(ArrayUtils.nullSafeArray(array)));
   }
 
   /**
@@ -88,7 +88,7 @@ public class SimplePageable<T> implements Pageable<T> {
    * @see java.util.List
    */
   public static <T> SimplePageable<T> of(List<T> list) {
-    return new SimplePageable<>(nullSafeList(list));
+    return new SimplePageable<>(CollectionUtils.nullSafeList(list));
   }
 
   private int pageSize;
@@ -120,7 +120,7 @@ public class SimplePageable<T> implements Pageable<T> {
     Assert.notNull(list, "List is required");
     Assert.isTrue(pageSize > 0, "Page size [%d] must be greater than 0", pageSize);
 
-    this.list = list;
+    this.list = List.copyOf(list);
     this.pageSize = pageSize;
   }
 
@@ -131,7 +131,7 @@ public class SimplePageable<T> implements Pageable<T> {
    * @see java.util.List
    */
   protected List<T> getList() {
-    return this.list;
+    return List.copyOf(this.list);
   }
 
   /**
@@ -179,6 +179,7 @@ public class SimplePageable<T> implements Pageable<T> {
    * @see java.util.Iterator
    */
   @Override
+  @SuppressWarnings("all")
   public Iterator<Page<T>> iterator() {
 
     return new Iterator<>() {
@@ -387,6 +388,7 @@ public class SimplePageable<T> implements Pageable<T> {
      * @see java.util.Iterator
      */
     @Override
+    @SuppressWarnings("all")
     public Iterator<T> iterator() {
       return getElements().iterator();
     }
