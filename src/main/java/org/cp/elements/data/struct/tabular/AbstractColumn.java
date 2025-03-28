@@ -15,14 +15,12 @@
  */
 package org.cp.elements.data.struct.tabular;
 
-import java.util.Objects;
 import java.util.Optional;
 
 import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.ObjectUtils;
 import org.cp.elements.lang.StringUtils;
 import org.cp.elements.lang.annotation.NotNull;
-import org.cp.elements.lang.annotation.NullSafe;
 import org.cp.elements.lang.annotation.Nullable;
 
 /**
@@ -278,11 +276,10 @@ public abstract class AbstractColumn<T> implements Column<T>, Comparable<Column<
     return ObjectUtils.hashCodeOf(getName(), resolveView(this));
   }
 
-  @NullSafe
-  private @Nullable View resolveView(Column<?> column) {
+  View resolveView(Column<?> column) {
 
-    return column instanceof AbstractColumn ? ((AbstractColumn<?>) column).getResolvedView()
-      : Objects.nonNull(column) ? column.getView().orElse(null)
+    return column instanceof AbstractColumn<?> abstractColumn ? abstractColumn.getResolvedView()
+      : column != null ? column.getView().orElse(null)
       : null;
   }
 

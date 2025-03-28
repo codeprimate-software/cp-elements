@@ -17,9 +17,11 @@ package org.cp.elements.data.struct.tabular;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
@@ -43,7 +45,7 @@ import org.junit.jupiter.api.Test;
  * @see org.cp.elements.data.struct.tabular.AbstractColumn
  * @since 1.0.0
  */
-public class AbstractColumnUnitTests {
+class AbstractColumnUnitTests {
 
   private TestColumn<Object> newColumn(String name) {
     return new TestColumn<>(name, Object.class);
@@ -54,7 +56,7 @@ public class AbstractColumnUnitTests {
   }
 
   @Test
-  public void constructsNewColumnWithNameAndType() {
+  void constructsNewColumnWithNameAndType() {
 
     AbstractColumn<Object> column = new TestColumn<>("TestColumn", Object.class);
 
@@ -69,7 +71,7 @@ public class AbstractColumnUnitTests {
   }
 
   @Test
-  public void constructsNewColumnWithIllegalNameThrowsException() {
+  void constructsNewColumnWithIllegalNameThrowsException() {
 
     Arrays.asList("  ", "", null).forEach(invalidColumnName ->
       assertThatIllegalArgumentException()
@@ -79,7 +81,7 @@ public class AbstractColumnUnitTests {
   }
 
   @Test
-  public void constructsNewColumnWithIllegalTypeThrowsException() {
+  void constructsNewColumnWithIllegalTypeThrowsException() {
 
     assertThatIllegalArgumentException()
       .isThrownBy(() -> new TestColumn<>("TestColumn", null))
@@ -89,7 +91,7 @@ public class AbstractColumnUnitTests {
 
   @Test
   @SuppressWarnings("unchecked")
-  public void constructNewColumnCopiedFromExistingColumn() {
+  void constructNewColumnCopiedFromExistingColumn() {
 
     Column<Object> mockColumn = mock(Column.class);
 
@@ -119,7 +121,7 @@ public class AbstractColumnUnitTests {
 
   @Test
   @SuppressWarnings("unchecked")
-  public void constructNewColumnCopiedFromExistingFullyInitializedColumn() {
+  void constructNewColumnCopiedFromExistingFullyInitializedColumn() {
 
     ZonedDateTime dateTime = ZonedDateTime.of(2023, Month.MARCH.getValue(), 6,
       22, 40, 30, 0, ZoneOffset.systemDefault());
@@ -154,7 +156,7 @@ public class AbstractColumnUnitTests {
   }
 
   @Test
-  public void constructNewColumnFromNullColumnThrowsException() {
+  void constructNewColumnFromNullColumnThrowsException() {
 
     assertThatIllegalArgumentException()
       .isThrownBy(() -> new TestColumn<>((Column<?>) null))
@@ -163,7 +165,7 @@ public class AbstractColumnUnitTests {
   }
 
   @Test
-  public void constructAndBuildNewColumn() {
+  void constructAndBuildNewColumn() {
 
     Instant now = Instant.now();
 
@@ -185,7 +187,7 @@ public class AbstractColumnUnitTests {
   }
 
   @Test
-  public void setAndGetAlias() {
+  void setAndGetAlias() {
 
     AbstractColumn<Object> column = newColumn("TestColumn");
 
@@ -205,7 +207,7 @@ public class AbstractColumnUnitTests {
   }
 
   @Test
-  public void setAndGetDefaultValue() {
+  void setAndGetDefaultValue() {
 
     AbstractColumn<String> column = newColumn("TestColumn", String.class);
 
@@ -225,7 +227,7 @@ public class AbstractColumnUnitTests {
   }
 
   @Test
-  public void setAndGetDescription() {
+  void setAndGetDescription() {
 
     AbstractColumn<Object> column = newColumn("TestColumn");
 
@@ -245,7 +247,7 @@ public class AbstractColumnUnitTests {
   }
 
   @Test
-  public void setAndGetView() {
+  void setAndGetView() {
 
     View mockViewOne = mock(View.class);
     View mockViewTwo = mock(View.class);
@@ -272,7 +274,7 @@ public class AbstractColumnUnitTests {
   }
 
   @Test
-  public void aliasedWithIsCorrect() {
+  void aliasedWithIsCorrect() {
 
     AbstractColumn<String> column = newColumn("TestColumn", String.class);
 
@@ -286,7 +288,7 @@ public class AbstractColumnUnitTests {
   }
 
   @Test
-  public void describedAsIsCorrect() {
+  void describedAsIsCorrect() {
 
     AbstractColumn<String> column = newColumn("TestColumn", String.class);
 
@@ -300,7 +302,7 @@ public class AbstractColumnUnitTests {
   }
 
   @Test
-  public void inIsCorrect() {
+  void inIsCorrect() {
 
     View mockViewOne = mock(View.class);
     View mockViewTwo = mock(View.class);
@@ -317,7 +319,7 @@ public class AbstractColumnUnitTests {
   }
 
   @Test
-  public void valueDefaultingToIsCorrect() {
+  void valueDefaultingToIsCorrect() {
 
     AbstractColumn<String> column = newColumn("TestColumn", String.class);
 
@@ -331,7 +333,7 @@ public class AbstractColumnUnitTests {
   }
 
   @Test
-  public void compareToIsCorrect() {
+  void compareToIsCorrect() {
 
     AbstractColumn<Object> columnOne = newColumn("MockColumn");
     AbstractColumn<Object> columnTwo = newColumn("TestColumn");
@@ -344,7 +346,7 @@ public class AbstractColumnUnitTests {
   }
 
   @Test
-  public void equalsColumnWithSameNameInDifferentViewReturnsFalse() {
+  void equalsColumnWithSameNameInDifferentViewReturnsFalse() {
 
     View mockViewOne = mock(View.class);
     View mockViewTwo = mock(View.class);
@@ -361,7 +363,7 @@ public class AbstractColumnUnitTests {
   }
 
   @Test
-  public void equalsColumnWithDifferentNameInSameViewReturnsFalse() {
+  void equalsColumnWithDifferentNameInSameViewReturnsFalse() {
 
     View mockView = mock(View.class);
 
@@ -374,7 +376,7 @@ public class AbstractColumnUnitTests {
   }
 
   @Test
-  public void equalsEqualColumnReturnsTrue() {
+  void equalsEqualColumnReturnsTrue() {
 
     AbstractColumn<?> columnOne = newColumn("TestColumn", Integer.class);
     AbstractColumn<?> columnTwo = newColumn("TestColumn", String.class);
@@ -383,7 +385,7 @@ public class AbstractColumnUnitTests {
   }
 
   @Test
-  public void equalsSameColumnReturnsTrue() {
+  void equalsSameColumnReturnsTrue() {
 
     AbstractColumn<?> column = newColumn("TestColumn");
 
@@ -391,17 +393,17 @@ public class AbstractColumnUnitTests {
   }
 
   @Test
-  public void equalsNullIsNullSafeReturnsFalse() {
+  void equalsNullIsNullSafeReturnsFalse() {
     assertThat(newColumn("TestColumn")).isNotEqualTo(null);
   }
 
   @Test
-  public void equalsObjectReturnsFalse() {
+  void equalsObjectReturnsFalse() {
     assertThat(newColumn("TestColumn")).isNotEqualTo("TestColumn");
   }
 
   @Test
-  public void computesHashCodeCorrectly() {
+  void computesHashCodeCorrectly() {
 
     View mockView = mock(View.class);
 
@@ -417,7 +419,7 @@ public class AbstractColumnUnitTests {
   }
 
   @Test
-  public void toStringIsCorrect() {
+  void toStringIsCorrect() {
 
     View mockView = mock(View.class);
 
@@ -434,6 +436,60 @@ public class AbstractColumnUnitTests {
 
     verify(mockView, times(1)).getName();
     verifyNoMoreInteractions(mockView);
+  }
+
+  @Test
+  void resolveViewFromAbstractColumn() {
+
+    View mockView = mock(View.class);
+    TestColumn<Object> column = spy(new TestColumn<>("mock", Object.class));
+
+    doReturn(mockView).when(column).getResolvedView();
+
+    assertThat(column.resolveView(column)).isEqualTo(mockView);
+
+    verify(column, times(1)).resolveView(eq(column));
+    verify(column, times(1)).getResolvedView();
+    verifyNoMoreInteractions(column);
+    verifyNoInteractions(mockView);
+  }
+
+  @Test
+  @SuppressWarnings("unchecked")
+  void resolveViewFromColumn() {
+
+    AbstractColumn<?> column = new TestColumn<>("test", Object.class);
+    Column<Object> mockColumn = mock(Column.class);
+    View mockView = mock(View.class);
+
+    doReturn(Optional.of(mockView)).when(mockColumn).getView();
+
+    assertThat(column.resolveView(mockColumn)).isEqualTo(mockView);
+
+    verify(mockColumn, times(1)).getView();
+    verifyNoMoreInteractions(mockColumn);
+    verifyNoInteractions(mockView);
+  }
+
+  @Test
+  void resolveViewFromColumnWithNoView() {
+
+    AbstractColumn<?> column = new TestColumn<>("test", Object.class);
+    Column<Object> mockColumn = mock(Column.class);
+    View mockView = mock(View.class);
+
+    doReturn(Optional.empty()).when(mockColumn).getView();
+
+    assertThat(column.resolveView(mockColumn)).isNull();
+
+    verify(mockColumn, times(1)).getView();
+    verifyNoMoreInteractions(mockColumn);
+    verifyNoInteractions(mockView);
+  }
+
+  @Test
+  void resolveViewIsNullSafe() {
+    assertThat(new TestColumn<>("test", Object.class).resolveView(null)).isNull();
   }
 
   static class TestColumn<T> extends AbstractColumn<T> {
