@@ -74,8 +74,7 @@ public class DepthFirstIterator<T> implements Iterator<T> {
   public boolean hasNext() {
 
     while (!(this.iteratorList.isEmpty() || this.iteratorList.get(this.currentIteratorIndex).hasNext())) {
-      Assert.isFalse(this.iteratorList.remove(this.currentIteratorIndex).hasNext(),
-        "removing a non-empty Iterator");
+      Assert.isFalse(this.iteratorList.remove(this.currentIteratorIndex).hasNext(), "Removing a non-empty Iterator");
       this.currentIteratorIndex = this.iteratorList.isEmpty() ? 0
         : this.currentIteratorIndex % this.iteratorList.size();
     }
@@ -93,7 +92,7 @@ public class DepthFirstIterator<T> implements Iterator<T> {
    */
   @Override
   public T next() {
-    Assert.isTrue(hasNext(), new NoSuchElementException("The iteration has no more elements!"));
+    Assert.isTrue(hasNext(), new NoSuchElementException("The iteration has no more elements"));
     T nextValue = this.iteratorList.get(this.currentIteratorIndex).next();
     this.currentIteratorIndex = ++this.currentIteratorIndex % this.iteratorList.size();
     this.nextCalled.set(true);

@@ -193,7 +193,7 @@ public class DepthFirstIteratorTest {
 
     assertThatExceptionOfType(NoSuchElementException.class)
       .isThrownBy(() -> new DepthFirstIterator<>(Collections.emptyIterator()).next())
-      .withMessage("The iteration has no more elements!")
+      .withMessage("The iteration has no more elements")
       .withNoCause();
   }
 
