@@ -43,7 +43,6 @@ import java.util.function.Predicate;
 import org.junit.jupiter.api.Test;
 
 import org.cp.elements.lang.Integers;
-
 import org.mockito.ArgumentMatchers;
 import org.mockito.quality.Strictness;
 
@@ -56,7 +55,7 @@ import org.mockito.quality.Strictness;
  * @see org.cp.elements.data.struct.tabular.Table
  * @since 1.0.0
  */
-public class TableUnitTests {
+class TableUnitTests {
 
   @SuppressWarnings("unchecked")
   private static <T> List<T> listOf(T... elements) {
@@ -73,7 +72,7 @@ public class TableUnitTests {
   }
 
   @Test
-  public void removeColumnAtIndexReturnsTrue() {
+  void removeColumnAtIndexReturnsTrue() {
 
     Column<?> A = mockColumn("A");
     Column<?> B = mockColumn("B");
@@ -96,7 +95,7 @@ public class TableUnitTests {
   }
 
   @Test
-  public void removeColumnAtOverflowIndexReturnsFalse() {
+  void removeColumnAtOverflowIndexReturnsFalse() {
 
     Column<?> A = mockColumn("A");
     Column<?> B = mockColumn("B");
@@ -119,7 +118,7 @@ public class TableUnitTests {
   }
 
   @Test
-  public void removeColumnAtUnderflowIndexReturnsFalse() {
+  void removeColumnAtUnderflowIndexReturnsFalse() {
 
     Column<?> A = mockColumn("A");
     Column<?> B = mockColumn("B");
@@ -142,7 +141,7 @@ public class TableUnitTests {
   }
 
   @Test
-  public void removeColumnByNameRemovesColumnAtIndexReturnsTrue() {
+  void removeColumnByNameRemovesColumnAtIndexReturnsTrue() {
 
     Table mockTable = mock(Table.class);
 
@@ -159,7 +158,7 @@ public class TableUnitTests {
   }
 
   @Test
-  public void removeColumnByInvalidNameReturnsFalse() {
+  void removeColumnByInvalidNameReturnsFalse() {
 
     Table mockTable = mock(Table.class);
 
@@ -180,7 +179,7 @@ public class TableUnitTests {
   }
 
   @Test
-  public void removeColumnByNonExistingNameReturnsFalse() {
+  void removeColumnByNonExistingNameReturnsFalse() {
 
     Table mockTable = mock(Table.class);
 
@@ -196,7 +195,7 @@ public class TableUnitTests {
   }
 
   @Test
-  public void removeColumnRemovesColumnAtIndexReturnsTrue() {
+  void removeColumnRemovesColumnAtIndexReturnsTrue() {
 
     Column<?> mockColumn = mockColumn("MockColumn");
 
@@ -215,7 +214,7 @@ public class TableUnitTests {
   }
 
   @Test
-  public void removeNonExistingColumnReturnsFalse() {
+  void removeNonExistingColumnReturnsFalse() {
 
     Column<?> mockColumn = mockColumn("MockColumn");
 
@@ -233,7 +232,7 @@ public class TableUnitTests {
   }
 
   @Test
-  public void removeNullColumnIsNullSafeReturnsFalse() {
+  void removeNullColumnIsNullSafeReturnsFalse() {
 
     Table mockTable = mock(Table.class);
 
@@ -250,7 +249,7 @@ public class TableUnitTests {
 
   @Test
   @SuppressWarnings("unchecked")
-  public void removeAllRowsReturnsTrue() {
+  void removeAllRowsReturnsTrue() {
 
     Predicate<Row> mockPredicate = mock(Predicate.class);
 
@@ -282,7 +281,7 @@ public class TableUnitTests {
 
   @Test
   @SuppressWarnings("unchecked")
-  public void removeNoRowsReturnsFalse() {
+  void removeNoRowsReturnsFalse() {
 
     Predicate<Row> mockPredicate = mock(Predicate.class);
 
@@ -314,7 +313,7 @@ public class TableUnitTests {
 
   @Test
   @SuppressWarnings("unchecked")
-  public void removeSelectRowsReturnsTrue() {
+  void removeSelectRowsReturnsTrue() {
 
     Predicate<Row> mockPredicate = mock(Predicate.class);
 
@@ -346,7 +345,7 @@ public class TableUnitTests {
   }
 
   @Test
-  public void removeRowsWithNullPredicateThrowsIllegalArgumentException() {
+  void removeRowsWithNullPredicateThrowsIllegalArgumentException() {
 
     Table mockTable = mock(Table.class);
 
@@ -364,7 +363,7 @@ public class TableUnitTests {
   }
 
   @Test
-  public void removeRowRemovesRowAtIndexReturnsTrue() {
+  void removeRowRemovesRowAtIndexReturnsTrue() {
 
     Row mockRow = mock(Row.class);
 
@@ -384,7 +383,7 @@ public class TableUnitTests {
   }
 
   @Test
-  public void removeNonExistingRowReturnsFalse() {
+  void removeNonExistingRowReturnsFalse() {
 
     Row mockRow = mock(Row.class);
 
@@ -403,7 +402,7 @@ public class TableUnitTests {
   }
 
   @Test
-  public void removeNullRowIsNullSafeReturnsFalse() {
+  void removeNullRowIsNullSafeReturnsFalse() {
 
     Table mockTable = mock(Table.class);
 
@@ -419,7 +418,7 @@ public class TableUnitTests {
   }
 
   @Test
-  public void removeRowAtIndexReturnsTrue() {
+  void removeRowAtIndexReturnsTrue() {
 
     Row mockRowOne = mock(Row.class, "Mock Row One");
     Row mockRowTwo = mock(Row.class, "Mock Row Two");
@@ -444,7 +443,7 @@ public class TableUnitTests {
   }
 
   @Test
-  public void removeRowAtOverflowIndexReturnsFalse() {
+  void removeRowAtOverflowIndexReturnsFalse() {
 
     Row mockRowOne = mock(Row.class, "Mock Row One");
     Row mockRowTwo = mock(Row.class, "Mock Row Two");
@@ -469,7 +468,7 @@ public class TableUnitTests {
   }
 
   @Test
-  public void removeRowAtUnderflowIndexReturnsFalse() {
+  void removeRowAtUnderflowIndexReturnsFalse() {
 
     Row mockRowOne = mock(Row.class, "Mock Row One");
     Row mockRowTwo = mock(Row.class, "Mock Row Two");
@@ -494,7 +493,7 @@ public class TableUnitTests {
   }
 
   @Test
-  public void setValueWithRowIndexAndColumnIndexReturnsCurrentValue() {
+  void setValueWithRowIndexAndColumnIndexReturnsCurrentValue() {
 
     Row mockRow = mock(Row.class);
 
@@ -513,7 +512,7 @@ public class TableUnitTests {
   }
 
   @Test
-  public void setValueWithRowIndexAndColumnNameReturnsCurrentValue() {
+  void setValueWithRowIndexAndColumnNameReturnsCurrentValue() {
 
     Table mockTable = mock(Table.class);
 
@@ -530,7 +529,7 @@ public class TableUnitTests {
   }
 
   @Test
-  public void setValueWithRowIndexAndInvalidColumnNameThrowsIllegalArgumentException() {
+  void setValueWithRowIndexAndInvalidColumnNameThrowsIllegalArgumentException() {
 
     Table mockTable = mock(Table.class);
 
@@ -550,7 +549,7 @@ public class TableUnitTests {
   }
 
   @Test
-  public void setValueWithRowIndexAndNonExistingColumnNameThrowsIllegalArgumentException() {
+  void setValueWithRowIndexAndNonExistingColumnNameThrowsIllegalArgumentException() {
 
     Table mockTable = mock(Table.class);
 
@@ -568,7 +567,7 @@ public class TableUnitTests {
   }
 
   @Test
-  public void setValueWithRowIndexAndColumnReturnsCurrentValue() {
+  void setValueWithRowIndexAndColumnReturnsCurrentValue() {
 
     Column<?> mockColumn = mock(Column.class);
 
@@ -588,7 +587,7 @@ public class TableUnitTests {
   }
 
   @Test
-  public void setValueWithRowIndexAndNonExistingColumnThrowsIllegalArgumentException() {
+  void setValueWithRowIndexAndNonExistingColumnThrowsIllegalArgumentException() {
 
     Column<?> mockColumn = mock(Column.class);
 
@@ -610,7 +609,7 @@ public class TableUnitTests {
   }
 
   @Test
-  public void setValueWithRowIndexAndNullColumnThrowsIllegalArgumentException() {
+  void setValueWithRowIndexAndNullColumnThrowsIllegalArgumentException() {
 
     Table mockTable = mock(Table.class);
 
