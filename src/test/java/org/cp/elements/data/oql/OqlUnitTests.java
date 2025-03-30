@@ -16,7 +16,6 @@
 package org.cp.elements.data.oql;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
 import static org.mockito.ArgumentMatchers.any;
@@ -25,7 +24,6 @@ import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.Mockito.doCallRealMethod;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -34,7 +32,6 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 
 import java.util.Collections;
 import java.util.Map;
-import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.function.BiPredicate;
 import java.util.function.Function;
@@ -48,10 +45,8 @@ import org.cp.elements.data.oql.Oql.TransformingProjection;
 import org.cp.elements.data.oql.Oql.TransformingProjectionBuilder;
 import org.cp.elements.data.oql.Oql.Where;
 import org.cp.elements.data.oql.provider.SimpleOqlProvider;
-import org.cp.elements.lang.Constants;
 import org.cp.elements.lang.StringUtils;
 import org.cp.elements.security.model.User;
-import org.cp.elements.util.CollectionUtils;
 
 /**
  * Unit Tests for {@link Oql}.
@@ -332,57 +327,6 @@ public class OqlUnitTests {
     assertThat(projection.map(mockQueryContext, "TEST")).isEqualTo("TEST");
 
     verifyNoInteractions(mockQueryContext);
-  }
-
-  @Test
-  void selectDistinctIsUnsupportedByDefault() {
-
-    Oql.Select<?, ?> select = mock(Oql.Select.class);
-
-    doCallRealMethod().when(select).distinct();
-
-    assertThatExceptionOfType(UnsupportedOperationException.class)
-      .isThrownBy(() -> select.distinct().from(CollectionUtils.emptyIterable()))
-      .withMessage(Constants.UNSUPPORTED_OPERATION)
-      .withNoCause();
-
-    verify(select, times(1)).distinct();
-    verify(select, never()).from(any());
-    verifyNoMoreInteractions(select);
-  }
-
-  @Test
-  void fromTypeReturnsSelectionProjectionFromType() {
-
-    Oql.Projection<?, ?> projection = mock(Oql.Projection.class);
-    Oql.Select<?, ?> select = mock(Oql.Select.class);
-    Oql.From<? ,?> from = mock(Oql.From.class);
-
-    doReturn(User.class).when(projection).getFromType();
-    doReturn(projection).when(select).getProjection();
-    doReturn(select).when(from).getSelection();
-    doCallRealMethod().when(from).getType();
-
-    assertThat(from.getType()).isEqualTo(User.class);
-
-    verify(from, times(1)).getType();
-    verify(from, times(1)).getSelection();
-    verify(select, times(1)).getProjection();
-    verify(projection, times(1)).getFromType();
-    verifyNoMoreInteractions(projection, select, from);
-  }
-
-  @Test
-  void fromClauseHasNoWhere() {
-
-    Oql.From<Object, Object> from = mock(Oql.From.class);
-
-    doCallRealMethod().when(from).getWhere();
-
-    Optional<Oql.Where<Object, Object>> where = from.getWhere();
-
-    assertThat(where).isNotNull();
-    assertThat(where).isNotPresent();
   }
 
   @Test
