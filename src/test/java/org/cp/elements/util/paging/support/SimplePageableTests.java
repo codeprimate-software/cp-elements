@@ -25,14 +25,15 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.stream.IntStream;
 
 import org.junit.jupiter.api.Test;
 
@@ -49,10 +50,16 @@ import org.cp.elements.util.paging.PageNotFoundException;
  * @see org.cp.elements.util.paging.support.SimplePageable
  * @since 1.0.0
  */
-public class SimplePageableTests {
+class SimplePageableTests {
+
+  private List<Integer> newList(int size) {
+    List<Integer> list = new ArrayList<>(size);
+    IntStream.range(0, size).forEach(list::add);
+    return list;
+  }
 
   @Test
-  public void constructSimplePageableWithArrayAndDefaultPageSize() {
+  void constructSimplePageableWithArrayAndDefaultPageSize() {
 
     SimplePageable<Object> pageable = SimplePageable.of("test", "testing", "tested");
 
@@ -62,7 +69,7 @@ public class SimplePageableTests {
   }
 
   @Test
-  public void constructSimplePageableWithArrayAndPageSize() {
+  void constructSimplePageableWithArrayAndPageSize() {
 
     SimplePageable<Object> pageable = SimplePageable.<Object>of("test", "testing", "tested").with(1);
 
@@ -72,7 +79,7 @@ public class SimplePageableTests {
   }
 
   @Test
-  public void constructSimplePageableWithListAndDefaultPageSize() {
+  void constructSimplePageableWithListAndDefaultPageSize() {
 
     List<Object> list = Arrays.asList("test", "testing", "tested");
 
@@ -84,7 +91,7 @@ public class SimplePageableTests {
   }
 
   @Test
-  public void constructSimplePageableWithListAndPageSize() {
+  void constructSimplePageableWithListAndPageSize() {
 
     List<Object> list = Arrays.asList("test", "testing", "tested");
 
@@ -96,7 +103,7 @@ public class SimplePageableTests {
   }
 
   @Test
-  public void constructSimplePageableWithInvalidPageSize() {
+  void constructSimplePageableWithInvalidPageSize() {
 
     assertThatIllegalArgumentException()
       .isThrownBy(() -> new SimplePageable<>(Collections.emptyList(), -1))
@@ -105,7 +112,7 @@ public class SimplePageableTests {
   }
 
   @Test
-  public void constructSimplePageableWithNullList() {
+  void constructSimplePageableWithNullList() {
 
     assertThatIllegalArgumentException()
       .isThrownBy(() -> new SimplePageable<>(null))
@@ -114,7 +121,7 @@ public class SimplePageableTests {
   }
 
   @Test
-  public void emptySimplePageable() {
+  void emptySimplePageable() {
 
     SimplePageable<Object> pageable = SimplePageable.empty();
 
@@ -125,7 +132,7 @@ public class SimplePageableTests {
   }
 
   @Test
-  public void simplePageableOfNullArray() {
+  void simplePageableOfNullArray() {
 
     SimplePageable<Object> pageable = SimplePageable.of((Object[]) null);
 
@@ -136,7 +143,7 @@ public class SimplePageableTests {
   }
 
   @Test
-  public void simplePageableOfNullList() {
+  void simplePageableOfNullList() {
 
     SimplePageable<Object> pageable = SimplePageable.of((List<Object>) null).with(10);
 
@@ -147,76 +154,65 @@ public class SimplePageableTests {
   }
 
   @Test
-  @SuppressWarnings("unchecked")
-  public void pageCountForListSizeOfZeroIsZero() {
+  void pageCountForListSizeOfZeroIsZero() {
 
-    SimplePageable pageable = SimplePageable.empty();
+    SimplePageable<?> pageable = SimplePageable.empty();
 
     assertThat(pageable).isNotNull();
     assertThat(pageable.count()).isEqualTo(0);
   }
 
   @Test
-  @SuppressWarnings("unchecked")
-  public void pageCountForListSizeOfOneUsingDefaultPageSizeIsOne() {
+  void pageCountForListSizeOfOneUsingDefaultPageSizeIsOne() {
 
-    SimplePageable pageable = SimplePageable.of(Collections.singletonList("test"));
-
-    assertThat(pageable).isNotNull();
-    assertThat(pageable.count()).isEqualTo(1);
-  }
-
-  @Test
-  @SuppressWarnings("unchecked")
-  public void pageCountForListSizeOfTwoTimesDefaultPageSizeUsingDefaultPageSizeIsTwo() {
-
-    List<Object> mockList = mock(List.class);
-
-    when(mockList.size()).thenReturn(SimplePageable.DEFAULT_PAGE_SIZE * 2);
-
-    SimplePageable pageable = SimplePageable.of(mockList);
-
-    assertThat(pageable).isNotNull();
-    assertThat(pageable.count()).isEqualTo(2);
-  }
-
-  @Test
-  @SuppressWarnings("unchecked")
-  public void pageCountForListSizeOfTwoUsingPageSizeOfOneIsTwo() {
-
-    SimplePageable pageable = SimplePageable.of(Arrays.asList("test", "testing")).with(1);
-
-    assertThat(pageable).isNotNull();
-    assertThat(pageable.count()).isEqualTo(2);
-  }
-
-  @Test
-  @SuppressWarnings("unchecked")
-  public void pageCountForListSizeOfTwoUsingPageSizeOfTwoIsOne() {
-
-    SimplePageable pageable = SimplePageable.of(Arrays.asList("test", "testing")).with(2);
+    SimplePageable<?> pageable = SimplePageable.of(Collections.singletonList("test"));
 
     assertThat(pageable).isNotNull();
     assertThat(pageable.count()).isEqualTo(1);
   }
 
   @Test
-  public void isEmptyOnSimplePageableCallsListIsEmpty() {
+  void pageCountForListSizeOfTwoTimesDefaultPageSizeUsingDefaultPageSizeIsTwo() {
 
-    List<?> mockList = mock(List.class);
-
-    when(mockList.isEmpty()).thenReturn(true);
+    List<?> mockList = newList(SimplePageable.DEFAULT_PAGE_SIZE * 2);
 
     SimplePageable<?> pageable = SimplePageable.of(mockList);
 
-    assertThat(pageable.isEmpty()).isTrue();
+    assertThat(pageable).isNotNull();
+    assertThat(pageable.count()).isEqualTo(2);
+  }
 
-    verify(mockList, times(1)).isEmpty();
+  @Test
+  void pageCountForListSizeOfTwoUsingPageSizeOfOneIsTwo() {
+
+    SimplePageable<?> pageable = SimplePageable.of(Arrays.asList("test", "testing")).with(1);
+
+    assertThat(pageable).isNotNull();
+    assertThat(pageable.count()).isEqualTo(2);
+  }
+
+  @Test
+  void pageCountForListSizeOfTwoUsingPageSizeOfTwoIsOne() {
+
+    SimplePageable<?> pageable = SimplePageable.of(Arrays.asList("test", "testing")).with(2);
+
+    assertThat(pageable).isNotNull();
+    assertThat(pageable.count()).isEqualTo(1);
+  }
+
+  @Test
+  void isEmptyOnSimplePageableCallsListIsEmpty() {
+
+    List<?> list = newList(0);
+
+    SimplePageable<?> pageable = SimplePageable.of(list);
+
+    assertThat(pageable.isEmpty()).isTrue();
   }
 
   @Test
   @SuppressWarnings("unchecked")
-  public void firstPageOfSinglePageSimplePageableReturnsFirstPage() {
+  void firstPageOfSinglePageSimplePageableReturnsFirstPage() {
 
     Page<Object> mockPage = mock(Page.class);
 
@@ -234,7 +230,7 @@ public class SimplePageableTests {
 
   @Test
   @SuppressWarnings("unchecked")
-  public void firstPageOfMultiPageSimplePageableReturnsFirstPage() {
+  void firstPageOfMultiPageSimplePageableReturnsFirstPage() {
 
     Page<Object> mockPageOne = mock(Page.class);
     Page<Object> mockPageTwo = mock(Page.class);
@@ -252,7 +248,7 @@ public class SimplePageableTests {
   }
 
   @Test
-  public void firstPageOfEmptySimplePageableThrowsException() {
+  void firstPageOfEmptySimplePageableThrowsException() {
 
     ThrowableAssertions.assertThatThrowableOfType(PageNotFoundException.class)
       .isThrownBy(args -> SimplePageable.empty().firstPage())
@@ -263,7 +259,7 @@ public class SimplePageableTests {
   }
 
   @Test
-  public void iteratorNextOnSimplePageableWithNoPagesThrowsException() {
+  void iteratorNextOnSimplePageableWithNoPagesThrowsException() {
 
     assertThatExceptionOfType(NoSuchElementException.class)
       .isThrownBy(() -> {
@@ -286,7 +282,7 @@ public class SimplePageableTests {
 
   @Test
   @SuppressWarnings("unchecked")
-  public void lastPageWithSinglePageSimplePageableReturnsLastPage() {
+  void lastPageWithSinglePageSimplePageableReturnsLastPage() {
 
     Page<Object> mockPage = mock(Page.class);
 
@@ -307,7 +303,7 @@ public class SimplePageableTests {
 
   @Test
   @SuppressWarnings("unchecked")
-  public void lastPageWithMultiPageSimplePageableReturnsLastPage() {
+  void lastPageWithMultiPageSimplePageableReturnsLastPage() {
 
     Page<Object> mockPageOne = mock(Page.class);
     Page<Object> mockPageTwo = mock(Page.class);
@@ -328,7 +324,7 @@ public class SimplePageableTests {
   }
 
   @Test
-  public void lastPageWithEmptySimplePageableReturnsLastPage() {
+  void lastPageWithEmptySimplePageableReturnsLastPage() {
 
     ThrowableAssertions.assertThatThrowableOfType(PageNotFoundException.class)
       .isThrownBy(args -> SimplePageable.empty().lastPage())
@@ -339,7 +335,7 @@ public class SimplePageableTests {
   }
 
   @Test
-  public void simplePageableWithNoPages() {
+  void simplePageableWithNoPages() {
 
     SimplePageable<Object> pageable = SimplePageable.of();
 
@@ -354,7 +350,7 @@ public class SimplePageableTests {
   }
 
   @Test
-  public void simplePageableWithSinglePage() {
+  void simplePageableWithSinglePage() {
 
     List<String> strings = Arrays.asList("test", "testing", "tested");
 
@@ -378,7 +374,7 @@ public class SimplePageableTests {
   }
 
   @Test
-  public void simplePageableWithThreeFullPages() {
+  void simplePageableWithThreeFullPages() {
 
     List<Integer> integers = Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9);
 
@@ -413,7 +409,7 @@ public class SimplePageableTests {
   }
 
   @Test
-  public void simplePageableWithTwoAndOneHalfPages() {
+  void simplePageableWithTwoAndOneHalfPages() {
 
     List<Integer> integers = Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9);
 
@@ -448,7 +444,7 @@ public class SimplePageableTests {
   }
 
   @Test
-  public void sortPageableIsCorrect() {
+  void sortPageableIsCorrect() {
 
     List<Integer> integers = Arrays.asList(4, 9, 6, 2, 8, 5, 1, 3, 7);
 
@@ -498,7 +494,7 @@ public class SimplePageableTests {
   }
 
   @Test
-  public void withCorrectPageSize() {
+  void withCorrectPageSize() {
 
     SimplePageable<?> pageable = SimplePageable.empty().with(10);
 
@@ -507,7 +503,7 @@ public class SimplePageableTests {
   }
 
   @Test
-  public void withInvalidPageSizeThrowsException() {
+  void withInvalidPageSizeThrowsException() {
 
     assertThatIllegalArgumentException()
       .isThrownBy(() -> SimplePageable.empty().with(-1))
@@ -516,7 +512,7 @@ public class SimplePageableTests {
   }
 
   @Test
-  public void withPageSizeZeroThrowsException() {
+  void withPageSizeZeroThrowsException() {
 
     assertThatIllegalArgumentException()
       .isThrownBy(() -> SimplePageable.empty().with(0))

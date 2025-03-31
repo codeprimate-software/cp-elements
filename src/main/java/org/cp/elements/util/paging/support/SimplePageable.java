@@ -17,6 +17,7 @@ package org.cp.elements.util.paging.support;
 
 import static org.cp.elements.lang.ElementsExceptionsFactory.newPageNotFoundException;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
@@ -120,8 +121,15 @@ public class SimplePageable<T> implements Pageable<T> {
     Assert.notNull(list, "List is required");
     Assert.isTrue(pageSize > 0, "Page size [%d] must be greater than 0", pageSize);
 
-    this.list = List.copyOf(list);
+    this.list = copy(list);
     this.pageSize = pageSize;
+  }
+
+  @SuppressWarnings("unchecked")
+  private List<T> copy(List<T> source) {
+    List<T> copy = new ArrayList<>(source.size());
+    Collections.addAll(copy, (T[]) source.toArray());
+    return copy;
   }
 
   /**
@@ -131,7 +139,7 @@ public class SimplePageable<T> implements Pageable<T> {
    * @see java.util.List
    */
   protected List<T> getList() {
-    return List.copyOf(this.list);
+    return copy(this.list);
   }
 
   /**
@@ -219,7 +227,7 @@ public class SimplePageable<T> implements Pageable<T> {
    */
   @Override
   public void sort(Comparator<T> orderBy) {
-    getList().sort(orderBy);
+    this.list.sort(orderBy);
   }
 
   /**
@@ -245,12 +253,6 @@ public class SimplePageable<T> implements Pageable<T> {
    * @see org.cp.elements.util.paging.Page
    */
   protected static class SimplePage<T> implements Page<T> {
-
-    private final int pageNumber;
-
-    private final List<T> elements;
-
-    private final SimplePageable<T> pageable;
 
     /**
      * Factory method used to construct a new {@link SimplePage} initialized with the source,
@@ -288,6 +290,12 @@ public class SimplePageable<T> implements Pageable<T> {
       return new SimplePage<>(pageable, pageNumber);
     }
 
+    private final int pageNumber;
+
+    private final List<T> elements;
+
+    private final SimplePageable<T> pageable;
+
     /**
      * Constructs a new {@link SimplePage} initialized with the source, underlying {@link SimplePageable}
      * object containing this {@link Page} and this {@link Page Page's} page number.
@@ -312,7 +320,7 @@ public class SimplePageable<T> implements Pageable<T> {
       Assert.isTrue(pageNumber <= pageCount,
         "Page number [%1$d] must be less than equal to the number of pages [%2$d]", pageNumber, pageCount);
 
-      List<T> list = pageable.getList();
+      List<T> list = pageable.list;
 
       int pageSize = pageable.getPageSize();
       int fromIndex = Math.max((pageNumber - 1) * pageSize, 0);

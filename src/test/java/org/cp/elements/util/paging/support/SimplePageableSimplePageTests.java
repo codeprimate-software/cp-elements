@@ -19,16 +19,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.cp.elements.util.paging.support.SimplePageable.SimplePage;
-import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.stream.IntStream;
 
 import org.junit.jupiter.api.Test;
 
@@ -39,74 +34,55 @@ import org.cp.elements.util.paging.PageNotFoundException;
  * Unit Tests for {@link SimplePageable.SimplePage}.
  *
  * @author John Blum
- * @see java.util.List
  * @see org.junit.jupiter.api.Test
  * @see org.mockito.Mockito
  * @see org.cp.elements.util.paging.Page
+ * @see org.cp.elements.util.paging.Pageable
  * @see org.cp.elements.util.paging.support.SimplePageable
  * @see org.cp.elements.util.paging.support.SimplePageable.SimplePage
  * @since 1.0.0
  */
-public class SimplePageableSimplePageTests {
+class SimplePageableSimplePageTests {
+
+  private List<Integer> newList(int size) {
+    List<Integer> list = new ArrayList<>(size);
+    IntStream.range(0, size).forEach(list::add);
+    return list;
+  }
 
   @Test
-  @SuppressWarnings({ "unchecked", "all" })
-  public void constructSimplePageForPageOneInPageable() {
+  void constructSimplePageForPageOneInPageable() {
 
-    List<Object> mockElements = mock(List.class);
-    List<Object> mockList = mock(List.class);
+    List<?> list = newList(SimplePageable.DEFAULT_PAGE_SIZE * 2);
 
-    when(mockList.isEmpty()).thenReturn(false);
-    when(mockList.size()).thenReturn(SimplePageable.DEFAULT_PAGE_SIZE * 2);
-    when(mockList.subList(anyInt(), anyInt())).thenReturn(mockElements);
+    SimplePageable<?> pageable = SimplePageable.of(list);
 
-    SimplePageable<Object> pageable = spy(SimplePageable.of(mockList));
-
-    SimplePage page = SimplePage.of(pageable);
+    SimplePage<?> page = SimplePage.of(pageable);
 
     assertThat(page).isNotNull();
-    assertThat(page.getElements()).isEqualTo(mockElements);
     assertThat(page.getNumber()).isEqualTo(1);
     assertThat(page.getPageable()).isSameAs(pageable);
-
-    verify(mockList, times(1)).isEmpty();
-    verify(mockList, times(2)).size();
-    verify(mockList, times(1)).subList(eq(0), eq(20));
-    verify(pageable, times(1)).isEmpty();
-    verify(pageable, times(1)).count();
-    verify(pageable, times(2)).getPageSize();
+    assertThat(page.getElements()).isEqualTo(list.subList(0, SimplePageable.DEFAULT_PAGE_SIZE));
   }
 
   @Test
   @SuppressWarnings({ "unchecked", "all" })
-  public void constructSimplePageForPageTwoInPageable() {
+  void constructSimplePageForPageTwoInPageable() {
 
-    List<Object> mockElements = mock(List.class);
-    List<Object> mockList = mock(List.class);
+    List<?> list = newList(SimplePageable.DEFAULT_PAGE_SIZE * 2);
 
-    when(mockList.isEmpty()).thenReturn(false);
-    when(mockList.size()).thenReturn(SimplePageable.DEFAULT_PAGE_SIZE * 2);
-    when(mockList.subList(anyInt(), anyInt())).thenReturn(mockElements);
-
-    SimplePageable<Object> pageable = spy(SimplePageable.of(mockList));
+    SimplePageable<?> pageable = SimplePageable.of(list);
 
     SimplePage page = SimplePage.of(pageable, 2);
 
     assertThat(page).isNotNull();
-    assertThat(page.getElements()).isEqualTo(mockElements);
     assertThat(page.getNumber()).isEqualTo(2);
     assertThat(page.getPageable()).isSameAs(pageable);
-
-    verify(mockList, times(1)).isEmpty();
-    verify(mockList, times(2)).size();
-    verify(mockList, times(1)).subList(eq(20), eq(40));
-    verify(pageable, times(1)).isEmpty();
-    verify(pageable, times(1)).count();
-    verify(pageable, times(2)).getPageSize();
+    assertThat(page.getElements()).isEqualTo(list.subList(SimplePageable.DEFAULT_PAGE_SIZE, list.size()));
   }
 
   @Test
-  public void constructSimplePageWithNullPageableThrowsException() {
+  void constructSimplePageWithNullPageableThrowsException() {
 
     assertThatIllegalArgumentException()
       .isThrownBy(() -> SimplePage.of(null))
@@ -115,7 +91,7 @@ public class SimplePageableSimplePageTests {
   }
 
   @Test
-  public void constructSimplePageWithEmptyPageableThrowsException() {
+  void constructSimplePageWithEmptyPageableThrowsException() {
 
     assertThatIllegalArgumentException()
       .isThrownBy(() -> SimplePage.of(SimplePageable.empty()))
@@ -124,7 +100,7 @@ public class SimplePageableSimplePageTests {
   }
 
   @Test
-  public void constructSimplePageWithNegativePageNumberThrowsException() {
+  void constructSimplePageWithNegativePageNumberThrowsException() {
 
     assertThatIllegalArgumentException()
       .isThrownBy(() -> SimplePage.of(SimplePageable.of("test"), -1))
@@ -133,7 +109,7 @@ public class SimplePageableSimplePageTests {
   }
 
   @Test
-  public void constructSimplePageWithPageNumberGreaterThanTheNumberOfPagesThrowsException() {
+  void constructSimplePageWithPageNumberGreaterThanTheNumberOfPagesThrowsException() {
 
     assertThatIllegalArgumentException()
       .isThrownBy(() -> SimplePage.of(SimplePageable.of("test"), 2))
@@ -142,15 +118,11 @@ public class SimplePageableSimplePageTests {
   }
 
   @Test
-  @SuppressWarnings("unchecked")
-  public void hasNextFromPageOneWithTwoPagesReturnsTrue() {
+  void hasNextFromPageOneWithTwoPagesReturnsTrue() {
 
-    List<Object> mockList = mock(List.class);
+    List<?> list = newList(SimplePageable.DEFAULT_PAGE_SIZE + 1);
 
-    when(mockList.isEmpty()).thenReturn(false);
-    when(mockList.size()).thenReturn(SimplePageable.DEFAULT_PAGE_SIZE + 1);
-
-    SimplePageable<?> pageable = SimplePageable.of(mockList);
+    SimplePageable<?> pageable = SimplePageable.of(list);
 
     assertThat(pageable).isNotNull();
     assertThat(pageable.count()).isEqualTo(2);
@@ -163,15 +135,11 @@ public class SimplePageableSimplePageTests {
   }
 
   @Test
-  @SuppressWarnings("unchecked")
-  public void hasNextFromPageTwoWithTwoPagesReturnsFalse() {
+  void hasNextFromPageTwoWithTwoPagesReturnsFalse() {
 
-    List<Object> mockList = mock(List.class);
+    List<?> list = newList(SimplePageable.DEFAULT_PAGE_SIZE * 2);
 
-    when(mockList.isEmpty()).thenReturn(false);
-    when(mockList.size()).thenReturn(SimplePageable.DEFAULT_PAGE_SIZE * 2);
-
-    SimplePageable<?> pageable = SimplePageable.of(mockList);
+    SimplePageable<?> pageable = SimplePageable.of(list);
 
     assertThat(pageable).isNotNull();
     assertThat(pageable.count()).isEqualTo(2);
@@ -184,7 +152,7 @@ public class SimplePageableSimplePageTests {
   }
 
   @Test
-  public void nextPageFromPageOneWithTwoPagesReturnsNextPage() {
+  void nextPageFromPageOneWithTwoPagesReturnsNextPage() {
 
     SimplePageable<Object> pageable = SimplePageable.<Object>of("test", "testing", "tested").with(2);
 
@@ -210,7 +178,7 @@ public class SimplePageableSimplePageTests {
   }
 
   @Test
-  public void nextPageFromPageOneWithOnePageThrowsException() {
+  void nextPageFromPageOneWithOnePageThrowsException() {
 
     SimplePageable<Object> pageable = SimplePageable.of("test", "testing", "tested");
 
@@ -233,15 +201,11 @@ public class SimplePageableSimplePageTests {
   }
 
   @Test
-  @SuppressWarnings("unchecked")
-  public void hasPreviousFromPageTwoReturnsTrue() {
+  void hasPreviousFromPageTwoReturnsTrue() {
 
-    List<Object> mockList = mock(List.class);
+    List<?> list = newList(SimplePageable.DEFAULT_PAGE_SIZE * 2);
 
-    when(mockList.isEmpty()).thenReturn(false);
-    when(mockList.size()).thenReturn(SimplePageable.DEFAULT_PAGE_SIZE * 2);
-
-    SimplePageable<?> pageable = SimplePageable.of(mockList);
+    SimplePageable<?> pageable = SimplePageable.of(list);
 
     assertThat(pageable).isNotNull();
     assertThat(pageable.count()).isEqualTo(2);
@@ -254,15 +218,11 @@ public class SimplePageableSimplePageTests {
   }
 
   @Test
-  @SuppressWarnings("unchecked")
-  public void hasPreviousFromPageOneReturnsFalse() {
+  void hasPreviousFromPageOneReturnsFalse() {
 
-    List<Object> mockList = mock(List.class);
+    List<?> list = newList(SimplePageable.DEFAULT_PAGE_SIZE * 2);
 
-    when(mockList.isEmpty()).thenReturn(false);
-    when(mockList.size()).thenReturn(SimplePageable.DEFAULT_PAGE_SIZE * 2);
-
-    SimplePageable<?> pageable = SimplePageable.of(mockList);
+    SimplePageable<?> pageable = SimplePageable.of(list);
 
     assertThat(pageable).isNotNull();
     assertThat(pageable.count()).isEqualTo(2);
@@ -275,7 +235,7 @@ public class SimplePageableSimplePageTests {
   }
 
   @Test
-  public void previousPageFromPageTwoReturnsPageOne() {
+  void previousPageFromPageTwoReturnsPageOne() {
 
     SimplePageable<Object> pageable = SimplePageable.<Object>of("test", "testing", "tested").with(2);
 
@@ -301,7 +261,7 @@ public class SimplePageableSimplePageTests {
   }
 
   @Test
-  public void previousPageFromPageOneThrowsException() {
+  void previousPageFromPageOneThrowsException() {
 
     SimplePageable<Object> pageable = SimplePageable.of("test", "testing", "tested");
 
@@ -324,7 +284,7 @@ public class SimplePageableSimplePageTests {
   }
 
   @Test
-  public void sortPageIsCorrect() {
+  void sortPageIsCorrect() {
 
     SimplePageable<Integer> pageable = SimplePageable.of(5, 8, 2, 9, 1, 4, 6, 7, 3).with(3);
 
