@@ -385,6 +385,7 @@ class AbstractColumnUnitTests {
   }
 
   @Test
+  @SuppressWarnings("all")
   void equalsSameColumnReturnsTrue() {
 
     AbstractColumn<?> column = newColumn("TestColumn");
@@ -472,6 +473,7 @@ class AbstractColumnUnitTests {
   }
 
   @Test
+  @SuppressWarnings("unchecked")
   void resolveViewFromColumnWithNoView() {
 
     AbstractColumn<?> column = new TestColumn<>("test", Object.class);
