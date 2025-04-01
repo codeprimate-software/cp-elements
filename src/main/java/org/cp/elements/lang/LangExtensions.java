@@ -37,14 +37,13 @@ import org.cp.elements.lang.reflect.ProxyFactory;
 import org.cp.elements.text.FormatUtils;
 
 /**
- * The {@link LangExtensions} class provides methods modeling {@literal operators} used to write natural language
+ * Extensions to the Java language with methods modeling {@literal operators} used to write natural language
  * expressions for various conditions, such as equality comparisons, identity checks, null checks, negation
  * along with operations such as conversion, and so on.
  *
  * @author John J. Blum
  * @see java.lang.reflect.InvocationHandler
  * @see java.lang.reflect.Method
- * @see java.util.Optional
  * @see org.cp.elements.lang.Assert
  * @see org.cp.elements.lang.DslExtension
  * @see org.cp.elements.lang.FluentApiExtension
@@ -57,7 +56,7 @@ import org.cp.elements.text.FormatUtils;
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
-public abstract class LangExtensions {
+public abstract class LangExtensions implements DslExtension, FluentApiExtension {
 
   /**
    * Safe-navigation operator used to safely navigate a sequence of {@link Object} {@link Method} invocations
@@ -69,16 +68,16 @@ public abstract class LangExtensions {
    * obj.getX().getY().getZ()...
    * </code>
    *
-   * @param <T> {@link Class type} of {@link Object} to Proxy.
-   * @param obj {@link Object} to Proxy and on which the {@link Method} invocation, call chain begins.
-   * @param interfaces array of {@link Class interfaces} to be implemented by the Proxy {@link Class type}.
-   * @return a Proxy for the given {@link Object} implementing the provided {@link Class interfaces}.
-   * @see org.cp.elements.lang.reflect.ProxyFactory#newProxyFactory(Object, Class[])
-   * @see org.cp.elements.lang.reflect.ProxyFactory#adviseWith(MethodInterceptor[])
+   * @param <T> {@link Class type} of {@link Object} to {@literal Proxy}.
+   * @param obj {@link Object} to {@literal Proxy} and on which the {@link Method} invocation begins.
+   * @param interfaces array of {@link Class interfaces} to be implemented by the {@literal Proxy} {@link Class type}.
+   * @return a {@literal Proxy} for the given {@link Object} implementing the provided {@link Class interfaces}.
    * @see SafeNavigationHandler#newSafeNavigationHandler(ProxyFactory)
-   * @see org.cp.elements.lang.reflect.ProxyFactory#newProxy()
-   * @see org.cp.elements.lang.annotation.ExperimentalApi
-   * @see org.cp.elements.lang.annotation.Dsl
+   * @see ProxyFactory#newProxyFactory(Object, Class[])
+   * @see ProxyFactory#adviseWith(MethodInterceptor[])
+   * @see ProxyFactory#newProxy()
+   * @see ExperimentalApi
+   * @see Dsl
    */
   @Dsl
   @ExperimentalApi
@@ -110,7 +109,7 @@ public abstract class LangExtensions {
 
     /**
      * Factory method used to construct a new {@link SafeNavigationHandler} initialized with the given,
-     * required {@link ProxyFactory} used to evaluate the next {@link Object} in the {@link Method}
+     * required {@link ProxyFactory}, which is used to evaluate the next {@link Object} in the {@link Method}
      * invocation call chain.
      *
      * @param <T> {@link Class type} of {@link Object} to proxy.
@@ -118,8 +117,8 @@ public abstract class LangExtensions {
      * in the {@link Method} invocation call chain; must not be {@literal null}.
      * @return a new {@link SafeNavigationHandler}.
      * @throws IllegalArgumentException if {@link ProxyFactory} is {@literal null}.
-     * @see org.cp.elements.lang.reflect.ProxyFactory
      * @see #SafeNavigationHandler(ProxyFactory)
+     * @see ProxyFactory
      */
     protected static @NotNull <T> SafeNavigationHandler<T> newSafeNavigationHandler(
         @NotNull ProxyFactory<T> proxyFactory) {
@@ -136,7 +135,7 @@ public abstract class LangExtensions {
      * @param proxyFactory {@link ProxyFactory} used to evaluate the next {@link Object}
      * in the {@link Method} invocation call chain; must not be {@literal null}.
      * @throws IllegalArgumentException if {@link ProxyFactory} is {@literal null}.
-     * @see org.cp.elements.lang.reflect.ProxyFactory
+     * @see ProxyFactory
      */
     protected SafeNavigationHandler(@NotNull ProxyFactory<T> proxyFactory) {
       this.proxyFactory = ObjectUtils.requireObject(proxyFactory, "ProxyFactory is required");
@@ -148,7 +147,7 @@ public abstract class LangExtensions {
      *
      * @return a reference to the configured {@link ProxyFactory} used to evaluate the next {@link Object}
      * in the {@link Method} invocation call chain.
-     * @see org.cp.elements.lang.reflect.ProxyFactory
+     * @see ProxyFactory
      */
     private @NotNull ProxyFactory<T> getProxyFactory() {
       return this.proxyFactory;
@@ -1532,8 +1531,8 @@ public abstract class LangExtensions {
    *
    * @param target {@link Object} to adapt or transform.
    * @return a new instance of {@link From} operator.
-   * @see org.cp.elements.lang.LangExtensions.From
-   * @see org.cp.elements.lang.annotation.Dsl
+   * @see From
+   * @see Dsl
    */
   @Dsl
   public static @NotNull From from(@Nullable Object target) {
@@ -1544,10 +1543,10 @@ public abstract class LangExtensions {
    * The {@link From} interface defines operations to {@literal cast} or {@literal convert} an {@link Object target}
    * from its {@link Class base type} to a {@link Class requested type}.
    *
-   * @see org.cp.elements.lang.LangExtensions.FromExpression
-   * @see org.cp.elements.lang.annotation.FluentApi
-   * @see org.cp.elements.lang.FluentApiExtension
-   * @see org.cp.elements.lang.DslExtension
+   * @see FromExpression
+   * @see FluentApiExtension
+   * @see DslExtension
+   * @see FluentApi
    * @see #from(Object)
    */
   @FluentApi
@@ -1600,38 +1599,26 @@ public abstract class LangExtensions {
   /**
    * Implementation of the {@link From} interface.
    *
-   * @see org.cp.elements.lang.LangExtensions.From
    * @see #from(Object)
+   * @see From
    */
-  private static final class FromExpression implements From {
-
-    private final Object target;
-
-    private FromExpression(@Nullable Object target) {
-      this.target = target;
-    }
-
-    private @Nullable Object getTarget() {
-      return this.target;
-    }
+  private record FromExpression(Object target) implements From {
 
     @Override
     public <T> T castTo(@NotNull Class<T> type) {
-      return ObjectUtils.castTo(getTarget(), type);
+      return ObjectUtils.castTo(target(), type);
     }
 
     @Override
     public <T> T convertTo(@NotNull Class<T> type) {
-      return SimpleTypeConversions.findBy(type).convert(getTarget());
+      return SimpleTypeConversions.findBy(type).convert(target());
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public <S, T> T mapTo(@NotNull Function<S, T> mappingFunction) {
-
       Assert.notNull(mappingFunction, "Function used to perform the mapping is required");
-
-      return mappingFunction.apply((S) getTarget());
+      return mappingFunction.apply((S) target());
     }
   }
 
@@ -1642,8 +1629,8 @@ public abstract class LangExtensions {
    * @param <T> {@link Class type} of {@link Object} to evaluate.
    * @param target {@link Object} to evaluate.
    * @return a new {@link Given} operator instance.
-   * @see org.cp.elements.lang.LangExtensions.Given
-   * @see org.cp.elements.lang.annotation.Dsl
+   * @see Given
+   * @see Dsl
    */
   @Dsl
   public static @NotNull <T> Given<T> given(@Nullable T target) {
@@ -1655,10 +1642,10 @@ public abstract class LangExtensions {
    * whether it satisfies certain pre-conditions.
    *
    * @param <T> {@link Class type} of {@link Object target} to evaluate.
-   * @see org.cp.elements.lang.LangExtensions.GivenExpression
-   * @see org.cp.elements.lang.annotation.FluentApi
-   * @see org.cp.elements.lang.FluentApiExtension
-   * @see org.cp.elements.lang.DslExtension
+   * @see GivenExpression
+   * @see FluentApiExtension
+   * @see DslExtension
+   * @see FluentApi
    * @see #given(Object)
    */
   @FluentApi
@@ -1737,8 +1724,8 @@ public abstract class LangExtensions {
    * Implementation of the {@link Given} interface.
    *
    * @param <T> {@link Class type} of {@link Object} to evaluate
-   * @see org.cp.elements.lang.LangExtensions.Given
    * @see #given(Object)
+   * @see Given
    */
   private static final class GivenExpression<T> implements Given<T> {
 
@@ -1764,7 +1751,7 @@ public abstract class LangExtensions {
     @SuppressWarnings("all")
     public @NotNull Given<T> expectThat(@Nullable Predicate<T> predicate) {
 
-      Assert.notNull(predicate, () -> String.format("Predicate used to test the target [%s] is required", getTarget()));
+      Assert.notNull(predicate, () -> "Predicate used to test the target [%s] is required".formatted(getTarget()));
 
       this.result = this.result && predicate.test(getTarget());
       //this.result &= predicate.test(getTarget()); // NPE (WTF JAVA)
@@ -1780,8 +1767,8 @@ public abstract class LangExtensions {
     @Override
     public @NotNull <R> Given<R> thenGiven(@NotNull Function<T, R> extractionFunction) {
 
-      Assert.notNull(extractionFunction,
-        () -> String.format("Function used to extract a collaborator from target [%s] is required", getTarget()));
+      Assert.notNull(extractionFunction, () ->
+        "Function used to extract a collaborator from target [%s] is required".formatted(getTarget()));
 
       T currentTarget = getTarget();
 
@@ -1800,8 +1787,8 @@ public abstract class LangExtensions {
    * @param <T> {@link Class type} of {@link Object} as the {@literal subject} of the {@literal is} operator.
    * @param obj {@link Object} that is the {@literal subject} of the operation.
    * @return a new instance of the {@literal is} operator.
-   * @see org.cp.elements.lang.LangExtensions.Is
-   * @see org.cp.elements.lang.annotation.Dsl
+   * @see Dsl
+   * @see Is
    */
   @Dsl
   public static <T> Is<T> is(T obj) {
@@ -1813,10 +1800,10 @@ public abstract class LangExtensions {
    * state, type or relationship to another {@link Object}.
    *
    * @param <T> {@link Class type} of {@link Object} as the {@literal subject} of the {@literal is} operator.
-   * @see org.cp.elements.lang.LangExtensions.IsExpression
-   * @see org.cp.elements.lang.annotation.FluentApi
-   * @see org.cp.elements.lang.FluentApiExtension
-   * @see org.cp.elements.lang.DslExtension
+   * @see FluentApiExtension
+   * @see DslExtension
+   * @see IsExpression
+   * @see FluentApi
    * @see #is(Object)
    */
   @FluentApi
@@ -2144,8 +2131,8 @@ public abstract class LangExtensions {
    * will return a new instance of this class, at least for the time being.
    *
    * @param <T> {@link Class type} of the {@link Object subject}.
-   * @see org.cp.elements.lang.LangExtensions.Is
    * @see #is(Object)
+   * @see Is
    */
   private static final class IsExpression<T> implements Is<T> {
 
