@@ -65,7 +65,7 @@ public class FromClause<S, T> implements Oql.From<S, T> {
 
   private volatile long limit = Oql.From.DEFAULT_LIMIT;
 
-  private final AtomicReference<Class<S>> elementType = new AtomicReference<>();
+  private final AtomicReference<Class<? extends S>> elementType = new AtomicReference<>();
 
   private final Iterable<S> collection;
 
@@ -97,7 +97,7 @@ public class FromClause<S, T> implements Oql.From<S, T> {
    * @throws IllegalArgumentException if {@link Iterable collection} is {@literal null}.
    * @see java.lang.Iterable
    */
-  protected FromClause(@NotNull Iterable<S> collection, Class<S> elementType) {
+  protected FromClause(@NotNull Iterable<S> collection, Class<? extends S> elementType) {
     this.collection = ObjectUtils.requireObject(collection, "Collection is required");
     this.elementType.set(elementType);
   }
@@ -137,8 +137,11 @@ public class FromClause<S, T> implements Oql.From<S, T> {
   @Override
   @SuppressWarnings("unchecked")
   public Class<S> getType() {
-    return this.elementType.updateAndGet(type -> type != null ? type
+
+    Class<?> resolvedType = this.elementType.updateAndGet(type -> type != null ? type
       : (Class<S>) TypeResolver.getInstance().resolveType(getCollection()));
+
+    return (Class<S>) resolvedType;
   }
 
   /**
@@ -207,7 +210,7 @@ public class FromClause<S, T> implements Oql.From<S, T> {
 
   @Override
   public ExecutableQuery<S, T> limit(long limit) {
-    Assert.isTrue(limit > 0, "Limit [%d] must be greater than 0");
+    Assert.isTrue(limit > 0, "Limit [%d] must be greater than 0", limit);
     this.limit = limit;
     return this;
   }
@@ -292,6 +295,7 @@ public class FromClause<S, T> implements Oql.From<S, T> {
    * @param collection {@link Iterable collection} to query; required.
    * @see java.lang.Iterable
    * @see FromClause
+   * @see Builder
    */
   public record Builder<S, T>(@NotNull Iterable<S> collection)
       implements org.cp.elements.lang.Builder<FromClause<S, T>> {
@@ -309,12 +313,14 @@ public class FromClause<S, T> implements Oql.From<S, T> {
     /**
      * Builder method used to configure the {@link Class type} of {@link S object} being queried.
      *
+     * @param <E> {@link Class subtype} of {@link Class elementType}.
      * @param elementType {@link Class type} of the {@link T object} being queried.
      * @return a new {@link FromClause}.
      * @see #collection()
      */
-    public FromClause<S, T> of(Class<S> elementType) {
-      return new FromClause<>(collection(), elementType);
+    @SuppressWarnings("unchecked")
+    public <E extends S> FromClause<E, T> of(Class<E> elementType) {
+      return (FromClause<E, T>) new FromClause<>(collection(), elementType);
     }
 
     /**
