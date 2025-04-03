@@ -276,6 +276,15 @@ public abstract class AbstractColumn<T> implements Column<T>, Comparable<Column<
     return ObjectUtils.hashCodeOf(getName(), resolveView(this));
   }
 
+  /**
+   * Resolves the {@link View} from which the given {@link Column} was derived.
+   *
+   * @param column {@link Column} to evaluate.
+   * @return {@link View} from which the given {@link Column} was derived
+   * or {@literal null} if a {@link View} cannot be resolved.
+   * @see Column
+   * @see View
+   */
   View resolveView(Column<?> column) {
 
     return column instanceof AbstractColumn<?> abstractColumn ? abstractColumn.getResolvedView()
