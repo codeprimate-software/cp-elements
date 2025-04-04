@@ -13,12 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.process;
 
 /**
- * The {@link ProcessException} class is a general {@link RuntimeException} to indicate any problem
- * throughout the lifecycle of an executing program.
+ * Java {@link RuntimeException} thrown when a runtime error occurs during the lifecycle of an executing program.
  *
  * @author John J. Blum
  * @see java.lang.RuntimeException
@@ -28,10 +26,9 @@ package org.cp.elements.process;
 public class ProcessException extends RuntimeException {
 
   /**
-   * Constructs an uninitialized instance of {@link ProcessException} with no message or cause.
+   * Constructs a new {@link ProcessException} with no {@link String message} and no {@link Throwable cause}.
    */
-  public ProcessException() {
-  }
+  public ProcessException() { }
 
   /**
    * Constructs an instance of {@link ProcessException} initialized with the given message

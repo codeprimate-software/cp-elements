@@ -13,12 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.process;
 
 /**
- * The {@link ProcessExecutionException} class is a {@link ProcessException} specifically indicating a problem
- * during the execution of a program, which may or may not have terminated the {@link Process}.
+ * {@link ProcessException} thrown when a runtime error occurs during the execution of a program,
+ * which may or may not have terminated the {@link Process}.
  *
  * @author John Blum
  * @see org.cp.elements.process.ProcessException
@@ -28,10 +27,9 @@ package org.cp.elements.process;
 public class ProcessExecutionException extends ProcessException {
 
   /**
-   * Constructs an uninitialized instance of {@link ProcessExecutionException} with no message or cause.
+   * Constructs a new {@link ProcessExecutionException} with no {@link String message} and no {@link Throwable cause}.
    */
-  public ProcessExecutionException() {
-  }
+  public ProcessExecutionException() { }
 
   /**
    * Constructs an instance of {@link ProcessExecutionException} initialized with the given message

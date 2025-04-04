@@ -27,7 +27,8 @@ package org.cp.elements.process;
 public class EmbeddedProcessExecutionException extends ProcessExecutionException {
 
   /**
-   * Constructs a new {@link EmbeddedProcessExecutionException} with no message and no cause.
+   * Constructs a new {@link EmbeddedProcessExecutionException} with no {@link String message}
+   * and no {@link Throwable cause}.
    */
   public EmbeddedProcessExecutionException() { }
 
