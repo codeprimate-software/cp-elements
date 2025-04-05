@@ -421,27 +421,6 @@ class ThreadUtilsUnitTests {
   }
 
   @Test
-  void getIdFromMockThread() {
-
-    doReturn(2L).when(this.mockThread).getId();
-
-    assertThat(ThreadUtils.getId(this.mockThread)).isEqualTo(2L);
-
-    verify(this.mockThread, times(1)).getId();
-    verifyNoMoreInteractions(this.mockThread);
-  }
-
-  @Test
-  void getIdFromNonNullThread() {
-    assertThat(ThreadUtils.getId(new Thread())).isNotZero();
-  }
-
-  @Test
-  void getIdFromNullThread() {
-    assertThat(ThreadUtils.getId(null)).isEqualTo(0L);
-  }
-
-  @Test
   void getNameFromNonNullThread() {
     assertThat(ThreadUtils.getName(new Thread("test"))).isEqualTo("test");
   }
@@ -549,8 +528,7 @@ class ThreadUtilsUnitTests {
 
       String stackTrace = new String(errorStreamBytes);
 
-      assertThat(stackTrace)
-        .contains(String.format("[TESTTAG] DumpStackTestThread Thread @ %d", currentThread.getId()));
+      assertThat(stackTrace).contains("[TESTTAG] DumpStackTestThread Thread".formatted(currentThread.getId()));
 
       assertThat(stackTrace).contains("java.lang.Exception: Stack trace");
       assertThat(stackTrace).containsPattern("at .*java.lang.Thread.dumpStack(.*)");

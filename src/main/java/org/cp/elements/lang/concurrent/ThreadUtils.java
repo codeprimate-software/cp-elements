@@ -228,19 +228,6 @@ public abstract class ThreadUtils {
   }
 
   /**
-   * Null-safe method used to get the {@link Thread Thread's} {@link Long ID}.
-   *
-   * @param thread {@link Thread} from which the {@link Long ID} is returned.
-   * @return the {@literal identifier} ({@link Long id}) of the given {@link Thread},
-   * or {@literal 0} if the given {@link Thread} is {@literal null}.
-   * @see java.lang.Thread#getId()
-   */
-  @NullSafe
-  public static long getId(@Nullable Thread thread) {
-    return thread != null ? thread.getId() : 0L;
-  }
-
-  /**
    * Null-safe method used to get the {@link Thread Thread's} {@link String name}.
    *
    * @param thread {@link Thread} from which the {@link String name} is returned.
@@ -324,8 +311,7 @@ public abstract class ThreadUtils {
 
     Thread currentThread = Thread.currentThread();
 
-    System.err.printf("[%1$s] %2$s Thread @ %3$d%n", String.valueOf(tag).toUpperCase(), currentThread.getName(),
-      currentThread.getId());
+    System.err.printf("[%1$s] %2$s Thread%n", String.valueOf(tag).toUpperCase(), currentThread.getName());
 
     Thread.dumpStack();
   }
