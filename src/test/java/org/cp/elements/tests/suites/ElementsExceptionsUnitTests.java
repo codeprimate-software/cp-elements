@@ -22,6 +22,7 @@ import java.io.FileFilter;
 import java.lang.reflect.Constructor;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.junit.jupiter.params.ParameterizedTest;
@@ -29,6 +30,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 import org.cp.elements.io.FileSystemUtils;
 import org.cp.elements.lang.ClassUtils;
+import org.cp.elements.lang.RunnableUtils;
 import org.cp.elements.lang.StringUtils;
 import org.cp.elements.lang.reflect.ModifierUtils;
 import org.cp.elements.test.AbstractTestSuite;
@@ -46,20 +48,28 @@ class ElementsExceptionsUnitTests extends AbstractTestSuite {
 
   static final Set<String> EXCEPTION_CLASS_NAME_EXCLUDES = Set.of("ChainedPropertyVetoException");
 
+  static final Set<Class<? extends Exception>> EXCEPTION_CLASS_INCLUDES =
+    Set.of(RunnableUtils.SleepDeprivedException.class);
+
   static final Exception CAUSE = new RuntimeException("CAUSE");
 
-  static Stream<Class<Exception>> elementsExceptions() {
+  static Stream<Class<? extends Exception>> elementsExceptions() {
 
     File sourceDirectory = new ElementsExceptionsUnitTests().getSourceDirectory();
     File mainJavaSourceDirectory = new File(sourceDirectory, String.join(File.separator, "main", "java"));
 
     Set<String> elementsExceptionClassNames = findExceptionClassNames(mainJavaSourceDirectory);
 
-    return elementsExceptionClassNames.stream()
+    Set<Class<? extends Exception>> exceptionClasses = elementsExceptionClassNames.stream()
       .map(ElementsExceptionsUnitTests::toClass)
       .filter(type -> !ModifierUtils.isAbstract(type))
       .filter(type -> EXCEPTION_CLASS_NAME_EXCLUDES.stream()
-        .noneMatch(typeName -> type.getName().contains(typeName)));
+        .noneMatch(typeName -> type.getName().contains(typeName)))
+      .collect(Collectors.toSet());
+
+    exceptionClasses.addAll(EXCEPTION_CLASS_INCLUDES);
+
+    return exceptionClasses.stream();
   }
 
   private static Set<String> findExceptionClassNames(File directory) {
