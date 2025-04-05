@@ -57,7 +57,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
  * @since 1.0.0
  */
 @ExtendWith(MockitoExtension.class)
-public class SimpleThreadFactoryUnitTests {
+class SimpleThreadFactoryUnitTests {
 
   protected static final int EXPECTED_COUNT = 10_000;
 
@@ -65,12 +65,12 @@ public class SimpleThreadFactoryUnitTests {
   private Runnable mockRunnable;
 
   @Test
-  public void constructNewThreadFactory() {
+  void constructNewThreadFactory() {
     assertThat(SimpleThreadFactory.newThreadFactory()).isInstanceOf(SimpleThreadFactory.class);
   }
 
   @Test
-  public void generatedThreadIdsAreUnique() {
+  void generatedThreadIdsAreUnique() {
 
     SimpleThreadFactory threadFactory = SimpleThreadFactory.newThreadFactory();
 
@@ -86,7 +86,7 @@ public class SimpleThreadFactoryUnitTests {
   }
 
   @Test
-  public void generatedThreadNamesAreUnique() {
+  void generatedThreadNamesAreUnique() {
 
     SimpleThreadFactory threadFactory = SimpleThreadFactory.newThreadFactory();
 
@@ -102,7 +102,7 @@ public class SimpleThreadFactoryUnitTests {
   }
 
   @Test
-  public void constructsNewThreadWithRunnableTask() {
+  void constructsNewThreadWithRunnableTask() {
 
     Thread thread = SimpleThreadFactory.newThreadFactory().newThread(this.mockRunnable);
 
@@ -117,7 +117,7 @@ public class SimpleThreadFactoryUnitTests {
   }
 
   @Test
-  public void constructsNewNamedThreadWithRunnableTaskInThreadGroup() {
+  void constructsNewNamedThreadWithRunnableTaskInThreadGroup() {
 
     ThreadGroup testThreadGroup = new ThreadGroup("TestThreadGroup");
 
@@ -136,7 +136,7 @@ public class SimpleThreadFactoryUnitTests {
   }
 
   @Test
-  public void constructsNewCustomThreadWithRunnableTaskInThreadGroup() {
+  void constructsNewCustomThreadWithRunnableTaskInThreadGroup() {
 
     ClassLoader mockClassLoader = mock(ClassLoader.class);
 
@@ -164,7 +164,7 @@ public class SimpleThreadFactoryUnitTests {
   }
 
   @Test
-  public void newThreadWithBlankName() {
+  void newThreadWithBlankName() {
 
     assertThatIllegalArgumentException()
       .isThrownBy(() -> SimpleThreadFactory.newThreadFactory().newThread("  ", this.mockRunnable))
@@ -173,7 +173,7 @@ public class SimpleThreadFactoryUnitTests {
   }
 
   @Test
-  public void newThreadWithEmptyName() {
+  void newThreadWithEmptyName() {
 
     assertThatIllegalArgumentException()
       .isThrownBy(() ->SimpleThreadFactory.newThreadFactory().newThread("", this.mockRunnable))
@@ -182,7 +182,7 @@ public class SimpleThreadFactoryUnitTests {
   }
 
   @Test
-  public void newThreadWithNullName() {
+  void newThreadWithNullName() {
 
     assertThatIllegalArgumentException()
       .isThrownBy(() ->SimpleThreadFactory.newThreadFactory().newThread(null, this.mockRunnable))
@@ -191,7 +191,7 @@ public class SimpleThreadFactoryUnitTests {
   }
 
   @Test
-  public void newThreadWithNullRunnable() {
+  void newThreadWithNullRunnable() {
 
     assertThatIllegalArgumentException()
       .isThrownBy(() ->SimpleThreadFactory.newThreadFactory().newThread(null))
@@ -200,7 +200,7 @@ public class SimpleThreadFactoryUnitTests {
   }
 
   @Test
-  public void newThreadRunsRunnableTask() {
+  void newThreadRunsRunnableTask() {
 
     AtomicBoolean ran = new AtomicBoolean(false);
 
@@ -222,7 +222,7 @@ public class SimpleThreadFactoryUnitTests {
   }
 
   @Test
-  public void newDaemonThreadIsDaemon() {
+  void newDaemonThreadIsDaemon() {
 
     assertThat(SimpleThreadFactory.newThreadFactory()
       .asDaemonThread()
@@ -231,7 +231,7 @@ public class SimpleThreadFactoryUnitTests {
   }
 
   @Test
-  public void newUserThreadIsNotDaemon() {
+  void newUserThreadIsNotDaemon() {
 
     assertThat(SimpleThreadFactory.newThreadFactory()
       .asUserThread()
@@ -240,7 +240,7 @@ public class SimpleThreadFactoryUnitTests {
   }
 
   @Test
-  public void newThreadHandlesUncaughtExceptionsWithMockUncaughtExceptionHandler() {
+  void newThreadHandlesUncaughtExceptionsWithMockUncaughtExceptionHandler() {
 
     Thread.UncaughtExceptionHandler mockUncaughtExceptionHandler = mock(Thread.UncaughtExceptionHandler.class);
 
@@ -253,7 +253,7 @@ public class SimpleThreadFactoryUnitTests {
   }
 
   @Test
-  public void newThreadHandlesUncaughtExceptionsWithSimpleUncaughtExceptionHandler() {
+  void newThreadHandlesUncaughtExceptionsWithSimpleUncaughtExceptionHandler() {
 
     assertThat(SimpleThreadFactory.newThreadFactory()
       .handleUncaughtExceptionsWith(SimpleThreadFactory.SimpleUncaughtExceptionHandler.INSTANCE)
@@ -262,7 +262,7 @@ public class SimpleThreadFactoryUnitTests {
   }
 
   @Test
-  public void newThreadSetToNullUncaughtExceptionHandler() {
+  void newThreadSetToNullUncaughtExceptionHandler() {
 
     Thread.UncaughtExceptionHandler uncaughtExceptionHandler = SimpleThreadFactory.newThreadFactory()
       .handleUncaughtExceptionsWith(null)
@@ -274,14 +274,14 @@ public class SimpleThreadFactoryUnitTests {
   }
 
   @Test
-  public void newThreadResolvingTypesWithCurrentThreadContextClassLoader() {
+  void newThreadResolvingTypesWithCurrentThreadContextClassLoader() {
 
     assertThat(SimpleThreadFactory.newThreadFactory().newThread(this.mockRunnable)
       .getContextClassLoader()).isEqualTo(Thread.currentThread().getContextClassLoader());
   }
 
   @Test
-  public void newThreadResolvingTypesWithMockClassLoader() {
+  void newThreadResolvingTypesWithMockClassLoader() {
 
     ClassLoader mockClassLoader = mock(ClassLoader.class);
 
@@ -294,7 +294,7 @@ public class SimpleThreadFactoryUnitTests {
   }
 
   @Test
-  public void newThreadSetToNullContextClassLoader() {
+  void newThreadSetToNullContextClassLoader() {
 
     assertThat(SimpleThreadFactory.newThreadFactory()
       .resolveTypesWith(null)
@@ -303,7 +303,7 @@ public class SimpleThreadFactoryUnitTests {
   }
 
   @Test
-  public void newThreadWithCustomPriority() {
+  void newThreadWithCustomPriority() {
 
     assertThat(SimpleThreadFactory.newThreadFactory()
       .withPriority(4)
@@ -312,7 +312,7 @@ public class SimpleThreadFactoryUnitTests {
   }
 
   @Test
-  public void newThreadWithMaximumPriority() {
+  void newThreadWithMaximumPriority() {
 
     assertThat(SimpleThreadFactory.newThreadFactory()
       .withMaxPriority()
@@ -321,7 +321,7 @@ public class SimpleThreadFactoryUnitTests {
   }
 
   @Test
-  public void newThreadWithMinimumPriority() {
+  void newThreadWithMinimumPriority() {
 
     assertThat(SimpleThreadFactory.newThreadFactory()
       .withMinPriority()
@@ -330,7 +330,7 @@ public class SimpleThreadFactoryUnitTests {
   }
 
   @Test
-  public void newThreadWithNormalPriority() {
+  void newThreadWithNormalPriority() {
 
     assertThat(SimpleThreadFactory.newThreadFactory()
       .withNormalPriority()
@@ -339,7 +339,7 @@ public class SimpleThreadFactoryUnitTests {
   }
 
   @Test
-  public void simpleUncaughtExceptionHandlerHandlesUncaughtException() {
+  void simpleUncaughtExceptionHandlerHandlesUncaughtException() {
 
     SimpleUncaughtExceptionHandler uncaughtExceptionHandler = spy(SimpleUncaughtExceptionHandler.INSTANCE);
 
@@ -354,9 +354,8 @@ public class SimpleThreadFactoryUnitTests {
 
     uncaughtExceptionHandler.uncaughtException(Thread.currentThread(), exception);
 
-    String expectedLogMessage = String.format("An unhandled error [java.lang.RuntimeException] was thrown"
-        + " by Thread [simpleUncaughtExceptionHandlerHandlesUncaughtExceptionTest] with ID [%d]",
-      Thread.currentThread().getId());
+    String expectedLogMessage = "An unhandled error [java.lang.RuntimeException] was thrown"
+        + " by Thread [simpleUncaughtExceptionHandlerHandlesUncaughtExceptionTest]";
 
     verify(uncaughtExceptionHandler, times(1))
       .uncaughtException(eq(Thread.currentThread()), eq(exception));
@@ -369,7 +368,7 @@ public class SimpleThreadFactoryUnitTests {
   }
 
   @Test
-  public void simpleUncaughtExceptionHandlerOnlyLogsWarning() {
+  void simpleUncaughtExceptionHandlerOnlyLogsWarning() {
 
     SimpleUncaughtExceptionHandler uncaughtExceptionHandler = spy(SimpleUncaughtExceptionHandler.INSTANCE);
 
@@ -385,9 +384,8 @@ public class SimpleThreadFactoryUnitTests {
 
     uncaughtExceptionHandler.uncaughtException(Thread.currentThread(), error);
 
-    String expectedLogMessage = String.format("An unhandled error [java.lang.Error] was thrown"
-        + " by Thread [simpleUncaughtExceptionHandlerOnlyLogsWarningTest] with ID [%d]",
-      Thread.currentThread().getId());
+    String expectedLogMessage = "An unhandled error [java.lang.Error] was thrown"
+        + " by Thread [simpleUncaughtExceptionHandlerOnlyLogsWarningTest]";
 
     verify(uncaughtExceptionHandler, times(1))
       .uncaughtException(eq(Thread.currentThread()), eq(error));

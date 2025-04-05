@@ -79,7 +79,6 @@ public class SimpleThreadFactory implements ThreadFactory {
    *
    * @return a {@link String} containing a {@literal unique identifier} (ID) for the new {@link Thread}.
    * @see org.cp.elements.lang.IdentifierSequence
-   * @see java.lang.Thread#getId()
    * @see #generateThreadName()
    */
   protected @NotNull String generateThreadId() {
@@ -94,7 +93,7 @@ public class SimpleThreadFactory implements ThreadFactory {
    * @see #generateThreadId()
    */
   protected @NotNull String generateThreadName() {
-    return String.format(THREAD_NAME_FORMAT, SimpleThreadFactory.class.getName(), generateThreadId());
+    return THREAD_NAME_FORMAT.formatted(SimpleThreadFactory.class.getName(), generateThreadId());
   }
 
   /**
@@ -109,6 +108,7 @@ public class SimpleThreadFactory implements ThreadFactory {
    * @see java.lang.Thread
    */
   @Override
+  @SuppressWarnings("all")
   public @NotNull Thread newThread(@NotNull Runnable task) {
     return newThread(generateThreadName(), task);
   }
@@ -393,8 +393,9 @@ public class SimpleThreadFactory implements ThreadFactory {
       Logger logger = getLogger();
 
       if (logger.isLoggable(Level.WARNING)) {
-        logger.warning(String.format("An unhandled error [%1$s] was thrown by Thread [%2$s] with ID [%3$d]",
-          cause.getClass().getName(), thread.getName(), thread.getId()));
+        String message = "An unhandled error [%1$s] was thrown by Thread [%2$s]"
+          .formatted(cause.getClass().getName(), thread.getName());
+        logger.warning(message);
       }
 
       if (logger.isLoggable(Level.FINE)) {
