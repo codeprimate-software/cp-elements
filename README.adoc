@@ -86,9 +86,9 @@ Codeprimate Elements has comprehensive documentation:
 [[requirements]]
 == Requirements
 
-1. Baseline is Java SE (JDK/JRE) 17.
-2. Built with JDK 17.0.14 2025-01-21 LTS (build 17.0.14+8-LTS-191)
-3. Builds and supports Elements on Java 21 2025-01-21 LTS (build 21.0.6+8-LTS-188)
+1. Baseline is Java SE (JDK/JRE) 21.
+2. Built with Oracle JDK 21.0.6 2025-01-21 LTS (build 21.0.6+8-LTS-188)
+3. Builds and supports Elements up to Java 23 2025-01-21 LTS (build 23.0.2+7-58)
 
 [[support]]
 == Supports
