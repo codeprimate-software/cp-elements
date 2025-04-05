@@ -83,8 +83,8 @@
   <properties>
     <java-module-name>codeprimate.elements</java-module-name>
     <build-helper-maven-plugin.version>3.6.0</build-helper-maven-plugin.version>
-    <changelog-start-date>2025-03-15</changelog-start-date>
-    <changelog-end-date>2025-03-22</changelog-end-date>
+    <changelog-start-date>2025-03-22</changelog-start-date>
+    <changelog-end-date>2025-04-05</changelog-end-date>
     <datafaker.version>2.4.2</datafaker.version>
     <maven-changelog-plugin.version>2.3</maven-changelog-plugin.version>
   </properties>
