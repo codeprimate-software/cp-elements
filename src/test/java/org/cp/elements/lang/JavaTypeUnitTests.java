@@ -71,7 +71,7 @@ public class JavaTypeUnitTests {
   public void isJavaTypeWithJavaNetTypesIsTrue() throws Exception {
 
     assertThat(JavaType.isJavaType(java.net.URI.create("http://www.example.com"))).isTrue();
-    assertThat(JavaType.isJavaType(new java.net.URL("http://www.example.com"))).isTrue();
+    assertThat(JavaType.isJavaType(java.net.URI.create("http://www.example.com").toURL())).isTrue();
   }
 
   @Test
