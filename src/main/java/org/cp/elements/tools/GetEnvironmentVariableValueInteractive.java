@@ -20,6 +20,7 @@ import java.nio.charset.Charset;
 import java.util.Scanner;
 
 import org.cp.elements.ElementsVersion;
+import org.cp.elements.util.ArrayUtils;
 
 /**
  * Elements tool used to interactively query the values of {@link System#getenv(String) System environment variables}.
@@ -71,7 +72,7 @@ public class GetEnvironmentVariableValueInteractive implements Runnable {
   @Override
   public void run() {
 
-    Scanner userInputReader = new Scanner(System.in, Charset.defaultCharset().name());
+    Scanner userInputReader = new Scanner(System.in, Charset.defaultCharset());
 
     int userSelection;
 
@@ -96,8 +97,8 @@ public class GetEnvironmentVariableValueInteractive implements Runnable {
         String environmentVariableValue = userInputReader.next();
 
         try {
-          Runtime.getRuntime().exec(String.format("bash export %s=%s",
-            environmentVariableName, environmentVariableValue));
+          Runtime.getRuntime().exec(ArrayUtils.asArray("bash export %s=%s"
+            .formatted(environmentVariableName, environmentVariableValue)));
         }
         catch (IOException cause) {
           System.err.printf("Failed to set environment variable ['%s'] to value ['%s']; %s",
