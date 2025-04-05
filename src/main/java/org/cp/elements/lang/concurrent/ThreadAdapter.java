@@ -59,7 +59,7 @@ public class ThreadAdapter {
   }
 
   protected static final String THREAD_TO_STRING =
-    "{ @type = %1$s, id = %2$d, name = %3$s, daemon = %4$s, group = %5$s, priority = %6$s, state = %7$s }";
+    "{ @type = %1$s, name = %2$s, daemon = %3$s, group = %4$s, priority = %5$s, state = %6$s }";
 
   private final Thread delegate;
 
@@ -304,16 +304,6 @@ public class ThreadAdapter {
   }
 
   /**
-   * Gets the identifier uniquely identifying {@literal this} {@link Thread}.
-   *
-   * @return a {@link Long} value identifying {@literal this} {@link Thread}.
-   * @see java.lang.Thread#getId()
-   */
-  public long getId() {
-    return getDelegate().getId();
-  }
-
-  /**
    * Sets the {@link String name} of {@literal this} {@link Thread}.
    *
    * @param name {@link String} containing the {@literal name} for {@literal this} {@link Thread}.
@@ -526,7 +516,7 @@ public class ThreadAdapter {
   @Override
   public @NotNull String toString() {
 
-    return String.format(THREAD_TO_STRING, getClass().getName(), getId(), getName(), isDaemon(), getThreadGroup(),
-      getPriority(), getState());
+    return THREAD_TO_STRING
+      .formatted(getClass().getName(), getName(), isDaemon(), getThreadGroup(), getPriority(), getState());
   }
 }
