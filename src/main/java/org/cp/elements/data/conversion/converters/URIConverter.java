@@ -76,8 +76,8 @@ public class URIConverter extends AbstractConverter<Object, URI> {
       };
     }
     catch (Exception cause) {
-      if (cause instanceof ConversionException) {
-        throw (ConversionException) cause;
+      if (cause instanceof ConversionException conversionException) {
+        throw conversionException;
       }
 
       throw newConversionException(cause, "[%s] is not a valid URI", value);
