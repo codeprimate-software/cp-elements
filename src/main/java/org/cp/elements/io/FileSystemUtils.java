@@ -54,7 +54,7 @@ public abstract class FileSystemUtils extends FileUtils {
 
   public static final File[] NO_FILES = new File[0];
 
-  public static final String FILE_SEPARATOR = System.getProperty("file.separator");
+  public static final String FILE_SEPARATOR = File.separator;
   public static final String WINDOWS_FILE_SEPARATOR = "\\";
   public static final String WINDOWS_FILE_SEPARATOR_PATTERN = "\\+";
   public static final String UNIX_FILE_SEPARATOR = "/";
