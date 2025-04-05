@@ -166,16 +166,16 @@ public abstract class ProcessUtils {
    * @param processId ID of the process to kill.
    * @return a boolean value indicating whether the process identified by the process ID (ID)
    * was successfully terminated.
-   * @see Runtime#exec(String)
+   * @see Runtime#exec(String[])
    */
   public static boolean kill(int processId) {
 
     String operatingSystemKillCommand = SystemUtils.isWindows() ? WINDOWS_KILL_COMMAND : UNIX_KILL_COMMAND;
-    String killCommand = String.format("%s %d", operatingSystemKillCommand, processId);
+    String killCommand = "%s %d".formatted(operatingSystemKillCommand, processId);
 
     try {
 
-      Process killProcess = Runtime.getRuntime().exec(killCommand);
+      Process killProcess = Runtime.getRuntime().exec(ArrayUtils.asArray(killCommand));
 
       return killProcess.waitFor(KILL_WAIT_TIMEOUT, KILL_WAIT_TIME_UNIT);
     }
