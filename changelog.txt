@@ -3,6 +3,16 @@ Codeprimate Elements changelog.txt
 https://github.com/codeprimate-software/cp-elements/blob/master/changelog.txt
 
 
+2.0.0 - 2025-April-4
+--------------------
+Release Codeprimate Elements 2.0.0.
+
+* Built with Oracle Java (JDK) 17.0.14 2025-01-21 LTS (build 17.0.14+8-LTS-191).
+* Builds and supports Elements on Java 21.0.6 (JDK) 2025-01-21 LTS (build 21.0.6+8-LTS-188).
+* Builds and supports Elements up to Java 23.0.2 (JDK) 2025-01-21 LTS (build 23.0.2+7-58).
+* Fixes Checkstyle, PMD and SpotBugs problems.
+* Upgrades to Codeprimate Build 2.0.0.
+
 2.0.0-RC2 - 2025-March-21
 -------------------------
 Release Codeprimate Elements 2.0.0-RC2 with support for JDK 23 and new IO classes, NoOpWriter and LoggingWriter.
