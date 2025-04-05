@@ -17,8 +17,8 @@ package org.cp.elements.data.conversion.converters;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.net.MalformedURLException;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 
 import org.junit.jupiter.api.Test;
@@ -36,12 +36,12 @@ import org.cp.elements.lang.ThrowableAssertions;
  * @see org.cp.elements.data.conversion.converters.URLConverter
  * @since 1.0.0
  */
-public class URLConverterTests {
+class URLConverterUnitTests {
 
   private final URLConverter converter = new URLConverter();
 
   @Test
-  public void canConvertToUrlReturnsTrue() {
+  void canConvertToUrlReturnsTrue() {
 
     assertThat(this.converter.canConvert(URL.class, URL.class)).isTrue();
     assertThat(this.converter.canConvert(URI.class, URL.class)).isTrue();
@@ -49,17 +49,17 @@ public class URLConverterTests {
   }
 
   @Test
-  public void canConvertNullToUrlReturnFalse() {
+  void canConvertNullToUrlReturnFalse() {
     assertThat(this.converter.canConvert(null, URL.class)).isFalse();
   }
 
   @Test
-  public void cannotConvertUrlToNullReturnsFalse() {
+  void cannotConvertUrlToNullReturnsFalse() {
     assertThat(this.converter.canConvert(URL.class, null)).isFalse();
   }
 
   @Test
-  public void cannotConvertToUrlReturnFalse() {
+  void cannotConvertToUrlReturnFalse() {
 
     assertThat(this.converter.canConvert(URL.class, Object.class)).isFalse();
     assertThat(this.converter.canConvert(URL.class, String.class)).isFalse();
@@ -69,9 +69,14 @@ public class URLConverterTests {
     assertThat(this.converter.canConvert(Boolean.class, URI.class)).isFalse();
   }
 
+  @Test
+  void cannotConvertFromNullToNullIsNullSafe() {
+    assertThat(this.converter.canConvert(null, null)).isFalse();
+  }
+
 
   @Test
-  public void convertFtpUrlToUrl() {
+  void convertFtpUrlToUrl() {
 
     String ftpUrl = "ftp://ftp.codeprimate.org";
     URL url = this.converter.convert(ftpUrl);
@@ -80,7 +85,7 @@ public class URLConverterTests {
   }
 
   @Test
-  public void convertStringToUrl() {
+  void convertStringToUrl() {
 
     String urlValue = "http://spring.io";
     URL url = this.converter.convert(urlValue);
@@ -89,7 +94,7 @@ public class URLConverterTests {
   }
 
   @Test
-  public void convertUriToUrl() throws Exception {
+  void convertUriToUrl() throws Exception {
 
     URI uri = URI.create("http://github.com");
     URL url = this.converter.convert(uri);
@@ -98,26 +103,27 @@ public class URLConverterTests {
   }
 
   @Test
-  public void convertUrlToUrl() throws Exception {
+  void convertUrlToUrl() throws Exception {
 
-    URL expectedUrl = new URL("http://github.com");
+    URL expectedUrl = URI.create("http://github.com").toURL();
     URL actualUrl = this.converter.convert(expectedUrl);
 
     assertThat(actualUrl).isEqualTo(expectedUrl);
   }
 
   @Test
-  public void convertMalformedUrlThrowsException() {
+  void convertMalformedUrlThrowsException() {
 
     ThrowableAssertions.assertThatThrowableOfType(ConversionException.class)
       .isThrownBy(args -> this.converter.convert("$:/where/to\\boldly/\\go ?with=it"))
       .havingMessage("[$:/where/to\\boldly/\\go ?with=it] is not a valid URL")
-      .causedBy(MalformedURLException.class)
+      .causedBy(IllegalArgumentException.class)
+      .causedBy(URISyntaxException.class)
       .withNoCause();
   }
 
   @Test
-  public void convertNullThrowsException() {
+  void convertNullThrowsException() {
 
     ThrowableAssertions.assertThatThrowableOfType(ConversionException.class)
       .isThrownBy(args -> this.converter.convert(null))

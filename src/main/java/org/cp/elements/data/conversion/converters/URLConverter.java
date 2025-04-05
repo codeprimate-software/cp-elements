@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.data.conversion.converters;
 
 import static org.cp.elements.lang.ElementsExceptionsFactory.newConversionException;
@@ -24,6 +23,7 @@ import java.net.URL;
 import org.cp.elements.data.conversion.AbstractConverter;
 import org.cp.elements.data.conversion.ConversionException;
 import org.cp.elements.data.conversion.Converter;
+import org.cp.elements.lang.annotation.NullSafe;
 
 /**
  * {@link URLConverter} converts an {@link Object} to a {@link URL}.
@@ -48,6 +48,7 @@ public class URLConverter extends AbstractConverter<Object, URL> {
    * @see org.cp.elements.data.conversion.ConversionService#canConvert(Class, Class)
    * @see #canConvert(Object, Class)
    */
+  @NullSafe
   @Override
   public boolean canConvert(Class<?> fromType, Class<?> toType) {
     return fromType != null && isAssignableTo(fromType, URI.class, URL.class, String.class)
@@ -55,35 +56,29 @@ public class URLConverter extends AbstractConverter<Object, URL> {
   }
 
   /**
-   * Converts an {@link Object} of {@link Class type S} into an {@link Object} of {@link Class type T}.
+   * Converts an {@link Object} to {@link URL}.
    *
-   * @param value {@link Object} of {@link Class type S} to convert.
-   * @return the converted {@link Object} of {@link Class type T}.
+   * @param value {@link Object} to convert into a {@link URL}.
+   * @return the {@link Object} converted to a {@link URL}.
    * @throws ConversionException if the {@link Object} cannot be converted.
    * @see org.cp.elements.data.conversion.ConversionService#convert(Object, Class)
    * @see #convert(Object, Class)
+   * @see java.net.URL
    */
   @Override
   public URL convert(Object value) {
 
     try {
-      if (value instanceof URL) {
-        return (URL) value;
-      }
-      else if (value instanceof URI) {
-        return ((URI) value).toURL();
-      }
-      else if (value instanceof String) {
-        return new URL(value.toString().trim());
-      }
-      else {
-        throw newConversionException("[%s] is not a valid URL", value);
-      }
+      return switch (value) {
+        case URL url -> url;
+        case URI uri -> uri.toURL();
+        case String string -> URI.create(string).toURL();
+        case null, default -> throw newConversionException("[%s] is not a valid URL", value);
+      };
     }
     catch (Exception cause) {
-
-      if (cause instanceof ConversionException) {
-        throw (ConversionException) cause;
+      if (cause instanceof ConversionException conversionException) {
+        throw conversionException;
       }
 
       throw newConversionException(cause, "[%s] is not a valid URL", value);
