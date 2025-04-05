@@ -37,12 +37,12 @@ import org.cp.elements.lang.ThrowableAssertions;
  * @see org.cp.elements.data.conversion.converters.URIConverter
  * @since 1.0.0
  */
-public class URIConverterTests {
+class URIConverterUnitTests {
 
   private final URIConverter converter = new URIConverter();
 
   @Test
-  public void canConvertToUriReturnsTrue() {
+  void canConvertToUriReturnsTrue() {
 
     assertThat(this.converter.canConvert(URI.class, URI.class)).isTrue();
     assertThat(this.converter.canConvert(URL.class, URI.class)).isTrue();
@@ -50,17 +50,17 @@ public class URIConverterTests {
   }
 
   @Test
-  public void canConvertNullToUriReturnFalse() {
+  void canConvertNullToUriReturnFalse() {
     assertThat(this.converter.canConvert(null, URI.class)).isFalse();
   }
 
   @Test
-  public void cannotConvertUriToNullReturnsFalse() {
+  void cannotConvertUriToNullReturnsFalse() {
     assertThat(this.converter.canConvert(URI.class, null)).isFalse();
   }
 
   @Test
-  public void cannotConvertToUriReturnFalse() {
+  void cannotConvertToUriReturnFalse() {
 
     assertThat(this.converter.canConvert(URI.class, Object.class)).isFalse();
     assertThat(this.converter.canConvert(URI.class, String.class)).isFalse();
@@ -71,7 +71,12 @@ public class URIConverterTests {
   }
 
   @Test
-  public void convertSmtpUrlToUri() {
+  void cannotConverterFromNullToNullIsNullSafe() {
+    assertThat(this.converter.canConvert(null, null)).isFalse();
+  }
+
+  @Test
+  void convertSmtpUrlToUri() {
 
     String smtpUri = "smtp://mail.codeprimate.org";
     URI uri = this.converter.convert(smtpUri);
@@ -80,7 +85,7 @@ public class URIConverterTests {
   }
 
   @Test
-  public void convertStringToUri() {
+  void convertStringToUri() {
 
     String uriValue = "http://spring.io";
     URI uri = this.converter.convert(uriValue);
@@ -89,7 +94,8 @@ public class URIConverterTests {
   }
 
   @Test
-  public void convertUriToUri() {
+  @SuppressWarnings("all")
+  void convertUriToUri() {
 
     URI expectedUri = URI.create("http://github.com");
     URI actualUri = this.converter.convert(expectedUri);
@@ -98,16 +104,16 @@ public class URIConverterTests {
   }
 
   @Test
-  public void convertUrlToUri() throws Exception {
+  void convertUrlToUri() throws Exception {
 
-    URL url = new URL("https://github.com");
+    URL url = URI.create("https://github.com").toURL();
     URI uri = this.converter.convert(url);
 
     assertThat(uri.toURL()).isEqualTo(url);
   }
 
   @Test
-  public void convertMalformedUriThrowsException() {
+  void convertMalformedUriThrowsException() {
 
     ThrowableAssertions.assertThatThrowableOfType(ConversionException.class)
       .isThrownBy(args -> this.converter.convert("$:/where/to\\boldly/\\go ?with=it"))
@@ -118,7 +124,7 @@ public class URIConverterTests {
   }
 
   @Test
-  public void convertNullThrowsException() {
+  void convertNullThrowsException() {
 
     assertThatExceptionOfType(ConversionException.class)
       .isThrownBy(() -> this.converter.convert(null))

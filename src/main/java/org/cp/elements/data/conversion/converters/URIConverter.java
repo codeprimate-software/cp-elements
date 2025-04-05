@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.data.conversion.converters;
 
 import static org.cp.elements.lang.ElementsExceptionsFactory.newConversionException;
@@ -24,6 +23,7 @@ import java.net.URL;
 import org.cp.elements.data.conversion.AbstractConverter;
 import org.cp.elements.data.conversion.ConversionException;
 import org.cp.elements.data.conversion.Converter;
+import org.cp.elements.lang.annotation.NullSafe;
 
 /**
  * {@link URIConverter} converts an {@link Object} to a {@link URI}.
@@ -48,6 +48,7 @@ public class URIConverter extends AbstractConverter<Object, URI> {
    * @see org.cp.elements.data.conversion.ConversionService#canConvert(Class, Class)
    * @see #canConvert(Object, Class)
    */
+  @NullSafe
   @Override
   public boolean canConvert(Class<?> fromType, Class<?> toType) {
     return fromType != null && isAssignableTo(fromType, URI.class, URL.class, String.class)
@@ -67,21 +68,14 @@ public class URIConverter extends AbstractConverter<Object, URI> {
   public URI convert(Object value) {
 
     try {
-      if (value instanceof URI) {
-        return (URI) value;
-      }
-      else if (value instanceof URL) {
-        return ((URL) value).toURI();
-      }
-      else if (value instanceof String) {
-        return URI.create(value.toString().trim());
-      }
-      else {
-        throw newConversionException("[%s] is not a valid URI", value);
-      }
+      return switch (value) {
+        case URI uri -> uri;
+        case URL url -> url.toURI();
+        case String string -> URI.create(string.trim());
+        case null, default -> throw newConversionException("[%s] is not a valid URI", value);
+      };
     }
     catch (Exception cause) {
-
       if (cause instanceof ConversionException) {
         throw (ConversionException) cause;
       }
