@@ -2,7 +2,7 @@
 = Codeprimate Elements
 :version: 2.0.0
 
-_Java Simplified. Extensions and Useful Constructs for the Java Platform._
+_Java Simplified. Useful Constructs and Extensions for the Java Platform._
 
 *Codeprimate Elements* (or simply, *Elements*) is a Java library and micro-framework for simplifying the development
 of software applications written in **Java**.
