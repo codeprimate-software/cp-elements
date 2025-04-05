@@ -240,8 +240,8 @@ public abstract class ModifierUtils {
   @NullSafe
   static int getModifiers(@Nullable Object obj) {
 
-    return obj instanceof Class ? ((Class<?>) obj).getModifiers()
-      : obj instanceof Member ? ((Member) obj).getModifiers()
+    return obj instanceof Class<?> type ? type.getModifiers()
+      : obj instanceof Member member ? member.getModifiers()
       : obj != null ? obj.getClass().getModifiers()
       : 0;
   }
