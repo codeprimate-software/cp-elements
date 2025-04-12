@@ -454,6 +454,28 @@ class ThreadAdapterUnitTests {
   }
 
   @Test
+  void isVirtualForNonVirtualThread() {
+
+    Runnable mockRunnable = mockRunnable();
+    Thread thread = new Thread(mockRunnable, "TEST");
+
+    assertThat(new ThreadAdapter(thread).isVirtual()).isFalse();
+
+    verifyNoInteractions(mockRunnable);
+  }
+
+  @Test
+  void isVirtualForVirtualThread() {
+
+    Runnable mockRunnable = mockRunnable();
+    Thread thread = Thread.ofVirtual().name("TEST").unstarted(mockRunnable);
+
+    assertThat(new ThreadAdapter(thread).isVirtual()).isTrue();
+
+    verifyNoInteractions(mockRunnable);
+  }
+
+  @Test
   void isWaitingWithWaitingThread() {
 
     Thread mockThread = mockThread();

@@ -252,6 +252,17 @@ public class ThreadAdapter {
   }
 
   /**
+   * Determines whether this {@link Thread} is {@literal virtual}.
+   *
+   * @return a boolean value indicating whether this {@link Thread} is {@literal virtual}
+   * @see Thread#isVirtual()
+   * @see #getDelegate()
+   */
+  public boolean isVirtual() {
+    return getDelegate().isVirtual();
+  }
+
+  /**
    * Determines whether {@literal this} {@link Thread} is currently {@literal waiting}.
    *
    * @return a boolean value indicating whether {@literal this} {@link Thread} is currently {@literal waiting}.
