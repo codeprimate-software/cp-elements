@@ -51,7 +51,7 @@ public record OrderByClause<S, T>(@NotNull Oql.From<S, T> from, Comparator<T>...
    * or the array of {@link Comparator Comparators} are {@literal null} or {@literal empty}.
    */
   public OrderByClause {
-    Assert.notNull(from, "From is required");
+    Assert.notNull(from, "From clause is required");
     Assert.notEmpty(comparators, "Comparators used to sort are required");
   }
 
@@ -92,7 +92,7 @@ public record OrderByClause<S, T>(@NotNull Oql.From<S, T> from, Comparator<T>...
    */
   @SuppressWarnings("unchecked")
   public static <S, T> OrderByClause<S, T> noOrder(@NotNull Oql.From<S, T> from) {
-    return new OrderByClause<>(from);
+    return new OrderByClause<>(from, new NoOrder<>());
   }
 
   /**
