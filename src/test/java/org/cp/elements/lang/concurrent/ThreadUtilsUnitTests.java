@@ -21,6 +21,7 @@ import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 
 import java.io.ByteArrayOutputStream;
@@ -61,6 +62,9 @@ import edu.umd.cs.mtc.TestFramework;
 @SuppressWarnings("all")
 @ExtendWith(MockitoExtension.class)
 class ThreadUtilsUnitTests {
+
+  @Mock
+  private Runnable mockRunnable;
 
   @Mock
   private Thread mockThread;
@@ -357,6 +361,31 @@ class ThreadUtilsUnitTests {
   @Test
   void isTimedWaitingWithNullThread() {
     assertThat(ThreadUtils.isTimedWaiting(null)).isFalse();
+  }
+
+  @Test
+  void isVirtualWithNonVirtualThread() {
+
+    Thread thread = new Thread(this.mockRunnable, "TEST");
+
+    assertThat(ThreadUtils.isVirtual(thread)).isFalse();
+
+    verifyNoInteractions(this.mockRunnable);
+  }
+
+  @Test
+  void isVirtualWithNullThread() {
+    assertThat(ThreadUtils.isVirtual(null)).isFalse();
+  }
+
+  @Test
+  void isVirtualWithVirtualThread() {
+
+    Thread thread = Thread.ofVirtual().name("TEST").unstarted(this.mockRunnable);
+
+    assertThat(ThreadUtils.isVirtual(thread)).isTrue();
+
+    verifyNoInteractions(this.mockRunnable);
   }
 
   @Test

@@ -197,6 +197,18 @@ public abstract class ThreadUtils {
   }
 
   /**
+   * Determines whether the given {@link Thread} is {@literal virtual}.
+   *
+   * @return a boolean value indicating whether this {@link Thread} is {@literal virtual}
+   * @see Thread#isVirtual()
+   * @see java.lang.Thread
+   */
+  @NullSafe
+  public static boolean isVirtual(@Nullable Thread thread) {
+    return thread != null && thread.isVirtual();
+  }
+
+  /**
    * Determines whether the given {@link Thread} is currently {@literal waiting}.
    *
    * @param thread {@link Thread} to evaluate.
