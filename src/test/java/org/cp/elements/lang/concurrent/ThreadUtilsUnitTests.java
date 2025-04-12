@@ -528,7 +528,7 @@ class ThreadUtilsUnitTests {
 
       String stackTrace = new String(errorStreamBytes);
 
-      assertThat(stackTrace).contains("[TESTTAG] DumpStackTestThread Thread".formatted(currentThread.getId()));
+      assertThat(stackTrace).contains("[TESTTAG] DumpStackTestThread Thread");
 
       assertThat(stackTrace).contains("java.lang.Exception: Stack trace");
       assertThat(stackTrace).containsPattern("at .*java.lang.Thread.dumpStack(.*)");
