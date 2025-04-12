@@ -137,11 +137,14 @@ class GroupUnitTests {
 
     doReturn(1L).when(mockGroup).getCount();
     doCallRealMethod().when(mockGroup).isEmpty();
+    doCallRealMethod().when(mockGroup).isNotEmpty();
 
     assertThat(mockGroup.isEmpty()).isFalse();
+    assertThat(mockGroup.isNotEmpty()).isTrue();
 
-    verify(mockGroup, times(1)).isEmpty();
-    verify(mockGroup, times(1)).getCount();
+    verify(mockGroup, times(2)).isEmpty();
+    verify(mockGroup, times(1)).isNotEmpty();
+    verify(mockGroup, times(2)).getCount();
     verifyNoMoreInteractions(mockGroup);
   }
 
