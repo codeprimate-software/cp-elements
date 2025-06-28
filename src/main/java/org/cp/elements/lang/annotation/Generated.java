@@ -35,4 +35,11 @@ import java.lang.annotation.Target;
 @SuppressWarnings("unused")
 public @interface Generated {
 
+  /**
+   * Returns the {@link String name} of the process or tool that generated the code.
+   *
+   * @return the {@link String name} of the process or tool that generated the code.
+   */
+  String by();
+
 }
