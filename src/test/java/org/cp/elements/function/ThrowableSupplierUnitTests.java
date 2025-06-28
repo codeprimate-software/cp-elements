@@ -17,6 +17,9 @@ package org.cp.elements.function;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.cp.elements.lang.ThrowableAssertions.assertThatThrowableOfType;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.isA;
+import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doCallRealMethod;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
@@ -24,6 +27,8 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
+
+import java.util.function.Function;
 
 import org.junit.jupiter.api.Test;
 
@@ -39,6 +44,53 @@ import org.cp.elements.lang.ThrowableOperation;
  * @since 2.0.0
  */
 class ThrowableSupplierUnitTests {
+
+  @Test
+  @SuppressWarnings("unchecked")
+  void getSafelyThrowingException() throws Exception {
+
+    Function<Exception, Object> mockExceptionHandler = mock(Function.class);
+    Exception exception = new Exception("TEST");
+    ThrowableSupplier<Object> mockSupplier = mock(ThrowableSupplier.class);
+
+    doCallRealMethod().when(mockSupplier).get();
+    doThrow(exception).when(mockSupplier).getThrowingException();
+
+    doAnswer(invocation -> {
+
+      Exception theException = invocation.getArgument(0);
+
+      assertThat(theException).isInstanceOf(IllegalStateException.class)
+        .extracting(Exception::getCause)
+        .isEqualTo(exception);
+
+      return "X";
+    }).when(mockExceptionHandler).apply(any(Exception.class));
+
+    assertThat(ThrowableSupplier.getSafely(mockSupplier, mockExceptionHandler)).isEqualTo("X");
+
+    verify(mockSupplier, times(1)).get();
+    verify(mockSupplier, times(1)).getThrowingException();
+    verify(mockExceptionHandler, times(1)).apply(isA(IllegalStateException.class));
+    verifyNoMoreInteractions(mockSupplier, mockExceptionHandler);
+  }
+
+  @Test
+  void getSafelyWithoutException() throws Exception {
+
+    Function<Exception, Object> mockExceptionHandler = mock(Function.class);
+    ThrowableSupplier<Object> mockSupplier = mock(ThrowableSupplier.class);
+
+    doCallRealMethod().when(mockSupplier).get();
+    doReturn("X").when(mockSupplier).getThrowingException();
+
+    assertThat(ThrowableSupplier.getSafely(mockSupplier, mockExceptionHandler)).isEqualTo("X");
+
+    verify(mockSupplier, times(1)).get();
+    verify(mockSupplier, times(1)).getThrowingException();
+    verifyNoMoreInteractions(mockSupplier);
+    verifyNoMoreInteractions(mockExceptionHandler);
+  }
 
   @Test
   @SuppressWarnings("unchecked")

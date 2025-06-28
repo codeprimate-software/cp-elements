@@ -17,6 +17,7 @@ package org.cp.elements.function;
 
 import static org.cp.elements.lang.RuntimeExceptionsFactory.newIllegalStateException;
 
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 /**
@@ -30,6 +31,26 @@ import java.util.function.Supplier;
  */
 @FunctionalInterface
 public interface ThrowableSupplier<T> extends Supplier<T> {
+
+  /**
+   * Factory method used to {@link Supplier#get} the {@link T value} safely.
+   *
+   * @param <T> {@link Class type} of the {@link Object value} returned by the {@link ThrowableSupplier}.
+   * @param supplier {@link ThrowableSupplier} to get the {@link T value} from.
+   * @param exceptionHandler {@link Function} used to handle the {@link Exception}
+   * thrown by the {@link ThrowableSupplier}.
+   * @return the {@link T value} from the {@link ThrowableSupplier}.
+   * @see java.util.function.Function
+   */
+  static <T> T getSafely(ThrowableSupplier<T> supplier, Function<Exception, T> exceptionHandler) {
+
+    try {
+      return supplier.get();
+    }
+    catch (Exception cause) {
+      return exceptionHandler.apply(cause);
+    }
+  }
 
   @Override
   default T get() {
