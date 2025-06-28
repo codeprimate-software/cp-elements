@@ -31,6 +31,26 @@ import java.util.function.Consumer;
 @FunctionalInterface
 public interface ThrowableConsumer<T> extends Consumer<T> {
 
+  /**
+   * Factory method used to accept and process the {@link Object target} safely, handling any {@link Exception} thrown
+   * with the given {@link Consumer Exception handler}.
+   *
+   * @param <T> {@link Class type} of the {@link Object} consumed.
+   * @param target {@link Object} to consume and process.
+   * @param consumer {@link ThrowableConsumer} used to process the {@link Object target}.
+   * @param exceptionHandler {@link Consumer} used to handle any {@link Exception} thrown.
+   * @see java.util.function.Consumer
+   */
+  static <T> void acceptSafely(T target, ThrowableConsumer<T> consumer, Consumer<Exception> exceptionHandler) {
+
+    try {
+      consumer.accept(target);
+    }
+    catch (Exception cause) {
+      exceptionHandler.accept(cause);
+    }
+  }
+
   @Override
   default void accept(T target) {
 

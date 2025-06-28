@@ -15,15 +15,22 @@
  */
 package org.cp.elements.function;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.cp.elements.lang.ThrowableAssertions.assertThatThrowableOfType;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.isA;
+import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doCallRealMethod;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
+
+import java.util.function.Consumer;
 
 import org.junit.jupiter.api.Test;
 
@@ -39,6 +46,53 @@ import org.cp.elements.lang.ThrowableOperation;
  * @since 2.0.0
  */
 class ThrowableConsumerUnitTests {
+
+  @Test
+  @SuppressWarnings("unchecked")
+  void acceptSafelyThrowsException() throws Exception {
+
+    Consumer<Exception> mockExceptionHandler = mock(Consumer.class);
+    Exception exception = new Exception("TEST");
+    ThrowableConsumer<Object> mockConsumer = mock(ThrowableConsumer.class);
+
+    doCallRealMethod().when(mockConsumer).accept(any());
+    doThrow(exception).when(mockConsumer).acceptThrowingException(any());
+
+    doAnswer(invocation -> {
+
+      Exception theException = invocation.getArgument(0);
+
+      assertThat(theException).isInstanceOf(IllegalStateException.class)
+        .extracting(Exception::getCause)
+        .isEqualTo(exception);
+
+      return null;
+    }).when(mockExceptionHandler).accept(any(Exception.class));
+
+    ThrowableConsumer.acceptSafely("MOCK", mockConsumer, mockExceptionHandler);
+
+    verify(mockConsumer, times(1)).accept("MOCK");
+    verify(mockConsumer, times(1)).acceptThrowingException("MOCK");
+    verify(mockExceptionHandler, times(1)).accept(isA(IllegalStateException.class));
+    verifyNoMoreInteractions(mockConsumer, mockExceptionHandler);
+  }
+
+  @Test
+  void acceptSafelyWithoutException() throws Exception {
+
+    Consumer<Exception> mockExceptionHandler = mock(Consumer.class);
+    ThrowableConsumer<Object> mockConsumer = mock(ThrowableConsumer.class);
+
+    doCallRealMethod().when(mockConsumer).accept(any());
+    doNothing().when(mockConsumer).acceptThrowingException(any());
+
+    ThrowableConsumer.acceptSafely("MOCK", mockConsumer, mockExceptionHandler);
+
+    verify(mockConsumer, times(1)).accept("MOCK");
+    verify(mockConsumer, times(1)).acceptThrowingException("MOCK");
+    verifyNoMoreInteractions(mockConsumer);
+    verifyNoInteractions(mockExceptionHandler);
+  }
 
   @Test
   @SuppressWarnings("unchecked")
