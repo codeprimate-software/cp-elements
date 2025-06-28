@@ -27,13 +27,13 @@ package org.cp.elements.lang;
 public class AssertionException extends RuntimeException {
 
   /**
-   * Constructs a new, default (uninitialized) instance of the {@link AssertionException}.
+   * Constructs a new, default {@link AssertionException} uninitialized.
    */
   public AssertionException() { }
 
   /**
    * Constructs a new {@link AssertionException} initialized with the given {@link String message}
-   * used to describe the assertion failure.
+   * describing the assertion failure.
    *
    * @param message {@link String} describing the nature of the assertion failure.
    */
@@ -53,7 +53,7 @@ public class AssertionException extends RuntimeException {
 
   /**
    * Constructs a new {@link AssertionException} initialized with the given {@link String message}
-   * used to describe the assertion failure and the given {@link Throwable} as the cause of the assertion failure.
+   * describing the assertion failure and given {@link Throwable} as the cause of the assertion failure.
    *
    * @param message {@link String} describing the nature of the assertion failure.
    * @param cause {@link Throwable} used as the cause of this assertion failure.
