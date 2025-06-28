@@ -20,6 +20,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.io.File;
 import java.io.FileFilter;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Method;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -28,8 +29,10 @@ import java.util.stream.Stream;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
+import org.assertj.core.api.InstanceOfAssertFactories;
 import org.cp.elements.io.FileSystemUtils;
 import org.cp.elements.lang.ClassUtils;
+import org.cp.elements.lang.ObjectUtils;
 import org.cp.elements.lang.RunnableUtils;
 import org.cp.elements.lang.StringUtils;
 import org.cp.elements.lang.reflect.ModifierUtils;
@@ -169,6 +172,24 @@ class ElementsExceptionsUnitTests extends AbstractTestSuite {
     assertThat(exception).isNotNull();
     assertThat(exception.getCause()).isEqualTo(CAUSE);
     assertThat(exception.getMessage()).isEqualTo("MOCK MESSAGE");
+  }
+
+  @ParameterizedTest
+  @MethodSource("elementsExceptions")
+  void constructExceptionWithBecauseFactoryMethod(Class<Exception> exceptionClass) throws Exception {
+
+    Method because = ObjectUtils.findMethod(exceptionClass, "because", CAUSE);
+
+    if (because != null) {
+
+      Object exceptionInstance = because.invoke(null, CAUSE);
+
+      assertThat(exceptionInstance).isNotNull()
+        .isInstanceOf(exceptionClass)
+        .asInstanceOf(InstanceOfAssertFactories.type(Exception.class))
+        .extracting(Exception::getCause)
+        .isEqualTo(CAUSE);
+    }
   }
 
   static final class ExceptionFileFilter implements FileFilter {

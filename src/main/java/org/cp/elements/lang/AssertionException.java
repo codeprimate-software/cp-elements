@@ -27,6 +27,16 @@ package org.cp.elements.lang;
 public class AssertionException extends RuntimeException {
 
   /**
+   * Factory method used ot construct a new {@link AssertionException} with the given {@link Throwable cause}.
+   *
+   * @param cause {@link Throwable} used as the cause of the {@link AssertionException}.
+   * @return a new {@link AssertionException} initialized with the given {@link Throwable cause}.
+   */
+  public static AssertionException because(Throwable cause) {
+    return new AssertionException(cause);
+  }
+
+  /**
    * Constructs a new, default {@link AssertionException} uninitialized.
    */
   public AssertionException() { }
