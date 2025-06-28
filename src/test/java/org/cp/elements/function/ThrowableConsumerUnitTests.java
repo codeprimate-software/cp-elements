@@ -78,6 +78,7 @@ class ThrowableConsumerUnitTests {
   }
 
   @Test
+  @SuppressWarnings("unchecked")
   void acceptSafelyWithoutException() throws Exception {
 
     Consumer<Exception> mockExceptionHandler = mock(Consumer.class);

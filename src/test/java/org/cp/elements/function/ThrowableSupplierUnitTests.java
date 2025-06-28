@@ -76,6 +76,7 @@ class ThrowableSupplierUnitTests {
   }
 
   @Test
+  @SuppressWarnings("unchecked")
   void getSafelyWithoutException() throws Exception {
 
     Function<Exception, Object> mockExceptionHandler = mock(Function.class);
