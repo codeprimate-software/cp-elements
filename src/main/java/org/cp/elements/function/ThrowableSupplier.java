@@ -20,6 +20,8 @@ import static org.cp.elements.lang.RuntimeExceptionsFactory.newIllegalStateExcep
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+import org.cp.elements.lang.ObjectUtils;
+
 /**
  * {@link Supplier} implementation capable of throwing an {@link Exception} when supplying a value.
  *
@@ -35,7 +37,7 @@ public interface ThrowableSupplier<T> extends Supplier<T> {
   /**
    * Factory method used to {@link Supplier#get} the {@link T value} safely.
    *
-   * @param <T> {@link Class type} of the {@link Object value} returned by the {@link ThrowableSupplier}.
+   * @param <T> {@link Class type} of {@link Object value} returned by the {@link ThrowableSupplier}.
    * @param supplier {@link ThrowableSupplier} to get the {@link T value} from.
    * @param exceptionHandler {@link Function} used to handle the {@link Exception}
    * thrown by the {@link ThrowableSupplier}.
@@ -50,6 +52,18 @@ public interface ThrowableSupplier<T> extends Supplier<T> {
     catch (Exception cause) {
       return exceptionHandler.apply(cause);
     }
+  }
+
+  /**
+   * Factory method used to wrap the given {@link ThrowableSupplier} as a standard, Java {@link Supplier}.
+   *
+   * @param <T> {@link Class type} of {@link Object value} returned by the {@link Supplier}.
+   * @param supplier {@link Supplier} to wrap.
+   * @return the wrapped {@link Supplier}.
+   * @throws IllegalArgumentException if {@link ThrowableSupplier} is {@literal null}.
+   */
+  static <T> Supplier<T> safeSupplier(ThrowableSupplier<T> supplier) {
+    return ObjectUtils.requireObject(supplier, "Supplier is required");
   }
 
   @Override

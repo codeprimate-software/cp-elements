@@ -16,6 +16,7 @@
 package org.cp.elements.function;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.cp.elements.lang.ThrowableAssertions.assertThatThrowableOfType;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.isA;
@@ -26,6 +27,7 @@ import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 
 import java.util.function.Function;
@@ -44,6 +46,25 @@ import org.cp.elements.lang.ThrowableOperation;
  * @since 2.0.0
  */
 class ThrowableSupplierUnitTests {
+
+  @Test
+  void safeSupplierReturnsSupplier() {
+
+    ThrowableSupplier<?> mockSupplier = mock(ThrowableSupplier.class);
+
+    assertThat(ThrowableSupplier.safeSupplier(mockSupplier)).isSameAs(mockSupplier);
+
+    verifyNoInteractions(mockSupplier);
+  }
+
+  @Test
+  void safeSupplierWithNullSupplier() {
+
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> ThrowableSupplier.safeSupplier(null))
+      .withMessage("Supplier is required")
+      .withNoCause();
+  }
 
   @Test
   @SuppressWarnings("unchecked")
@@ -77,7 +98,7 @@ class ThrowableSupplierUnitTests {
 
   @Test
   @SuppressWarnings("unchecked")
-  void getSafelyWithoutException() throws Exception {
+  void getSafelyWithoutThrowingException() throws Exception {
 
     Function<Exception, Object> mockExceptionHandler = mock(Function.class);
     ThrowableSupplier<Object> mockSupplier = mock(ThrowableSupplier.class);
