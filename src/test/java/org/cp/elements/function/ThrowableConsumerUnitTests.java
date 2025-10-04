@@ -16,6 +16,7 @@
 package org.cp.elements.function;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.cp.elements.lang.ThrowableAssertions.assertThatIllegalArgumentException;
 import static org.cp.elements.lang.ThrowableAssertions.assertThatThrowableOfType;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -25,6 +26,7 @@ import static org.mockito.Mockito.doCallRealMethod;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
@@ -49,50 +51,77 @@ class ThrowableConsumerUnitTests {
 
   @Test
   @SuppressWarnings("unchecked")
-  void acceptSafelyThrowsException() throws Exception {
+  void safeConsumerThrowsException() throws Exception {
 
     Consumer<Exception> mockExceptionHandler = mock(Consumer.class);
-    Exception exception = new Exception("TEST");
+    IllegalArgumentException exception = new IllegalArgumentException("TEST");
     ThrowableConsumer<Object> mockConsumer = mock(ThrowableConsumer.class);
 
-    doCallRealMethod().when(mockConsumer).accept(any());
     doThrow(exception).when(mockConsumer).acceptThrowingException(any());
 
     doAnswer(invocation -> {
 
       Exception theException = invocation.getArgument(0);
 
-      assertThat(theException).isInstanceOf(IllegalStateException.class)
-        .extracting(Exception::getCause)
-        .isEqualTo(exception);
+      assertThat(theException).isInstanceOf(IllegalArgumentException.class)
+        .hasMessage("TEST")
+        .hasNoCause();
 
       return null;
+
     }).when(mockExceptionHandler).accept(any(Exception.class));
 
-    ThrowableConsumer.acceptSafely("MOCK", mockConsumer, mockExceptionHandler);
+    Consumer<Object> consumer = ThrowableConsumer.safeConsumer(mockConsumer, mockExceptionHandler);
 
-    verify(mockConsumer, times(1)).accept("MOCK");
+    assertThat(consumer).isNotNull();
+
+    consumer.accept("MOCK");
+
+    verify(mockConsumer, never()).accept(any());
     verify(mockConsumer, times(1)).acceptThrowingException("MOCK");
-    verify(mockExceptionHandler, times(1)).accept(isA(IllegalStateException.class));
+    verify(mockExceptionHandler, times(1)).accept(isA(IllegalArgumentException.class));
     verifyNoMoreInteractions(mockConsumer, mockExceptionHandler);
   }
 
   @Test
   @SuppressWarnings("unchecked")
-  void acceptSafelyWithoutException() throws Exception {
+  void safeConsumerDoesNotThrowException() throws Exception {
 
     Consumer<Exception> mockExceptionHandler = mock(Consumer.class);
     ThrowableConsumer<Object> mockConsumer = mock(ThrowableConsumer.class);
 
-    doCallRealMethod().when(mockConsumer).accept(any());
     doNothing().when(mockConsumer).acceptThrowingException(any());
 
-    ThrowableConsumer.acceptSafely("MOCK", mockConsumer, mockExceptionHandler);
+    Consumer<Object> consumer = ThrowableConsumer.safeConsumer(mockConsumer, mockExceptionHandler);
 
-    verify(mockConsumer, times(1)).accept("MOCK");
+    assertThat(consumer).isNotNull();
+
+    consumer.accept("MOCK");
+
+    verify(mockConsumer, never()).accept(any());
     verify(mockConsumer, times(1)).acceptThrowingException("MOCK");
     verifyNoMoreInteractions(mockConsumer);
     verifyNoInteractions(mockExceptionHandler);
+  }
+
+  @Test
+  @SuppressWarnings("unchecked")
+  void safeConsumerWithNullThrowableConsumer() {
+
+    assertThatIllegalArgumentException()
+      .isThrownBy(arg -> ThrowableConsumer.safeConsumer(null, mock(Consumer.class)))
+      .havingMessage("Consumer is required")
+      .withNoCause();
+  }
+
+  @Test
+  @SuppressWarnings("unchecked")
+  void safeConsumerWithNullExceptionHandler() {
+
+    assertThatIllegalArgumentException()
+      .isThrownBy(arg -> ThrowableConsumer.safeConsumer(mock(ThrowableConsumer.class), null))
+      .havingMessage("Exception handler is required")
+      .withNoCause();
   }
 
   @Test

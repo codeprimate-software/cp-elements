@@ -19,6 +19,8 @@ import static org.cp.elements.lang.RuntimeExceptionsFactory.newIllegalStateExcep
 
 import java.util.function.Consumer;
 
+import org.cp.elements.lang.Assert;
+
 /**
  * {@link Consumer} implementation capable of throwing an {@link Exception} when processing a {@link T target}.
  *
@@ -32,23 +34,29 @@ import java.util.function.Consumer;
 public interface ThrowableConsumer<T> extends Consumer<T> {
 
   /**
-   * Factory method used to accept and process the {@link Object target} safely, handling any {@link Exception} thrown
-   * with the given {@link Consumer Exception handler}.
+   * Factory method used to construct a new Consumer wrapping the given {@link ThrowableConsumer}
+   * throwing a possible {@link Exception} handle dby the given {@link Consumer Exception handler}.
    *
-   * @param <T> {@link Class type} of the {@link Object} consumed.
-   * @param target {@link Object} to consume and process.
-   * @param consumer {@link ThrowableConsumer} used to process the {@link Object target}.
+   * @param <T> {@link Class type} of {@link Object} consumed by the {@link Consumer}.
+   * @param consumer {@link ThrowableConsumer} to wrap.
    * @param exceptionHandler {@link Consumer} used to handle any {@link Exception} thrown.
+   * @throws IllegalArgumentException if {@link ThrowableConsumer} or the {@link Consumer Exception handler}
+   * are {@literal null}.
    * @see java.util.function.Consumer
    */
-  static <T> void acceptSafely(T target, ThrowableConsumer<T> consumer, Consumer<Exception> exceptionHandler) {
+  static <T> Consumer<T> safeConsumer(ThrowableConsumer<T> consumer, Consumer<Exception> exceptionHandler) {
 
-    try {
-      consumer.accept(target);
-    }
-    catch (Exception cause) {
-      exceptionHandler.accept(cause);
-    }
+    Assert.notNull(consumer, "Consumer is required");
+    Assert.notNull(exceptionHandler, "Exception handler is required");
+
+    return target -> {
+      try {
+        consumer.acceptThrowingException(target);
+      }
+      catch (Exception cause) {
+        exceptionHandler.accept(cause);
+      }
+    };
   }
 
   @Override
