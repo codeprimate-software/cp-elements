@@ -609,7 +609,7 @@ public interface Cache<KEY extends Comparable<KEY>, VALUE>
    * <p>
    * All {@link Identifiable objects} must be an instance of {@link VALUE}.
    * <p>
-   * WARNING: This putAll(..) operation is not atomic.
+   * WARNING: This {@literal putAll(..)} operation is not atomic.
    * <p>
    * For example, if any {@link Identifiable object} in the array is {@literal null}, then it will cause
    * an {@link IllegalArgumentException} to be thrown. However, any {@link Identifiable object} that came before
@@ -640,7 +640,7 @@ public interface Cache<KEY extends Comparable<KEY>, VALUE>
    * <p>
    * All {@link Identifiable objects} must be an instance of {@link VALUE}.
    * <p>
-   * WARNING: This putAll(..) operation is not atomic.
+   * WARNING: This {@literal putAll(..)} operation is not atomic.
    * <p>
    * For example, if any {@link Identifiable object} in the {@link Iterable} is {@literal null}, then it will cause
    * an {@link IllegalArgumentException} to be thrown. However, any {@link Identifiable object} that came before
@@ -860,7 +860,7 @@ public interface Cache<KEY extends Comparable<KEY>, VALUE>
      * The {@link #setValue(Object)} method is not supported.
      *
      * @param <KEY> {@link Class type} of the {@link Cache.Entry#getKey() key}.
-     * @param <VALUE> {@link Class type} of the {@link Cache.Entry#getValue()} value}.
+     * @param <VALUE> {@link Class type} of the {@link Cache.Entry#getValue() value}.
      * @param cacheEntry {@link Cache.Entry} to copy; must not be {@literal null}.
      * @return a new {@link Cache.Entry} copy.
      * @throws IllegalArgumentException if the {@link Cache.Entry} to copy is {@literal null}.
