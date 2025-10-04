@@ -259,7 +259,7 @@ public interface Array<T> extends Iterable<T>, Streamable<T> {
      *
      * @param <T> {@link Class type} of {@link Object elements} in the array.
      * @param array Java array used to construct and initialize the new {@link Array}; required.
-     * @return a new {@link AbstractArray} constructed and initalized from the given Java array.
+     * @return a new {@link AbstractArray} constructed and initialized from the given Java array.
      * @throws IllegalArgumentException if {@link T array} is {@literal null}.
      */
     @SafeVarargs
@@ -273,7 +273,7 @@ public interface Array<T> extends Iterable<T>, Streamable<T> {
     /**
      * Construct a new {@link AbstractArray} from the given Java array.
      *
-     * @param array Java array used to contruct an initialize a new {@link Array}.
+     * @param array Java array used to construct an initialize a new {@link Array}.
      * @throws IllegalArgumentException if {@link T array} is {@literal null}.
      */
     protected AbstractArray(T[] array) {
