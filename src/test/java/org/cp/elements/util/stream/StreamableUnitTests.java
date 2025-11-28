@@ -143,7 +143,7 @@ public class StreamableUnitTests {
   @Test
   void isEmpty() {
 
-    Streamable<Integer> streamable = Streamable.from(Collections::emptyIterator);
+    Streamable<?> streamable = Streamable.from(Collections::emptyIterator);
 
     assertThat(streamable).isNotNull();
     assertThat(streamable.isEmpty()).isTrue();
@@ -153,10 +153,42 @@ public class StreamableUnitTests {
   @Test
   void isNotEmpty() {
 
-    Streamable<Integer> streamable = Streamable.from(Set.of(1));
+    Streamable<?> streamable = Streamable.from(Set.of(1));
 
     assertThat(streamable).isNotNull();
     assertThat(streamable.isEmpty()).isFalse();
     assertThat(streamable.isNotEmpty()).isTrue();
+  }
+
+  @Test
+  void sizeIsOne() {
+
+    Streamable<?> streamable = Streamable.from(1);
+
+    assertThat(streamable).isNotNull();
+    assertThat(streamable.size()).isOne();
+  }
+
+  @Test
+  void sizeIsThree() {
+
+    Streamable<?> streamable = Streamable.from(1, 2, 3);
+
+    assertThat(streamable).isNotNull();
+    assertThat(streamable.size()).isEqualTo(3);
+  }
+
+  @Test
+  void sizeIsZero() {
+
+    Streamable<?> streamable = Streamable.from();
+
+    assertThat(streamable).isNotNull();
+    assertThat(streamable.size()).isZero();
+
+    streamable = Streamable.from((Iterable<?>) null);
+
+    assertThat(streamable).isNotNull();
+    assertThat(streamable.size()).isZero();
   }
 }

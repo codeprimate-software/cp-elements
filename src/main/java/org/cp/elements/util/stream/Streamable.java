@@ -97,6 +97,16 @@ public interface Streamable<T> {
   }
 
   /**
+   * Counts the number of elements in the {@link Stream}.
+   *
+   * @return a {@link Long count} of the number of elements in the {@link Stream}.
+   * @see #stream()
+   */
+  default long size() {
+    return stream().count();
+  }
+
+  /**
    * Returns a {@link Stream} of elements from this {@link Streamable} object.
    *
    * @return a {@link Stream} of elements from this {@link Streamable} object.
