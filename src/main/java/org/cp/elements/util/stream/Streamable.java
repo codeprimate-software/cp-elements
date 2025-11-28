@@ -16,6 +16,7 @@
 package org.cp.elements.util.stream;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Spliterator;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
@@ -114,4 +115,13 @@ public interface Streamable<T> {
    */
   Stream<T> stream();
 
+  /**
+   * Converts the {@link Stream} to a {@link List}.
+   *
+   * @return a {@link List} containing the elements of the {@link Stream}.
+   * @see #stream()
+   */
+  default List<T> toList() {
+    return stream().toList();
+  }
 }

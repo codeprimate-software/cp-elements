@@ -191,4 +191,30 @@ public class StreamableUnitTests {
     assertThat(streamable).isNotNull();
     assertThat(streamable.size()).isZero();
   }
+
+  @Test
+  void toList() {
+
+    Streamable<Integer> streamable = Streamable.from(1, 2, 3);
+
+    assertThat(streamable).isNotNull();
+
+    List<Integer> list = streamable.toList();
+
+    assertThat(list).isNotNull();
+    assertThat(list).containsExactly(1, 2, 3);
+  }
+
+  @Test
+  void toListFromNullIterable() {
+
+    Streamable<Integer> streamable = Streamable.from((Iterable<Integer>) null);
+
+    assertThat(streamable).isNotNull();
+
+    List<Integer> list = streamable.toList();
+
+    assertThat(list).isNotNull();
+    assertThat(list).isEmpty();
+  }
 }
