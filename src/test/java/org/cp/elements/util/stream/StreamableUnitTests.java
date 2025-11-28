@@ -17,7 +17,9 @@ package org.cp.elements.util.stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
 import java.util.stream.Stream;
 
 import org.junit.jupiter.api.Test;
@@ -89,7 +91,7 @@ public class StreamableUnitTests {
   @Test
   public void fromIterable() {
 
-    Streamable<Integer> streamable = Streamable.from(Arrays.asList(1, 2, 3));
+    Streamable<Integer> streamable = Streamable.from(List.of(1, 2, 3));
 
     assertThat(streamable).isNotNull();
 
@@ -97,6 +99,19 @@ public class StreamableUnitTests {
 
     assertThat(stream).isNotNull();
     assertThat(stream).containsExactly(1, 2, 3);
+  }
+
+  @Test
+  void fromNoElementIterable() {
+
+    Streamable<Integer> streamable = Streamable.from(Collections::emptyIterator);
+
+    assertThat(streamable).isNotNull();
+
+    Stream<Integer> stream = streamable.stream();
+
+    assertThat(stream).isNotNull();
+    assertThat(stream).isEmpty();
   }
 
   @Test
@@ -110,5 +125,38 @@ public class StreamableUnitTests {
 
     assertThat(stream).isNotNull();
     assertThat(stream).isEmpty();
+  }
+
+  @Test
+  void fromSingleElementIterable() {
+
+    Streamable<Integer> streamable = Streamable.from(Set.of(1));
+
+    assertThat(streamable).isNotNull();
+
+    Stream<Integer> stream = streamable.stream();
+
+    assertThat(stream).isNotNull();
+    assertThat(stream).containsExactly(1);
+  }
+
+  @Test
+  void isEmpty() {
+
+    Streamable<Integer> streamable = Streamable.from(Collections::emptyIterator);
+
+    assertThat(streamable).isNotNull();
+    assertThat(streamable.isEmpty()).isTrue();
+    assertThat(streamable.isNotEmpty()).isFalse();
+  }
+
+  @Test
+  void isNotEmpty() {
+
+    Streamable<Integer> streamable = Streamable.from(Set.of(1));
+
+    assertThat(streamable).isNotNull();
+    assertThat(streamable.isEmpty()).isFalse();
+    assertThat(streamable.isNotEmpty()).isTrue();
   }
 }

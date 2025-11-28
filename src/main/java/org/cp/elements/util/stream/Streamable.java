@@ -76,6 +76,27 @@ public interface Streamable<T> {
   }
 
   /**
+   * Determines whether this {@link Stream} contains any data.
+   *
+   * @return a boolean value indicating whether this {@link Stream} contains any data.
+   * @see #isNotEmpty()
+   * @see #stream()
+   */
+  default boolean isEmpty() {
+    return stream().findAny().isEmpty();
+  }
+
+  /**
+   * Determines whether this {@link Stream} contains any data.
+   *
+   * @return a boolean value indicating whether this {@link Stream} contains any data.
+   * @see #isEmpty()
+   */
+  default boolean isNotEmpty() {
+    return !isEmpty();
+  }
+
+  /**
    * Returns a {@link Stream} of elements from this {@link Streamable} object.
    *
    * @return a {@link Stream} of elements from this {@link Streamable} object.
