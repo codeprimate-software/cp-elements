@@ -81,6 +81,17 @@ public interface Streamable<T> {
   }
 
   /**
+   * Factory method used to construct a new {@link Streamable} object from a given {@link Stream}.
+   *
+   * @param stream {@link Stream} to wrap in a {@link Streamable} object.
+   * @see java.util.stream.Stream
+   */
+  @NullSafe
+  static @NotNull <T> Streamable<T> from(@Nullable Stream<T> stream) {
+    return  () -> StreamUtils.nullSafeStream(stream);
+  }
+
+  /**
    * Determines whether this {@link Stream} contains any data.
    *
    * @return a boolean value indicating whether this {@link Stream} contains any data.

@@ -142,6 +142,24 @@ public class StreamableUnitTests {
   }
 
   @Test
+  void fromStream() {
+
+    Streamable<Integer> streamable = Streamable.from(Stream.of(1, 2, 3));
+
+    assertThat(streamable).isNotNull();
+    assertThat(streamable.stream()).containsExactly(1, 2, 3);
+  }
+
+  @Test
+  void fromNullStreamIsNullSafe() {
+
+    Streamable<?> streamable = Streamable.from((Stream<?>) null);
+
+    assertThat(streamable).isNotNull();
+    assertThat(streamable.stream()).isEmpty();
+  }
+
+  @Test
   void isEmpty() {
 
     Streamable<?> streamable = Streamable.from(Collections::emptyIterator);
