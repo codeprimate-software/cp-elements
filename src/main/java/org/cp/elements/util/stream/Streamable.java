@@ -17,7 +17,9 @@ package org.cp.elements.util.stream;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 import java.util.Spliterator;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
@@ -119,9 +121,21 @@ public interface Streamable<T> {
    * Converts the {@link Stream} to a {@link List}.
    *
    * @return a {@link List} containing the elements of the {@link Stream}.
+   * @see java.util.List
    * @see #stream()
    */
   default List<T> toList() {
     return stream().toList();
+  }
+
+  /**
+   * Converts the {@link Stream} to a {@link Set}.
+   *
+   * @return a {@link Set} containing the elements of the {@link Stream}.
+   * @see java.util.Set
+   * @see #stream()
+   */
+  default Set<T> toSet() {
+    return stream().collect(Collectors.toSet());
   }
 }
