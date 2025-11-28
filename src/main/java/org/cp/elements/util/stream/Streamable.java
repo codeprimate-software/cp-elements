@@ -17,6 +17,7 @@ package org.cp.elements.util.stream;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.Spliterator;
 import java.util.function.Predicate;
@@ -106,10 +107,25 @@ public interface Streamable<T> {
    * @param predicate {@link Predicate} used to match and filter the {@link Stream}.
    * @return a new {@link Streamable} object containing only the filtered elements of the original {@link Stream}.
    * @see java.util.function.Predicate
+   * @see #find(Predicate)
    * @see #stream()
    */
   default Streamable<T> filter(Predicate<T> predicate) {
     return Streamable.from(stream().filter(predicate).toList());
+  }
+
+  /**
+   * Finds a single element in the {@link Stream} if matched by the given {@link Predicate}.
+   *
+   * @param predicate {@link Predicate} used to match and find an element in the {@link Stream}.
+   * @return a single {@link Optional element} in the {@link Stream} if matched by the given {@link Predicate}.
+   * @see java.util.function.Predicate
+   * @see java.util.Optional
+   * @see #filter(Predicate)
+   * @see #stream()
+   */
+  default Optional<T> find(Predicate<T> predicate) {
+    return stream().filter(predicate).findFirst();
   }
 
   /**

@@ -19,6 +19,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Stream;
 
@@ -200,6 +201,33 @@ public class StreamableUnitTests {
     assertThat(evens).isNotNull();
     assertThat(evens).isNotSameAs(streamable);
     assertThat(evens.stream()).containsExactly(1, 2, 3, 4, 5);
+  }
+
+  @Test
+  void findsNone() {
+
+    Streamable<Integer> streamable = Streamable.from(1, 2, 3, 4, 5);
+
+    assertThat(streamable).isNotNull();
+
+    Optional<Integer> element = streamable.find(integer -> integer == 12);
+
+    assertThat(element).isNotNull();
+    assertThat(element).isNotPresent();
+  }
+
+  @Test
+  void findsOne() {
+
+    Streamable<Integer> streamable = Streamable.from(1, 2, 3, 4, 5);
+
+    assertThat(streamable).isNotNull();
+
+    Optional<Integer> element = streamable.find(integer -> integer == 2);
+
+    assertThat(element).isNotNull();
+    assertThat(element).isPresent();
+    assertThat(element.orElse(null)).isEqualTo(2);
   }
 
   @Test
