@@ -152,15 +152,6 @@ public interface Users extends Iterable<User<?>>, Streamable<User<?>> {
   }
 
   /**
-   * Determines the number of {@link User Users} in this collection.
-   *
-   * @return an {@link Integer} specifying the number of {@link User Users} in this collection.
-   */
-  default int size() {
-    return Long.valueOf(stream().count()).intValue();
-  }
-
-  /**
    * Sorts (orders) the {@link User Users} in this collection according to the given {@link Comparator},
    * returning a new collection of {@link Users}.
    *

@@ -160,7 +160,7 @@ public class QueryResultSetUnitTests {
 
     QueryResultSet<?> queryResultSet = mock(QueryResultSet.class);
 
-    doReturn(0).when(queryResultSet).size();
+    doReturn(0L).when(queryResultSet).size();
     doCallRealMethod().when(queryResultSet).isEmpty();
     doCallRealMethod().when(queryResultSet).isNotEmpty();
 
@@ -177,7 +177,7 @@ public class QueryResultSetUnitTests {
 
     QueryResultSet<?> queryResultSet = mock(QueryResultSet.class);
 
-    doReturn(1).when(queryResultSet).size();
+    doReturn(1L).when(queryResultSet).size();
     doCallRealMethod().when(queryResultSet).isEmpty();
     doCallRealMethod().when(queryResultSet).isNotEmpty();
 

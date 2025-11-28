@@ -130,15 +130,6 @@ public interface QueryResultSet<T> extends Iterable<QueryResult<T>>, Streamable<
   }
 
   /**
-   * Returns the {@link Long number} of {@link QueryResult QueryResults} in this {@link QueryResultSet}.
-   *
-   * @return the {@link Long number} of {@link QueryResult QueryResults} in this {@link QueryResultSet}.
-   */
-  default int size() {
-    return Long.valueOf(stream().count()).intValue();
-  }
-
-  /**
    * Streams the {@link QueryResult QueryResults} in this {@link QueryResultSet}.
    *
    * @return a {@link Stream} of {@link QueryResult QueryResults} in this {@link QueryResultSet}.

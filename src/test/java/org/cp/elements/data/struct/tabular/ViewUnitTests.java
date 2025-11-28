@@ -441,7 +441,7 @@ class ViewUnitTests {
     View mockView = mock(View.class);
 
     doReturn(rows).when(mockView).rows();
-    doReturn(rows.size()).when(mockView).size();
+    doReturn((long) rows.size()).when(mockView).size();
     doCallRealMethod().when(mockView).getRow(anyInt());
 
     assertThat(mockView.getRow(0)).isEqualTo(mockRowOne);
@@ -465,7 +465,7 @@ class ViewUnitTests {
 
     doReturn(Collections.singletonList(mockRow)).when(mockView).rows();
     doCallRealMethod().when(mockView).getRow(anyInt());
-    doReturn(100).when(mockView).size();
+    doReturn(100L).when(mockView).size();
 
     assertThatIllegalArgumentException()
       .isThrownBy(() -> mockView.getRow(-1))
@@ -486,7 +486,7 @@ class ViewUnitTests {
     View mockView = mock(View.class);
 
     doReturn(Collections.singletonList(mockRow)).when(mockView).rows();
-    doReturn(1).when(mockView).size();
+    doReturn(1L).when(mockView).size();
     doCallRealMethod().when(mockView).getRow(anyInt());
 
     assertThatIllegalArgumentException()
@@ -510,7 +510,7 @@ class ViewUnitTests {
     View mockView = mockView("MockView");
 
     doReturn(Arrays.asList(mockRowOne, mockRowTwo)).when(mockView).rows();
-    doReturn(100).when(mockView).size();
+    doReturn(100L).when(mockView).size();
     doCallRealMethod().when(mockView).getRow(anyInt());
 
     assertThatIndexOutOfBoundsException()
@@ -892,7 +892,7 @@ class ViewUnitTests {
 
     View mockView = mock(View.class);
 
-    doReturn(0).when(mockView).size();
+    doReturn(0L).when(mockView).size();
     doCallRealMethod().when(mockView).isEmpty();
 
     assertThat(mockView.isEmpty()).isTrue();
@@ -907,7 +907,7 @@ class ViewUnitTests {
 
     View mockView = mock(View.class);
 
-    doReturn(1).when(mockView).size();
+    doReturn(1L).when(mockView).size();
     doCallRealMethod().when(mockView).isEmpty();
 
     assertThat(mockView.isEmpty()).isFalse();

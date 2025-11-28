@@ -174,7 +174,7 @@ public interface View extends Iterable<Row>, Nameable<String>, Streamable<Row> {
    */
   default @NotNull Row getRow(int index) {
 
-    int size = size();
+    long size = size();
 
     Assert.isTrue(index > Integers.MINUS_ONE && index < size,
       () -> String.format("Row index [%1$d] is not valid; Row index must be greater than [-1] and less than [%2$d]",
@@ -405,7 +405,8 @@ public interface View extends Iterable<Row>, Nameable<String>, Streamable<Row> {
    * @return the {@link Integer number} of {@link Row Rows} in this {@link View}.
    * @see #count(Predicate)
    */
-  default int size() {
+  @Override
+  default long size() {
     return count(row -> true);
   }
 
