@@ -19,6 +19,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 import java.util.Spliterator;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
@@ -100,6 +101,18 @@ public interface Streamable<T> {
   }
 
   /**
+   * Filters the {@link Stream} using the given {@link Predicate} to match elements in the {@link Stream}.
+   *
+   * @param predicate {@link Predicate} used to match and filter the {@link Stream}.
+   * @return a new {@link Streamable} object containing only the filtered elements of the original {@link Stream}.
+   * @see java.util.function.Predicate
+   * @see #stream()
+   */
+  default Streamable<T> filter(Predicate<T> predicate) {
+    return Streamable.from(stream().filter(predicate).toList());
+  }
+
+  /**
    * Counts the number of elements in the {@link Stream}.
    *
    * @return a {@link Long count} of the number of elements in the {@link Stream}.
@@ -123,6 +136,7 @@ public interface Streamable<T> {
    * @return a {@link List} containing the elements of the {@link Stream}.
    * @see java.util.List
    * @see #stream()
+   * @see #toSet()
    */
   default List<T> toList() {
     return stream().toList();
@@ -134,6 +148,7 @@ public interface Streamable<T> {
    * @return a {@link Set} containing the elements of the {@link Stream}.
    * @see java.util.Set
    * @see #stream()
+   * @see #toList()
    */
   default Set<T> toSet() {
     return stream().collect(Collectors.toSet());

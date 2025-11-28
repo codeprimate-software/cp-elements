@@ -161,6 +161,48 @@ public class StreamableUnitTests {
   }
 
   @Test
+  void filter() {
+
+    Streamable<Integer> streamable = Streamable.from(1, 2, 3, 4, 5);
+
+    assertThat(streamable).isNotNull();
+
+    Streamable<Integer> evens = streamable.filter(integer -> integer % 2 == 0);
+
+    assertThat(evens).isNotNull();
+    assertThat(evens).isNotSameAs(streamable);
+    assertThat(evens.stream()).containsExactly(2, 4);
+  }
+
+  @Test
+  void filtersEverything() {
+
+    Streamable<Integer> streamable = Streamable.from(1, 2, 3, 4, 5);
+
+    assertThat(streamable).isNotNull();
+
+    Streamable<Integer> filteredStreamable = streamable.filter(integer -> false);
+
+    assertThat(filteredStreamable).isNotNull();
+    assertThat(filteredStreamable).isNotSameAs(streamable);
+    assertThat(filteredStreamable.stream()).isEmpty();
+  }
+
+  @Test
+  void filtersNothing() {
+
+    Streamable<Integer> streamable = Streamable.from(1, 2, 3, 4, 5);
+
+    assertThat(streamable).isNotNull();
+
+    Streamable<Integer> evens = streamable.filter(integer -> true);
+
+    assertThat(evens).isNotNull();
+    assertThat(evens).isNotSameAs(streamable);
+    assertThat(evens.stream()).containsExactly(1, 2, 3, 4, 5);
+  }
+
+  @Test
   void sizeIsOne() {
 
     Streamable<?> streamable = Streamable.from(1);
@@ -170,12 +212,12 @@ public class StreamableUnitTests {
   }
 
   @Test
-  void sizeIsThree() {
+  void sizeIsTwo() {
 
-    Streamable<?> streamable = Streamable.from(1, 2, 3);
+    Streamable<?> streamable = Streamable.from(1, 2);
 
     assertThat(streamable).isNotNull();
-    assertThat(streamable.size()).isEqualTo(3);
+    assertThat(streamable.size()).isEqualTo(2);
   }
 
   @Test
