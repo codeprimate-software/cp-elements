@@ -24,7 +24,7 @@ import java.util.regex.Pattern;
 import org.cp.elements.function.FunctionUtils;
 import org.cp.elements.function.ThrowingConsumer;
 import org.cp.elements.function.ThrowingFunction;
-import org.cp.elements.function.ThrowableSupplier;
+import org.cp.elements.function.ThrowingSupplier;
 import org.cp.elements.lang.annotation.Dsl;
 import org.cp.elements.lang.annotation.FluentApi;
 import org.cp.elements.lang.annotation.NotNull;
@@ -43,7 +43,7 @@ import org.cp.elements.util.ArrayUtils;
  * @see java.lang.Throwable
  * @see ThrowingConsumer
  * @see ThrowingFunction
- * @see org.cp.elements.function.ThrowableSupplier
+ * @see ThrowingSupplier
  * @see org.cp.elements.lang.annotation.Dsl
  * @see org.cp.elements.lang.annotation.FluentApi
  * @since 1.0.0
@@ -530,15 +530,15 @@ public abstract class ThrowableAssertions {
     }
 
     /**
-     * {@link ThrowableSupplier} containing the code throwing the {@link Exception} invoked during the assertion.
+     * {@link ThrowingSupplier} containing the code throwing the {@link Exception} invoked during the assertion.
      *
-     * @param supplier {@link ThrowableSupplier} to invoke; required.
+     * @param supplier {@link ThrowingSupplier} to invoke; required.
      * @return a new {@link AssertThatThrowable}.
-     * @throws IllegalArgumentException if {@link ThrowableSupplier} is {@literal null}.
-     * @see org.cp.elements.function.ThrowableSupplier
+     * @throws IllegalArgumentException if {@link ThrowingSupplier} is {@literal null}.
+     * @see ThrowingSupplier
      * @see #isThrownBy(ThrowableOperation)
      */
-    default AssertThatThrowable thrownBy(@NotNull ThrowableSupplier<?> supplier) {
+    default AssertThatThrowable thrownBy(@NotNull ThrowingSupplier<?> supplier) {
       Assert.notNull(supplier, "Supplier is required");
       return isThrownBy(ThrowableOperation.fromSupplier(supplier));
     }

@@ -24,7 +24,7 @@ import java.util.logging.Logger;
 
 import javax.sql.DataSource;
 
-import org.cp.elements.function.ThrowableSupplier;
+import org.cp.elements.function.ThrowingSupplier;
 import org.cp.elements.io.LoggingWriter;
 import org.cp.elements.io.NoOpWriter;
 import org.cp.elements.lang.Constants;
@@ -55,11 +55,11 @@ public abstract class AbstractDataSource implements DataSource {
   }
 
   @SuppressWarnings("all")
-  private static ThrowableSupplier<PrintWriter> loggingPrintWriterSupplier() {
+  private static ThrowingSupplier<PrintWriter> loggingPrintWriterSupplier() {
 
     Logger logger = Logger.getLogger(AbstractDataSource.class.getName());
 
-    ThrowableSupplier<PrintWriter> loggingPrintWriter = () -> {
+    ThrowingSupplier<PrintWriter> loggingPrintWriter = () -> {
       try (LoggingWriter writer = LoggingWriter.from(logger)) {
         return writer.asPrintWriter();
       }

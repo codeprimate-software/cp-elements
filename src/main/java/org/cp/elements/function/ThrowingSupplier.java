@@ -27,24 +27,24 @@ import org.cp.elements.lang.ObjectUtils;
  *
  * @author John Blum
  * @param <T> {@link Class type} of {@link Object value} supplied by this {@link Supplier}.
- * @see java.lang.FunctionalInterface
+ * @see FunctionalInterface
  * @see java.util.function.Supplier
  * @since 2.0.0
  */
 @FunctionalInterface
-public interface ThrowableSupplier<T> extends Supplier<T> {
+public interface ThrowingSupplier<T> extends Supplier<T> {
 
   /**
    * Factory method used to {@link Supplier#get} the {@link T value} safely.
    *
-   * @param <T> {@link Class type} of {@link Object value} returned by the {@link ThrowableSupplier}.
-   * @param supplier {@link ThrowableSupplier} to get the {@link T value} from.
+   * @param <T> {@link Class type} of {@link Object value} returned by the {@link ThrowingSupplier}.
+   * @param supplier {@link ThrowingSupplier} to get the {@link T value} from.
    * @param exceptionHandler {@link Function} used to handle the {@link Exception}
-   * thrown by the {@link ThrowableSupplier}.
-   * @return the {@link T value} from the {@link ThrowableSupplier}.
+   * thrown by the {@link ThrowingSupplier}.
+   * @return the {@link T value} from the {@link ThrowingSupplier}.
    * @see java.util.function.Function
    */
-  static <T> T getSafely(ThrowableSupplier<T> supplier, Function<Exception, T> exceptionHandler) {
+  static <T> T getSafely(ThrowingSupplier<T> supplier, Function<Exception, T> exceptionHandler) {
 
     try {
       return supplier.get();
@@ -55,14 +55,14 @@ public interface ThrowableSupplier<T> extends Supplier<T> {
   }
 
   /**
-   * Factory method used to wrap the given {@link ThrowableSupplier} as a standard, Java {@link Supplier}.
+   * Factory method used to wrap the given {@link ThrowingSupplier} as a standard, Java {@link Supplier}.
    *
    * @param <T> {@link Class type} of {@link Object value} returned by the {@link Supplier}.
    * @param supplier {@link Supplier} to wrap.
    * @return the wrapped {@link Supplier}.
-   * @throws IllegalArgumentException if {@link ThrowableSupplier} is {@literal null}.
+   * @throws IllegalArgumentException if {@link ThrowingSupplier} is {@literal null}.
    */
-  static <T> Supplier<T> safeSupplier(ThrowableSupplier<T> supplier) {
+  static <T> Supplier<T> safeSupplier(ThrowingSupplier<T> supplier) {
     return ObjectUtils.requireObject(supplier, "Supplier is required");
   }
 

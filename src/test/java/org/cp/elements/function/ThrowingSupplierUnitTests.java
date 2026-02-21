@@ -37,22 +37,22 @@ import org.junit.jupiter.api.Test;
 import org.cp.elements.lang.ThrowableOperation;
 
 /**
- * Unit Tests for {@link ThrowableSupplier}.
+ * Unit Tests for {@link ThrowingSupplier}.
  *
  * @author John Blum
- * @see org.cp.elements.function.ThrowableSupplier
+ * @see ThrowingSupplier
  * @see org.junit.jupiter.api.Test
  * @see org.mockito.Mockito
  * @since 2.0.0
  */
-class ThrowableSupplierUnitTests {
+class ThrowingSupplierUnitTests {
 
   @Test
   void safeSupplierReturnsSupplier() {
 
-    ThrowableSupplier<?> mockSupplier = mock(ThrowableSupplier.class);
+    ThrowingSupplier<?> mockSupplier = mock(ThrowingSupplier.class);
 
-    assertThat(ThrowableSupplier.safeSupplier(mockSupplier)).isSameAs(mockSupplier);
+    assertThat(ThrowingSupplier.safeSupplier(mockSupplier)).isSameAs(mockSupplier);
 
     verifyNoInteractions(mockSupplier);
   }
@@ -61,7 +61,7 @@ class ThrowableSupplierUnitTests {
   void safeSupplierWithNullSupplier() {
 
     assertThatIllegalArgumentException()
-      .isThrownBy(() -> ThrowableSupplier.safeSupplier(null))
+      .isThrownBy(() -> ThrowingSupplier.safeSupplier(null))
       .withMessage("Supplier is required")
       .withNoCause();
   }
@@ -72,7 +72,7 @@ class ThrowableSupplierUnitTests {
 
     Function<Exception, Object> mockExceptionHandler = mock(Function.class);
     Exception exception = new Exception("TEST");
-    ThrowableSupplier<Object> mockSupplier = mock(ThrowableSupplier.class);
+    ThrowingSupplier<Object> mockSupplier = mock(ThrowingSupplier.class);
 
     doCallRealMethod().when(mockSupplier).get();
     doThrow(exception).when(mockSupplier).getThrowingException();
@@ -88,7 +88,7 @@ class ThrowableSupplierUnitTests {
       return "X";
     }).when(mockExceptionHandler).apply(any(Exception.class));
 
-    assertThat(ThrowableSupplier.getSafely(mockSupplier, mockExceptionHandler)).isEqualTo("X");
+    assertThat(ThrowingSupplier.getSafely(mockSupplier, mockExceptionHandler)).isEqualTo("X");
 
     verify(mockSupplier, times(1)).get();
     verify(mockSupplier, times(1)).getThrowingException();
@@ -101,12 +101,12 @@ class ThrowableSupplierUnitTests {
   void getSafelyWithoutThrowingException() throws Exception {
 
     Function<Exception, Object> mockExceptionHandler = mock(Function.class);
-    ThrowableSupplier<Object> mockSupplier = mock(ThrowableSupplier.class);
+    ThrowingSupplier<Object> mockSupplier = mock(ThrowingSupplier.class);
 
     doCallRealMethod().when(mockSupplier).get();
     doReturn("X").when(mockSupplier).getThrowingException();
 
-    assertThat(ThrowableSupplier.getSafely(mockSupplier, mockExceptionHandler)).isEqualTo("X");
+    assertThat(ThrowingSupplier.getSafely(mockSupplier, mockExceptionHandler)).isEqualTo("X");
 
     verify(mockSupplier, times(1)).get();
     verify(mockSupplier, times(1)).getThrowingException();
@@ -118,7 +118,7 @@ class ThrowableSupplierUnitTests {
   @SuppressWarnings("unchecked")
   void getCallsGetThrowingException() throws Exception {
 
-    ThrowableSupplier<Object> mockThrowableConsumer = mock(ThrowableSupplier.class);
+    ThrowingSupplier<Object> mockThrowableConsumer = mock(ThrowingSupplier.class);
 
     doCallRealMethod().when(mockThrowableConsumer).get();
     doReturn("test").when(mockThrowableConsumer).getThrowingException();
@@ -134,7 +134,7 @@ class ThrowableSupplierUnitTests {
   @SuppressWarnings("unchecked")
   void getThrowsException() throws Exception {
 
-    ThrowableSupplier<Object> mockThrowableConsumer = mock(ThrowableSupplier.class);
+    ThrowingSupplier<Object> mockThrowableConsumer = mock(ThrowingSupplier.class);
 
     doCallRealMethod().when(mockThrowableConsumer).get();
     doThrow(new Exception("TEST")).when(mockThrowableConsumer).getThrowingException();

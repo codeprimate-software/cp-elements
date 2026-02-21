@@ -50,7 +50,7 @@ import org.assertj.core.api.Assertions;
 import org.cp.elements.function.FunctionExecutionException;
 import org.cp.elements.function.ThrowingConsumer;
 import org.cp.elements.function.ThrowingFunction;
-import org.cp.elements.function.ThrowableSupplier;
+import org.cp.elements.function.ThrowingSupplier;
 import org.cp.elements.lang.ThrowableAssertions.AssertThatThrowableExpression;
 import org.cp.elements.lang.ThrowableAssertions.ThrowableSource;
 import org.cp.elements.lang.ThrowableAssertions.ThrowableSourceExpression;
@@ -653,7 +653,7 @@ class ThrowableAssertionsUnitTests {
   void withNullThrowingSupplier() {
 
     Assertions.assertThatIllegalArgumentException()
-      .isThrownBy(() -> assertThatThrowableOfType(Exception.class).thrownBy((ThrowableSupplier<?>) null))
+      .isThrownBy(() -> assertThatThrowableOfType(Exception.class).thrownBy((ThrowingSupplier<?>) null))
       .withMessage("Supplier is required")
       .withNoCause();
   }
