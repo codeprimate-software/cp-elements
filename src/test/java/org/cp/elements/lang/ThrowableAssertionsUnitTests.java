@@ -49,7 +49,7 @@ import org.junit.jupiter.api.Test;
 import org.assertj.core.api.Assertions;
 import org.cp.elements.function.FunctionExecutionException;
 import org.cp.elements.function.ThrowingConsumer;
-import org.cp.elements.function.ThrowableFunction;
+import org.cp.elements.function.ThrowingFunction;
 import org.cp.elements.function.ThrowableSupplier;
 import org.cp.elements.lang.ThrowableAssertions.AssertThatThrowableExpression;
 import org.cp.elements.lang.ThrowableAssertions.ThrowableSource;
@@ -133,7 +133,7 @@ class ThrowableAssertionsUnitTests {
     throw new Exception("TEST");
   }
 
-  private static ThrowableFunction<?, ?> functionThrowingException(Object target) throws Exception {
+  private static ThrowingFunction<?, ?> functionThrowingException(Object target) throws Exception {
     throw new Exception("TEST");
   }
 

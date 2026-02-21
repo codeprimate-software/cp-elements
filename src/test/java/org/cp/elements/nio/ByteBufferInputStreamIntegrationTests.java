@@ -32,7 +32,7 @@ import java.nio.ByteBuffer;
 import org.junit.jupiter.api.Test;
 
 import org.cp.elements.function.FunctionException;
-import org.cp.elements.function.ThrowableFunction;
+import org.cp.elements.function.ThrowingFunction;
 import org.cp.elements.lang.ThrowableAssertions;
 import org.cp.elements.lang.annotation.NotNull;
 import org.cp.elements.test.TestException;
@@ -80,7 +80,7 @@ public class ByteBufferInputStreamIntegrationTests {
   }
 
   private <T> T tryWithResource(@NotNull ByteBuffer buffer,
-      @NotNull ThrowableFunction<ByteBufferInputStream, T> operation) throws Throwable {
+      @NotNull ThrowingFunction<ByteBufferInputStream, T> operation) throws Throwable {
 
     try (ByteBufferInputStream in = ByteBufferInputStream.from(buffer)) {
       return operation.apply(in);

@@ -30,21 +30,21 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 import org.junit.jupiter.api.Test;
 
 /**
- * Unit Tests for {@link ThrowableFunction}.
+ * Unit Tests for {@link ThrowingFunction}.
  *
  * @author John Blum
  * @see org.junit.jupiter.api.Test
  * @see org.mockito.Mockito
- * @see org.cp.elements.function.ThrowableFunction
+ * @see ThrowingFunction
  * @since 2.0.0
  */
-class ThrowableFunctionUnitTests {
+class ThrowingFunctionUnitTests {
 
   @Test
   @SuppressWarnings("unchecked")
   void throwableFunctionReturnsValue() throws Throwable {
 
-    ThrowableFunction<Object, Object> mockFunction = mock(ThrowableFunction.class);
+    ThrowingFunction<Object, Object> mockFunction = mock(ThrowingFunction.class);
 
     doCallRealMethod().when(mockFunction).apply(any());
     doAnswer(invocation -> invocation.getArgument(0)).when(mockFunction).applyThrowingException(any());
@@ -60,7 +60,7 @@ class ThrowableFunctionUnitTests {
   @SuppressWarnings("unchecked")
   void throwableFunctionThrowsException() throws Throwable {
 
-    ThrowableFunction<Object, Object> mockFunction = mock(ThrowableFunction.class);
+    ThrowingFunction<Object, Object> mockFunction = mock(ThrowingFunction.class);
 
     doCallRealMethod().when(mockFunction).apply(any());
     doThrow(new Exception("ERROR")).when(mockFunction).applyThrowingException(any());

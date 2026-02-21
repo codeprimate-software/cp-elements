@@ -25,12 +25,12 @@ import java.util.function.Function;
  * @author John Blum
  * @param <T> {@link Class type} of the {@link Function Function's} input argument.
  * @param <R> {@link Class type} of the {@link Function Function's} computed result and return value.
- * @see java.lang.FunctionalInterface
+ * @see FunctionalInterface
  * @see java.util.function.Function
  * @since 2.0.0
  */
 @FunctionalInterface
-public interface ThrowableFunction<T, R> extends Function<T, R> {
+public interface ThrowingFunction<T, R> extends Function<T, R> {
 
   @Override
   default R apply(T input) {

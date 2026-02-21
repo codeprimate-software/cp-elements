@@ -23,7 +23,7 @@ import java.util.regex.Pattern;
 
 import org.cp.elements.function.FunctionUtils;
 import org.cp.elements.function.ThrowingConsumer;
-import org.cp.elements.function.ThrowableFunction;
+import org.cp.elements.function.ThrowingFunction;
 import org.cp.elements.function.ThrowableSupplier;
 import org.cp.elements.lang.annotation.Dsl;
 import org.cp.elements.lang.annotation.FluentApi;
@@ -42,7 +42,7 @@ import org.cp.elements.util.ArrayUtils;
  * @see java.lang.RuntimeException
  * @see java.lang.Throwable
  * @see ThrowingConsumer
- * @see org.cp.elements.function.ThrowableFunction
+ * @see ThrowingFunction
  * @see org.cp.elements.function.ThrowableSupplier
  * @see org.cp.elements.lang.annotation.Dsl
  * @see org.cp.elements.lang.annotation.FluentApi
@@ -544,15 +544,15 @@ public abstract class ThrowableAssertions {
     }
 
     /**
-     * {@link ThrowableFunction} containing the code throwing the {@link Exception} invoked during the assertion.
+     * {@link ThrowingFunction} containing the code throwing the {@link Exception} invoked during the assertion.
      *
-     * @param function {@link ThrowableFunction} to invoke; required.
+     * @param function {@link ThrowingFunction} to invoke; required.
      * @return a new {@link AssertThatThrowable}.
-     * @throws IllegalArgumentException if {@link ThrowableFunction} is {@literal null}.
-     * @see org.cp.elements.function.ThrowableFunction
+     * @throws IllegalArgumentException if {@link ThrowingFunction} is {@literal null}.
+     * @see ThrowingFunction
      * @see #isThrownBy(ThrowableOperation)
      */
-    default AssertThatThrowable thrownByFunction(ThrowableFunction<Object, ?> function) {
+    default AssertThatThrowable thrownByFunction(ThrowingFunction<Object, ?> function) {
       Assert.notNull(function, "Function is required");
       return isThrownBy(ThrowableOperation.fromFunction(function));
     }
