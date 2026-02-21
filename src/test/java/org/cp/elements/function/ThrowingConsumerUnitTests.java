@@ -39,15 +39,15 @@ import org.junit.jupiter.api.Test;
 import org.cp.elements.lang.ThrowableOperation;
 
 /**
- * Unit Tests for {@link ThrowableConsumer}.
+ * Unit Tests for {@link ThrowingConsumer}.
  *
  * @author John Blum
- * @see org.cp.elements.function.ThrowableConsumer
+ * @see ThrowingConsumer
  * @see org.junit.jupiter.api.Test
  * @see org.mockito.Mockito
  * @since 2.0.0
  */
-class ThrowableConsumerUnitTests {
+class ThrowingConsumerUnitTests {
 
   @Test
   @SuppressWarnings("unchecked")
@@ -55,7 +55,7 @@ class ThrowableConsumerUnitTests {
 
     Consumer<Exception> mockExceptionHandler = mock(Consumer.class);
     IllegalArgumentException exception = new IllegalArgumentException("TEST");
-    ThrowableConsumer<Object> mockConsumer = mock(ThrowableConsumer.class);
+    ThrowingConsumer<Object> mockConsumer = mock(ThrowingConsumer.class);
 
     doThrow(exception).when(mockConsumer).acceptThrowingException(any());
 
@@ -71,7 +71,7 @@ class ThrowableConsumerUnitTests {
 
     }).when(mockExceptionHandler).accept(any(Exception.class));
 
-    Consumer<Object> consumer = ThrowableConsumer.safeConsumer(mockConsumer, mockExceptionHandler);
+    Consumer<Object> consumer = ThrowingConsumer.safeConsumer(mockConsumer, mockExceptionHandler);
 
     assertThat(consumer).isNotNull();
 
@@ -88,11 +88,11 @@ class ThrowableConsumerUnitTests {
   void safeConsumerDoesNotThrowException() throws Exception {
 
     Consumer<Exception> mockExceptionHandler = mock(Consumer.class);
-    ThrowableConsumer<Object> mockConsumer = mock(ThrowableConsumer.class);
+    ThrowingConsumer<Object> mockConsumer = mock(ThrowingConsumer.class);
 
     doNothing().when(mockConsumer).acceptThrowingException(any());
 
-    Consumer<Object> consumer = ThrowableConsumer.safeConsumer(mockConsumer, mockExceptionHandler);
+    Consumer<Object> consumer = ThrowingConsumer.safeConsumer(mockConsumer, mockExceptionHandler);
 
     assertThat(consumer).isNotNull();
 
@@ -109,7 +109,7 @@ class ThrowableConsumerUnitTests {
   void safeConsumerWithNullThrowableConsumer() {
 
     assertThatIllegalArgumentException()
-      .isThrownBy(arg -> ThrowableConsumer.safeConsumer(null, mock(Consumer.class)))
+      .isThrownBy(arg -> ThrowingConsumer.safeConsumer(null, mock(Consumer.class)))
       .havingMessage("Consumer is required")
       .withNoCause();
   }
@@ -119,7 +119,7 @@ class ThrowableConsumerUnitTests {
   void safeConsumerWithNullExceptionHandler() {
 
     assertThatIllegalArgumentException()
-      .isThrownBy(arg -> ThrowableConsumer.safeConsumer(mock(ThrowableConsumer.class), null))
+      .isThrownBy(arg -> ThrowingConsumer.safeConsumer(mock(ThrowingConsumer.class), null))
       .havingMessage("Exception handler is required")
       .withNoCause();
   }
@@ -128,35 +128,35 @@ class ThrowableConsumerUnitTests {
   @SuppressWarnings("unchecked")
   void acceptCallsAcceptThrowingException() throws Exception {
 
-    ThrowableConsumer<Object> mockThrowableConsumer = mock(ThrowableConsumer.class);
+    ThrowingConsumer<Object> mockThrowingConsumer = mock(ThrowingConsumer.class);
 
-    doCallRealMethod().when(mockThrowableConsumer).accept(any());
+    doCallRealMethod().when(mockThrowingConsumer).accept(any());
 
-    mockThrowableConsumer.accept("test");
+    mockThrowingConsumer.accept("test");
 
-    verify(mockThrowableConsumer, times(1)).accept(eq("test"));
-    verify(mockThrowableConsumer, times(1)).acceptThrowingException(eq("test"));
-    verifyNoMoreInteractions(mockThrowableConsumer);
+    verify(mockThrowingConsumer, times(1)).accept(eq("test"));
+    verify(mockThrowingConsumer, times(1)).acceptThrowingException(eq("test"));
+    verifyNoMoreInteractions(mockThrowingConsumer);
   }
 
   @Test
   @SuppressWarnings("unchecked")
   void throwableConsumerThrowsException() throws Exception {
 
-    ThrowableConsumer<Object> mockThrowableConsumer = mock(ThrowableConsumer.class);
+    ThrowingConsumer<Object> mockThrowingConsumer = mock(ThrowingConsumer.class);
 
-    doCallRealMethod().when(mockThrowableConsumer).accept(any());
-    doThrow(new Exception("TEST")).when(mockThrowableConsumer).acceptThrowingException(any());
+    doCallRealMethod().when(mockThrowingConsumer).accept(any());
+    doThrow(new Exception("TEST")).when(mockThrowingConsumer).acceptThrowingException(any());
 
     assertThatThrowableOfType(IllegalStateException.class)
-      .isThrownBy(ThrowableOperation.fromConsumer(target -> mockThrowableConsumer.accept("test")))
+      .isThrownBy(ThrowableOperation.fromConsumer(target -> mockThrowingConsumer.accept("test")))
       .havingMessage("Failed to consume object [test]")
       .causedBy(Exception.class)
       .havingMessage("TEST")
       .withNoCause();
 
-    verify(mockThrowableConsumer, times(1)).accept(eq("test"));
-    verify(mockThrowableConsumer, times(1)).acceptThrowingException(eq("test"));
-    verifyNoMoreInteractions(mockThrowableConsumer);
+    verify(mockThrowingConsumer, times(1)).accept(eq("test"));
+    verify(mockThrowingConsumer, times(1)).acceptThrowingException(eq("test"));
+    verifyNoMoreInteractions(mockThrowingConsumer);
   }
 }

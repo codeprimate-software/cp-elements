@@ -22,7 +22,7 @@ import java.util.function.Supplier;
 import java.util.regex.Pattern;
 
 import org.cp.elements.function.FunctionUtils;
-import org.cp.elements.function.ThrowableConsumer;
+import org.cp.elements.function.ThrowingConsumer;
 import org.cp.elements.function.ThrowableFunction;
 import org.cp.elements.function.ThrowableSupplier;
 import org.cp.elements.lang.annotation.Dsl;
@@ -41,7 +41,7 @@ import org.cp.elements.util.ArrayUtils;
  * @see java.lang.Exception
  * @see java.lang.RuntimeException
  * @see java.lang.Throwable
- * @see org.cp.elements.function.ThrowableConsumer
+ * @see ThrowingConsumer
  * @see org.cp.elements.function.ThrowableFunction
  * @see org.cp.elements.function.ThrowableSupplier
  * @see org.cp.elements.lang.annotation.Dsl
@@ -514,18 +514,18 @@ public abstract class ThrowableAssertions {
     AssertThatThrowable isThrownBy(ThrowableOperation<?> operation);
 
     /**
-     * {@link ThrowableConsumer} containing the code throwing the {@link Exception} invoked during the assertion.
+     * {@link ThrowingConsumer} containing the code throwing the {@link Exception} invoked during the assertion.
      *
-     * @param consumer {@link ThrowableConsumer} to invoke; required.
+     * @param consumer {@link ThrowingConsumer} to invoke; required.
      * @return a new {@link AssertThatThrowable}.
-     * @throws IllegalArgumentException if {@link ThrowableConsumer} is {@literal null}.
-     * @see org.cp.elements.function.ThrowableConsumer
+     * @throws IllegalArgumentException if {@link ThrowingConsumer} is {@literal null}.
+     * @see ThrowingConsumer
      * @see #isThrownBy(ThrowableOperation)
      */
     @SuppressWarnings("unchecked")
-    default AssertThatThrowable thrownBy(@NotNull ThrowableConsumer<?> consumer) {
+    default AssertThatThrowable thrownBy(@NotNull ThrowingConsumer<?> consumer) {
       Assert.notNull(consumer, "Consumer is required");
-      ThrowableConsumer<Object> resolvedConsumer = (ThrowableConsumer<Object>) consumer;
+      ThrowingConsumer<Object> resolvedConsumer = (ThrowingConsumer<Object>) consumer;
       return isThrownBy(ThrowableOperation.fromConsumer(resolvedConsumer));
     }
 

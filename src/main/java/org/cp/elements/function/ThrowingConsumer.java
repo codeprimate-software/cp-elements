@@ -26,25 +26,25 @@ import org.cp.elements.lang.Assert;
  *
  * @author John Blum
  * @param <T> {@link Class type} of {@link Object} to process.
- * @see java.lang.FunctionalInterface
+ * @see FunctionalInterface
  * @see java.util.function.Consumer
  * @since 2.0.0
  */
 @FunctionalInterface
-public interface ThrowableConsumer<T> extends Consumer<T> {
+public interface ThrowingConsumer<T> extends Consumer<T> {
 
   /**
-   * Factory method used to construct a new Consumer wrapping the given {@link ThrowableConsumer}
+   * Factory method used to construct a new Consumer wrapping the given {@link ThrowingConsumer}
    * throwing a possible {@link Exception} handle dby the given {@link Consumer Exception handler}.
    *
    * @param <T> {@link Class type} of {@link Object} consumed by the {@link Consumer}.
-   * @param consumer {@link ThrowableConsumer} to wrap.
+   * @param consumer {@link ThrowingConsumer} to wrap.
    * @param exceptionHandler {@link Consumer} used to handle any {@link Exception} thrown.
-   * @throws IllegalArgumentException if {@link ThrowableConsumer} or the {@link Consumer Exception handler}
+   * @throws IllegalArgumentException if {@link ThrowingConsumer} or the {@link Consumer Exception handler}
    * are {@literal null}.
    * @see java.util.function.Consumer
    */
-  static <T> Consumer<T> safeConsumer(ThrowableConsumer<T> consumer, Consumer<Exception> exceptionHandler) {
+  static <T> Consumer<T> safeConsumer(ThrowingConsumer<T> consumer, Consumer<Exception> exceptionHandler) {
 
     Assert.notNull(consumer, "Consumer is required");
     Assert.notNull(exceptionHandler, "Exception handler is required");

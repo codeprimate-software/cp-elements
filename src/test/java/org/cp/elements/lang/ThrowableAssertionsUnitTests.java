@@ -48,7 +48,7 @@ import org.junit.jupiter.api.Test;
 
 import org.assertj.core.api.Assertions;
 import org.cp.elements.function.FunctionExecutionException;
-import org.cp.elements.function.ThrowableConsumer;
+import org.cp.elements.function.ThrowingConsumer;
 import org.cp.elements.function.ThrowableFunction;
 import org.cp.elements.function.ThrowableSupplier;
 import org.cp.elements.lang.ThrowableAssertions.AssertThatThrowableExpression;
@@ -613,7 +613,7 @@ class ThrowableAssertionsUnitTests {
   void assertWithNullThrowingConsumer() {
 
     Assertions.assertThatIllegalArgumentException()
-      .isThrownBy(() -> assertThatThrowableOfType(Exception.class).thrownBy((ThrowableConsumer<?>) null))
+      .isThrownBy(() -> assertThatThrowableOfType(Exception.class).thrownBy((ThrowingConsumer<?>) null))
       .withMessage("Consumer is required")
       .withNoCause();
   }
