@@ -41,7 +41,6 @@ import org.mockito.ArgumentMatcher;
 
 import lombok.Data;
 import lombok.Getter;
-import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
 /**
@@ -293,16 +292,16 @@ public class HashCodeBuilderTests {
   @RequiredArgsConstructor(staticName = "newPerson")
   static class Person {
 
-    @NonNull Long id;
+    final Long id;
 
-    @NonNull Gender gender;
+    final Gender gender;
 
-    @NonNull LocalDate birthDate;
+    final LocalDate birthDate;
 
-    @NonNull transient Object transientNonHashableField;
+    final transient Object transientNonHashableField;
 
-    @NonNull String firstName;
-    @NonNull String lastName;
+    final String firstName;
+    final String lastName;
 
     public String getName() {
       return String.format("%1$s %2$s", getFirstName(), getLastName());
@@ -351,9 +350,9 @@ public class HashCodeBuilderTests {
   @RequiredArgsConstructor(staticName = "create")
   static class ObjectWithBadHashCodeImplementation {
 
-    @NonNull /* transient */ Object objectValue;
+    /* transient */ final Object objectValue;
 
-    @NonNull String stringValue;
+    final String stringValue;
 
     @Override
     public boolean equals(Object obj) {

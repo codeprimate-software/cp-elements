@@ -33,10 +33,7 @@ import org.junit.jupiter.api.Test;
 
 import org.cp.elements.lang.annotation.NotNull;
 import org.cp.elements.lang.annotation.Nullable;
-
 import org.mockito.quality.Strictness;
-
-import lombok.NonNull;
 
 /**
  * Unit Tests for the {@link IdentifierSequence}.
@@ -57,7 +54,7 @@ public class IdentifierSequenceUnitTests {
   }
 
   @SuppressWarnings("unchecked")
-  private @NonNull Identifiable<Integer> mockIdentifiable(@Nullable Integer id) {
+  private Identifiable<Integer> mockIdentifiable(@Nullable Integer id) {
 
     Identifiable<Integer> mockIdentifiable = mock(Identifiable.class, withSettings().strictness(Strictness.LENIENT));
 

@@ -31,7 +31,6 @@ import org.cp.elements.lang.support.AbstractIdentifiable;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
 /**
@@ -146,7 +145,7 @@ public class JdkDynamicProxiesFactoryUnitTests {
   @Data
   @RequiredArgsConstructor(staticName = "newContact")
   static class Contact {
-    @NonNull String name;
+    final String name;
   }
 
   @SuppressWarnings("unused")

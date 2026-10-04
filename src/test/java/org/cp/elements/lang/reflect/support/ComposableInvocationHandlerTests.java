@@ -38,7 +38,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import lombok.Data;
-import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
 /**
@@ -53,7 +52,7 @@ import lombok.RequiredArgsConstructor;
  * @since 1.0.0
  */
 @ExtendWith(MockitoExtension.class)
-public class ComposableInvocationHandlerTests {
+class ComposableInvocationHandlerTests {
 
   @Mock
   private InvocationHandler mockInvocationHandlerOne;
@@ -62,7 +61,7 @@ public class ComposableInvocationHandlerTests {
   private InvocationHandler mockInvocationHandlerTwo;
 
   @Test
-  public void composeArrayOfInvocationHandlers() {
+  void composeArrayOfInvocationHandlers() {
 
     ComposableInvocationHandler invocationHandlers =
       ComposableInvocationHandler.compose(mockInvocationHandlerOne, mockInvocationHandlerTwo);
@@ -73,7 +72,7 @@ public class ComposableInvocationHandlerTests {
   }
 
   @Test
-  public void composeIterableOfInvocationHandlers() {
+  void composeIterableOfInvocationHandlers() {
 
     ComposableInvocationHandler invocationHandlers =
       ComposableInvocationHandler.compose(asIterable(mockInvocationHandlerOne));
@@ -84,7 +83,7 @@ public class ComposableInvocationHandlerTests {
   }
 
   @Test
-  public void invokeHandledByFirstInvocationHandler() throws Throwable {
+  void invokeHandledByFirstInvocationHandler() throws Throwable {
 
     Object proxy = new Object();
     Method getName = Contact.class.getMethod("getName");
@@ -103,7 +102,7 @@ public class ComposableInvocationHandlerTests {
   }
 
   @Test
-  public void invokeHandledBySecondInvocationHandler() throws Throwable {
+  void invokeHandledBySecondInvocationHandler() throws Throwable {
 
     Object proxy = new Object();
     Method getName = Contact.class.getMethod("getName");
@@ -124,7 +123,7 @@ public class ComposableInvocationHandlerTests {
   }
 
   @Test
-  public void invokeThrowsUnhandledMethodInvocationException() throws Throwable {
+  void invokeThrowsUnhandledMethodInvocationException() throws Throwable {
 
     Object proxy = new Object();
     Method getName = Contact.class.getMethod("getName");
@@ -150,11 +149,13 @@ public class ComposableInvocationHandlerTests {
   }
 
   @Test
-  public void iteratorIsSuccessful() {
+  void iteratorIsSuccessful() {
 
     InvocationHandler mockInvocationHandlerThree = mock(InvocationHandler.class);
+
     ComposableInvocationHandler invocationHandler = ComposableInvocationHandler.compose(
-      mockInvocationHandlerOne, mockInvocationHandlerTwo, mockInvocationHandlerThree);
+      mockInvocationHandlerOne, mockInvocationHandlerTwo, mockInvocationHandlerThree
+    );
 
     assertThat(invocationHandler).isNotNull();
     assertThat(invocationHandler.getInvocationHandlers()).contains(
@@ -167,6 +168,6 @@ public class ComposableInvocationHandlerTests {
   @RequiredArgsConstructor(staticName = "newContact")
   @SuppressWarnings("all")
   static class Contact {
-    @NonNull String name;
+    final String name;
   }
 }

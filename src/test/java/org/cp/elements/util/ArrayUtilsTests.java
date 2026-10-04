@@ -41,7 +41,6 @@ import org.cp.elements.lang.Transformer;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
 /**
@@ -2025,8 +2024,8 @@ class ArrayUtilsTests {
   @RequiredArgsConstructor(staticName = "newPerson")
   static class Person {
 
-    @NonNull final String firstName;
-    @NonNull final String lastName;
+    final String firstName;
+    final String lastName;
 
     @Override
     public String toString() {
